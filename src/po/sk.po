@@ -1,7 +1,7 @@
 # Slovak translation of vim
 # Lubomir Host 'rajo' <rajo AT platon.sk>
 # 2005 - Platon Group, http://platon.sk/
-# $Revision: 1.3 $
+# $Revision: 1.4 $
 # $LastChangedDate: 2005-10-08 12:00:24 +0200 (Sat, 08 Oct 2005) $
 msgid ""
 msgstr ""
@@ -4871,8 +4871,8 @@ msgid "E397: Filename required"
 msgstr "E397: Vy¾adovaný názov súboru"
 
 #, c-format
-msgid "E747: Missing ']': %s"
-msgstr "E747: Chýba ']': %s"
+msgid "E789: Missing ']': %s"
+msgstr "E789: Chýba ']': %s"
 
 #, c-format
 msgid "E398: Missing '=': %s"
