@@ -1,10 +1,10 @@
 " =============================================================================
 " 
 "   Program:   CMake - Cross-Platform Makefile Generator
-"   Module:    $RCSfile: cmake.vim,v $
+"   Module:    $RCSfile: cmake-indent.vim,v $
 "   Language:  VIM
-"   Date:      $Date: 2006/04/18 21:48:26 $
-"   Version:   $Revision: 1.1 $
+"   Date:      $Date: 2006/04/21 11:17:03 $
+"   Version:   $Revision: 1.5 $
 " 
 " =============================================================================
 
@@ -12,8 +12,8 @@
 " Language:     CMake (ft=cmake)
 " Author:       Andy Cedilnik <andy.cedilnik@kitware.com>
 " Maintainer:   Andy Cedilnik <andy.cedilnik@kitware.com>
-" Last Change:  $Date: 2006/04/18 21:48:26 $
-" Version:      $Revision: 1.1 $
+" Last Change:  $Date: 2006/04/21 11:17:03 $
+" Version:      $Revision: 1.5 $
 "
 " Licence:      The CMake license applies to this file. See
 "               http://www.cmake.org/HTML/Copyright.html
@@ -56,7 +56,7 @@ fun! CMakeGetIndent(lnum)
                     \       or . '[^()\\#"]' . or . '\\.' . '\)*'
 
   let cmake_indent_comment_line = '^\s*' . cmake_regex_comment
-  let cmake_indent_blank_regex = '^\s*$')
+  let cmake_indent_blank_regex = '^\s*$'
   let cmake_indent_open_regex = '^\s*' . cmake_regex_identifier .
                     \           '\s*(' . cmake_regex_arguments .
                     \           '\(' . cmake_regex_comment . '\)\?$'
@@ -65,8 +65,8 @@ fun! CMakeGetIndent(lnum)
                     \            ')\s*' .
                     \            '\(' . cmake_regex_comment . '\)\?$'
 
-  let cmake_indent_begin_regex = '^\s*\(IF\|MACRO\|FOREACH\|ELSE\)\s*('
-  let cmake_indent_end_regex = '^\s*\(ENDIF\|ENDFOREACH\|ENDMACRO\|ELSE\)\s*('
+  let cmake_indent_begin_regex = '^\s*\(IF\|MACRO\|FOREACH\|ELSE\|WHILE\)\s*('
+  let cmake_indent_end_regex = '^\s*\(ENDIF\|ENDFOREACH\|ENDMACRO\|ELSE\|ENDWHILE\)\s*('
 
   " Add
   if previous_line =~? cmake_indent_comment_line " Handle comments
