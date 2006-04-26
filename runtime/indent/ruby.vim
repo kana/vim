@@ -1,11 +1,10 @@
 " Vim indent file
-" Language:	Ruby
-" Maintainer:	Gavin Sinclair <gsinclair at soyabean.com.au>
-" Developer:	Nikolai Weibull <source at pcppopper.org>
-" Info:		$Id: ruby.vim,v 1.4 2005/11/23 21:16:02 vimboss Exp $
-" URL:		http://vim-ruby.rubyforge.org
-" Anon CVS:	See above site
-" ----------------------------------------------------------------------------
+" Language:		Ruby
+" Maintainer:		Nikolai Weibull <now at bitwi.se>
+" Info:			$Id: ruby.vim,v 1.5 2006/04/25 22:09:06 vimboss Exp $
+" URL:			http://vim-ruby.rubyforge.org
+" Anon CVS:		See above site
+" Release Coordinator:	Doug Kearns <dougkearns@gmail.com>
 
 " 0. Initialization {{{1
 " =================
@@ -15,6 +14,8 @@ if exists("b:did_indent")
   finish
 endif
 let b:did_indent = 1
+
+setlocal nosmartindent
 
 " Now, set up our indentation expression and keys that trigger it.
 setlocal indentexpr=GetRubyIndent()

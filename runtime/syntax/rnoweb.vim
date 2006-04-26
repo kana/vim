@@ -1,9 +1,9 @@
 " Vim syntax file
 " Language:    R noweb Files
 " Maintainer:  Johannes Ranke <jranke@uni-bremen.de>
-" Last Change: 2006 Apr 18
-" Version:     0.5 
-" SVN:	       $Id: rnoweb.vim,v 1.1 2006/04/18 21:49:04 vimboss Exp $
+" Last Change: 2006 Apr 25
+" Version:     0.6
+" SVN:	       $Id: rnoweb.vim,v 1.2 2006/04/25 22:10:16 vimboss Exp $
 " Remarks:     - This file is inspired by the proposal of 
 "				 Fernando Henrique Ferraz Pereira da Rosa <feferraz@ime.usp.br>
 "			     http://www.ime.usp.br/~feferraz/en/sweavevim.html
@@ -50,6 +50,7 @@ syn cluster rnoweb contains=rnowebChunk,rnowebChunkReference,rnowebDelimiter,rno
 " Highlighting {{{1
 hi def link rnowebDelimiter	Delimiter
 hi def link rnowebSweaveOpts Statement
+hi def link rnowebChunkReference Delimiter
 
 let   b:current_syntax = "rnoweb"
 " vim: foldmethod=marker:
