@@ -1,6 +1,8 @@
-*vimball.txt*	For Vim version 7.0f.  Last change: 2006 Apr 25
+*pi_vimball.txt*	For Vim version 7.0f.  Last change: 2006 Apr 27
 
-	Vimball Archiver
+			       ----------------
+			       Vimball Archiver
+			       ----------------
 
 Author:  Charles E. Campbell, Jr.  <NdrOchip@ScampbellPfamily.AbizM>
 	  (remove NOSPAM from Campbell's email first)
@@ -28,14 +30,17 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*Vimball-copyright*
 	your vimball; as an example: >
 		plugin/something.vim
 		doc/something.txt
-<	using MkVimball on this range will create a file called
-	"filename.vba" which can be used by Vimball.vim to re-create these
-	files.  If the "filename.vba" file already exists, then MkVimball
-	will issue a warning and not create the file.
+<	using MkVimball on this range will create a file called "filename.vba"
+	which can be used by Vimball.vim to re-create these files.  If the
+	"filename.vba" file already exists, then MkVimball will issue a
+	warning and not create the file.  Note that these paths are relative
+	to your .vim (vimfiles) directory, and the files should be in that
+	directory.  The vimball plugin uses the first |'runtimepath'|directory
+	that exists as a prefix; don't use absolute paths.
 
-	However, if you use the exclamation point (!), then MkVimball will
-	create the "filename.vba" file, overwriting it if it already exists.
-	This behavior resembles that for |:w|.
+	If you use the exclamation point (!), then MkVimball will create the
+	"filename.vba" file, overwriting it if it already exists.  This
+	behavior resembles that for |:w|.
 
 							*vimball-extract*
 		vim filename.vba
@@ -44,7 +49,7 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*Vimball-copyright*
 	source the file to extract its contents.
 
 	Extraction will only proceed if the first line of a putative vimball
-	file holds the "Vimball Archiver by Charles E.  Campbell, Jr., Ph.D."
+	file holds the "Vimball Archiver by Charles E. Campbell, Jr., Ph.D."
 	line.
 
 		:VimballList				*vimball-vimballlist*
@@ -54,8 +59,16 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*Vimball-copyright*
 
 
 ==============================================================================
-3. Vimball History					*vimball-history*
+3. Vimball History					*vimball-history* {{{1
 
+	11 : Apr 27, 2006 * VimballList would create missing subdirectories that
+	                    the vimball specified were needed.  Fixed.
+	10 : Apr 27, 2006 * moved all setting saving/restoration to a pair of
+	                    functions.  Included some more settings in them
+			    which frequently cause trouble.
+	9  : Apr 26, 2006 * various changes to support Windows prediliction
+	                    for backslashes and spaces in file and directory
+			    names.
 	7  : Apr 25, 2006 * bypasses foldenable
 	                  * uses more exe and less norm! (:yank :put etc)
 			  * does better at insuring a "Press ENTER" prompt
