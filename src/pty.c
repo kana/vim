@@ -37,7 +37,7 @@
  * 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  */
 
-/* RCS_ID("$Id: pty.c,v 1.1 2004/06/13 20:04:27 vimboss Exp $ FAU") */
+/* RCS_ID("$Id: pty.c,v 1.2 2006/11/01 17:12:46 vimboss Exp $ FAU") */
 
 #include "vim.h"
 
