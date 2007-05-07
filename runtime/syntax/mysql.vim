@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language:     mysql
 " Maintainer:   Kenneth J. Pronovici <pronovic@ieee.org>
-" Last Change:  $Date: 2004/06/13 20:12:39 $
+" Last Change:  $Date: 2007/05/06 14:28:38 $
 " Filenames:    *.mysql
 " URL:		ftp://cedar-solutions.com/software/mysql.vim
 " Note:		The definitions below are taken from the mysql user manual as of April 2002, for version 3.23
@@ -249,6 +249,7 @@ syn region mysqlFunction	 start="strcmp(" end=")" contains=ALL
 syn region mysqlFunction	 start="subdate(" end=")" contains=ALL
 syn region mysqlFunction	 start="substring(" end=")" contains=ALL
 syn region mysqlFunction	 start="substring_index(" end=")" contains=ALL
+syn region mysqlFunction	 start="subtime(" end=")" contains=ALL
 syn region mysqlFunction	 start="sum(" end=")" contains=ALL
 syn region mysqlFunction	 start="sysdate(" end=")" contains=ALL
 syn region mysqlFunction	 start="system_user(" end=")" contains=ALL
