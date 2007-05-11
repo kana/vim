@@ -2,7 +2,7 @@
 " Language:     Bazaar (bzr) commit file
 " Maintainer:   Dmitry Vasiliev <dima at hlabs dot spb dot ru>
 " URL:          http://www.hlabs.spb.ru/vim/bzr.vim
-" Revision:     $Id: bzr.vim,v 1.2 2007/05/06 11:54:40 vimboss Exp $
+" Revision:     $Id: bzr.vim,v 1.3 2007/05/10 16:41:10 vimboss Exp $
 " Filenames:    bzr_log.*
 " Version:      1.0
 

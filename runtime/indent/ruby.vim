@@ -1,7 +1,7 @@
 " Vim indent file
 " Language:		Ruby
 " Maintainer:		Nikolai Weibull <now at bitwi.se>
-" Info:			$Id: ruby.vim,v 1.7 2007/05/06 13:12:34 vimboss Exp $
+" Info:			$Id: ruby.vim,v 1.8 2007/05/10 18:06:55 vimboss Exp $
 " URL:			http://vim-ruby.rubyforge.org
 " Anon CVS:		See above site
 " Release Coordinator:	Doug Kearns <dougkearns@gmail.com>
@@ -73,7 +73,7 @@ let s:end_start_regex = '^\s*\zs\<\%(module\|class\|def\|if\|for' .
 let s:end_middle_regex = '\<\%(ensure\|else\|\%(\%(^\|;\)\s*\)\@<=\<rescue\>\|when\|elsif\)\>'
 
 " Regex that defines the end-match for the 'end' keyword.
-let s:end_end_regex = '\%(^\|[^.:]\)\@<=\<end\>'
+let s:end_end_regex = '\%(^\|[^.:@$]\)\@<=\<end\>'
 
 " Expression used for searchpair() call for finding match for 'end' keyword.
 let s:end_skip_expr = s:skip_expr .
@@ -292,7 +292,7 @@ function GetRubyIndent()
 
   " If the previous line ended with an "end", match that "end"s beginning's
   " indent.
-  let col = s:Match(lnum, '\%(^\|[^.]\)\<end\>\s*\%(#.*\)\=$')
+  let col = s:Match(lnum, '\%(^\|[^.:@$]\)\<end\>\s*\%(#.*\)\=$')
   if col > 0
     call cursor(lnum, col)
     if searchpair(s:end_start_regex, '', s:end_end_regex, 'bW',

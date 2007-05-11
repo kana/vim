@@ -1,13 +1,13 @@
 "------------------------------------------------------------------------------
 "  Description: Vim Ada/Dec Ada compiler file
 "     Language: Ada (Dec Ada)
-"          $Id: decada.vim,v 1.2 2007/05/06 13:56:27 vimboss Exp $
+"          $Id: decada.vim,v 1.3 2007/05/10 18:56:24 vimboss Exp $
 "    Copyright: Copyright (C) 2006 Martin Krischik
 "   Maintainer:	Martin Krischik
 "      $Author: vimboss $
-"        $Date: 2007/05/06 13:56:27 $
+"        $Date: 2007/05/10 18:56:24 $
 "      Version: 4.2
-"    $Revision: 1.2 $
+"    $Revision: 1.3 $
 "     $HeadURL: https://svn.sourceforge.net/svnroot/gnuada/trunk/tools/vim/compiler/decada.vim $
 "      History: 21.07.2006 MK New Dec Ada
 "               15.10.2006 MK Bram's suggestion for runtime integration

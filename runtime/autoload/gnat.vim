@@ -1,13 +1,13 @@
 "------------------------------------------------------------------------------
 "  Description: Vim Ada/GNAT compiler file
 "     Language: Ada (GNAT)
-"          $Id: gnat.vim,v 1.2 2007/05/06 14:13:49 vimboss Exp $
+"          $Id: gnat.vim,v 1.3 2007/05/10 19:15:38 vimboss Exp $
 "    Copyright: Copyright (C) 2006 Martin Krischik
 "   Maintainer:	Martin Krischik
 "      $Author: vimboss $
-"        $Date: 2007/05/06 14:13:49 $
+"        $Date: 2007/05/10 19:15:38 $
 "      Version: 4.2
-"    $Revision: 1.2 $
+"    $Revision: 1.3 $
 "     $HeadURL: https://svn.sourceforge.net/svnroot/gnuada/trunk/tools/vim/autoload/gnat.vim $
 "      History: 24.05.2006 MK Unified Headers
 "		16.07.2006 MK Ada-Mode as vim-ball
