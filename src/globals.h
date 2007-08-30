@@ -801,7 +801,7 @@ EXTERN int (*mb_char2len) __ARGS((int c)) INIT(= latin_char2len);
 EXTERN int (*mb_char2bytes) __ARGS((int c, char_u *buf)) INIT(= latin_char2bytes);
 EXTERN int (*mb_ptr2cells) __ARGS((char_u *p)) INIT(= latin_ptr2cells);
 EXTERN int (*mb_char2cells) __ARGS((int c)) INIT(= latin_char2cells);
-EXTERN int (*mb_off2cells) __ARGS((unsigned off)) INIT(= latin_off2cells);
+EXTERN int (*mb_off2cells) __ARGS((unsigned off, unsigned max_off)) INIT(= latin_off2cells);
 EXTERN int (*mb_ptr2char) __ARGS((char_u *p)) INIT(= latin_ptr2char);
 EXTERN int (*mb_head_off) __ARGS((char_u *base, char_u *p)) INIT(= latin_head_off);
 
@@ -876,7 +876,7 @@ EXTERN int Exec_reg INIT(= FALSE);	/* TRUE when executing a register */
 EXTERN int no_mapping INIT(= FALSE);	/* currently no mapping allowed */
 EXTERN int no_zero_mapping INIT(= 0);	/* mapping zero not allowed */
 EXTERN int allow_keys INIT(= FALSE);	/* allow key codes when no_mapping
-					     * is set */
+					 * is set */
 EXTERN int no_u_sync INIT(= 0);		/* Don't call u_sync() */
 
 EXTERN int restart_edit INIT(= 0);	/* call edit when next cmd finished */
@@ -1250,6 +1250,14 @@ EXTERN XtAppContext app_context INIT(= (XtAppContext)NULL);
 #ifdef FEAT_GUI_GTK
 EXTERN guint32	gtk_socket_id INIT(= 0);
 EXTERN int	echo_wid_arg INIT(= FALSE);	/* --echo-wid argument */
+#endif
+
+#ifdef FEAT_GUI_W32
+/*
+ * The value of the --windowid argument.
+ * For embedding gvim inside another application.
+ */
+EXTERN int	win_socket_id INIT(= 0);
 #endif
 
 #if defined(FEAT_CLIENTSERVER) || defined(FEAT_EVAL)
