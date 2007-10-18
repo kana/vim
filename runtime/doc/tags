@@ -244,6 +244,8 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 'fs'	options.txt	/*'fs'*
 'fsync'	options.txt	/*'fsync'*
 'ft'	options.txt	/*'ft'*
+'fu'	options.txt	/*'fu'*
+'fullscreen'	options.txt	/*'fullscreen'*
 'gcr'	options.txt	/*'gcr'*
 'gd'	options.txt	/*'gd'*
 'gdefault'	options.txt	/*'gdefault'*
@@ -500,6 +502,10 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 'nofk'	options.txt	/*'nofk'*
 'nofkmap'	options.txt	/*'nofkmap'*
 'nofoldenable'	options.txt	/*'nofoldenable'*
+'nofs'	options.txt	/*'nofs'*
+'nofsync'	options.txt	/*'nofsync'*
+'nofu'	options.txt	/*'nofu'*
+'nofullscreen'	options.txt	/*'nofullscreen'*
 'nogd'	options.txt	/*'nogd'*
 'nogdefault'	options.txt	/*'nogdefault'*
 'noguipty'	options.txt	/*'noguipty'*
@@ -979,6 +985,8 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 'top'	options.txt	/*'top'*
 'tpm'	options.txt	/*'tpm'*
 'tr'	options.txt	/*'tr'*
+'transp'	options.txt	/*'transp'*
+'transparency'	options.txt	/*'transparency'*
 'ts'	options.txt	/*'ts'*
 'tsl'	options.txt	/*'tsl'*
 'tsr'	options.txt	/*'tsr'*
@@ -1227,6 +1235,7 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 --servername	remote.txt	/*--servername*
 --socketid	starting.txt	/*--socketid*
 --version	starting.txt	/*--version*
+--windowid	starting.txt	/*--windowid*
 -A	starting.txt	/*-A*
 -C	starting.txt	/*-C*
 -D	starting.txt	/*-D*
@@ -2316,6 +2325,10 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 :lwindow	quickfix.txt	/*:lwindow*
 :m	change.txt	/*:m*
 :ma	motion.txt	/*:ma*
+:maca	gui_mac.txt	/*:maca*
+:macaction	gui_mac.txt	/*:macaction*
+:macm	gui_mac.txt	/*:macm*
+:macmenukey	gui_mac.txt	/*:macmenukey*
 :mak	quickfix.txt	/*:mak*
 :make	quickfix.txt	/*:make*
 :make_makeprg	quickfix.txt	/*:make_makeprg*
@@ -3147,6 +3160,7 @@ A	insert.txt	/*A*
 ACL	editing.txt	/*ACL*
 ATTENTION	usr_11.txt	/*ATTENTION*
 Abbreviations	map.txt	/*Abbreviations*
+Actions.plist	gui_mac.txt	/*Actions.plist*
 Aleph	options.txt	/*Aleph*
 Amiga	os_amiga.txt	/*Amiga*
 Arabic	arabic.txt	/*Arabic*
@@ -3299,6 +3313,7 @@ Cmdline-mode	cmdline.txt	/*Cmdline-mode*
 CmdwinEnter	autocmd.txt	/*CmdwinEnter*
 CmdwinLeave	autocmd.txt	/*CmdwinLeave*
 ColorScheme	autocmd.txt	/*ColorScheme*
+Colors.plist	gui_mac.txt	/*Colors.plist*
 Command-line	cmdline.txt	/*Command-line*
 Command-line-mode	cmdline.txt	/*Command-line-mode*
 Contents	quickref.txt	/*Contents*
@@ -4079,8 +4094,13 @@ E794	eval.txt	/*E794*
 E795	eval.txt	/*E795*
 E796	editing.txt	/*E796*
 E797	spell.txt	/*E797*
+E798	eval.txt	/*E798*
+E799	eval.txt	/*E799*
 E80	message.txt	/*E80*
 E800	arabic.txt	/*E800*
+E801	eval.txt	/*E801*
+E802	eval.txt	/*E802*
+E803	eval.txt	/*E803*
 E81	map.txt	/*E81*
 E82	message.txt	/*E82*
 E83	message.txt	/*E83*
@@ -4295,6 +4315,7 @@ StdinReadPost	autocmd.txt	/*StdinReadPost*
 StdinReadPre	autocmd.txt	/*StdinReadPre*
 SwapExists	autocmd.txt	/*SwapExists*
 Syntax	autocmd.txt	/*Syntax*
+SystemColors.plist	gui_mac.txt	/*SystemColors.plist*
 T	motion.txt	/*T*
 TCL	if_tcl.txt	/*TCL*
 TERM	starting.txt	/*TERM*
@@ -4777,6 +4798,7 @@ chill.vim	syntax.txt	/*chill.vim*
 cindent()	eval.txt	/*cindent()*
 cinkeys-format	indent.txt	/*cinkeys-format*
 cinoptions-values	indent.txt	/*cinoptions-values*
+clearmatches()	eval.txt	/*clearmatches()*
 client-server	remote.txt	/*client-server*
 clientserver	remote.txt	/*clientserver*
 clipboard	gui.txt	/*clipboard*
@@ -5649,6 +5671,7 @@ getftype()	eval.txt	/*getftype()*
 getlatestvimscripts-install	pi_getscript.txt	/*getlatestvimscripts-install*
 getline()	eval.txt	/*getline()*
 getloclist()	eval.txt	/*getloclist()*
+getmatches()	eval.txt	/*getmatches()*
 getpos()	eval.txt	/*getpos()*
 getqflist()	eval.txt	/*getqflist()*
 getreg()	eval.txt	/*getreg()*
@@ -5727,6 +5750,7 @@ gui-gtk-socketid	gui_x11.txt	/*gui-gtk-socketid*
 gui-horiz-scroll	gui.txt	/*gui-horiz-scroll*
 gui-init	gui.txt	/*gui-init*
 gui-kde	gui_x11.txt	/*gui-kde*
+gui-macvim	gui_mac.txt	/*gui-macvim*
 gui-mouse	gui.txt	/*gui-mouse*
 gui-mouse-focus	gui.txt	/*gui-mouse-focus*
 gui-mouse-mapping	gui.txt	/*gui-mouse-mapping*
@@ -5752,6 +5776,7 @@ gui-w32-dialogs	gui_w32.txt	/*gui-w32-dialogs*
 gui-w32-printing	gui_w32.txt	/*gui-w32-printing*
 gui-w32-start	gui_w32.txt	/*gui-w32-start*
 gui-w32-various	gui_w32.txt	/*gui-w32-various*
+gui-w32-windowid	gui_w32.txt	/*gui-w32-windowid*
 gui-w32s	gui_w32.txt	/*gui-w32s*
 gui-win32-maximized	gui_w32.txt	/*gui-win32-maximized*
 gui-x11	gui_x11.txt	/*gui-x11*
@@ -5766,10 +5791,12 @@ gui-x11-printing	gui_x11.txt	/*gui-x11-printing*
 gui-x11-start	gui_x11.txt	/*gui-x11-start*
 gui-x11-various	gui_x11.txt	/*gui-x11-various*
 gui.txt	gui.txt	/*gui.txt*
+gui_mac.txt	gui_mac.txt	/*gui_mac.txt*
 gui_w16.txt	gui_w16.txt	/*gui_w16.txt*
 gui_w32.txt	gui_w32.txt	/*gui_w32.txt*
 gui_x11.txt	gui_x11.txt	/*gui_x11.txt*
 guifontwide_gtk2	options.txt	/*guifontwide_gtk2*
+guifontwide_macvim	options.txt	/*guifontwide_macvim*
 guioptions_a	options.txt	/*guioptions_a*
 guu	change.txt	/*guu*
 gv	visual.txt	/*gv*
@@ -5801,7 +5828,6 @@ hebrew.txt	hebrew.txt	/*hebrew.txt*
 help	various.txt	/*help*
 help-context	help.txt	/*help-context*
 help-summary	usr_02.txt	/*help-summary*
-help-tags	tags	1
 help-translated	various.txt	/*help-translated*
 help-xterm-window	various.txt	/*help-xterm-window*
 help.txt	help.txt	/*help.txt*
@@ -6214,6 +6240,27 @@ mac-lack	os_mac.txt	/*mac-lack*
 mac-vimfile	os_mac.txt	/*mac-vimfile*
 macintosh	os_mac.txt	/*macintosh*
 macro	map.txt	/*macro*
+macvim	gui_mac.txt	/*macvim*
+macvim-clientserver	remote.txt	/*macvim-clientserver*
+macvim-colors	gui_mac.txt	/*macvim-colors*
+macvim-colorscheme	gui_mac.txt	/*macvim-colorscheme*
+macvim-default-menu	gui_mac.txt	/*macvim-default-menu*
+macvim-dialogs	gui_mac.txt	/*macvim-dialogs*
+macvim-differences	gui_mac.txt	/*macvim-differences*
+macvim-drag-n-drop	gui_mac.txt	/*macvim-drag-n-drop*
+macvim-encoding	gui_mac.txt	/*macvim-encoding*
+macvim-hints	gui_mac.txt	/*macvim-hints*
+macvim-important	gui_mac.txt	/*macvim-important*
+macvim-menus	gui_mac.txt	/*macvim-menus*
+macvim-movement	gui_mac.txt	/*macvim-movement*
+macvim-options	gui_mac.txt	/*macvim-options*
+macvim-services	gui_mac.txt	/*macvim-services*
+macvim-shift-movement	gui_mac.txt	/*macvim-shift-movement*
+macvim-start	gui_mac.txt	/*macvim-start*
+macvim-todo	gui_mac.txt	/*macvim-todo*
+macvim-toolbar	gui_mac.txt	/*macvim-toolbar*
+macvim-window-title	gui_mac.txt	/*macvim-window-title*
+macvim-windows	gui_mac.txt	/*macvim-windows*
 mail-list	intro.txt	/*mail-list*
 mail.vim	syntax.txt	/*mail.vim*
 maillist	intro.txt	/*maillist*
@@ -6264,7 +6311,9 @@ masm.vim	syntax.txt	/*masm.vim*
 match()	eval.txt	/*match()*
 match-highlight	pattern.txt	/*match-highlight*
 match-parens	tips.txt	/*match-parens*
+matchadd()	eval.txt	/*matchadd()*
 matcharg()	eval.txt	/*matcharg()*
+matchdelete()	eval.txt	/*matchdelete()*
 matchend()	eval.txt	/*matchend()*
 matchit-install	usr_05.txt	/*matchit-install*
 matchlist()	eval.txt	/*matchlist()*
@@ -6353,6 +6402,7 @@ multilang	mlang.txt	/*multilang*
 multilang-menus	mlang.txt	/*multilang-menus*
 multilang-messages	mlang.txt	/*multilang-messages*
 multilang-scripts	mlang.txt	/*multilang-scripts*
+mvim	gui_mac.txt	/*mvim*
 myfiletypefile	syntax.txt	/*myfiletypefile*
 myscriptsfile	syntax.txt	/*myscriptsfile*
 mysql	sql.txt	/*mysql*
@@ -7000,6 +7050,7 @@ setbufvar()	eval.txt	/*setbufvar()*
 setcmdpos()	eval.txt	/*setcmdpos()*
 setline()	eval.txt	/*setline()*
 setloclist()	eval.txt	/*setloclist()*
+setmatches()	eval.txt	/*setmatches()*
 setpos()	eval.txt	/*setpos()*
 setqflist()	eval.txt	/*setqflist()*
 setreg()	eval.txt	/*setreg()*
