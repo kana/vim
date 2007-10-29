@@ -2850,6 +2850,12 @@ repeat_message()
     }
     else if (State == HITRETURN || State == SETWSIZE)
     {
+	if (msg_row == Rows - 1)
+	{
+	    msg_didout = FALSE;
+	    msg_col = 0;
+	    msg_clr_eos();
+	}
 	hit_return_msg();
 	msg_row = Rows - 1;
     }
