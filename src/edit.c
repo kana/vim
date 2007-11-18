@@ -2111,7 +2111,7 @@ ins_compl_add_infercase(str, len, icase, fname, dir, flags)
     int		has_lower = FALSE;
     int		was_letter = FALSE;
 
-    if (p_ic && curbuf->b_p_inf)
+    if (p_ic && curbuf->b_p_inf && len > 0)
     {
 	/* Infer case of completed part. */
 
@@ -2225,7 +2225,7 @@ ins_compl_add_infercase(str, len, icase, fname, dir, flags)
 		    wca[i] = MB_TOUPPER(wca[i]);
 	    }
 
-	    /* 
+	    /*
 	     * Generate encoding specific output from wide character array.
 	     * Multi-byte characters can occupy up to five bytes more than
 	     * ASCII characters, and we also need one byte for NUL, so stay
@@ -3385,8 +3385,8 @@ ins_compl_prep(c)
     if (c != Ctrl_R && vim_is_ctrl_x_key(c))
 	edit_submode_extra = NULL;
 
-    /* Ignore end of Select mode mapping */
-    if (c == K_SELECT)
+    /* Ignore end of Select mode mapping and mouse scroll buttons. */
+    if (c == K_SELECT || c == K_MOUSEDOWN || c == K_MOUSEUP)
 	return retval;
 
     /* Set "compl_get_longest" when finding the first matches. */
@@ -8652,15 +8652,16 @@ ins_mousescroll(up)
     int		up;
 {
     pos_T	tpos;
-# if defined(FEAT_GUI) && defined(FEAT_WINDOWS)
-    win_T	*old_curwin;
+# if defined(FEAT_WINDOWS)
+    win_T	*old_curwin = curwin;
+# endif
+# ifdef FEAT_INS_EXPAND
+    int		did_scroll = FALSE;
 # endif
 
     tpos = curwin->w_cursor;
 
 # if defined(FEAT_GUI) && defined(FEAT_WINDOWS)
-    old_curwin = curwin;
-
     /* Currently the mouse coordinates are only known in the GUI. */
     if (gui.in_use && mouse_row >= 0 && mouse_col >= 0)
     {
@@ -8677,16 +8678,40 @@ ins_mousescroll(up)
 # endif
 	undisplay_dollar();
 
-    if (mod_mask & (MOD_MASK_SHIFT | MOD_MASK_CTRL))
-	scroll_redraw(up, (long)(curwin->w_botline - curwin->w_topline));
-    else
-	scroll_redraw(up, 3L);
+# ifdef FEAT_INS_EXPAND
+    /* Don't scroll the window in which completion is being done. */
+    if (!pum_visible()
+#  if defined(FEAT_WINDOWS)
+	    || curwin != old_curwin
+#  endif
+	    )
+# endif
+    {
+	if (mod_mask & (MOD_MASK_SHIFT | MOD_MASK_CTRL))
+	    scroll_redraw(up, (long)(curwin->w_botline - curwin->w_topline));
+	else
+	    scroll_redraw(up, 3L);
+# ifdef FEAT_INS_EXPAND
+	did_scroll = TRUE;
+# endif
+    }
 
 # if defined(FEAT_GUI) && defined(FEAT_WINDOWS)
     curwin->w_redr_status = TRUE;
 
     curwin = old_curwin;
     curbuf = curwin->w_buffer;
+# endif
+
+# ifdef FEAT_INS_EXPAND
+    /* The popup menu may overlay the window, need to redraw it.
+     * TODO: Would be more efficient to only redraw the windows that are
+     * overlapped by the popup menu. */
+    if (pum_visible() && did_scroll)
+    {
+	redraw_all_later(NOT_VALID);
+	ins_compl_show_pum();
+    }
 # endif
 
     if (!equalpos(curwin->w_cursor, tpos))

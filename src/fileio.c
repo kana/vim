@@ -3209,7 +3209,8 @@ buf_write(buf, fname, sfname, start, end, eap, append, forceit,
      * Get information about original file (if there is one).
      */
 #if defined(UNIX) && !defined(ARCHIE)
-    st_old.st_dev = st_old.st_ino = 0;
+    st_old.st_dev = 0;
+    st_old.st_ino = 0;
     perm = -1;
     if (mch_stat((char *)fname, &st_old) < 0)
 	newfile = TRUE;
@@ -4251,7 +4252,8 @@ restore_backup:
 	 * they don't it adds one.
 	 * With other RMS structures it works perfect without this fix.
 	 */
-	if ((buf->b_fab_rat & (FAB$M_FTN | FAB$M_CR)) != 0)
+	if (buf->b_fab_rfm == FAB$C_VFC
+		|| ((buf->b_fab_rat & (FAB$M_FTN | FAB$M_CR)) != 0))
 	{
 	    int b2write;
 
