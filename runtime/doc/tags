@@ -1125,6 +1125,7 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 +folding	various.txt	/*+folding*
 +footer	various.txt	/*+footer*
 +fork	various.txt	/*+fork*
++fullscreen	various.txt	/*+fullscreen*
 +gettext	various.txt	/*+gettext*
 +hangul_input	various.txt	/*+hangul_input*
 +iconv	various.txt	/*+iconv*
@@ -1154,6 +1155,7 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 +mzscheme	various.txt	/*+mzscheme*
 +mzscheme/dyn	various.txt	/*+mzscheme\/dyn*
 +netbeans_intg	various.txt	/*+netbeans_intg*
++odbeditor	various.txt	/*+odbeditor*
 +ole	various.txt	/*+ole*
 +osfiletype	various.txt	/*+osfiletype*
 +path_extra	various.txt	/*+path_extra*
@@ -1188,6 +1190,7 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 +tgetent	various.txt	/*+tgetent*
 +title	various.txt	/*+title*
 +toolbar	various.txt	/*+toolbar*
++transparency	various.txt	/*+transparency*
 +user_commands	various.txt	/*+user_commands*
 +vertsplit	various.txt	/*+vertsplit*
 +viminfo	various.txt	/*+viminfo*
@@ -5263,6 +5266,7 @@ exrc	starting.txt	/*exrc*
 extend()	eval.txt	/*extend()*
 extension-removal	cmdline.txt	/*extension-removal*
 extensions-improvements	todo.txt	/*extensions-improvements*
+external-editor	gui_mac.txt	/*external-editor*
 f	motion.txt	/*f*
 faq	intro.txt	/*faq*
 farsi	farsi.txt	/*farsi*
@@ -6663,6 +6667,7 @@ object-select	motion.txt	/*object-select*
 objects	index.txt	/*objects*
 obtaining-exted	netbeans.txt	/*obtaining-exted*
 ocaml.vim	syntax.txt	/*ocaml.vim*
+odbeditor	gui_mac.txt	/*odbeditor*
 ole-activation	if_ole.txt	/*ole-activation*
 ole-eval	if_ole.txt	/*ole-eval*
 ole-gethwnd	if_ole.txt	/*ole-gethwnd*
