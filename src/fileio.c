@@ -4719,6 +4719,10 @@ nofail:
     /* Update machine specific information. */
     mch_post_buffer_write(buf);
 #endif
+#ifdef FEAT_ODB_EDITOR
+    odb_post_buffer_write(buf);
+#endif
+
     return retval;
 }
 
