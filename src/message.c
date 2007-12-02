@@ -2852,6 +2852,9 @@ repeat_message()
     {
 	if (msg_row == Rows - 1)
 	{
+	    /* Avoid drawing the "hit-enter" prompt below the previous one,
+	     * overwrite it.  Esp. useful when regaining focus and a
+	     * FocusGained autocmd exists but didn't draw anything. */
 	    msg_didout = FALSE;
 	    msg_col = 0;
 	    msg_clr_eos();
