@@ -7895,6 +7895,7 @@ vim-variable	eval.txt	/*vim-variable*
 vim.vim	syntax.txt	/*vim.vim*
 vim7	version7.txt	/*vim7*
 vim:	options.txt	/*vim:*
+vim_mac	gui_mac.txt	/*vim_mac*
 vimball	pi_vimball.txt	/*vimball*
 vimball-contents	pi_vimball.txt	/*vimball-contents*
 vimball-extract	pi_vimball.txt	/*vimball-extract*
