@@ -550,7 +550,7 @@ edit(cmdchar, startln, count)
 	i = showmode();
 
     if (!p_im && did_restart_edit == 0)
-	change_warning(i + 1);
+	change_warning(i == 0 ? 0 : i + 1);
 
 #ifdef CURSOR_SHAPE
     ui_cursor_shape();		/* may show different cursor shape */
@@ -6938,6 +6938,25 @@ replace_push(c)
     *p = c;
     ++replace_stack_nr;
 }
+
+#if defined(FEAT_MBYTE) || defined(PROTO)
+/*
+ * Push a character onto the replace stack.  Handles a multi-byte character in
+ * reverse byte order, so that the first byte is popped off first.
+ * Return the number of bytes done (includes composing characters).
+ */
+    int
+replace_push_mb(p)
+    char_u *p;
+{
+    int l = (*mb_ptr2len)(p);
+    int j;
+
+    for (j = l - 1; j >= 0; --j)
+	replace_push(p[j]);
+    return l;
+}
+#endif
 
 #if 0
 /*
