@@ -550,7 +550,7 @@ edit(cmdchar, startln, count)
 	i = showmode();
 
     if (!p_im && did_restart_edit == 0)
-	change_warning(i + 1);
+	change_warning(i == 0 ? 0 : i + 1);
 
 #ifdef CURSOR_SHAPE
     ui_cursor_shape();		/* may show different cursor shape */
@@ -1455,6 +1455,14 @@ ins_redraw(ready)
 # endif
 			     )
 	{
+# ifdef FEAT_SYN_HL
+	    /* Need to update the screen first, to make sure syntax
+	     * highlighting is correct after making a change (e.g., inserting
+	     * a "(".  The autocommand may also require a redraw, so it's done
+	     * again below, unfortunately. */
+	    if (syntax_present(curbuf) && must_redraw)
+		update_screen(0);
+# endif
 	    apply_autocmds(EVENT_CURSORMOVEDI, NULL, NULL, FALSE, curbuf);
 	    last_cursormoved = curwin->w_cursor;
 	}
@@ -1654,11 +1662,12 @@ undisplay_dollar()
  * if round is TRUE, round the indent to 'shiftwidth' (only with _INC and _Dec).
  */
     void
-change_indent(type, amount, round, replaced)
+change_indent(type, amount, round, replaced, call_changed_bytes)
     int		type;
     int		amount;
     int		round;
     int		replaced;	/* replaced character, put on replace stack */
+    int		call_changed_bytes;	/* call changed_bytes() */
 {
     int		vcol;
     int		last_vcol;
@@ -1715,7 +1724,7 @@ change_indent(type, amount, round, replaced)
      * Set the new indent.  The cursor will be put on the first non-blank.
      */
     if (type == INDENT_SET)
-	(void)set_indent(amount, SIN_CHANGED);
+	(void)set_indent(amount, call_changed_bytes ? SIN_CHANGED : 0);
     else
     {
 #ifdef FEAT_VREPLACE
@@ -1725,7 +1734,7 @@ change_indent(type, amount, round, replaced)
 	if (State & VREPLACE_FLAG)
 	    State = INSERT;
 #endif
-	shift_line(type == INDENT_DEC, round, 1);
+	shift_line(type == INDENT_DEC, round, 1, call_changed_bytes);
 #ifdef FEAT_VREPLACE
 	State = save_State;
 #endif
@@ -4062,7 +4071,7 @@ ins_compl_get_exp(ini)
 		    found_new_match = searchit(NULL, ins_buf, pos,
 							      compl_direction,
 				 compl_pattern, 1L, SEARCH_KEEP + SEARCH_NFMSG,
-							RE_LAST, (linenr_T)0);
+						  RE_LAST, (linenr_T)0, NULL);
 		--msg_silent;
 		if (!compl_started)
 		{
@@ -5913,7 +5922,7 @@ internal_format(textwidth, second_indent, flags, format_only)
 	    {
 #ifdef FEAT_VREPLACE
 		if (State & VREPLACE_FLAG)
-		    change_indent(INDENT_SET, second_indent, FALSE, NUL);
+		    change_indent(INDENT_SET, second_indent, FALSE, NUL, TRUE);
 		else
 #endif
 		    (void)set_indent(second_indent, SIN_CHANGED);
@@ -6939,6 +6948,25 @@ replace_push(c)
     ++replace_stack_nr;
 }
 
+#if defined(FEAT_MBYTE) || defined(PROTO)
+/*
+ * Push a character onto the replace stack.  Handles a multi-byte character in
+ * reverse byte order, so that the first byte is popped off first.
+ * Return the number of bytes done (includes composing characters).
+ */
+    int
+replace_push_mb(p)
+    char_u *p;
+{
+    int l = (*mb_ptr2len)(p);
+    int j;
+
+    for (j = l - 1; j >= 0; --j)
+	replace_push(p[j]);
+    return l;
+}
+#endif
+
 #if 0
 /*
  * call replace_push(c) with replace_offset set to the first NUL.
@@ -7200,7 +7228,7 @@ cindent_on()
 fixthisline(get_the_indent)
     int (*get_the_indent) __ARGS((void));
 {
-    change_indent(INDENT_SET, get_the_indent(), FALSE, 0);
+    change_indent(INDENT_SET, get_the_indent(), FALSE, 0, TRUE);
     if (linewhite(curwin->w_cursor.lnum))
 	did_ai = TRUE;	    /* delete the indent if the line stays empty */
 }
@@ -8143,10 +8171,10 @@ ins_shift(c, lastc)
 	    replace_pop_ins();
 	if (lastc == '^')
 	    old_indent = get_indent();	/* remember curr. indent */
-	change_indent(INDENT_SET, 0, TRUE, 0);
+	change_indent(INDENT_SET, 0, TRUE, 0, TRUE);
     }
     else
-	change_indent(c == Ctrl_D ? INDENT_DEC : INDENT_INC, 0, TRUE, 0);
+	change_indent(c == Ctrl_D ? INDENT_DEC : INDENT_INC, 0, TRUE, 0, TRUE);
 
     if (did_ai && *skipwhite(ml_get_curline()) != NUL)
 	did_ai = FALSE;
@@ -8187,6 +8215,29 @@ ins_del()
     can_si_back = FALSE;
 #endif
     AppendCharToRedobuff(K_DEL);
+}
+
+static void ins_bs_one __ARGS((colnr_T *vcolp));
+
+/*
+ * Delete one character for ins_bs().
+ */
+    static void
+ins_bs_one(vcolp)
+    colnr_T	*vcolp;
+{
+    dec_cursor();
+    getvcol(curwin, &curwin->w_cursor, vcolp, NULL, NULL);
+    if (State & REPLACE_FLAG)
+    {
+	/* Don't delete characters before the insert point when in
+	 * Replace mode */
+	if (curwin->w_cursor.lnum != Insstart.lnum
+		|| curwin->w_cursor.col >= Insstart.col)
+	    replace_do_bs();
+    }
+    else
+	(void)del_char(FALSE);
 }
 
 /*
@@ -8410,6 +8461,7 @@ ins_bs(c, mode, inserted_space_p)
 	if (	   mode == BACKSPACE_CHAR
 		&& ((p_sta && in_indent)
 		    || (curbuf->b_p_sts != 0
+			&& curwin->w_cursor.col > 0
 			&& (*(ml_get_cursor() - 1) == TAB
 			    || (*(ml_get_cursor() - 1) == ' '
 				&& (!*inserted_space_p
@@ -8418,9 +8470,7 @@ ins_bs(c, mode, inserted_space_p)
 	    int		ts;
 	    colnr_T	vcol;
 	    colnr_T	want_vcol;
-#if 0
-	    int		extra = 0;
-#endif
+	    colnr_T	start_vcol;
 
 	    *inserted_space_p = FALSE;
 	    if (p_sta && in_indent)
@@ -8431,6 +8481,7 @@ ins_bs(c, mode, inserted_space_p)
 	     * 'showbreak' may get in the way, need to get the last column of
 	     * the previous character. */
 	    getvcol(curwin, &curwin->w_cursor, &vcol, NULL, NULL);
+	    start_vcol = vcol;
 	    dec_cursor();
 	    getvcol(curwin, &curwin->w_cursor, NULL, NULL, &want_vcol);
 	    inc_cursor();
@@ -8439,30 +8490,7 @@ ins_bs(c, mode, inserted_space_p)
 	    /* delete characters until we are at or before want_vcol */
 	    while (vcol > want_vcol
 		    && (cc = *(ml_get_cursor() - 1), vim_iswhite(cc)))
-	    {
-		dec_cursor();
-		getvcol(curwin, &curwin->w_cursor, &vcol, NULL, NULL);
-		if (State & REPLACE_FLAG)
-		{
-		    /* Don't delete characters before the insert point when in
-		     * Replace mode */
-		    if (curwin->w_cursor.lnum != Insstart.lnum
-			    || curwin->w_cursor.col >= Insstart.col)
-		    {
-#if 0	/* what was this for?  It causes problems when sw != ts. */
-			if (State == REPLACE && (int)vcol < want_vcol)
-			{
-			    (void)del_char(FALSE);
-			    extra = 2;	/* don't pop too much */
-			}
-			else
-#endif
-			    replace_do_bs();
-		    }
-		}
-		else
-		    (void)del_char(FALSE);
-	    }
+		ins_bs_one(&vcol);
 
 	    /* insert extra spaces until we are at want_vcol */
 	    while (vcol < want_vcol)
@@ -8479,22 +8507,16 @@ ins_bs(c, mode, inserted_space_p)
 #endif
 		{
 		    ins_str((char_u *)" ");
-		    if ((State & REPLACE_FLAG) /* && extra <= 1 */)
-		    {
-#if 0
-			if (extra)
-			    replace_push_off(NUL);
-			else
-#endif
-			    replace_push(NUL);
-		    }
-#if 0
-		    if (extra == 2)
-			extra = 1;
-#endif
+		    if ((State & REPLACE_FLAG))
+			replace_push(NUL);
 		}
 		getvcol(curwin, &curwin->w_cursor, &vcol, NULL, NULL);
 	    }
+
+	    /* If we are now back where we started delete one character.  Can
+	     * happen when using 'sts' and 'linebreak'. */
+	    if (vcol >= start_vcol)
+		ins_bs_one(&vcol);
 	}
 
 	/*
@@ -8596,6 +8618,14 @@ ins_bs(c, mode, inserted_space_p)
      *  --pkv Sun Jan 19 01:56:40 EST 2003 */
     if (vim_strchr(p_cpo, CPO_BACKSPACE) != NULL && dollar_vcol == 0)
 	dollar_vcol = curwin->w_virtcol;
+
+#ifdef FEAT_FOLDING
+    /* When deleting a char the cursor line must never be in a closed fold.
+     * E.g., when 'foldmethod' is indent and deleting the first non-white
+     * char before a Tab. */
+    if (did_backspace)
+	foldOpenCursor();
+#endif
 
     return did_backspace;
 }
@@ -9604,7 +9634,7 @@ ins_try_si(c)
 	    curwin->w_cursor = old_pos;
 #ifdef FEAT_VREPLACE
 	    if (State & VREPLACE_FLAG)
-		change_indent(INDENT_SET, i, FALSE, NUL);
+		change_indent(INDENT_SET, i, FALSE, NUL, TRUE);
 	    else
 #endif
 		(void)set_indent(i, SIN_CHANGED);
@@ -9633,7 +9663,7 @@ ins_try_si(c)
 		curwin->w_cursor = old_pos;
 	    }
 	    if (temp)
-		shift_line(TRUE, FALSE, 1);
+		shift_line(TRUE, FALSE, 1, TRUE);
 	}
     }
 

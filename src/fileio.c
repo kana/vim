@@ -221,11 +221,12 @@ readfile(fname, sfname, from, lines_to_skip, lines_to_read, eap, flags)
 {
     int		fd = 0;
     int		newfile = (flags & READ_NEW);
-    int		set_options = newfile || (eap != NULL && eap->read_edit);
     int		check_readonly;
     int		filtering = (flags & READ_FILTER);
     int		read_stdin = (flags & READ_STDIN);
     int		read_buffer = (flags & READ_BUFFER);
+    int		set_options = newfile || read_buffer
+					   || (eap != NULL && eap->read_edit);
     linenr_T	read_buf_lnum = 1;	/* next line to read from curbuf */
     colnr_T	read_buf_col = 0;	/* next char to read from this line */
     char_u	c;
@@ -650,8 +651,13 @@ readfile(fname, sfname, from, lines_to_skip, lines_to_read, eap, flags)
 
     if (set_options)
     {
-	curbuf->b_p_eol = TRUE;
-	curbuf->b_start_eol = TRUE;
+	/* Don't change 'eol' if reading from buffer as it will already be
+	 * correctly set when reading stdin. */
+	if (!read_buffer)
+	{
+	    curbuf->b_p_eol = TRUE;
+	    curbuf->b_start_eol = TRUE;
+	}
 #ifdef FEAT_MBYTE
 	curbuf->b_p_bomb = FALSE;
 	curbuf->b_start_bomb = FALSE;
@@ -5560,7 +5566,7 @@ make_bom(buf, name)
 #endif
 
 #if defined(FEAT_VIMINFO) || defined(FEAT_BROWSE) || \
-    defined(FEAT_QUICKFIX) || defined(PROTO)
+    defined(FEAT_QUICKFIX) || defined(FEAT_AUTOCMD) || defined(PROTO)
 /*
  * Try to find a shortname by comparing the fullname with the current
  * directory.
@@ -8551,6 +8557,8 @@ apply_autocmds_group(event, fname, fname_io, force, group, buf, eap)
 
     /*
      * Set the file name to be used for <afile>.
+     * Make a copy to avoid that changing a buffer name or directory makes it
+     * invalid.
      */
     if (fname_io == NULL)
     {
@@ -8563,6 +8571,8 @@ apply_autocmds_group(event, fname, fname_io, force, group, buf, eap)
     }
     else
 	autocmd_fname = fname_io;
+    if (autocmd_fname != NULL)
+	autocmd_fname = FullName_save(autocmd_fname, FALSE);
 
     /*
      * Set the buffer number to be used for <abuf>.
@@ -8745,6 +8755,7 @@ apply_autocmds_group(event, fname, fname_io, force, group, buf, eap)
     vim_free(sourcing_name);
     sourcing_name = save_sourcing_name;
     sourcing_lnum = save_sourcing_lnum;
+    vim_free(autocmd_fname);
     autocmd_fname = save_autocmd_fname;
     autocmd_bufnr = save_autocmd_bufnr;
     autocmd_match = save_autocmd_match;

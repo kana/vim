@@ -258,7 +258,7 @@ op_shift(oap, curs_top, amount)
 	    if (first_char != '#' || !preprocs_left())
 #endif
 	{
-	    shift_line(oap->op_type == OP_LSHIFT, p_sr, amount);
+	    shift_line(oap->op_type == OP_LSHIFT, p_sr, amount, FALSE);
 	}
 	++curwin->w_cursor.lnum;
     }
@@ -321,10 +321,11 @@ op_shift(oap, curs_top, amount)
  * leaves cursor on first blank in the line
  */
     void
-shift_line(left, round, amount)
+shift_line(left, round, amount, call_changed_bytes)
     int	left;
     int	round;
     int	amount;
+    int call_changed_bytes;	/* call changed_bytes() */
 {
     int		count;
     int		i, j;
@@ -363,10 +364,10 @@ shift_line(left, round, amount)
     /* Set new indent */
 #ifdef FEAT_VREPLACE
     if (State & VREPLACE_FLAG)
-	change_indent(INDENT_SET, count, FALSE, NUL);
+	change_indent(INDENT_SET, count, FALSE, NUL, call_changed_bytes);
     else
 #endif
-	(void)set_indent(count, SIN_CHANGED);
+	(void)set_indent(count, call_changed_bytes ? SIN_CHANGED : 0);
 }
 
 #if defined(FEAT_VISUALEXTRA) || defined(PROTO)
@@ -2468,9 +2469,10 @@ op_insert(oap, count1)
 
     edit(NUL, FALSE, (linenr_T)count1);
 
-    /* if user has moved off this line, we don't know what to do, so do
-     * nothing */
-    if (curwin->w_cursor.lnum != oap->start.lnum)
+    /* If user has moved off this line, we don't know what to do, so do
+     * nothing.
+     * Also don't repeat the insert when Insert mode ended with CTRL-C. */
+    if (curwin->w_cursor.lnum != oap->start.lnum || got_int)
 	return;
 
     if (oap->block_mode)
@@ -2601,8 +2603,9 @@ op_change(oap)
     /*
      * In Visual block mode, handle copying the new text to all lines of the
      * block.
+     * Don't repeat the insert when Insert mode ended with CTRL-C.
      */
-    if (oap->block_mode && oap->start.lnum != oap->end.lnum)
+    if (oap->block_mode && oap->start.lnum != oap->end.lnum && !got_int)
     {
 	/* Auto-indenting may have changed the indent.  If the cursor was past
 	 * the indent, exclude that indent change from the inserted text. */
