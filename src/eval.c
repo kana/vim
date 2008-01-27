@@ -14209,6 +14209,10 @@ searchpair_cmn(argvars, match_pos)
 	goto theend;
     }
 
+    /* Using 'r' implies 'W', otherwise it doesn't work. */
+    if (flags & SP_REPEAT)
+	p_ws = FALSE;
+
     /* Optional fifth argument: skip expression */
     if (argvars[3].v_type == VAR_UNKNOWN
 	    || argvars[4].v_type == VAR_UNKNOWN)
@@ -14364,6 +14368,9 @@ do_searchpair(spat, mpat, epat, dir, skip, flags, match_pos,
 		incl(&pos);
 	}
 	foundpos = pos;
+
+	/* clear the start flag to avoid getting stuck here */
+	options &= ~SEARCH_START;
 
 	/* If the skip pattern matches, ignore this match. */
 	if (*skip != NUL)
