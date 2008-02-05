@@ -708,8 +708,10 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 'qe'	options.txt	/*'qe'*
 'quote	motion.txt	/*'quote*
 'quoteescape'	options.txt	/*'quoteescape'*
+'rdt'	options.txt	/*'rdt'*
 'readonly'	options.txt	/*'readonly'*
 'redraw'	vi_diff.txt	/*'redraw'*
+'redrawtime'	options.txt	/*'redrawtime'*
 'remap'	options.txt	/*'remap'*
 'report'	options.txt	/*'report'*
 'restorescreen'	options.txt	/*'restorescreen'*
@@ -2165,6 +2167,7 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 :highlight-link	syntax.txt	/*:highlight-link*
 :highlight-normal	syntax.txt	/*:highlight-normal*
 :highlight-verbose	syntax.txt	/*:highlight-verbose*
+:his	cmdline.txt	/*:his*
 :history	cmdline.txt	/*:history*
 :history-indexing	cmdline.txt	/*:history-indexing*
 :i	insert.txt	/*:i*
@@ -5858,7 +5861,6 @@ highlight-stop	syntax.txt	/*highlight-stop*
 highlight-term	syntax.txt	/*highlight-term*
 highlightID()	eval.txt	/*highlightID()*
 highlight_exists()	eval.txt	/*highlight_exists()*
-his	cmdline.txt	/*his*
 hist-names	eval.txt	/*hist-names*
 histadd()	eval.txt	/*histadd()*
 histdel()	eval.txt	/*histdel()*
@@ -6258,6 +6260,8 @@ macvim-important	gui_mac.txt	/*macvim-important*
 macvim-menus	gui_mac.txt	/*macvim-menus*
 macvim-movement	gui_mac.txt	/*macvim-movement*
 macvim-options	gui_mac.txt	/*macvim-options*
+macvim-preferences	gui_mac.txt	/*macvim-preferences*
+macvim-prefs	gui_mac.txt	/*macvim-prefs*
 macvim-services	gui_mac.txt	/*macvim-services*
 macvim-shift-movement	gui_mac.txt	/*macvim-shift-movement*
 macvim-start	gui_mac.txt	/*macvim-start*
@@ -6681,6 +6685,7 @@ omni-sql-completion	sql.txt	/*omni-sql-completion*
 online-help	various.txt	/*online-help*
 opening-window	windows.txt	/*opening-window*
 operator	motion.txt	/*operator*
+operator-variable	eval.txt	/*operator-variable*
 option-backslash	options.txt	/*option-backslash*
 option-list	quickref.txt	/*option-list*
 option-summary	options.txt	/*option-summary*
@@ -7300,6 +7305,7 @@ synload-3	syntax.txt	/*synload-3*
 synload-4	syntax.txt	/*synload-4*
 synload-5	syntax.txt	/*synload-5*
 synload-6	syntax.txt	/*synload-6*
+synstack()	eval.txt	/*synstack()*
 syntax	syntax.txt	/*syntax*
 syntax-highlighting	syntax.txt	/*syntax-highlighting*
 syntax-loading	syntax.txt	/*syntax-loading*
@@ -7724,6 +7730,7 @@ v:lnum	eval.txt	/*v:lnum*
 v:mouse_col	eval.txt	/*v:mouse_col*
 v:mouse_lnum	eval.txt	/*v:mouse_lnum*
 v:mouse_win	eval.txt	/*v:mouse_win*
+v:operator	eval.txt	/*v:operator*
 v:prevcount	eval.txt	/*v:prevcount*
 v:profiling	eval.txt	/*v:profiling*
 v:progname	eval.txt	/*v:progname*
