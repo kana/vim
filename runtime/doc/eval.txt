@@ -1,4 +1,4 @@
-*eval.txt*      For Vim version 7.1.  Last change: 2008 Feb 20
+*eval.txt*      For Vim version 7.1.  Last change: 2008 Feb 23
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -258,13 +258,13 @@ variables.  Example: >
 <	0
 
 Thus comparing Lists is more strict than comparing numbers and strings.  You
-can compare simple values this way too by putting them in a string: >
+can compare simple values this way too by putting them in a list: >
 
 	:let a = 5
 	:let b = "5"
-	echo a == b
+	:echo a == b
 <	1 >
-	echo [a] == [b]
+	:echo [a] == [b]
 <	0
 
 
@@ -1891,12 +1891,15 @@ bufexists({expr})					*bufexists()*
 		exactly.  The name can be:
 		- Relative to the current directory.
 		- A full path.
-		- The name of a buffer with 'filetype' set to "nofile".
+		- The name of a buffer with 'buftype' set to "nofile".
 		- A URL name.
 		Unlisted buffers will be found.
 		Note that help files are listed by their short name in the
 		output of |:buffers|, but bufexists() requires using their
 		long name to be able to find them.
+		bufexists() may report a buffer exists, but to use the name
+		with a |:buffer| command you may need to use |expand()|.  Esp
+		for MS-Windows 8.3 names in the form "c:\DOCUME~1"
 		Use "bufexists(0)" to test for the existence of an alternate
 		file name.
 							*buffer_exists()*
@@ -2172,7 +2175,7 @@ copy({expr})	Make a copy of {expr}.  For Numbers and Strings this isn't
 		different from using {expr} directly.
 		When {expr} is a |List| a shallow copy is created.  This means
 		that the original |List| can be changed without changing the
-		copy, and vise versa.  But the items are identical, thus
+		copy, and vice versa.  But the items are identical, thus
 		changing an item changes the contents of both |Lists|.  Also
 		see |deepcopy()|.
 
@@ -2250,7 +2253,7 @@ deepcopy({expr}[, {noref}])				*deepcopy()* *E698*
 		different from using {expr} directly.
 		When {expr} is a |List| a full copy is created.  This means
 		that the original |List| can be changed without changing the
-		copy, and vise versa.  When an item is a |List|, a copy for it
+		copy, and vice versa.  When an item is a |List|, a copy for it
 		is made, recursively.  Thus changing an item in the copy does
 		not change the contents of the original |List|.
 		When {noref} is omitted or zero a contained |List| or
@@ -2567,7 +2570,7 @@ filereadable({file})					*filereadable()*
 filewritable({file})					*filewritable()*
 		The result is a Number, which is 1 when a file with the
 		name {file} exists, and can be written.  If {file} doesn't
-		exist, or is not writable, the result is 0.  If (file) is a
+		exist, or is not writable, the result is 0.  If {file} is a
 		directory, and we can write to it, the result is 2.
 
 
@@ -2628,7 +2631,7 @@ fnamemodify({fname}, {mods})				*fnamemodify()*
 			:echo fnamemodify("main.c", ":p:h")
 <		results in: >
 			/home/mool/vim/vim/src
-<		Note: Environment variables and "~" don't work in {fname}, use
+<		Note: Environment variables don't work in {fname}, use
 		|expand()| first then.
 
 foldclosed({lnum})					*foldclosed()*
@@ -3512,7 +3515,7 @@ line({expr})	The result is a Number, which is the line number of the file
 <							*last-position-jump*
 		This autocommand jumps to the last known position in a file
 		just after opening it, if the '" mark is set: >
-	:au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g'\"" | endif
+	:au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 line2byte({lnum})					*line2byte()*
 		Return the byte count from the start of the buffer for line
@@ -3727,7 +3730,7 @@ matcharg({nr})							*matcharg()*
 
 matchdelete({id})			       *matchdelete()* *E802* *E803*
 		Deletes a match with ID {id} previously defined by |matchadd()|
-		or one of the |:match| commands.  Returns 0 if succesfull,
+		or one of the |:match| commands.  Returns 0 if successful,
 		otherwise -1.  See example for |matchadd()|.  All matches can
 		be deleted in one operation by |clearmatches()|.
 
@@ -3761,7 +3764,7 @@ matchlist({expr}, {pat}[, {start}[, {count}]])			*matchlist()*
 		When there is no match an empty list is returned.
 
 matchstr({expr}, {pat}[, {start}[, {count}]])			*matchstr()*
-		Same as match(), but return the matched string.  Example: >
+		Same as |match()|, but return the matched string.  Example: >
 			:echo matchstr("testing", "ing")
 <		results in "ing".
 		When there is no match "" is returned.
@@ -3836,7 +3839,8 @@ nr2char({expr})						*nr2char()*
 
 							*getpid()*
 getpid()	Return a Number which is the process ID of the Vim process.
-		On Unix this is a unique number.  On MS-DOS it's always zero.
+		On Unix and MS-Windows this is a unique number, until Vim
+		exits.  On MS-DOS it's always zero.
 
 							*getpos()*
 getpos({expr})	Get the position for {expr}.  For possible values of {expr}
@@ -4340,9 +4344,11 @@ searchpair({start}, {middle}, {end} [, {flags} [, {skip}
 		{flags} 'b', 'c', 'n', 's', 'w' and 'W' are used like with
 		|search()|.  Additionally:
 		'r'	Repeat until no more matches found; will find the
-			outer pair
-		'm'	return number of Matches instead of line number with
+			outer pair.  Implies the 'W' flag.
+		'm'	Return number of matches instead of line number with
 			the match; will be > 1 when 'r' is used.
+		Note: it's nearly always a good idea to use the 'W' flag, to
+		avoid wrapping around the end of the file.
 
 		When a match for {start}, {middle} or {end} is found, the
 		{skip} expression is evaluated with the cursor positioned on
@@ -4474,15 +4480,15 @@ setcmdpos({pos})					*setcmdpos()*
 		Returns 0 when successful, 1 when not editing the command
 		line.
 
-setline({lnum}, {line})					*setline()*
-		Set line {lnum} of the current buffer to {line}.
+setline({lnum}, {text})					*setline()*
+		Set line {lnum} of the current buffer to {text}.
 		{lnum} is used like with |getline()|.
-		When {lnum} is just below the last line the {line} will be
+		When {lnum} is just below the last line the {text} will be
 		added as a new line.
 		If this succeeds, 0 is returned.  If this fails (most likely
 		because {lnum} is invalid) 1 is returned.  Example: >
 			:call setline(5, strftime("%c"))
-<		When {line} is a |List| then line {lnum} and following lines
+<		When {text} is a |List| then line {lnum} and following lines
 		will be set to the items in the list.  Example: >
 			:call setline(5, ['aaa', 'bbb', 'ccc'])
 <		This is equivalent to: >
@@ -4501,7 +4507,7 @@ setloclist({nr}, {list} [, {action}])			*setloclist()*
 
 setmatches({list})					*setmatches()*
 		Restores a list of matches saved by |getmatches()|.  Returns 0
-		if succesfull, otherwise -1.  All current matches are cleared
+		if successful, otherwise -1.  All current matches are cleared
 		before the list is restored.  See example for |getmatches()|.
 
 							*setpos()*
@@ -5200,6 +5206,8 @@ visualmode([expr])						*visualmode()*
 <		This enters the same Visual mode as before.  It is also useful
 		in scripts if you wish to act differently depending on the
 		Visual mode that was used.
+		If Visual mode is active, use |mode()| to get the Visual mode
+		(e.g., in a |:vmap|).
 
 		If an expression is supplied that results in a non-zero number
 		or a non-empty string, then the Visual mode will be cleared
@@ -5386,6 +5394,7 @@ gui			Compiled with GUI enabled.
 gui_athena		Compiled with Athena GUI.
 gui_gtk			Compiled with GTK+ GUI (any version).
 gui_gtk2		Compiled with GTK+ 2 GUI (gui_gtk is also defined).
+gui_gnome		Compiled with Gnome support (gui_gtk is also defined).
 gui_mac			Compiled with Macintosh GUI.
 gui_motif		Compiled with Motif GUI.
 gui_photon		Compiled with Photon GUI.
@@ -5600,7 +5609,9 @@ See |:verbose-cmd| for more information.
 			dictionary.  See |Dictionary-function|.
 
 			The last used search pattern and the redo command "."
-			will not be changed by the function.
+			will not be changed by the function.  This also
+			implies that the effect of |:nohlsearch| is undone
+			when the function returns.
 
 					*:endf* *:endfunction* *E126* *E193*
 :endf[unction]		The end of a function definition.  Must be on a line
@@ -5809,7 +5820,7 @@ function, the script will be sourced every time you try to call the function.
 And you will get an error message every time.
 
 Also note that if you have two script files, and one calls a function in the
-other and vise versa, before the used function is defined, it won't work.
+other and vice versa, before the used function is defined, it won't work.
 Avoid using the autoload functionality at the toplevel.
 
 Hint: If you distribute a bunch of scripts you can pack them together with the
@@ -5870,8 +5881,11 @@ This would call the function "my_func_whizz(parameter)".
 			{expr1}.  {var-name} must refer to a list and {idx}
 			must be a valid index in that list.  For nested list
 			the index can be repeated.
-			This cannot be used to add an item to a list.
-
+			This cannot be used to add an item to a |List|.
+			This cannot be used to set a byte in a String.  You
+			can do that like this: >
+				:let var = var[0:2] . 'X' . var[4:]
+<
 							*E711* *E719*
 :let {var-name}[{idx1}:{idx2}] = {expr1}		*E708* *E709* *E710*
 			Set a sequence of items in a |List| to the result of

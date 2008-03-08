@@ -1,7 +1,7 @@
 " Vim indent file
 " Language:		Ruby
 " Maintainer:		Nikolai Weibull <now at bitwi.se>
-" Info:			$Id: ruby.vim,v 1.9 2007/05/12 14:17:21 vimboss Exp $
+" Info:			$Id: ruby.vim,v 1.40 2007/03/20 13:54:25 dkearns Exp $
 " URL:			http://vim-ruby.rubyforge.org
 " Anon CVS:		See above site
 " Release Coordinator:	Doug Kearns <dougkearns@gmail.com>
@@ -370,4 +370,4 @@ endfunction
 let &cpo = s:cpo_save
 unlet s:cpo_save
 
-" vim:set sw=2 sts=2 ts=8 noet ff=unix:
+" vim:set sw=2 sts=2 ts=8 noet:

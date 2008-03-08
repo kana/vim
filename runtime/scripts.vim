@@ -1,7 +1,7 @@
 " Vim support file to detect file types in scripts
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last change:	2007 Apr 29
+" Last change:	2007 Dec 20
 
 " This file is called by an autocommand for every file that has just been
 " loaded into a buffer.  It checks if the type of file can be recognized by
@@ -233,6 +233,10 @@ else
     " XHTML (e.g.: PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN")
   elseif s:line1 =~ '\<DTD\s\+XHTML\s'
     set ft=xhtml
+
+    " PDF
+  elseif s:line1 =~ '^%PDF-'
+    set ft=pdf
 
     " XXD output
   elseif s:line1 =~ '^\x\{7}: \x\{2} \=\x\{2} \=\x\{2} \=\x\{2} '

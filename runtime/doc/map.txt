@@ -1,4 +1,4 @@
-*map.txt*       For Vim version 7.1.  Last change: 2007 May 11
+*map.txt*       For Vim version 7.1.  Last change: 2007 Nov 11
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -266,12 +266,13 @@ as a special key.
 
 
 1.3 MAPPING AND MODES					*:map-modes*
+			*mapmode-nvo* *mapmode-n* *mapmode-v* *mapmode-o*
 
 There are five sets of mappings
 - For Normal mode: When typing commands.
 - For Visual mode: When typing commands while the Visual area is highlighted.
 - For Operator-pending mode: When an operator is pending (after "d", "y", "c",
-  etc.).  Example: ":omap { w" makes "y{" work like "yw" and "d{" like "dw".
+  etc.).  See below: |omap-info|.
 - For Insert mode.  These are also used in Replace mode.
 - For Command-line mode: When entering a ":" or "/" command.
 
@@ -282,7 +283,6 @@ to type a count with a zero.
 						*map-overview* *map-modes*
 Overview of which map command works in which mode:
 
-			*mapmode-nvo* *mapmode-n* *mapmode-v* *mapmode-o*
     commands:				      modes: ~
 				       Normal  Visual+Select  Operator-pending ~
 :map   :noremap   :unmap   :mapclear	 yes	    yes		   yes
@@ -317,6 +317,19 @@ Normal/Visual/Operator-pending mode and for Insert/Command-line mode.
 Therefore the ":map" and ":map!" commands enter and display mappings for
 several modes.  In Vim you can use the ":nmap", ":vmap", ":omap", ":cmap" and
 ":imap" commands to enter mappings for each mode separately.
+
+							*omap-info*
+Operator-pending mappings can be used to define a movement command that can be
+used with any operator.  Simple example: ":omap { w" makes "y{" work like "yw"
+and "d{" like "dw".
+
+To ignore the starting cursor position and select different text, you can have
+the omap start Visual mode to select the text to be operated upon.  Example
+that operates on a function name in the current line: >
+	onoremap <silent> F :<C-U>normal! 0f(hviw<CR>
+The CTRL-U (<C-U>) is used to remove the range that Vim may insert.  The
+Normal mode commands find the first '(' character and select the first word
+before it.  That usually is the function name.
 
 To enter a mapping for Normal and Visual mode, but not Operator-pending mode,
 first define it for all three modes, then unmap it for Operator-pending mode:
@@ -1203,7 +1216,7 @@ Custom completion			*:command-completion-custom*
 					*E467* *E468*
 It is possible to define customized completion schemes via the "custom,{func}"
 or the "customlist,{func}" completion argument.  The {func} part should be a
-function with the following prototype >
+function with the following signature: >
 
 	:function {func}(ArgLead, CmdLine, CursorPos)
 

@@ -1,4 +1,4 @@
-*motion.txt*    For Vim version 7.1.  Last change: 2006 Dec 07
+*motion.txt*    For Vim version 7.1.  Last change: 2008 Feb 06
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -366,9 +366,11 @@ W			[count] WORDS forward.  |exclusive| motion.
 
 							*e*
 e			Forward to the end of word [count] |inclusive|.
+			Does not stop in an empty line.
 
 							*E*
 E			Forward to the end of WORD [count] |inclusive|.
+			Does not stop in an empty line.
 
 <S-Left>	or					*<S-Left>* *b*
 b			[count] words backward.  |exclusive| motion.
@@ -1173,13 +1175,15 @@ remembered.
 					cursor is on the # or no ([{
 					following)
 			For other items the matchit plugin can be used, see
-			|matchit-install|.
+			|matchit-install|.  This plugin also helps to skip
+			matches in comments.
 
 			When 'cpoptions' contains "M" |cpo-M| backslashes
 			before parens and braces are ignored.  Without "M" the
 			number of backslashes matters: an even number doesn't
 			match with an odd number.  Thus in "( \) )" and "\( (
 			\)" the first and last parenthesis match.
+
 			When the '%' character is not present in 'cpoptions'
 			|cpo-%|, parens and braces inside double quotes are
 			ignored, unless the number of parens/braces in a line
@@ -1188,8 +1192,13 @@ remembered.
 			are also ignored (parens and braces inside single
 			quotes).  Note that this works fine for C, but not for
 			Perl, where single quotes are used for strings.
-			No count is allowed ({count}% jumps to a line {count}
-			percentage down the file |N%|).  Using '%' on
+
+			Nothing special is done for matches in comments.  You
+			can either use the matchit plugin |matchit-install| or
+			put quotes around matches.
+
+			No count is allowed, {count}% jumps to a line {count}
+			percentage down the file |N%|.  Using '%' on
 			#if/#else/#endif makes the movement linewise.
 
 						*[(*
