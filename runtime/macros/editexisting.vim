@@ -1,6 +1,6 @@
 " Vim Plugin:	Edit the file with an existing Vim if possible
 " Maintainer:	Bram Moolenaar
-" Last Change:	2007 Mar 17
+" Last Change:	2007 Aug 12
 
 " This is a plugin, drop it in your (Unix) ~/.vim/plugin or (Win32)
 " $VIM/vimfiles/plugin directory.  Or make a symbolic link, so that you
@@ -13,6 +13,9 @@
 " 2. When a file is edited and a swap file exists for it, try finding that
 "    other Vim and bring it to the foreground.  Requires Vim 7, because it
 "    uses the SwapExists autocommand event.
+if v:version < 700
+  finish
+endif
 
 " Function that finds the Vim instance that is editing "filename" and brings
 " it to the foreground.

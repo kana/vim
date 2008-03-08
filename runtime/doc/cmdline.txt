@@ -482,7 +482,7 @@ argument.
 line.  If you want to use '|' in an argument, precede it with '\'.
 
 These commands see the '|' as their argument, and can therefore not be
-followed by another command:
+followed by another Vim command:
     :argdo
     :autocmd
     :bufdo

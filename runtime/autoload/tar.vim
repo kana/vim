@@ -1,21 +1,21 @@
 " tar.vim: Handles browsing tarfiles
 "            AUTOLOAD PORTION
-" Date:			Sep 29, 2006
-" Version:		11
+" Date:			Jan 07, 2008
+" Version:		13
 " Maintainer:	Charles E Campbell, Jr <NdrOchip@ScampbellPfamily.AbizM-NOSPAM>
 " License:		Vim License  (see vim's :help license)
 "
 "	Contains many ideas from Michael Toren's <tar.vim>
 "
-" Copyright:    Copyright (C) 2005 Charles E. Campbell, Jr. {{{1
+" Copyright:    Copyright (C) 2005-2008 Charles E. Campbell, Jr. {{{1
 "               Permission is hereby granted to use and distribute this code,
 "               with or without modifications, provided that this copyright
 "               notice is copied with it. Like anything else that's free,
-"               tarPlugin.vim is provided *as is* and comes with no warranty
-"               of any kind, either expressed or implied. By using this
-"               plugin, you agree that in no event will the copyright
-"               holder be liable for any damages resulting from the use
-"               of this software.
+"               tar.vim and tarPlugin.vim are provided *as is* and comes
+"               with no warranty of any kind, either expressed or implied.
+"               By using this plugin, you agree that in no event will the
+"               copyright holder be liable for any damages resulting from
+"               the use of this software.
 
 " ---------------------------------------------------------------------
 " Load Once: {{{1
@@ -24,7 +24,7 @@ set cpo&vim
 if &cp || exists("g:loaded_tar") || v:version < 700
  finish
 endif
-let g:loaded_tar= "v11"
+let g:loaded_tar= "v13"
 "call Decho("loading autoload/tar.vim")
 
 " ---------------------------------------------------------------------
@@ -42,7 +42,9 @@ if !exists("g:tar_writeoptions")
  let g:tar_writeoptions= "uf"
 endif
 if !exists("g:tar_shq")
- if has("unix")
+ if &shq != ""
+  let g:tar_shq= &shq
+ elseif has("unix")
   let g:tar_shq= "'"
  else
   let g:tar_shq= '"'
@@ -108,11 +110,13 @@ fun! tar#Browse(tarfile)
   endif
   let curlast= line("$")
   if tarfile =~# '\.\(gz\|tgz\)$'
-"   call Decho("exe silent r! gzip -d -c ".g:tar_shq.tarfile.g:tar_shq."| ".g:tar_cmd." -".g:tar_browseoptions." - ")
-   exe "silent r! gzip -d -c ".g:tar_shq.tarfile.g:tar_shq."| ".g:tar_cmd." -".g:tar_browseoptions." - "
+"   call Decho("exe silent r! gzip -d -c ".g:tar_shq.tarfile.g:tar_shq." | ".g:tar_cmd." -".g:tar_browseoptions." - ")
+   exe "silent r! gzip -d -c ".g:tar_shq.tarfile.g:tar_shq." | ".g:tar_cmd." -".g:tar_browseoptions." - "
+  elseif tarfile =~# '\.lrp'
+   exe "silent r! cat ".g:tar_shq.tarfile.g:tar_shq."|gzip -d -c -|".g:tar_cmd." -".g:tar_browseoptions." - "
   elseif tarfile =~# '\.bz2$'
-"   call Decho("exe silent r! bzip2 -d -c ".g:tar_shq.tarfile.g:tar_shq."| ".g:tar_cmd." -".g:tar_browseoptions." - ")
-   exe "silent r! bzip2 -d -c ".g:tar_shq.tarfile.g:tar_shq."| ".g:tar_cmd." -".g:tar_browseoptions." - "
+"   call Decho("exe silent r! bzip2 -d -c ".g:tar_shq.tarfile.g:tar_shq." | ".g:tar_cmd." -".g:tar_browseoptions." - ")
+   exe "silent r! bzip2 -d -c ".g:tar_shq.tarfile.g:tar_shq." | ".g:tar_cmd." -".g:tar_browseoptions." - "
   else
 "   call Decho("exe silent r! ".g:tar_cmd." -".g:tar_browseoptions." ".g:tar_shq.tarfile.g:tar_shq)
    exe "silent r! ".g:tar_cmd." -".g:tar_browseoptions." ".g:tar_shq.tarfile.g:tar_shq
@@ -170,7 +174,9 @@ fun! s:TarBrowseSelect()
   endif
 
   new
-  wincmd _
+  if !exists("g:tar_nomax") || g:tar_nomax == 0
+   wincmd _
+  endif
   let s:tblfile_{winnr()}= curfile
   call tar#Read("tarfile:".tarfile.':'.fname,1)
   filetype detect
@@ -195,11 +201,14 @@ fun! tar#Read(fname,mode)
 "  call Decho("fname<".fname.">")
 
   if tarfile =~# '\.\(gz\|tgz\)$'
-"   call Decho("exe silent r! gzip -d -c ".g:tar_shq.tarfile.g:tar_shq."| ".g:tar_cmd." -OPxf - '".fname."'")
-   exe "silent r! gzip -d -c ".g:tar_shq.tarfile.g:tar_shq."| ".g:tar_cmd." -".g:tar_readoptions." - '".fname."'"
+"   call Decho("exe silent r! gzip -d -c ".g:tar_shq.tarfile.g:tar_shq."| ".g:tar_cmd." -".g:tar_readoptions." - ".g:tar_shq.fname.g:tar_shq)
+   exe "silent r! gzip -d -c ".g:tar_shq.tarfile.g:tar_shq."| ".g:tar_cmd." -".g:tar_readoptions." - ".g:tar_shq.fname.g:tar_shq
+  elseif tarfile =~# '\.lrp$'
+"   call Decho("exe silent r! cat ".g:tar_shq.tarfile.g:tar_shq." | gzip -d -c - | ".g:tar_cmd." -".g:tar_readoptions." - ".g:tar_shq.fname.g:tar_shq)
+   exe "silent r! cat ".g:tar_shq.tarfile.g:tar_shq." | gzip -d -c - | ".g:tar_cmd." -".g:tar_readoptions." - ".g:tar_shq.fname.g:tar_shq
   elseif tarfile =~# '\.bz2$'
-"   call Decho("exe silent r! bzip2 -d -c ".g:tar_shq.tarfile.g:tar_shq."| ".g:tar_cmd." -".g:tar_readoptions." - '".fname."'")
-   exe "silent r! bzip2 -d -c ".g:tar_shq.tarfile.g:tar_shq."| ".g:tar_cmd." -".g:tar_readoptions." - '".fname."'"
+"   call Decho("exe silent r! bzip2 -d -c ".g:tar_shq.tarfile.g:tar_shq."| ".g:tar_cmd." -".g:tar_readoptions." - ".g:tar_shq.fname.g:tar_shq)
+   exe "silent r! bzip2 -d -c ".g:tar_shq.tarfile.g:tar_shq."| ".g:tar_cmd." -".g:tar_readoptions." - ".g:tar_shq.fname.g:tar_shq
   else
 "   call Decho("exe silent r! ".g:tar_cmd." -".g:tar_readoptions." ".g:tar_shq.tarfile.g:tar_shq." ".g:tar_shq.fname.g:tar_shq)
    exe "silent r! ".g:tar_cmd." -".g:tar_readoptions." ".g:tar_shq.tarfile.g:tar_shq." ".g:tar_shq.fname.g:tar_shq
@@ -387,4 +396,4 @@ endfun
 " Modelines And Restoration: {{{1
 let &cpo= s:keepcpo
 unlet s:keepcpo
-"  vim:ts=8 fdm=marker
+" vim:ts=8 fdm=marker

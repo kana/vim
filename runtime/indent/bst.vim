@@ -1,7 +1,7 @@
 " Vim indent file
 " Language:	bst
 " Author:	Tim Pope <vimNOSPAM@tpope.info>
-" $Id: bst.vim,v 1.4 2007/05/12 15:03:23 vimboss Exp $
+" $Id: bst.vim,v 1.1 2007/05/05 18:11:12 vimboss Exp $
 
 if exists("b:did_indent")
     finish

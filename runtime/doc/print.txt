@@ -1,4 +1,4 @@
-*print.txt*     For Vim version 7.1.  Last change: 2007 Apr 22
+*print.txt*     For Vim version 7.1.  Last change: 2007 Sep 10
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -193,7 +193,8 @@ the font.  When omitted, the point size is 10.
 This defines the format of the header produced in |:hardcopy| output.  The
 option is defined in the same way as the 'statusline' option.  If Vim has not
 been compiled with the |+statusline| feature, this option has no effect and a
-simple default header is used, which shows the page number.
+simple default header is used, which shows the page number.  The same simple
+header is used when this option is empty.
 
 							*pmbcs-option*
 'printmbcharset' 'pmbcs'  string (default "")

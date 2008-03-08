@@ -1,4 +1,4 @@
-*editing.txt*   For Vim version 7.1.  Last change: 2007 May 11
+*editing.txt*   For Vim version 7.1.  Last change: 2008 Jan 09
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -1478,7 +1478,9 @@ There are three different types of searching:
    supported by your operating system.  '*' and '**' are handled inside Vim, so
    they work on all operating systems.
 
-   The usage of '*' is quite simple: It matches 0 or more characters.
+   The usage of '*' is quite simple: It matches 0 or more characters.  In a
+   search pattern this would be ".*".  Note that the "." is not used for file
+   searching.
 
    '**' is more sophisticated:
       - It ONLY matches directories.
@@ -1498,7 +1500,7 @@ There are three different types of searching:
 	levels.
 	The allowed number range is 0 ('**0' is removed) to 255.
 	If the given number is smaller than 0 it defaults to 30, if it's
-	bigger than 255 it defaults to 255.
+	bigger than 255 then 255 is used.
       - '**' can only be at the end of the path or be followed by a path
 	separator or by a number and a path separator.
 

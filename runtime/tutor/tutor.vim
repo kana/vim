@@ -1,6 +1,6 @@
 " Vim tutor support file
 " Author: Eduardo F. Amatria <eferna1@platea.pntic.mec.es>
-" Last Change:	2007 Mar 01
+" Last Change:	2008 Jan 18
 
 " This small source file is used for detecting if a translation of the
 " tutor file exist, i.e., a tutor.xx file, where xx is the language.
@@ -136,12 +136,25 @@ if s:ext =~? '\.ru'
   endif
 endif
 
-" The Hungarian tutor is available in two encodings, guess which one to use.
+" The Hungarian tutor is available in three encodings, guess which one to use.
 if s:ext =~? '\.hu'
   if &enc == 'utf-8'
     let s:ext = '.hu.utf-8'
+  elseif &enc =~ 1250
+    let s:ext = ".hu.cp1250"
   elseif &enc =~ 'iso-8859-2'
     let s:ext = '.hu'
+  endif
+endif
+
+" The Croatian tutor is available in three encodings, guess which one to use.
+if s:ext =~? '\.hr'
+  if &enc == 'utf-8'
+    let s:ext = '.hr.utf-8'
+  elseif &enc =~ 1250
+    let s:ext = ".hr.cp1250"
+  elseif &enc =~ 'iso-8859-2'
+    let s:ext = '.hr'
   endif
 endif
 

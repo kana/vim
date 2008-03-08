@@ -1,7 +1,7 @@
 " Vim indent file
 " Language:		eRuby
 " Maintainer:		Tim Pope <vimNOSPAM@tpope.info>
-" Info:			$Id: eruby.vim,v 1.8 2007/05/12 13:38:20 vimboss Exp $
+" Info:			$Id: eruby.vim,v 1.9 2007/04/16 17:03:36 tpope Exp $
 " URL:			http://vim-ruby.rubyforge.org
 " Anon CVS:		See above site
 " Release Coordinator:	Doug Kearns <dougkearns@gmail.com>
@@ -43,7 +43,7 @@ endif
 function! GetErubyIndent()
   let vcol = col('.')
   call cursor(v:lnum,1)
-  let inruby = searchpair('<%','','%>')
+  let inruby = searchpair('<%','','%>','W')
   call cursor(v:lnum,vcol)
   if inruby && getline(v:lnum) !~ '^<%'
     let ind = GetRubyIndent()
@@ -70,4 +70,4 @@ function! GetErubyIndent()
   return ind
 endfunction
 
-" vim:set sw=2 sts=2 ts=8 noet ff=unix:
+" vim:set sw=2 sts=2 ts=8 noet:

@@ -3,8 +3,8 @@
 " Maintainer:		Maurizio Tranchero <maurizio.tranchero@polito.it> - <maurizio.tranchero@gmail.com>
 " Credits:			Luca Necchi	<luca.necchi@polito.it>
 " First Release:	Tue May 17 23:49:39 CEST 2005
-" Last Change:		Sat Apr 22 14:56:41 CEST 2006
-" Version:			0.5
+" Last Change:		Wed Jun  6 22:59:14 CEST 2007
+" Version:			0.7
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded
@@ -43,20 +43,26 @@ syn keyword esterelStatement	relation
 syn keyword esterelFunctions	function procedure task
 syn keyword esterelSysCall		call trap exit exec
 " Esterel Types
-syn keyword esterelType integer float bolean
+syn keyword esterelType 		integer float bolean
 " Esterel Comment
-syn match esterelComment	"%.*$"
+syn match esterelComment		"%.*$"
 " Operators and special characters
-syn match esterelSpecial	":"
-syn match esterelSpecial	"<="
-syn match esterelSpecial	">="
-syn match esterelSpecial	";"
-syn match esterelOperator	"\["
-syn match esterelOperator	"\]"
-syn match esterelOperator	":="
-syn match esterelStatement	"\<\(if\|else\)\>"
-syn match esterelNone		"\<else\s\+if\>$"
-syn match esterelNone		"\<else\s\+if\>\s"
+syn match esterelSpecial		":"
+syn match esterelSpecial		"<="
+syn match esterelSpecial		">="
+syn match esterelSpecial		"+"
+syn match esterelSpecial		"-"
+syn match esterelSpecial		"="
+syn match esterelSpecial		";"
+syn match esterelSpecial		"/"
+syn match esterelSpecial		"?"
+syn match esterelOperator		"\["
+syn match esterelOperator		"\]"
+syn match esterelOperator		":="
+syn match esterelOperator		"||"
+syn match esterelStatement		"\<\(if\|else\)\>"
+syn match esterelNone			"\<else\s\+if\>$"
+syn match esterelNone			"\<else\s\+if\>\s"
 
 " Class Linking
 if version >= 508 || !exists("did_esterel_syntax_inits")
