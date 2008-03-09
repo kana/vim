@@ -1,11 +1,8 @@
-*hacks.txt*   For Vim version 7.1.  Last change: 2008 Mar 09
+*hacks.txt*	Notes on hacks in this version of Vim.
+Copyright (C) 2008 kana <http://nicht.s8.xrea.com>
 
-
-		  VIM REFERENCE MANUAL    by kana <http://nicht.s8.xrea.com/>
-
-
-							*hacks*
 This document explains what hacks are included in this version of Vim.
+All changes are licensed under the same terms of Vim.  See |license|.
 
 ==============================================================================
 INDEX OF HACKS						*hacks-index*
