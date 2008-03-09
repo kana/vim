@@ -8954,7 +8954,8 @@ apply_autocmds_group(event, fname, fname_io, force, group, buf, eap)
 		|| event == EVENT_REMOTEREPLY
 		|| event == EVENT_SPELLFILEMISSING
 		|| event == EVENT_QUICKFIXCMDPRE
-		|| event == EVENT_QUICKFIXCMDPOST)
+		|| event == EVENT_QUICKFIXCMDPOST
+		|| event == EVENT_NCMDUNDEFINED)
 	    fname = vim_strsave(fname);
 	else
 	    fname = FullName_save(fname, FALSE);
