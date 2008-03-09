@@ -16,6 +16,9 @@ Fix behavior 'foldopen' on search	     *hacks-bugfix-foldopen-on-search*
 	annoys some people who love to input <Enter> with other key such as
 	Semicolon key.  Fix this behavior, so Vim doesn't check on {pattern}.
 
+|gettabvar()|/|settabvar()|				*hacks-tabvar-func*
+	Functions to get/set tabpage-local variables.
+
 
 
 
