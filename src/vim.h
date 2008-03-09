@@ -1180,6 +1180,7 @@ enum auto_event
     EVENT_CURSORHOLD,		/* cursor in same position for a while */
     EVENT_CURSORHOLDI,		/* idem, in Insert mode */
     EVENT_FUNCUNDEFINED,	/* if calling a function which doesn't exist */
+    EVENT_NCMDUNDEFINED,	/* if Normal mode cmd for a key is not found */
     EVENT_REMOTEREPLY,		/* upon string reception from a remote vim */
     EVENT_SWAPEXISTS,		/* found existing swap file */
     EVENT_SOURCEPRE,		/* before sourcing a Vim script */
