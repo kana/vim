@@ -277,6 +277,7 @@ Name			triggered by ~
 |ShellFilterPost|	after filtering with a shell command
 
 |FuncUndefined|		a user function is used but it isn't defined
+|NCmdUndefined|		a typed key is not mapped to any Normal mode command
 |SpellFileMissing|	a spell file is used but it can't be found
 |SourcePre|		before sourcing a Vim script
 |SourceCmd|		before sourcing a Vim script |Cmd-event|
@@ -674,6 +675,15 @@ MenuPopup			Just before showing the popup menu (under the
 					o	Operator-pending
 					i	Insert
 					c	Command line
+							*NCmdUndefined*
+NCmdUndefined			When a key is typed but it's not mapped to any
+				Normal mode command.  The pattern is matched
+				against the name of the typed key which is
+				represented as a string with a single
+				character.  Both <amatch> and <afile> are set
+				to the name of the typed key.  Useful for
+				shifting to Insert mode automatically when
+				a multibyte character is typed in Normal mode.
 							*QuickFixCmdPre*
 QuickFixCmdPre			Before a quickfix command is run (|:make|,
 				|:lmake|, |:grep|, |:lgrep|, |:grepadd|,

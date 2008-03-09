@@ -7,6 +7,10 @@ All changes are licensed under the same terms of Vim.  See |license|.
 ==============================================================================
 INDEX OF HACKS						*hacks-index*
 
+|NCmdUndefined|						*hacks-ncmdundefined*
+	Autocommand event for typeing a key which is not mapped to any Normal
+	mode command.
+
 
 
 
