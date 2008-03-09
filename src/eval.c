@@ -569,6 +569,7 @@ static void f_getpos __ARGS((typval_T *argvars, typval_T *rettv));
 static void f_getqflist __ARGS((typval_T *argvars, typval_T *rettv));
 static void f_getreg __ARGS((typval_T *argvars, typval_T *rettv));
 static void f_getregtype __ARGS((typval_T *argvars, typval_T *rettv));
+static void f_gettabvar __ARGS((typval_T *argvars, typval_T *rettv));
 static void f_gettabwinvar __ARGS((typval_T *argvars, typval_T *rettv));
 static void f_getwinposx __ARGS((typval_T *argvars, typval_T *rettv));
 static void f_getwinposy __ARGS((typval_T *argvars, typval_T *rettv));
@@ -669,6 +670,7 @@ static void f_setmatches __ARGS((typval_T *argvars, typval_T *rettv));
 static void f_setpos __ARGS((typval_T *argvars, typval_T *rettv));
 static void f_setqflist __ARGS((typval_T *argvars, typval_T *rettv));
 static void f_setreg __ARGS((typval_T *argvars, typval_T *rettv));
+static void f_settabvar __ARGS((typval_T *argvars, typval_T *rettv));
 static void f_settabwinvar __ARGS((typval_T *argvars, typval_T *rettv));
 static void f_setwinvar __ARGS((typval_T *argvars, typval_T *rettv));
 static void f_shellescape __ARGS((typval_T *argvars, typval_T *rettv));
@@ -7637,6 +7639,7 @@ static struct fst
     {"getqflist",	0, 0, f_getqflist},
     {"getreg",		0, 2, f_getreg},
     {"getregtype",	0, 1, f_getregtype},
+    {"gettabvar",	2, 2, f_gettabvar},
     {"gettabwinvar",	3, 3, f_gettabwinvar},
     {"getwinposx",	0, 0, f_getwinposx},
     {"getwinposy",	0, 0, f_getwinposy},
@@ -7739,6 +7742,7 @@ static struct fst
     {"setpos",		2, 2, f_setpos},
     {"setqflist",	1, 2, f_setqflist},
     {"setreg",		2, 3, f_setreg},
+    {"settabvar",	3, 3, f_settabvar},
     {"settabwinvar",	4, 4, f_settabwinvar},
     {"setwinvar",	3, 3, f_setwinvar},
     {"shellescape",	1, 2, f_shellescape},
@@ -11184,6 +11188,66 @@ f_getregtype(argvars, rettv)
     }
     rettv->v_type = VAR_STRING;
     rettv->vval.v_string = vim_strsave(buf);
+}
+
+/*
+ * "gettabvar()" function
+ */
+    static void
+f_gettabvar(argvars, rettv)
+    typval_T	*argvars;
+    typval_T	*rettv;
+{
+    tabpage_T	*tp;
+    char_u	*varname;
+    dictitem_T	*v;
+    tabpage_T	*save_curtab;
+    char_u	*save_p_ei;
+
+    rettv->v_type = VAR_STRING;
+    rettv->vval.v_string = NULL;
+
+    tp = find_tabpage((int)get_tv_number_chk(&argvars[0], NULL));
+    varname = get_tv_string_chk(&argvars[1]);
+
+    ++emsg_off;
+
+    if (tp != NULL && varname != NULL)
+    {
+	/* set 'eventignore' for all events to avoid side effects. */
+	save_p_ei = vim_strsave(p_ei);
+	set_string_option_direct((char_u *)"ei", -1,
+				 (char_u *)"all", OPT_FREE, SID_NONE);
+
+	save_curtab = curtab;
+	goto_tabpage_tp(tp);
+
+	if (*varname == NUL)
+	    /* let gettabvar({tabnr}, "") return the "t:" dictionary.  The
+	     * scope prefix before the NUL byte is required by
+	     * find_var_in_ht(). */
+	    varname = (char_u *)"t:" + 2;
+	/* look up the variable */
+	v = find_var_in_ht(&tp->tp_vars.dv_hashtab, varname, FALSE);
+	if (v != NULL)
+	    copy_tv(&v->di_tv, rettv);
+
+	goto_tabpage_tp(save_curtab);
+	if (curtab == save_curtab) {
+	    /* fake the flags to avoid flickering. */
+	    redraw_all_later(VALID);
+	    must_redraw = VALID;
+	}
+
+	/* restore 'eventignore' with the previous value. */
+	if (save_p_ei != NULL) {
+	    set_string_option_direct((char_u *)"ei", -1,
+				     save_p_ei, OPT_FREE, SID_NONE);
+	    free_string_option(save_p_ei);
+	}
+    }
+
+    --emsg_off;
 }
 
 /*
@@ -15644,6 +15708,65 @@ f_setreg(argvars, rettv)
 	write_reg_contents_ex(regname, strval, -1,
 						append, yank_type, block_len);
     rettv->vval.v_number = 0;
+}
+
+/*
+ * "settabvar()" function
+ */
+    static void
+f_settabvar(argvars, rettv)
+    typval_T	*argvars;
+    typval_T	*rettv;
+{
+    tabpage_T	*tp;
+    char_u	*varname;
+    char_u	*tabvarname;
+    typval_T	*varp;
+    tabpage_T	*save_curtab;
+    char_u	*save_p_ei;
+
+    rettv->vval.v_number = 0;
+
+    if (check_restricted() || check_secure())
+	return;
+
+    tp = find_tabpage((int)get_tv_number_chk(&argvars[0], NULL));
+    varname = get_tv_string_chk(&argvars[1]);
+    varp = &argvars[2];
+
+    if (tp != NULL && varname != NULL && varp != NULL)
+    {
+	/* set 'eventignore' for all events to avoid side effects. */
+	save_p_ei = vim_strsave(p_ei);
+	set_string_option_direct((char_u *)"ei", -1,
+				 (char_u *)"all", OPT_FREE, SID_NONE);
+
+	save_curtab = curtab;
+	goto_tabpage_tp(tp);
+
+	tabvarname = alloc((unsigned)STRLEN(varname) + 3);
+	if (tabvarname != NULL)
+	{
+	    STRCPY(tabvarname, "t:");
+	    STRCPY(tabvarname + 2, varname);
+	    set_var(tabvarname, varp, TRUE);
+	    vim_free(tabvarname);
+	}
+
+	goto_tabpage_tp(save_curtab);
+	if (curtab == save_curtab) {
+	    /* fake the flags to avoid flickering. */
+	    redraw_all_later(VALID);
+	    must_redraw = VALID;
+	}
+
+	/* restore 'eventignore' with the previous value. */
+	if (save_p_ei != NULL) {
+	    set_string_option_direct((char_u *)"ei", -1,
+				     save_p_ei, OPT_FREE, SID_NONE);
+	    free_string_option(save_p_ei);
+	}
+    }
 }
 
 /*
