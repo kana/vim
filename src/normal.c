@@ -841,8 +841,11 @@ getcount:
     idx = find_command(ca.cmdchar);
     if (idx < 0)
     {
-	/* Not a known command: beep. */
-	clearopbeep(oap);
+	char_u KEY[] = {K_SPECIAL,
+	                K_SECOND(K_NCMDUNDEFINED),
+	                K_THIRD(K_NCMDUNDEFINED),
+	                '\0'};
+	ins_typebuf(KEY, REMAP_NONE, 0, TRUE, FALSE);
 	goto normal_end;
     }
 
@@ -9311,7 +9314,9 @@ nv_ncmdundefined(cap)
     cmdarg_T	*cap;
 {
     /* FIXME: proper values for fname and fname_io. */
-    apply_autocmds(EVENT_NCMDUNDEFINED, NULL, NULL, FALSE, curbuf);
-    cap->retval |= CA_COMMAND_BUSY;	/* don't call edit() now */
+    if (apply_autocmds(EVENT_NCMDUNDEFINED, NULL, NULL, FALSE, curbuf))
+	cap->retval |= CA_COMMAND_BUSY;  /* don't call edit() now */
+    else
+	clearopbeep(cap->oap);  /* Not a known command: beep. */
 }
 #endif
