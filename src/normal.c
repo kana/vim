@@ -181,6 +181,7 @@ static void	nv_drop __ARGS((cmdarg_T *cap));
 #endif
 #ifdef FEAT_AUTOCMD
 static void	nv_cursorhold __ARGS((cmdarg_T *cap));
+static void	nv_ncmdundefined __ARGS((cmdarg_T *cap));
 #endif
 
 static char *e_noident = N_("E349: No identifier under cursor");
@@ -447,6 +448,7 @@ static const struct nv_cmd
 #endif
 #ifdef FEAT_AUTOCMD
     {K_CURSORHOLD, nv_cursorhold, NV_KEEPREG,		0},
+    {K_NCMDUNDEFINED, nv_ncmdundefined, 0,		0},
 #endif
 };
 
@@ -3794,7 +3796,7 @@ add_to_showcmd(c)
 	K_RIGHTMOUSE, K_RIGHTDRAG, K_RIGHTRELEASE,
 	K_MOUSEDOWN, K_MOUSEUP,
 	K_X1MOUSE, K_X1DRAG, K_X1RELEASE, K_X2MOUSE, K_X2DRAG, K_X2RELEASE,
-	K_CURSORHOLD,
+	K_CURSORHOLD, K_NCMDUNDEFINED,
 	0
     };
 #endif
@@ -9281,6 +9283,20 @@ nv_cursorhold(cap)
 {
     apply_autocmds(EVENT_CURSORHOLD, NULL, NULL, FALSE, curbuf);
     did_cursorhold = TRUE;
+    cap->retval |= CA_COMMAND_BUSY;	/* don't call edit() now */
+}
+/*
+ * Trigger NCmdUndefined event.
+ * When a key is typed but it's not mapped to any Normal mode command,
+ * K_NCMDUNDEFINED is put in the input buffer.
+ */
+/*ARGSUSED*/
+    static void
+nv_ncmdundefined(cap)
+    cmdarg_T	*cap;
+{
+    /* FIXME: proper values for fname and fname_io. */
+    apply_autocmds(EVENT_NCMDUNDEFINED, NULL, NULL, FALSE, curbuf);
     cap->retval |= CA_COMMAND_BUSY;	/* don't call edit() now */
 }
 #endif
