@@ -182,6 +182,7 @@ static void	nv_drop __ARGS((cmdarg_T *cap));
 #ifdef FEAT_AUTOCMD
 static void	nv_cursorhold __ARGS((cmdarg_T *cap));
 static void	nv_ncmdundefined __ARGS((cmdarg_T *cap));
+static int	last_undefined_ncmdchar = '?';
 #endif
 
 static char *e_noident = N_("E349: No identifier under cursor");
@@ -846,6 +847,7 @@ getcount:
 	                K_THIRD(K_NCMDUNDEFINED),
 	                '\0'};
 	ins_typebuf(KEY, REMAP_NONE, 0, TRUE, FALSE);
+	last_undefined_ncmdchar = c;
 	goto normal_end;
     }
 
@@ -9313,8 +9315,19 @@ nv_cursorhold(cap)
 nv_ncmdundefined(cap)
     cmdarg_T	*cap;
 {
-    /* FIXME: proper values for fname and fname_io. */
-    if (apply_autocmds(EVENT_NCMDUNDEFINED, NULL, NULL, FALSE, curbuf))
+    char_u key[NUMBUFLEN];
+
+#ifdef FEAT_MBYTE
+    if (has_mbyte)
+	key[(*mb_char2bytes)(last_undefined_ncmdchar, key)] = NUL;
+    else
+#endif
+    {
+	key[0] = last_undefined_ncmdchar;
+	key[1] = NUL;
+    }
+
+    if (apply_autocmds(EVENT_NCMDUNDEFINED, key, key, FALSE, curbuf))
 	cap->retval |= CA_COMMAND_BUSY;  /* don't call edit() now */
     else
 	clearopbeep(cap->oap);  /* Not a known command: beep. */
