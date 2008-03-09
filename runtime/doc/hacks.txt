@@ -32,6 +32,10 @@ Auto setting 'paste'					*hacks-autopaste*
 <
 	Reference: http://d.hatena.ne.jp/parasporospa/20071129/p1
 
+|NCmdUndefined|						*hacks-ncmdundefined*
+	Autocommand event for typeing a key which is not mapped to any Normal
+	mode command.
+
 
 
 
