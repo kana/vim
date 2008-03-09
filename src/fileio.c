@@ -7372,6 +7372,7 @@ static struct event_name
     {"InsertEnter",	EVENT_INSERTENTER},
     {"InsertLeave",	EVENT_INSERTLEAVE},
     {"MenuPopup",	EVENT_MENUPOPUP},
+    {"NCmdUndefined",	EVENT_NCMDUNDEFINED},
     {"QuickFixCmdPost",	EVENT_QUICKFIXCMDPOST},
     {"QuickFixCmdPre",	EVENT_QUICKFIXCMDPRE},
     {"RemoteReply",	EVENT_REMOTEREPLY},
