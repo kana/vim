@@ -33,6 +33,7 @@ DOCS = \
 	gui_w16.txt \
 	gui_w32.txt \
 	gui_x11.txt \
+	hacks.txt \
 	hangulin.txt \
 	hebrew.txt \
 	help.txt \
