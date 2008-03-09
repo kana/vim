@@ -1,0 +1,26 @@
+*hacks.txt*   For Vim version 7.1.  Last change: 2008 Mar 09
+
+
+		  VIM REFERENCE MANUAL    by kana <http://nicht.s8.xrea.com/>
+
+
+							*hacks*
+This document explains what hacks are included in this version of Vim.
+
+==============================================================================
+INDEX OF HACKS						*hacks-index*
+
+
+
+
+==============================================================================
+MISC. INFORMATION					*hacks-misc-info*
+
+Base Source Code					*hacks-base*
+
+All hacks are based on <http://vim.svn.sourceforge.net/svnroot/vim/trunk@931>.
+
+
+
+
+ vim:tw=78:sw=4:ts=8:ft=help:norl:
