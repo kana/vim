@@ -19,6 +19,19 @@ Fix behavior 'foldopen' on search	     *hacks-bugfix-foldopen-on-search*
 |gettabvar()|/|settabvar()|				*hacks-tabvar-func*
 	Functions to get/set tabpage-local variables.
 
+Auto setting 'paste'					*hacks-autopaste*
+	When input text seems to be pasted, set 'paste' automatically.
+	The conditions are:
+	1) the length of input text is greater than 10 bytes, and
+	2) input text contains at least 1 carriage return ("\r").
+
+	Note that this hack doesn't unset 'paste' automatically.  So you have
+	to add the following setting in your |vimrc|:
+>
+		autocmd InsertLeave *  set nopaste
+<
+	Reference: http://d.hatena.ne.jp/parasporospa/20071129/p1
+
 
 
 

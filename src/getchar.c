@@ -2968,6 +2968,10 @@ inchar(buf, maxlen, wait_time, tb_change_cnt)
 
     if (typebuf_changed(tb_change_cnt))
 	return 0;
+    if (10 < len && memchr(buf, '\r', len)) {
+	do_cmdline_cmd("set paste");
+	showmode();
+    }
 
     return fix_input_buffer(buf, len, script_char >= 0);
 }
