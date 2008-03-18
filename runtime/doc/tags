@@ -246,6 +246,8 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 'ft'	options.txt	/*'ft'*
 'fu'	options.txt	/*'fu'*
 'fullscreen'	options.txt	/*'fullscreen'*
+'fuopt'	options.txt	/*'fuopt'*
+'fuoptions'	options.txt	/*'fuoptions'*
 'gcr'	options.txt	/*'gcr'*
 'gd'	options.txt	/*'gd'*
 'gdefault'	options.txt	/*'gdefault'*
