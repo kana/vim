@@ -4974,7 +4974,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	|autocmd-osfiletypes|
 
 						*'paragraphs'* *'para'*
-'paragraphs' 'para'	string	(default "IPLPPPQPP LIpplpipbp")
+'paragraphs' 'para'	string	(default "IPLPPPQPP TPHPLIPpLpItpplpipbp")
 			global
 	Specifies the nroff macros that separate paragraphs.  These are pairs
 	of two letters (see |object-motions|).
