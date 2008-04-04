@@ -9,7 +9,8 @@ all: tutor.ja.sjis tutor.ja.euc \
 	tutor.ko.euc \
 	tutor.ru tutor.ru.cp1251 \
 	tutor.gr tutor.gr.cp737 \
-	tutor.hu
+	tutor.hu tutor.hu.cp1250 \
+	tutor.hr tutor.hr.cp1250
 
 tutor.ja.sjis: tutor.ja.utf-8
 	nkf -WXs tutor.ja.utf-8 > tutor.ja.sjis
@@ -34,3 +35,12 @@ tutor.gr.cp737: tutor.gr.utf-8
 
 tutor.hu: tutor.hu.utf-8
 	iconv -f UTF-8 -t ISO-8859-2 tutor.hu.utf-8 > tutor.hu
+
+tutor.hu.cp1250: tutor.hu.utf-8
+	iconv -f UTF-8 -t cp1250 tutor.hu.utf-8 > tutor.hu.cp1250
+
+tutor.hr: tutor.hr.utf-8
+	iconv -f UTF-8 -t ISO-8859-2 tutor.hr.utf-8 > tutor.hr
+
+tutor.hr.cp1250: tutor.hr.utf-8
+	iconv -f UTF-8 -t cp1250 tutor.hr.utf-8 > tutor.hr.cp1250

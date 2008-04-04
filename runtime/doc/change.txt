@@ -1,4 +1,4 @@
-*change.txt*    For Vim version 7.1.  Last change: 2007 Jan 07
+*change.txt*    For Vim version 7.1.  Last change: 2008 Jan 16
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -345,6 +345,10 @@ g?{motion}		Rot13 encode {motion} text. {not in Vi}
 g?g?							*g?g?* *g??*
 g??			Rot13 encode current line. {not in Vi}.
 
+To turn one line into title caps, make every first letter of a word
+uppercase: >
+	:s/\v<(.)(\w*)/\u\1\L\2/g
+
 
 Adding and subtracting ~
 							*CTRL-A*
@@ -474,7 +478,7 @@ For example: >
 
 A filter is a program that accepts text at standard input, changes it in some
 way, and sends it to standard output.  You can use the commands below to send
-some text through a filter, so that it is replace by the filter output.
+some text through a filter, so that it is replaced by the filter output.
 Examples of filters are "sort", which sorts lines alphabetically, and
 "indent", which formats C program files (you need a version of indent that
 works like a filter; not all versions do).  The 'shell' option specifies the
@@ -661,9 +665,9 @@ The flags that you can use for the substitute commands:
 	{not in Vi}
 
 Note that there is no flag to change the "magicness" of the pattern.  A
-different command is used instead.  The reason is that the flags can only be
-found by skipping the pattern, and in order to skip the pattern the
-"magicness" must be known.  Catch 22!
+different command is used instead, or you can use |/\v| and friends.  The
+reason is that the flags can only be found by skipping the pattern, and in
+order to skip the pattern the "magicness" must be known.  Catch 22!
 
 If the {pattern} for the substitute command is empty, the command uses the
 pattern from the last substitute or ":global" command.  With the [r] flag, the
@@ -686,7 +690,9 @@ can use any other single-byte character, but not an alphanumeric character,
 pattern or replacement string.  Example: >
 	:s+/+//+
 
-For the definition of a pattern, see |pattern|.
+For the definition of a pattern, see |pattern|.  In Visual block mode, use
+|/\%V| in the pattern to have the substitute work in the block only.
+Otherwise it works on whole lines anyway.
 
 					*sub-replace-special* *:s\=*
 When the {string} starts with "\=" it is evaluated as an expression, see
@@ -1555,9 +1561,10 @@ found here: |sort()|.
 				:sort /.*\%10v/
 <			To sort on the first number in the line, no matter
 			what is in front of it: >
-				:sort /.*\ze\d/
-
-<			With [r] sorting is done on the matching {pattern}
+				:sort /.\{-}\ze\d/
+<			(Explanation: ".\{-}" matches any text, "\ze" sets the
+			end of the match and \d matches a digit.)
+			With [r] sorting is done on the matching {pattern}
 			instead of skipping past it as described above.
 			For example, to sort on only the first three letters
 			of each line: >

@@ -1,4 +1,4 @@
-*syntax.txt*	For Vim version 7.1.  Last change: 2007 May 11
+*syntax.txt*	For Vim version 7.1.  Last change: 2008 Feb 26
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -531,12 +531,12 @@ one of the first five lines in the file.
 
 The syntax type can always be overruled for a specific buffer by setting the
 b:asmsyntax variable: >
-	:let b:asmsyntax=nasm
+	:let b:asmsyntax = "nasm"
 
 If b:asmsyntax is not set, either automatically or by hand, then the value of
 the global variable asmsyntax is used.	This can be seen as a default assembly
 language: >
-	:let asmsyntax=nasm
+	:let asmsyntax = "nasm"
 
 As a last resort, if nothing is defined, the "asm" syntax is used.
 
@@ -613,7 +613,7 @@ C							*c.vim* *ft-c-syntax*
 
 A few things in C highlighting are optional.  To enable them assign any value
 to the respective variable.  Example: >
-	:let c_comment_strings=1
+	:let c_comment_strings = 1
 To disable them use ":unlet".  Example: >
 	:unlet c_comment_strings
 
@@ -1475,11 +1475,10 @@ which are used for the statement itself, special characters used in debug
 strings, strings, boolean constants and types (this, super) respectively.  I
 have opted to chose another background for those statements.
 
-In order to help you to write code that can be easily ported between
-Java and C++, all C++ keywords are marked as error in a Java program.
-However, if you use them regularly, you may want to define the following
-variable in your .vimrc file: >
-	:let java_allow_cpp_keywords=1
+In order to help you write code that can be easily ported between Java and
+C++, all C++ keywords can be marked as an error in a Java program.  To
+have this add this line in your .vimrc file: >
+	:let java_allow_cpp_keywords = 0
 
 Javadoc is a program that takes special comments out of Java program files and
 creates HTML pages.  The standard configuration will highlight this HTML code
@@ -2402,7 +2401,7 @@ vimrc file: >
 
 SH		*sh.vim* *ft-sh-syntax* *ft-bash-syntax* *ft-ksh-syntax*
 
-This covers the "normal" Unix (Borne) sh, bash and the Korn shell.
+This covers the "normal" Unix (Bourne) sh, bash and the Korn shell.
 
 Vim attempts to determine which shell type is in use by specifying that
 various filenames are of specific types: >
@@ -2425,23 +2424,30 @@ variables in your <.vimrc>:
 	let g:is_posix     = 1
 <   bash: >
 	let g:is_bash	   = 1
-<   sh: (default) Borne shell >
+<   sh: (default) Bourne shell >
 	let g:is_sh	   = 1
 
 If there's no "#! ..." line, and the user hasn't availed himself/herself of a
 default sh.vim syntax setting as just shown, then syntax/sh.vim will assume
-the Borne shell syntax.  No need to quote RFCs or market penetration
-statistics in error reports, please -- just select the default version of
-the sh your system uses in your <.vimrc>.
+the Bourne shell syntax.  No need to quote RFCs or market penetration
+statistics in error reports, please -- just select the default version of the
+sh your system uses in your <.vimrc>.
 
-If, in your <.vimrc>, you set >
-	let g:sh_fold_enabled= 1
+The syntax/sh.vim file provides several levels of syntax-based folding: >
+
+	let g:sh_fold_enabled= 0     (default, no syntax folding)
+	let g:sh_fold_enabled= 1     (enable function folding)
+	let g:sh_fold_enabled= 2     (enable heredoc folding)
+	let g:sh_fold_enabled= 4     (enable if/do/for folding)
 >
 then various syntax items (HereDocuments and function bodies) become
-syntax-foldable (see |:syn-fold|).
+syntax-foldable (see |:syn-fold|).  You also may add these together
+to get multiple types of folding: >
 
-If you notice highlighting errors while scrolling backwards, which are fixed
-when redrawing with CTRL-L, try setting the "sh_minlines" internal variable
+	let g:sh_fold_enabled= 3     (enables function and heredoc folding)
+
+If you notice highlighting errors while scrolling backwards which are fixed
+when one redraws with CTRL-L, try setting the "sh_minlines" internal variable
 to a larger number.  Example: >
 
 	let sh_minlines = 500
@@ -2624,36 +2630,56 @@ set "tf_minlines" to the value you desire.  Example: >
 	:let tf_minlines = your choice
 
 
-VIM						*vim.vim* *ft-vim-syntax*
+VIM			*vim.vim*		*ft-vim-syntax*
+			*g:vimsyn_minlines*	*g:vimsyn_maxlines*
+There is a tradeoff between more accurate syntax highlighting versus screen
+updating speed.  To improve accuracy, you may wish to increase the
+g:vimsyn_minlines variable.  The g:vimsyn_maxlines variable may be used to
+improve screen updating rates (see |:syn-sync| for more on this). >
 
-There is a tradeoff between more accurate syntax highlighting versus
-screen updating speed.  To improve accuracy, you may wish to increase
-the g:vim_minlines variable.  The g:vim_maxlines variable may be used
-to improve screen updating rates (see |:syn-sync| for more on this).
+	g:vimsyn_minlines : used to set synchronization minlines
+	g:vimsyn_maxlines : used to set synchronization maxlines
+<
+	(g:vim_minlines and g:vim_maxlines are deprecated variants of
+	these two options)
 
-	g:vim_minlines : used to set synchronization minlines
-	g:vim_maxlines : used to set synchronization maxlines
+						*g:vimsyn_embed*
+The g:vimsyn_embed option allows users to select what, if any, types of
+embedded script highlighting they wish to have. >
 
-The g:vimembedscript option allows for somewhat faster loading of syntax
-highlighting for vim scripts at the expense of supporting syntax highlighting
-for external scripting languages (currently perl, python, ruby, and tcl).
+   g:vimsyn_embed == 0   : don't embed any scripts
+   g:vimsyn_embed =~ 'm' : embed mzscheme (but only if vim supports it)
+   g:vimsyn_embed =~ 'p' : embed perl     (but only if vim supports it)
+   g:vimsyn_embed =~ 'P' : embed python   (but only if vim supports it)
+   g:vimsyn_embed =~ 'r' : embed ruby     (but only if vim supports it)
+   g:vimsyn_embed =~ 't' : embed tcl      (but only if vim supports it)
+<
+By default, g:vimsyn_embed is "mpPr"; ie. syntax/vim.vim will support
+highlighting mzscheme, perl, python, and ruby by default.  Vim's has("tcl")
+test appears to hang vim when tcl is not truly available.  Thus, by default,
+tcl is not supported for embedding (but those of you who like tcl embedded in
+their vim syntax highlighting can simply include it in the g:vimembedscript
+option).
+						*g:vimsyn_folding*
 
-	g:vimembedscript == 1 (default)  <vim.vim> will allow highlighting
-	g:vimembedscript doesn't exist	 of supported embedded scripting
-					 languages: perl, python, ruby and
-					 tcl.
+Some folding is now supported with syntax/vim.vim: >
 
-	g:vimembedscript == 0		 Syntax highlighting for embedded
-					 scripting languages will not be
-					 loaded.
+   g:vimsyn_folding == 0 or doesn't exist: no syntax-based folding
+   g:vimsyn_folding =~ 'a' : augroups
+   g:vimsyn_folding =~ 'f' : fold functions
+   g:vimsyn_folding =~ 'm' : fold mzscheme script
+   g:vimsyn_folding =~ 'p' : fold perl     script
+   g:vimsyn_folding =~ 'P' : fold python   script
+   g:vimsyn_folding =~ 'r' : fold ruby     script
+   g:vimsyn_folding =~ 't' : fold tcl      script
 
+							*g:vimsyn_noerror*
 Not all error highlighting that syntax/vim.vim does may be correct; VimL is a
 difficult language to highlight correctly.  A way to suppress error
-highlighting is to put: >
+highlighting is to put the following line in your |vimrc|: >
 
-	let g:vimsyntax_noerror = 1
-
-in your |vimrc|.
+	let g:vimsyn_noerror = 1
+<
 
 
 XF86CONFIG				*xf86conf.vim* *ft-xf86conf-syntax*

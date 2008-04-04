@@ -1,7 +1,7 @@
 " Vim filetype plugin file
 " Language:	bst
 " Author:	Tim Pope <vimNOSPAM@tpope.info>
-" $Id: bst.vim,v 1.4 2007/05/12 13:55:25 vimboss Exp $
+" $Id: bst.vim,v 1.1 2007/05/05 17:37:57 vimboss Exp $
 
 if exists("b:did_ftplugin")
     finish

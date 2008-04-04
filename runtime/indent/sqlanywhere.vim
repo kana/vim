@@ -381,4 +381,4 @@ function GetSQLIndent()
     return ModuloIndent(ind)
 endfunction
 
-" vim:sw=4:ff=unix:
+" vim:sw=4:

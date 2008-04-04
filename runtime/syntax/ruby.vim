@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language:		Ruby
 " Maintainer:		Doug Kearns <dougkearns@gmail.com>
-" Info:			$Id: ruby.vim,v 1.11 2007/05/12 13:10:02 vimboss Exp $
+" Info:			$Id: ruby.vim,v 1.134 2007/05/06 17:55:04 tpope Exp $
 " URL:			http://vim-ruby.rubyforge.org
 " Anon CVS:		See above site
 " Release Coordinator:	Doug Kearns <dougkearns@gmail.com>
@@ -321,4 +321,4 @@ hi def link rubySpaceError		rubyError
 
 let b:current_syntax = "ruby"
 
-" vim: nowrap sw=2 sts=2 ts=8 noet ff=unix:
+" vim: nowrap sw=2 sts=2 ts=8 noet :

@@ -1,4 +1,4 @@
-*cmdline.txt*   For Vim version 7.1.  Last change: 2008 Jan 04
+*cmdline.txt*   For Vim version 7.1.  Last change: 2008 Mar 25
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -226,6 +226,8 @@ CTRL-J						*c_CTRL-J* *c_<NL>* *c_<CR>*
 <Esc>		When typed and 'x' not present in 'cpoptions', quit
 		Command-line mode without executing.  In macros or when 'x'
 		present in 'cpoptions', start entered command.
+		Note: If your <Esc> key is hard to hit on your keyboard, train
+		yourself to use CTRL-[.
 							*c_CTRL-C*
 CTRL-C		quit command-line without executing
 
@@ -482,7 +484,7 @@ argument.
 line.  If you want to use '|' in an argument, precede it with '\'.
 
 These commands see the '|' as their argument, and can therefore not be
-followed by another command:
+followed by another Vim command:
     :argdo
     :autocmd
     :bufdo
