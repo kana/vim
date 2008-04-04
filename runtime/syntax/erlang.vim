@@ -4,9 +4,8 @@
 "              http://www.erlang.org
 " Maintainer:  Csaba Hoch <csaba.hoch@gmail.com>
 " Former Maintainer:  Kreąimir Marľić (Kresimir Marzic) <kmarzic@fly.srk.fer.hr>
-" Last update: Sat, 08-Dec-2007
+" Last update: 12-Mar-2008
 " Filenames:   .erl
-" URL:         http://www.srk.fer.hr/~kmarzic/vim/syntax/erlang.vim
 
 
 " There are three sets of highlighting in here:
@@ -39,7 +38,8 @@ if ! exists ("erlang_characters")
 
     " Basic elements
     syn match   erlangComment          "%.*$" contains=erlangAnnotation,erlangTodo
-    syn match   erlangAnnotation       " \@<=@\%(type\|spec\|\)" contained
+    syn match   erlangAnnotation       " \@<=@\%(clear\|docfile\|end\|headerfile\|todo\|TODO\|type\|author\|copyright\|doc\|reference\|see\|since\|title\|version\|deprecated\|hidden\|private\|equiv\|spec\|throws\)" contained
+    syn match   erlangAnnotation       "`[^']*'" contained
     syn keyword erlangTodo             TODO FIXME XXX contained
     syn match   erlangModifier         "\~\a\|\\\a\|\\\\" contained
     syn match   erlangSpecialCharacter ":\|_\|@\|\\\|\"\|\."
@@ -63,14 +63,13 @@ if ! exists ("erlang_characters")
 
     " Ignore '_' and '-' in words
     syn match   erlangWord             "\h\+\w*"
-    "TODELETE old: syn match   erlangWord             "\h\+[[:alnum:]-]*"
 
     syn match   erlangChar             /\$./
 endif
 
 if ! exists ("erlang_functions")
     " Functions call
-    syn match   erlangFCall      "\w\+\(\s\+\)\=[:@]\(\s\+\)\=\w\+"
+    syn match   erlangFCall      "\%(\w\+\s*\.\s*\)*\w\+\s*[:@]\s*\w\+"
 
     " build-in-functions (BIFs)
     syn keyword erlangBIF        abs alive apply atom_to_list

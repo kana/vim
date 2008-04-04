@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.1.  Last change: 2008 Mar 07
+*todo.txt*      For Vim version 7.1.  Last change: 2008 Apr 01
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,43 +30,80 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
-Win32 crash. (Anton Sharonov, 2008 Feb 27)
+Fix for matchparen HL doesn't work.  beep.
 
-Mac: patch for ATSUI: http://wiki.macvim.org/wiki/VimPatches/ATSUI
+dtrace runtime files. (Nico Weber)
+check filetype detection with google code search.
+
+debian runtime files. (James Vega)
+
+Patch to clean up shortpath_for_invalid_fname(). (Yegappan Lakshmanan, 2008
+Mar 31)
+
+When reallocating cmdline xp_pattern becomes invalid.  Move expand_T xpc into
+ccline?  (Dominique Pelle)
+
+Wildmenu not deleted: "gvim -u NONE", ":set nocp wildmenu cmdheight=3
+laststatus=2", CTRL-D CTRL-H CTRL-H CTRL-H. (A.Politz, 2008 April 1)
+Works OK with Vim in an xterm.
+
+Patch to expand <leader>.  Charles Campbell, 2008 Mar 19.
+
+After using <Tab> for command line completion after ":ta blah" and getting E33
+(no tags file), further editing the command to e.g., ":echo 'blah'", the
+command is not executed.
+
+Test this some more:
+Regexp: matchlist('12a4aaa', '^\(.\{-}\)\(\%5c\@<=a\+\)\(.\+\)\?')
+Returns ['12a4', 'aaa', '4aaa'], should be ['12a4', 'aaa', '']
+Backreference not cleared when retrying after \@<= fails?
+(Brett Stahlman, 2008 March 8)
+
+Have a look at patch for utf-8 line breaking. (Yongwei Wu, 2008 Mar 1, Mar 23)
+
+Patch for netbeans.txt, Thoml, 2008 Mar 20
+
+Problem with 'langmap' parsing. (James Vega, 2008 Jan 27)
+
+Problem with CTRL-F. (Charles Campbell, 2008 March 21)
+Only happens with "gvim -geometry "160x26+4+27" -u NONE -U NONE prop.c".
+'lines' is 54. (2008 March 27)
+
+Unexpectedly inserting a double quote. (Anton Woellert, 2008 Mar 23)
+Works OK when 'cmdheight' is 2.
+
+Win32: patch for if_python.c  /tmp/vim-win64.diff.1
+
+The utf class table is missing some entries:
+	0x2212, minus sign 
+	0x2217, star
+	0x2500, bar
+	0x26ab, circle
 
 Mac: patch for mouse wheel scroll under Leopard. (Eckehard Berns, 2007 Dec 7)
 
-Mac: patch to make it build with GTK. (Ben Schmidt, 2008 Jan 5)
+Mac: patch to make it build with GTK. (Ben Schmidt, 2008 Jan 5, update 2008
+Mar 29)
 
 Mac: After a ":vsplit" the left scrollbar doesn't appear until 'columns' is
 changed or the window is resized.
 
-Mac: Patch for the dialog hotkeys. (Dan Sandler, 2007 Sep 11)
-Doesn't work for me.  Asked Dan about this.
-
-Confusing docs: "gw" is not supposed to use 'formatexpr', but it does.
-Depends on whether it's a range of lines or only one line.  (Brett Stahlman,
-2008 Mar 2)
-
-Patch for configure on Mac: remove arch from ruby link args. (Knezevic, 2008
+Mac: Patch for configure: remove arch from ruby link args. (Knezevic, 2008
 Mar 5)  Alternative: Kazuki Sakamoto, Mar 7.
 
-'cursorline' always shows "+" at end of screen line with:
-   :set listchars+=extends:+ nowrap list
-(Gary Johnson, 2008 Feb 27)
+":emenu" works with the translated menu name.  Should also work with the
+untranslated name.  Would need to store both the English and the translated
+name.  Patch by Bjorn Winckler, 2008 Mar 30.
 
 C't: On utf-8 system, editing file with umlaut through Gnome results in URL
 with %nn%nn, which is taken as two characters instead of one.
 Try to reproduce at work.
 
-Patch for longer default for 'paragraphs'. (James Vega, 2008 Mar 2)
+"echo 22,44" prints "22" on top of the command, the error messages causes
+the rest not to be cleared.
 
 Patch for redo register. (Ben Schmidt, 2007 Oct 19)
 Await response to question to make the register writable.
-
-Have a look at patch for utf-8 line breaking. (Yongwei Wu, 2008 Mar 1)
-
-Problem with 'langmap' parsing. (James Vega, 2008 Jan 27)
 
 Problem with 'ts' set to 9 and 'showbreak' to ">>>". (Matthew Winn, 2007 Oct
 1)
@@ -85,6 +122,8 @@ Performance tests:
 - ~/vim/test/rgb.vim
 - search for  a.*e*exn  in the vim executable.  Go to last line to use
   'hlsearch'.
+Use "\%#= to set the engine: 0 = automatic, 1 = backtracking, 2 = new.
+Useful in tests.
 
 Using Aap to build Vim: add remarks about how to set personal preferences.
 Example on http://www.calmar.ws/tmp/aap.html
@@ -97,6 +136,10 @@ Jul 31)
 
 C syntax: {} inside () causes following {} to be highlighted as error.
 (Michalis Giannakidis, 2006 Jun 1)
+
+Win32: use of get_short_pathname() is bad.  Add comments for function
+arguments.  Check what happens for ":echo fnamemodify('c:\abc\abc', ':8')".
+(Yegappan Lakshmanan, 2008 Mar 9)
 
 When 'diffopt' has "context:0" a single deleted line causes two folds to merge
 and mess up syncing. (Austin Jennings, 2008 Jan 31)
@@ -143,6 +186,7 @@ When opening quickfix window, disable spell checking?
 
 When the current line is long (doesn't fit) the popup menu can't be seen.
 Display it below the screen line instead of below the text line?
+Patch by Francois Ingelrest, 2008 Mar 23.  Another March 29, 30.
 
 Popup menu redraw: Instead of first redrawing the text and then drawing the
 popup menu over it, first draw the new popup menu, remember its position and
@@ -151,6 +195,9 @@ This should avoid flicker.  Other solution by A.Politz, 2007 Aug 22.
 
 With a nasty spell file one can read past the end of the file and use lots of
 memory.  Patch by James Vega, 2007 June 20.
+
+Spell checking: Add a way to specify punctuation characters.  Add the
+superscript numbers by default: 0x2070, 0xb9, 0xb2, 0xb3, 0x2074 - 0x2079.
 
 Windows 98: pasting from the clipboard with text from another application has
 a trailing NUL.  (Joachim Hofmann)  Perhaps the length specified for CF_TEXT
@@ -503,10 +550,6 @@ Jun 18)
 xterm should be able to pass focus changes to Vim, so that Vim can check for
 buffers that changed.  Perhaps in misc.c, function selectwindow().
 Xterm 224 supports it!
-
-The matchparen plugin finds matching parens in a much better way than "%".
-Add an option to make "%" work like the plugin.
-OR: suggest using the matchit plugin?  Compare speed.
 
 When completing from another file that uses a different encoding completion
 text has the wrong encoding.  E.g., when 'encoding' is utf-8 and file is

@@ -1,4 +1,4 @@
-*pi_vimball.txt*	For Vim version 7.1.  Last change: 2008 Jan 07
+*pi_vimball.txt*	For Vim version 7.1.  Last change: 2008 Apr 01
 
 			       ----------------
 			       Vimball Archiver
@@ -98,6 +98,8 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*Vimball-copyright*
 ==============================================================================
 3. Vimball History					*vimball-history* {{{1
 
+	25 : Mar 24, 2008 * changed vimball#Vimball() to recognize doc/*.??x
+			    files as help files, too.
 	24 : Nov 15, 2007 * |g:vimball_path_escape| used by s:Path() to
 	                    prevent certain characters from causing trouble
 	22 : Mar 21, 2007 * uses setlocal instead of set during BufEnter

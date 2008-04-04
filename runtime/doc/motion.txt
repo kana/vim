@@ -1,4 +1,4 @@
-*motion.txt*    For Vim version 7.1.  Last change: 2008 Feb 06
+*motion.txt*    For Vim version 7.1.  Last change: 2008 Mar 12
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -467,9 +467,9 @@ The definition of a sentence cannot be changed.
 							*paragraph*
 A paragraph begins after each empty line, and also at each of a set of
 paragraph macros, specified by the pairs of characters in the 'paragraphs'
-option.  The default is "IPLPPPQPP LIpplpipbp", which corresponds to the
-macros ".IP", ".LP", etc.  (These are nroff macros, so the dot must be in the
-first column).  A section boundary is also a paragraph boundary.
+option.  The default is "IPLPPPQPP TPHPLIPpLpItpplpipbp", which corresponds to
+the macros ".IP", ".LP", etc.  (These are nroff macros, so the dot must be in
+the first column).  A section boundary is also a paragraph boundary.
 Note that a blank line (only containing white space) is NOT a paragraph
 boundary.
 Also note that this does not include a '{' or '}' in the first column.  When

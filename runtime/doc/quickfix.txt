@@ -1,4 +1,4 @@
-*quickfix.txt*  For Vim version 7.1.  Last change: 2007 Sep 30
+*quickfix.txt*  For Vim version 7.1.  Last change: 2008 Mar 14
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -141,8 +141,11 @@ command with 'l'.
 			current window is used instead of the quickfix list.
 
 							*:cq* *:cquit*
-:cq[uit]		Quit Vim with an error code, so that the compiler
+:cq[uit][!]		Quit Vim with an error code, so that the compiler
 			will not compile the same file again.
+			WARNING: All changes in files are lost!  Also when the
+			[!] is not used.  It works like ":qall!" |:qall|,
+			except that Vim returns a non-zero exit code.
 
 							*:cf* *:cfile*
 :cf[ile][!] [errorfile]	Read the error file and jump to the first error.

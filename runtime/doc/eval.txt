@@ -1,4 +1,4 @@
-*eval.txt*      For Vim version 7.1.  Last change: 2008 Feb 23
+*eval.txt*      For Vim version 7.1.  Last change: 2008 Mar 29
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -2027,7 +2027,7 @@ char2nr({expr})						*char2nr()*
 <		The current 'encoding' is used.  Example for "utf-8": >
 			char2nr("á")		returns 225
 			char2nr("á"[0])		returns 195
-<		nr2char() does the opposite.
+<		|nr2char()| does the opposite.
 
 cindent({lnum})						*cindent()*
 		Get the amount of indent for line {lnum} according the C

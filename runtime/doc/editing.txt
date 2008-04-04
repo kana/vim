@@ -1,4 +1,4 @@
-*editing.txt*   For Vim version 7.1.  Last change: 2008 Jan 09
+*editing.txt*   For Vim version 7.1.  Last change: 2008 Mar 29
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -888,8 +888,10 @@ Note: When the 'write' option is off, you are not able to write any file.
 			the previous command |:!|.
 
 The default [range] for the ":w" command is the whole buffer (1,$).  If you
-write the whole buffer, it is no longer considered changed.  Also when you
-write it to a different file with ":w somefile"!
+write the whole buffer, it is no longer considered changed.  When you
+write it to a different file with ":w somefile" it depends on the "+" flag in
+'cpoptions'.  When included, the write command will reset the 'modified' flag,
+even though the buffer itself may still be different from its file.
 
 If a file name is given with ":w" it becomes the alternate file.  This can be
 used, for example, when the write fails and you want to try again later with
@@ -1105,6 +1107,8 @@ MULTIPLE WINDOWS AND BUFFERS				*window-exit*
 		changed.  See |:confirm|. {not in Vi}
 
 :qa[ll]!	Exit Vim.  Any changes to buffers are lost. {not in Vi}
+		Also see |:cquit|, it does the same but exits with a non-zero
+		value.
 
 							*:quita* *:quitall*
 :quita[ll][!]	Same as ":qall". {not in Vi}

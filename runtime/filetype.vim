@@ -1,7 +1,7 @@
 " Vim support file to detect file types
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2008 Feb 06
+" Last Change:	2008 Apr 01
 
 " Listen very carefully, I will say this only once
 if exists("did_load_filetypes")
@@ -954,6 +954,9 @@ au BufNewFile,BufRead *.lou,*.lout		setf lout
 
 " Lua
 au BufNewFile,BufRead *.lua			setf lua
+
+" Linden Scripting Language (Second Life)
+au BufNewFile,BufRead *.lsl			setf lsl
 
 " Lynx style file (or LotusScript!)
 au BufNewFile,BufRead *.lss			setf lss

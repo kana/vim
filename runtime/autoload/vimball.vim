@@ -1,7 +1,7 @@
 " vimball.vim : construct a file containing both paths and files
 " Author:	Charles E. Campbell, Jr.
-" Date:		Jan 07, 2008
-" Version:	24
+" Date:		Apr 01, 2008
+" Version:	25
 " GetLatestVimScripts: 1502 1 :AutoInstall: vimball.vim
 " Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.
 "            The VIM LICENSE applies to Vimball.vim, and Vimball.txt
@@ -15,7 +15,7 @@ if &cp || exists("g:loaded_vimball") || v:version < 700
  finish
 endif
 let s:keepcpo        = &cpo
-let g:loaded_vimball = "v24"
+let g:loaded_vimball = "v25"
 set cpo&vim
 "DechoTabOn
 
@@ -203,7 +203,8 @@ fun! vimball#Vimball(really,...)
 
   " set up standard settings
   call s:SaveSettings()
-  let curtabnr = tabpagenr()
+  let curtabnr    = tabpagenr()
+  let vimballfile = expand("%:tr")
 
   " set up vimball tab
 "  call Decho("setting up vimball tab")
@@ -226,16 +227,18 @@ fun! vimball#Vimball(really,...)
 "  call Decho("curdir<".curdir.">")
 
   call s:ChgDir(home)
-  call vimball#RmVimball()
+  let s:ok_unablefind= 1
+  call vimball#RmVimball(vimballfile)
+  unlet s:ok_unablefind
 
   let linenr  = 4
   let filecnt = 0
 
   " give title to listing of (extracted) files from Vimball Archive
   if a:really
-   echohl Title | echomsg "Vimball Archive" | echohl None
-  else
-   echohl Title | echomsg "Vimball Archive Listing" | echohl None
+   echohl Title     | echomsg "Vimball Archive"         | echohl None
+  else             
+   echohl Title     | echomsg "Vimball Archive Listing" | echohl None
    echohl Statement | echomsg "files would be placed under: ".home | echohl None
   endif
 
@@ -246,7 +249,7 @@ fun! vimball#Vimball(really,...)
   while 1 < linenr && linenr < line("$")
    let fname   = substitute(getline(linenr),'\t\[\[\[1$','','')
    let fname   = substitute(fname,'\\','/','g')
-   let fsize   = getline(linenr+1)
+   let fsize   = getline(linenr+1)+0
    let filecnt = filecnt + 1
 "   call Decho("fname<".fname."> fsize=".fsize." filecnt=".filecnt)
 
@@ -318,22 +321,20 @@ fun! vimball#Vimball(really,...)
 
    " set up help if its a doc/*.txt file
 "   call Decho("didhelp<".didhelp."> fname<".fname.">")
-   if a:really && didhelp == "" && fname =~ 'doc/[^/]\+\.txt$'
-   	let didhelp= substitute(fname,'^\(.*\<doc\)[/\\][^.]*\.txt$','\1','')
+   if a:really && didhelp == "" && fname =~ 'doc/[^/]\+\.\(txt\|..x\)$'
+   	let didhelp= substitute(fname,'^\(.*\<doc\)[/\\][^.]*\.\(txt\|..x\)$','\1','')
 "	call Decho("didhelp<".didhelp.">")
    endif
 
    " update for next file
-"   let oldlinenr = linenr " Decho
-   let linenr    = linenr + fsize
-"   call Decho("update linenr= [linenr=".oldlinenr."] + [fsize=".fsize."] = ".linenr)
+"   call Decho("update linenr= [linenr=".linenr."] + [fsize=".fsize."] = ".(linenr+fsize))
+   let linenr= linenr + fsize
   endwhile
 
   " set up help
 "  call Decho("about to set up help: didhelp<".didhelp.">")
   if didhelp != ""
    let htpath= s:Path(home."/".didhelp,"")
-   "let htpath= escape(substitute(s:Path(home."/".didhelp,'"'),'"','','g'),' ')
 "   call Decho("exe helptags ".htpath)
    exe "helptags ".htpath
    echo "did helptags"
@@ -376,7 +377,8 @@ fun! vimball#RmVimball(...)
 "  call Decho("turned off all events")
 
   if a:0 == 0
-   let curfile= '^'.expand("%:tr")
+   let curfile= expand("%:tr")
+"   call Decho("case a:0=0: curfile<".curfile."> (used expand(%:tr))")
   else
    if a:1 =~ '[\/]'
     call vimball#ShowMesg(s:USAGE,"RmVimball vimballname [path]")
@@ -384,11 +386,10 @@ fun! vimball#RmVimball(...)
     return
    endif
    let curfile= a:1
+"   call Decho("case a:0=".a:0.": curfile<".curfile.">")
   endif
-  if curfile !~ '.vba$'
-   let curfile= curfile.".vba: "
-  else
-   let curfile= curfile.": "
+  if curfile =~ '\.vba$'
+   let curfile= substitute(curfile,'\.vba','','')
   endif
   if a:0 >= 2
    let home= expand(a:2)
@@ -407,13 +408,31 @@ fun! vimball#RmVimball(...)
    keepalt keepjumps 1split 
    silent! keepalt keepjumps e .VimballRecord
    let keepsrch= @/
-   if search(curfile,'cw')
-   	let exestring= substitute(getline("."),curfile,'','')
+"   call Decho("search for ^".curfile.".vba:")
+"   call Decho("search for ^".curfile."[-0-9.]*.vba:")
+   if search('^'.curfile.": ".'cw')
+	let foundit= 1
+   elseif search('^'.curfile.".vba: ",'cw')
+	let foundit= 1
+   elseif search('^'.curfile.'[-0-9.]*.vba: ','cw')
+	let foundit= 1
+   else
+    let foundit = 0
+   endif
+   if foundit
+	let exestring= substitute(getline("."),'^'.curfile.'\S\{-}\.vba: ','','')
 "	call Decho("exe ".exestring)
 	silent! keepalt keepjumps exe exestring
 	silent! keepalt keepjumps d
+	let exestring= strlen(substitute(exestring,'call delete(.\{-})|\=',"D","g"))
+"	call Decho("exestring<".exestring.">")
+	echomsg "removed ".exestring." files"
    else
-"   	call Decho("unable to find <".curfile."> in .VimballRecord")
+	let curfile= substitute(curfile,'\.vba','','')
+"    call Decho("unable to find <".curfile."> in .VimballRecord")
+	if !exists("s:ok_unablefind")
+     call vimball#ShowMesg(s:WARNING,"(RmVimball) unable to find <".curfile."> in .VimballRecord")
+	endif
    endif
    silent! keepalt keepjumps g/^\s*$/d
    silent! keepalt keepjumps wq!
@@ -494,10 +513,6 @@ fun! vimball#ShowMesg(level,msg)
 
 "  call Dret("vimball#ShowMesg")
 endfun
-
-" ---------------------------------------------------------------------
-let &cpo= s:keepcpo
-unlet s:keepcpo
 " =====================================================================
 " s:ChgDir: change directory (in spite of Windoze) {{{2
 fun! s:ChgDir(newdir)
@@ -691,6 +706,11 @@ fun s:Escape(name)
   endif
   return g:netrw_shq . a:name . g:netrw_shq
 endfun
+
+" ---------------------------------------------------------------------
+"  Restore:
+let &cpo= s:keepcpo
+unlet s:keepcpo
 
 " ---------------------------------------------------------------------
 " Modelines: {{{1
