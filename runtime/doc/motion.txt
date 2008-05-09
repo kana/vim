@@ -1,4 +1,4 @@
-*motion.txt*    For Vim version 7.1.  Last change: 2008 Mar 12
+*motion.txt*    For Vim version 7.1.  Last change: 2008 May 02
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -810,10 +810,6 @@ unrelated.
 Lowercase marks 'a to 'z are remembered as long as the file remains in the
 buffer list.  If you remove the file from the buffer list, all its marks are
 lost.  If you delete a line that contains a mark, that mark is erased.
-
-To delete a mark: Create a new line, position the mark there, delete the line.
-E.g.: "o<Esc>mxdd".  This does change the file though.  Using "u" won't work,
-it also restores marks.
 
 Lowercase marks can be used in combination with operators.  For example: "d't"
 deletes the lines from the cursor position to mark 't'.  Hint: Use mark 't' for

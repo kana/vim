@@ -1,8 +1,8 @@
 " Vim syntax file
 " Language:	TeX
 " Maintainer:	Dr. Charles E. Campbell, Jr. <NdrchipO@ScampbellPfamily.AbizM>
-" Last Change:	Oct 10, 2007
-" Version:	39
+" Last Change:	Apr 18, 2008
+" Version:	40
 " URL:		http://mysite.verizon.net/astronaut/vim/index.html#vimlinks_syntax
 "
 " Notes: {{{1
@@ -261,27 +261,27 @@ syn match texSpaceCodeChar    "`\\\=.\(\^.\)\==\(\d\|\"\x\{1,6}\|`.\)"	contained
 
 " Sections, subsections, etc: {{{1
 if g:tex_fold_enabled && has("folding")
- syn region texDocZone			matchgroup=texSection start='\\begin\s*{\s*document\s*}' end='\\end\s*{\s*document\s*}'			fold contains=@texFoldGroup,@texDocGroup,@Spell
- syn region texPartZone			matchgroup=texSection start='\\part\>'			 end='\ze\n\s*\\part\>'				fold contains=@texFoldGroup,@texPartGroup,@Spell
- syn region texChapterZone		matchgroup=texSection start='\\chapter\>'		 end='\ze\n\s*\\\%(chapter\|part\)\>'		fold contains=@texFoldGroup,@texChapterGroup,@Spell
- syn region texSectionZone		matchgroup=texSection start='\\section\>'		 end='\ze\n\s*\\\%(section\>\|chapter\>\|part\>\|end{document}\)'					fold contains=@texFoldGroup,@texSectionGroup,@Spell
- syn region texSubSectionZone		matchgroup=texSection start='\\subsection\>'		 end='\ze\n\s*\\\%(\%(sub\)\=section\>\|chapter\>\|part\>\|end{document}\)'				fold contains=@texFoldGroup,@texSubSectionGroup,@Spell
- syn region texSubSubSectionZone	matchgroup=texSection start='\\subsubsection\>'		 end='\ze\n\s*\\\%(\%(sub\)\{,2}section\>\|chapter\>\|part\>\|end{document}\)'				fold contains=@texFoldGroup,@texSubSubSectionGroup,@Spell
- syn region texParaZone			matchgroup=texSection start='\\paragraph\>'		 end='\ze\n\s*\\\%(paragraph\>\|\%(sub\)*section\>\|chapter\>\|part\>\|end{document}\)'			fold contains=@texFoldGroup,@texParaGroup,@Spell
- syn region texSubParaZone		matchgroup=texSection start='\\subparagraph\>'		 end='\ze\n\s*\\\%(\%(sub\)\=paragraph\>\|\%(sub\)*section\>\|chapter\>\|part\>\|end{document}\)'	fold contains=@texFoldGroup,@Spell
- syn region texTitle			matchgroup=texSection start='\\\%(author\|title\)\>\s*{' end='}'					fold contains=@texFoldGroup,@Spell
- syn region texAbstract			matchgroup=texSection start='\\begin\s*{\s*abstract\s*}' end='\\end\s*{\s*abstract\s*}'			fold contains=@texFoldGroup,@Spell
+ syn region texDocZone			matchgroup=texSection start='\\begin\s*{\s*document\s*}' end='\\end\s*{\s*document\s*}'											fold contains=@texFoldGroup,@texDocGroup,@Spell
+ syn region texPartZone			matchgroup=texSection start='\\part\>'			 end='\ze\s*\\\%(part\>\|end\s*{\s*document\s*}\)'								fold contains=@texFoldGroup,@texPartGroup,@Spell
+ syn region texChapterZone		matchgroup=texSection start='\\chapter\>'		 end='\ze\s*\\\%(chapter\>\|part\>\|end\s*{\s*document\s*}\)'							fold contains=@texFoldGroup,@texChapterGroup,@Spell
+ syn region texSectionZone		matchgroup=texSection start='\\section\>'		 end='\ze\s*\\\%(section\>\|chapter\>\|part\>\|end\s*{\s*document\s*}\)'					fold contains=@texFoldGroup,@texSectionGroup,@Spell
+ syn region texSubSectionZone		matchgroup=texSection start='\\subsection\>'		 end='\ze\s*\\\%(\%(sub\)\=section\>\|chapter\>\|part\>\|end\s*{\s*document\s*}\)'				fold contains=@texFoldGroup,@texSubSectionGroup,@Spell
+ syn region texSubSubSectionZone	matchgroup=texSection start='\\subsubsection\>'		 end='\ze\s*\\\%(\%(sub\)\{,2}section\>\|chapter\>\|part\>\|end\s*{\s*document\s*}\)'				fold contains=@texFoldGroup,@texSubSubSectionGroup,@Spell
+ syn region texParaZone			matchgroup=texSection start='\\paragraph\>'		 end='\ze\s*\\\%(paragraph\>\|\%(sub\)*section\>\|chapter\>\|part\>\|end\s*{\s*document\s*}\)'			fold contains=@texFoldGroup,@texParaGroup,@Spell
+ syn region texSubParaZone		matchgroup=texSection start='\\subparagraph\>'		 end='\ze\s*\\\%(\%(sub\)\=paragraph\>\|\%(sub\)*section\>\|chapter\>\|part\>\|end\s*{\s*document\s*}\)'	fold contains=@texFoldGroup,@Spell
+ syn region texTitle			matchgroup=texSection start='\\\%(author\|title\)\>\s*{' end='}'													fold contains=@texFoldGroup,@Spell
+ syn region texAbstract			matchgroup=texSection start='\\begin\s*{\s*abstract\s*}' end='\\end\s*{\s*abstract\s*}'											fold contains=@texFoldGroup,@Spell
 else
- syn region texDocZone			matchgroup=texSection start='\\begin\s*{\s*document\s*}' end='\\end\s*{\s*document\s*}'			contains=@texFoldGroup,@texDocGroup,@Spell
- syn region texPartZone			matchgroup=texSection start='\\part\>'			 end='\ze\n\s*\\part\>'				contains=@texFoldGroup,@texPartGroup,@Spell
- syn region texChapterZone		matchgroup=texSection start='\\chapter\>'		 end='\ze\n\s*\\\%(chapter\|part\)\>'		contains=@texFoldGroup,@texChapterGroup,@Spell
- syn region texSectionZone		matchgroup=texSection start='\\section\>'		 end='\ze\n\s*\\\%(section\>\|chapter\>\|part\>\|end{document}\)'					contains=@texFoldGroup,@texSectionGroup,@Spell
- syn region texSubSectionZone		matchgroup=texSection start='\\subsection\>'		 end='\ze\n\s*\\\%(\%(sub\)\=section\>\|chapter\>\|part\>\|end{document}\)'				contains=@texFoldGroup,@texSubSectionGroup,@Spell
- syn region texSubSubSectionZone	matchgroup=texSection start='\\subsubsection\>'		 end='\ze\n\s*\\\%(\%(sub\)\{,2}section\>\|chapter\>\|part\>\|end{document}\)'				contains=@texFoldGroup,@texSubSubSectionGroup,@Spell
- syn region texParaZone			matchgroup=texSection start='\\paragraph\>'		 end='\ze\n\s*\\\%(paragraph\>\|\%(sub\)*section\>\|chapter\>\|part\>\|end{document}\)'			contains=@texFoldGroup,@texParaGroup,@Spell
- syn region texSubParaZone		matchgroup=texSection start='\\subparagraph\>'		 end='\ze\n\s*\\\%(\%(sub\)\=paragraph\>\|\%(sub\)*section\>\|chapter\>\|part\>\|end{document}\)'	contains=@texFoldGroup,@Spell
- syn region texTitle			matchgroup=texSection start='\\\%(author\|title\)\>\s*{' end='}'					contains=@texFoldGroup,@Spell
- syn region texAbstract			matchgroup=texSection start='\\begin\s*{\s*abstract\s*}' end='\\end\s*{\s*abstract\s*}'			contains=@texFoldGroup,@Spell
+ syn region texDocZone			matchgroup=texSection start='\\begin\s*{\s*document\s*}' end='\\end\s*{\s*document\s*}'											contains=@texFoldGroup,@texDocGroup,@Spell
+ syn region texPartZone			matchgroup=texSection start='\\part\>'			 end='\ze\s*\\\%(part\>\|end\s*{\s*document\s*}\)'								contains=@texFoldGroup,@texPartGroup,@Spell
+ syn region texChapterZone		matchgroup=texSection start='\\chapter\>'		 end='\ze\s*\\\%(chapter\>\|part\>\|end\s*{\s*document\s*}\)'							contains=@texFoldGroup,@texChapterGroup,@Spell
+ syn region texSectionZone		matchgroup=texSection start='\\section\>'		 end='\ze\s*\\\%(section\>\|chapter\>\|part\>\|end\s*{\s*document\s*}\)'					contains=@texFoldGroup,@texSectionGroup,@Spell
+ syn region texSubSectionZone		matchgroup=texSection start='\\subsection\>'		 end='\ze\s*\\\%(\%(sub\)\=section\>\|chapter\>\|part\>\|end\s*{\s*document\s*}\)'				contains=@texFoldGroup,@texSubSectionGroup,@Spell
+ syn region texSubSubSectionZone	matchgroup=texSection start='\\subsubsection\>'		 end='\ze\s*\\\%(\%(sub\)\{,2}section\>\|chapter\>\|part\>\|end\s*{\s*document\s*}\)'				contains=@texFoldGroup,@texSubSubSectionGroup,@Spell
+ syn region texParaZone			matchgroup=texSection start='\\paragraph\>'		 end='\ze\s*\\\%(paragraph\>\|\%(sub\)*section\>\|chapter\>\|part\>\|end\s*{\s*document\s*}\)'			contains=@texFoldGroup,@texParaGroup,@Spell
+ syn region texSubParaZone		matchgroup=texSection start='\\subparagraph\>'		 end='\ze\s*\\\%(\%(sub\)\=paragraph\>\|\%(sub\)*section\>\|chapter\>\|part\>\|end\s*{\s*document\s*}\)'	contains=@texFoldGroup,@Spell
+ syn region texTitle			matchgroup=texSection start='\\\%(author\|title\)\>\s*{' end='}'													contains=@texFoldGroup,@Spell
+ syn region texAbstract			matchgroup=texSection start='\\begin\s*{\s*abstract\s*}' end='\\end\s*{\s*abstract\s*}'											contains=@texFoldGroup,@Spell
 endif
 
 " Bad Math (mismatched): {{{1
@@ -506,6 +506,7 @@ if did_tex_syntax_inits == 1
    HiLink texMathZoneW		texMath
    HiLink texMathZoneX		texMath
    HiLink texMathZoneY		texMath
+   HiLink texMathZoneV		texMath
    HiLink texMathZoneZ		texMath
   endif
   HiLink texSectionMarker	texCmdName

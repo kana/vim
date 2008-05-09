@@ -1,4 +1,4 @@
-*syntax.txt*	For Vim version 7.1.  Last change: 2008 Feb 26
+*syntax.txt*	For Vim version 7.1.  Last change: 2008 May 02
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -626,6 +626,8 @@ c_no_tab_space_error	 ... but no spaces before a <Tab>
 c_no_bracket_error	don't highlight {}; inside [] as errors
 c_no_curly_error	don't highlight {}; inside [] and () as errors;
 				except { and } in first column
+c_curly_error		highlight a missing }; this forces syncing from the
+			start of the file, can be slow
 c_no_ansi		don't do standard ANSI types and constants
 c_ansi_typedefs		 ... but do standard ANSI types
 c_ansi_constants	 ... but do standard ANSI constants
@@ -674,7 +676,6 @@ highlighting for cErrInParen and cErrInBracket.
 If you want to use folding in your C files, you can add these lines in a file
 an the "after" directory in 'runtimepath'.  For Unix this would be
 ~/.vim/after/syntax/c.vim. >
-    syn region myFold start="{" end="}" transparent fold
     syn sync fromstart
     set foldmethod=syntax
 
@@ -2537,7 +2538,7 @@ number is that redrawing can become slow.
 
 TEX						*tex.vim* *ft-tex-syntax*
 
-*tex-folding*
+								*tex-folding*
 Want Syntax Folding? ~
 
 As of version 28 of <syntax/tex.vim>, syntax-based folding of parts, chapters,
@@ -2547,7 +2548,7 @@ in your <.vimrc>, and :set fdm=syntax.  I suggest doing the latter via a
 modeline at the end of your LaTeX file: >
 	% vim: fdm=syntax
 <
-*tex-runon*
+								*tex-runon*
 Run-on Comments/Math? ~
 
 The <syntax/tex.vim> highlighting supports TeX, LaTeX, and some AmsTeX.  The
@@ -2560,7 +2561,7 @@ special "TeX comment" has been provided >
 which will forcibly terminate the highlighting of either a texZone or a
 texMathZone.
 
-*tex-slow*
+								*tex-slow*
 Slow Syntax Highlighting? ~
 
 If you have a slow computer, you may wish to reduce the values for >
@@ -2570,8 +2571,8 @@ If you have a slow computer, you may wish to reduce the values for >
 increase them.	This primarily affects synchronizing (i.e. just what group,
 if any, is the text at the top of the screen supposed to be in?).
 
-*tex-morecommands* *tex-package*
-Wish To Highlight More Commmands? ~
+					    *tex-morecommands* *tex-package*
+Want To Highlight More Commands? ~
 
 LaTeX is a programmable language, and so there are thousands of packages full
 of specialized LaTeX commands, syntax, and fonts.  If you're using such a
@@ -2580,7 +2581,7 @@ it.  However, clearly this is impractical.  So please consider using the
 techniques in |mysyntaxfile-add| to extend or modify the highlighting provided
 by syntax/tex.vim.
 
-*tex-error*
+								*tex-error*
 Excessive Error Highlighting? ~
 
 The <tex.vim> supports lexical error checking of various sorts.  Thus,
@@ -2590,7 +2591,7 @@ you may put in your <.vimrc> the following statement: >
 	let tex_no_error=1
 and all error checking by <syntax/tex.vim> will be suppressed.
 
-*tex-math*
+								*tex-math*
 Need a new Math Group? ~
 
 If you want to include a new math group in your LaTeX, the following
@@ -2605,7 +2606,7 @@ and then to the call to it in .vim/after/syntax/tex.vim.
 The "starform" variable, if true, implies that your new math group
 has a starred form (ie. eqnarray*).
 
-*tex-style*
+								*tex-style*
 Starting a New Style? ~
 
 One may use "\makeatletter" in *.tex files, thereby making the use of "@" in

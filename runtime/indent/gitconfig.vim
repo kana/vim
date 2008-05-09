@@ -1,7 +1,7 @@
 " Vim indent file
 " Language:	git config file
 " Maintainer:	Tim Pope <vimNOSPAM@tpope.info>
-" Last Change:	2007 Dec 20
+" Last Change:	2007 Dec 16
 
 if exists("b:did_indent")
   finish
@@ -33,5 +33,3 @@ function! GetGitconfigIndent()
         return -1
     endif
 endfunction
-
-" vim:set sw=4 sts=4 noet:

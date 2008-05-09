@@ -1,4 +1,4 @@
-*autocmd.txt*   For Vim version 7.1.  Last change: 2008 Feb 22
+*autocmd.txt*   For Vim version 7.1.  Last change: 2008 Apr 30
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -104,7 +104,7 @@ local to the script and use mappings local to the script.  When the event is
 triggered and the command executed, it will run in the context of the script
 it was defined in.  This matters if |<SID>| is used in a command.
 
-When executing the commands, the messages from one command overwrites a
+When executing the commands, the message from one command overwrites a
 previous message.  This is different from when executing the commands
 manually.  Mostly the screen will not scroll up, thus there is no hit-enter
 prompt.  When one command outputs two messages this can happen anyway.

@@ -1,10 +1,10 @@
 " Vim syntax file
 " Language:			ESTEREL
 " Maintainer:		Maurizio Tranchero <maurizio.tranchero@polito.it> - <maurizio.tranchero@gmail.com>
-" Credits:			Luca Necchi	<luca.necchi@polito.it>
+" Credits:			Luca Necchi	<luca.necchi@polito.it>, Nikos Andrikos <nick.andrik@gmail.com>
 " First Release:	Tue May 17 23:49:39 CEST 2005
-" Last Change:		Wed Jun  6 22:59:14 CEST 2007
-" Version:			0.7
+" Last Change:		Tue May  6 13:29:56 CEST 2008
+" Version:			0.8
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded
@@ -28,7 +28,7 @@ syn region esterelIfThen					start=/if/			end=/then/			oneline
 " Esterel Keywords
 syn keyword esterelIO			input output inputoutput constant
 syn keyword esterelBoolean		and or not xor xnor nor nand
-syn keyword esterelExpressions	mod 
+syn keyword esterelExpressions	mod pre
 syn keyword esterelStatement	nothing halt
 syn keyword esterelStatement	module signal sensor end
 syn keyword esterelStatement	every do loop abort weak

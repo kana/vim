@@ -2,7 +2,7 @@
 " Language:	git send-email message
 " Maintainer:	Tim Pope
 " Filenames:	*.msg.[0-9]* (first line is "From ... # This line is ignored.")
-" Last Change:	2007 Dec 20
+" Last Change:	2007 Dec 16
 
 if exists("b:current_syntax")
     finish
@@ -17,5 +17,3 @@ syn match   gitsendemailComment "^GIT:.*"
 hi def link gitsendemailComment Comment
 
 let b:current_syntax = "gitsendemail"
-
-" vim:set ft=vim sts=4 sw=4:

@@ -4094,6 +4094,10 @@ E800	arabic.txt	/*E800*
 E801	eval.txt	/*E801*
 E802	eval.txt	/*E802*
 E803	eval.txt	/*E803*
+E804	eval.txt	/*E804*
+E805	eval.txt	/*E805*
+E806	eval.txt	/*E806*
+E807	eval.txt	/*E807*
 E81	map.txt	/*E81*
 E82	message.txt	/*E82*
 E83	message.txt	/*E83*
@@ -4142,6 +4146,7 @@ FilterReadPost	autocmd.txt	/*FilterReadPost*
 FilterReadPre	autocmd.txt	/*FilterReadPre*
 FilterWritePost	autocmd.txt	/*FilterWritePost*
 FilterWritePre	autocmd.txt	/*FilterWritePre*
+Float	eval.txt	/*Float*
 FocusGained	autocmd.txt	/*FocusGained*
 FocusLost	autocmd.txt	/*FocusLost*
 Folding	fold.txt	/*Folding*
@@ -5312,6 +5317,7 @@ fixed-6.3	version6.txt	/*fixed-6.3*
 fixed-6.4	version6.txt	/*fixed-6.4*
 fixed-7.1	version7.txt	/*fixed-7.1*
 flexwiki.vim	syntax.txt	/*flexwiki.vim*
+floating-point-format	eval.txt	/*floating-point-format*
 fname_diff-variable	eval.txt	/*fname_diff-variable*
 fname_in-variable	eval.txt	/*fname_in-variable*
 fname_new-variable	eval.txt	/*fname_new-variable*
@@ -6819,6 +6825,18 @@ print-intro	print.txt	/*print-intro*
 print-options	print.txt	/*print-options*
 print.txt	print.txt	/*print.txt*
 printf()	eval.txt	/*printf()*
+printf-%	eval.txt	/*printf-%*
+printf-E	eval.txt	/*printf-E*
+printf-G	eval.txt	/*printf-G*
+printf-X	eval.txt	/*printf-X*
+printf-c	eval.txt	/*printf-c*
+printf-d	eval.txt	/*printf-d*
+printf-e	eval.txt	/*printf-e*
+printf-f	eval.txt	/*printf-f*
+printf-g	eval.txt	/*printf-g*
+printf-o	eval.txt	/*printf-o*
+printf-s	eval.txt	/*printf-s*
+printf-x	eval.txt	/*printf-x*
 printing	print.txt	/*printing*
 printing-formfeed	print.txt	/*printing-formfeed*
 profile	repeat.txt	/*profile*
@@ -7269,6 +7287,7 @@ startup-terminal	term.txt	/*startup-terminal*
 static-tag	tagsrch.txt	/*static-tag*
 status-line	windows.txt	/*status-line*
 statusmsg-variable	eval.txt	/*statusmsg-variable*
+str2float()	eval.txt	/*str2float()*
 str2nr()	eval.txt	/*str2nr()*
 strcasestr()	eval.txt	/*strcasestr()*
 strchr()	eval.txt	/*strchr()*

@@ -1,8 +1,8 @@
 " Vim syntax file
 " Language:	Vim 7.1 script
 " Maintainer:	Dr. Charles E. Campbell, Jr. <NdrOchipS@PcampbellAfamily.Mbiz>
-" Last Change:	Jan 24, 2008
-" Version:	7.1-76
+" Last Change:	Apr 08, 2008
+" Version:	7.1-77
 " Automatically generated keyword lists: {{{1
 
 " Quit when a syntax file was already loaded {{{2
@@ -153,7 +153,7 @@ endif
 " Functions : Tag is provided for those who wish to highlight tagged functions {{{2
 " =========
 syn cluster vimFuncList	contains=vimCommand,vimFuncKey,Tag,vimFuncSID
-syn cluster vimFuncBodyList	contains=vimAddress,vimAutoCmd,vimCmplxRepeat,vimComment,vimComment,vimContinue,vimCtrlChar,vimEcho,vimEchoHL,vimExecute,vimIf,vimFunc,vimFunction,vimFunctionError,vimFuncName,vimFuncVar,vimIsCommand,vimLet,vimLineComment,vimMap,vimMark,vimNorm,vimNotation,vimNotFunc,vimNumber,vimOper,vimOperParen,vimRegion,vimRegister,vimSet,vimSpecFile,vimString,vimSubst,vimSynLine
+syn cluster vimFuncBodyList	contains=vimAddress,vimAutoCmd,vimCmplxRepeat,vimComment,vimComment,vimContinue,vimCtrlChar,vimEcho,vimEchoHL,vimExecute,vimIf,vimFunc,vimFunction,vimFunctionError,vimFuncVar,vimIsCommand,vimLet,vimLineComment,vimMap,vimMark,vimNorm,vimNotation,vimNotFunc,vimNumber,vimOper,vimOperParen,vimRegion,vimRegister,vimSet,vimSpecFile,vimString,vimSubst,vimSynLine,vimUserCommand
 if !exists("g:vimsyn_noerror")
  syn match   vimFunctionError	"\<fu\%[nction]!\=\s\+\zs\U\i\{-}\ze\s*("                	contains=vimFuncKey,vimFuncBlank nextgroup=vimFuncBody
 endif
