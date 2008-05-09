@@ -1,4 +1,4 @@
-*editing.txt*   For Vim version 7.1.  Last change: 2008 Mar 29
+*editing.txt*   For Vim version 7.1.  Last change: 2008 Apr 29
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -364,6 +364,9 @@ all over again.  The ":e" command is only useful if you have changed the
 current file name.
 
 							*:filename* *{file}*
+Besides the things mentioned here, more special items for where a filename is
+expected are mentioned at |cmdline-special|.
+
 Note for systems other than Unix and MS-DOS: When using a command that
 accepts a single file name (like ":edit file") spaces in the file name are
 allowed, but trailing spaces are ignored.  This is useful on systems that

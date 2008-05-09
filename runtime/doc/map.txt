@@ -1,4 +1,4 @@
-*map.txt*       For Vim version 7.1.  Last change: 2007 Nov 11
+*map.txt*       For Vim version 7.1.  Last change: 2008 May 05
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -486,7 +486,7 @@ scenario: >
 	:imap <M-C> foo
 	:set encoding=utf-8
 The mapping for <M-C> is defined with the latin1 encoding, resulting in a 0xc3
-byte.  If you type the character á (0xea <M-a>) in UTF-8 encoding this is the
+byte.  If you type the character á (0xe1 <M-a>) in UTF-8 encoding this is the
 two bytes 0xc3 0xa1.  You don't want the 0xc3 byte to be mapped then,
 otherwise it would be impossible to type the á character.
 
@@ -1180,7 +1180,7 @@ defined, not where it is invoked!  Example:
 	:source script1.vim
 	:let s:error = "Wrong!"
 	:Error s:error
-Executing script2.vim will result in "None" to be echoed.  Not what you
+Executing script2.vim will result in "None" being echoed.  Not what you
 intended!  Calling a function may be an alternative.
 
 Completion behavior				*:command-completion* *E179*

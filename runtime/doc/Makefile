@@ -291,7 +291,7 @@ CONVERTED = \
 	evim-ru.UTF-8.1 \
 	vimdiff-ru.UTF-8.1 \
 	vimtutor-ru.UTF-8.1 \
-	xxd-ru.UTF-8.1 \
+	xxd-ru.UTF-8.1
 
 .SUFFIXES:
 .SUFFIXES: .c .o .txt .html

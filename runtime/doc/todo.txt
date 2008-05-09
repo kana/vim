@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.1.  Last change: 2008 Apr 01
+*todo.txt*      For Vim version 7.1.  Last change: 2008 May 06
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -32,13 +32,15 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 
 Fix for matchparen HL doesn't work.  beep.
 
-dtrace runtime files. (Nico Weber)
-check filetype detection with google code search.
-
 debian runtime files. (James Vega)
+
+Bug when reading file with one byte 0xfc in utf-8. (Dominique Pelle, 2008 Apr
+6)
 
 Patch to clean up shortpath_for_invalid_fname(). (Yegappan Lakshmanan, 2008
 Mar 31)
+
+Ukranian translations.  Uses utf-8, add conversions in Makefile.
 
 When reallocating cmdline xp_pattern becomes invalid.  Move expand_T xpc into
 ccline?  (Dominique Pelle)
@@ -48,6 +50,9 @@ laststatus=2", CTRL-D CTRL-H CTRL-H CTRL-H. (A.Politz, 2008 April 1)
 Works OK with Vim in an xterm.
 
 Patch to expand <leader>.  Charles Campbell, 2008 Mar 19.
+
+Test 11 breaks after patch 7.1.186 on Win32 console. (Daniel Shahaf, 2008 Apr
+10)
 
 After using <Tab> for command line completion after ":ta blah" and getting E33
 (no tags file), further editing the command to e.g., ":echo 'blah'", the
@@ -59,9 +64,24 @@ Returns ['12a4', 'aaa', '4aaa'], should be ['12a4', 'aaa', '']
 Backreference not cleared when retrying after \@<= fails?
 (Brett Stahlman, 2008 March 8)
 
+Patch for SELinux support. (James Vega, 2008 Apr 10)
+
+Docs corrections. (Adri Verhoef, 2008 Apr 23)
+
+When adding path to 'tags' with a wildcard, it appears only a first match is
+used. (Erik Falor, 2008 April 18)  Or is it that a wildcard in the file name
+is not supported, only in the path?
+
 Have a look at patch for utf-8 line breaking. (Yongwei Wu, 2008 Mar 1, Mar 23)
 
 Patch for netbeans.txt, Thoml, 2008 Mar 20
+
+Patch for BSD console mouse support.  Paul Mahol, 2008 Apr 9, 2008 Apr 21.
+
+Setting 'pastetoggle' to "jj" doesn't work.  Was OK in vim 7.0. (James Vega,
+2008 May 4)
+
+":let &g:tw = 44" sets the local option value. (Cyril Slobin, 2008 Apr 25)
 
 Problem with 'langmap' parsing. (James Vega, 2008 Jan 27)
 
@@ -80,10 +100,16 @@ The utf class table is missing some entries:
 	0x2500, bar
 	0x26ab, circle
 
+Visual line mode doesn't highlight properly when 'showbreak' is used and the
+line doesn't fit. (Dasn, 2008 May 1)
+
 Mac: patch for mouse wheel scroll under Leopard. (Eckehard Berns, 2007 Dec 7)
 
 Mac: patch to make it build with GTK. (Ben Schmidt, 2008 Jan 5, update 2008
 Mar 29)
+
+GTK: Patch to avoid the command line going below the screen when Vim is
+maximized. (Geoffrey Antos, 2008 May 5)
 
 Mac: After a ":vsplit" the left scrollbar doesn't appear until 'columns' is
 changed or the window is resized.
@@ -110,6 +136,11 @@ Problem with 'ts' set to 9 and 'showbreak' to ">>>". (Matthew Winn, 2007 Oct
 
 Patch to make <S-Space> work in GTK with XIM. (Yukihiro Nakadaira, 2008 Feb
 26)
+
+"vim -O aa aa" gives only one window. (Zdenek Sekera, 2008 Apr 16)
+
+Problem with 'wildmenu' after ":lcd", up/down arrows don't work. (Tony
+Mechelynck, 2008 April 13)  patch from Erik Falor, 2008 Apr 16.
 
 Find a way to include the regexp code:
 	http://vim-soc-regexp.googlecode.com/svn/  (sbboat one)
@@ -162,13 +193,13 @@ Asked about latest version: 0.77.1 is on www.vim.org.
 
 More AmigaOS4 patches. (Peter Bengtsson, Nov 9)
 
-Display problem when 'rightleft' is set, 'encoding' is "utf-8" and an illegal
-byte is at the start of the line. (Dominique Pelle, 2008 Jan 12)
-
 Add v:searchforward variable.  Patch by Yakov Lerner, 2006 Nov 18.
 
 globpath() doesn't work as expected.  The example shows using 'path', but the
 "**8" form and upwards search are not supported.
+
+Error when cancelling completion menu and auto-formatting. (Tim Weber, 2008
+Apr 17)
 
 With Visual selection, "r" and then CTRL-C  Visual mode is stopped but the
 highlighting is not removed.
@@ -273,6 +304,8 @@ Build another diff.exe somehow?
 
 Win64: Seek error in swap file for a very big file (3 Gbyte).  Check storing
 pointer in long and seek offset in 64 bit var.
+
+Win32: patch for fullscreen mode. (Liushaolin, 2008 April 17)
 
 Pressing the 'pastetoggle' key doesn't update the statusline. (Jan Christoph
 Ebersbach, 2008 Feb 1)
@@ -541,7 +574,8 @@ as original file?  If it's OK don't compare with 'patchmode'. (Thierry Closen)
 Patch for supporting count before CR in quickfix window. (AOYAMA Shotaro, 2007
 Jan 1)
 
-Patch for adding ":lscscope". (Navdeep Parhar, 2007 Apr 26; update Apr 28)
+Patch for adding ":lscscope". (Navdeep Parhar, 2007 Apr 26; update 2008 Apr
+23)
 
 ":mkview" isn't called with the right buffer argument.  Happens when using
 tabs and the autocommand "autocmd BufWinLeave * mkview".  (James Vega, 2007
@@ -556,6 +590,9 @@ text has the wrong encoding.  E.g., when 'encoding' is utf-8 and file is
 latin1.  Example from Gombault Damien, 2007 Mar 24.
 
 Is it possible to use "foo#var" instead of "g:foo#var" inside a function?
+
+Syntax HL: When using "nextgroup" and the group has an empty match, there is
+no search at that position for another match. (Lukas Mai, 2008 April 11)
 
 Spell menu: When using the Popup menu to select a replacement word,
 ":spellrepeat" doesn't work.  SpellReplace() uses setline().  Can it use "z="
@@ -576,6 +613,7 @@ Patch for supporting #rrggbb in color terminals.  Patch by Matt Wozniski.
 
 
 Vim 7.2:
+-   Switch to latest autoconf version instead of 2.59
 -   Change all use of mch_memmove(p, p + x, STRLEN(p + x) + 1) to a macro:
     VIM_STRCPY(p, p + x)
 -   Rename doc/ada.txt to doc/ft_ada.txt?
@@ -3032,6 +3070,7 @@ Virtual edit:
 
 
 Text objects:
+8   Add text object for fold, so that it can be yanked when it's open.
 8   Add test script for text object commands "aw", "iW", etc.
 8   Add text object for part of a CamelHumpedWord and under_scored_word.
     (Scott Graham)  "ac" and "au"?
@@ -3678,7 +3717,6 @@ Mouse support:
 8   Add 'mouse' flag, which sets a behavior like Visual mode, but automatic
     yanking at the button-up event.  Or like Select mode, but typing gets you
     out of Select mode, instead of replacing the text. (Bhaskar)
-7   Checkout sysmouse() for FreeBSD console mouse support.
 -   Implement mouse support for the Amiga console.
 -   Using right mouse button to extend a blockwise selection should attach to
     the nearest corner of the rectangle (four possible corners).

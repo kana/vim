@@ -1,4 +1,4 @@
-*change.txt*    For Vim version 7.1.  Last change: 2008 Jan 16
+*change.txt*    For Vim version 7.1.  Last change: 2008 May 02
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -1397,7 +1397,7 @@ a	Automatic formatting of paragraphs.  Every time text is inserted or
 n	When formatting text, recognize numbered lists.  This actually uses
 	the 'formatlistpat' option, thus any kind of list can be used.  The
 	indent of the text after the number is used for the next line.  The
-	default is to find a number, optionally be followed by '.', ':', ')',
+	default is to find a number, optionally followed by '.', ':', ')',
 	']' or '}'.  Note that 'autoindent' must be set too.  Doesn't work
 	well together with "2".
 	Example: >

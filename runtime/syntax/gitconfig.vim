@@ -2,7 +2,7 @@
 " Language:	git config file
 " Maintainer:	Tim Pope <vimNOSPAM@tpope.info>
 " Filenames:	gitconfig, .gitconfig, *.git/config
-" Last Change:	2007 Dec 20
+" Last Change:	2007 Dec 16
 
 if exists("b:current_syntax")
     finish
@@ -35,5 +35,3 @@ hi def link gitconfigEscape		Delimiter
 hi def link gitconfigError		Error
 
 let b:current_syntax = "gitconfig"
-
-" vim:set ft=vim sts=4 sw=4:

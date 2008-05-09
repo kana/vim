@@ -1,4 +1,4 @@
-*eval.txt*      For Vim version 7.1.  Last change: 2008 Mar 29
+*eval.txt*      For Vim version 7.1.  Last change: 2008 May 05
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -37,13 +37,17 @@ done, the features in this document are not available.  See |+eval| and
 
 1.1 Variable types ~
 							*E712*
-There are five types of variables:
+There are six types of variables:
 
-Number		A 32 bit signed number.
+Number		A 32 bit signed number.  |expr-number|
 		Examples:  -123  0x10  0177
 
+Float           A floating point number. |floating-point-format| *Float*
+		{only when compiled with the |+float| feature}
+		Examples: 123.456  1.15e-6  -1.1e3
+
 String		A NUL terminated string of 8-bit unsigned characters (bytes).
-		Examples: "ab\txx\"--"  'x-z''a,c'
+		|expr-string| Examples: "ab\txx\"--"  'x-z''a,c'
 
 Funcref		A reference to a function |Funcref|.
 		Example: function("strlen")
@@ -91,6 +95,10 @@ use strlen(): >
 	:if strlen("foo")
 <				*E745* *E728* *E703* *E729* *E730* *E731*
 List, Dictionary and Funcref types are not automatically converted.
+
+							*E805* *E806*
+When mixing Number and Float the Number is converted to Float.  Otherwise
+there is no automatic conversion of Float.
 
 								*E706*
 You will get an error if you try to change the type of a variable.  You need
@@ -752,7 +760,7 @@ When comparing two Strings, this is done with strcmp() or stricmp().  This
 results in the mathematical difference (comparing byte values), not
 necessarily the alphabetical difference in the local language.
 
-When using the operators with a trailing '#", or the short version and
+When using the operators with a trailing '#', or the short version and
 'ignorecase' is off, the comparing is done with strcmp(): case matters.
 
 When using the operators with a trailing '?', or the short version and
@@ -792,10 +800,24 @@ Note the difference between "+" and ".":
 	"123" + "456" = 579
 	"123" . "456" = "123456"
 
+Since '.' has the same precedence as '+' and '-', you need to read: >
+	1.90+&90
+As: >
+	(1 . 90) + &90
+That works, since the String "190" is automatically converted to the Number
+190, which can be added to the float 90.  However: >
+	1.90*&90
+Should be read as: >
+	1 . (90 * &90)
+Since '.' has lower precedence than '*'.  This does NOT work, since this
+attempts to concatenate a Float to a String.
+
 When the righthand side of '/' is zero, the result is 0x7fffffff.
 When the righthand side of '%' is zero, the result is 0.
 
 None of these work for |Funcref|s.
+
+. and % do not work for Float. *E804*
 
 
 expr7							*expr7*
@@ -908,6 +930,27 @@ number
 number			number constant		*expr-number*
 
 Decimal, Hexadecimal (starting with 0x or 0X), or Octal (starting with 0).
+
+						*floating-point-format*
+Floating point numbers can be written in two forms:
+- &N.M, where N and M are numbers.  The .M can be omitted.  The N cannot be
+  omitted.  There can be a minus sign in the N.  Examples:
+	&123.456
+  	&0.0001
+	&55
+	&-0.123
+  Only a decimal point is accepted, not a comma.  No matter what the current
+  locale is.
+- Same, with a following exponent in the form "eX", where X is a decimal
+  number with an optional minus sign.  The 'e' can also be upper case.
+  Examples:
+  	&1.234e3
+	&1E-6
+	&-3.1416e88
+The precision and range of floating points numbers depends on the library Vim
+was compiled with.  There is no way to change this at runtime.
+{only when compiled with the |+float| feature}
+
 
 
 string							*expr-string* *E114*
@@ -2052,7 +2095,7 @@ col({expr})	The result is a Number, which is the byte index of the column
 			    returned)
 		Additionally {expr} can be [lnum, col]: a |List| with the line
 		and column number. Most useful when the column is "$", to get
-		the las column of a specific line.  When "lnum" or "col" is
+		the last column of a specific line.  When "lnum" or "col" is
 		out of range then col() returns zero.
 		To get the line number use |line()|.  To get both use
 		|getpos()|.
@@ -2321,8 +2364,9 @@ escape({string}, {chars})				*escape()*
 <							*eval()*
 eval({string})	Evaluate {string} and return the result.  Especially useful to
 		turn the result of |string()| back into the original value.
-		This works for Numbers, Strings and composites of them.
-		Also works for |Funcref|s that refer to existing functions.
+		This works for Numbers, Floats, Strings and composites of
+		them.  Also works for |Funcref|s that refer to existing
+		functions.
 
 eventhandler()						*eventhandler()*
 		Returns 1 when inside an event handler.  That is that Vim got
@@ -3483,7 +3527,6 @@ libcall({libname}, {funcname}, {argument})
 		feature is present}
 		Examples: >
 			:echo libcall("libc.so", "getenv", "HOME")
-			:echo libcallnr("/usr/lib/libc.so", "getpid", "")
 <
 							*libcallnr()*
 libcallnr({libname}, {funcname}, {argument})
@@ -3491,7 +3534,8 @@ libcallnr({libname}, {funcname}, {argument})
 		int instead of a string.
 		{only in Win32 on some Unix versions, when the |+libcall|
 		feature is present}
-		Example (not very useful...): >
+		Examples: >
+			:echo libcallnr("/usr/lib/libc.so", "getpid", "")
 			:call libcallnr("libc.so", "printf", "Hello World!\n")
 			:call libcallnr("libc.so", "sleep", 10)
 <
@@ -3897,6 +3941,11 @@ printf({fmt}, {expr1} ...)				*printf()*
 		  %04x  hex number padded with zeros to at least 4 characters
 		  %X    hex number using upper case letters
 		  %o    octal number
+		  %f	floating point number in the form 123.456
+		  %e    floating point number in the form 1.234e3
+		  %E    floating point number in the form 1.234E3
+		  %g    floating point number, as %f or %e depending on value
+		  %G    floating point number, as %f or %E depending on value
 		  %%    the % character itself
 
 		Conversion specifications start with '%' and end with the
@@ -3955,6 +4004,8 @@ printf({fmt}, {expr1} ...)				*printf()*
 			This gives the minimum number of digits to appear for
 			d, o, x, and X conversions, or the maximum number of
 			bytes to be printed from a string for s conversions.
+			For floating point it is the number of digits after
+			the decimal point.
 
 		type
 			A character that specifies the type of conversion to
@@ -3972,6 +4023,7 @@ printf({fmt}, {expr1} ...)				*printf()*
 
 		The conversion specifiers and their meanings are:
 
+				*printf-d* *printf-o* *printf-x* *printf-X*
 		doxX    The Number argument is converted to signed decimal
 			(d), unsigned octal (o), or unsigned hexadecimal (x
 			and X) notation.  The letters "abcdef" are used for
@@ -3986,13 +4038,36 @@ printf({fmt}, {expr1} ...)				*printf()*
 			a conversion is wider than the field width, the field
 			is expanded to contain the conversion result.
 
+							*printf-c*
 		c	The Number argument is converted to a byte, and the
 			resulting character is written.
 
+							*printf-s*
 		s	The text of the String argument is used.  If a
 			precision is specified, no more bytes than the number
 			specified are used.
 
+							*printf-f* *E807*
+		f	The Float argument is converted into a string of the 
+			form 123.456.  The precision specifies the number of
+			digits after the decimal point.  When the precision is
+			zero the decimal point is omitted.  When the precision
+			is not specified 6 is used.  A really big number
+			(dividing by zero) results in "inf".
+
+							*printf-e* *printf-E*
+		e E	The Float argument is converted into a string of the
+			form 1.234e3 or 1.234E3 (when using 'E').  The
+			precision specifies the number of digits after the
+			decimal point, like with 'f'.
+
+							*printf-g* *printf-G*
+		g G	The Float argument is converted like with 'f' if the
+			value is between 0.001 (inclusive) and 10000000.0
+			(exclusive).  Otherwise 'e' is used for 'g' and 'E'
+			for 'G'.
+
+							*printf-%*
 		%	A '%' is written.  No argument is converted.  The
 			complete conversion specification is "%%".
 
@@ -4698,7 +4773,7 @@ sort({list} [, {func}])					*sort()* *E702*
 							*soundfold()*
 soundfold({word})
 		Return the sound-folded equivalent of {word}.  Uses the first
-		language in 'spellang' for the current window that supports
+		language in 'spelllang' for the current window that supports
 		soundfolding.  'spell' must be set.  When no sound folding is
 		possible the {word} is returned unmodified.
 		This can be used for making spelling suggestions.  Note that
@@ -4787,6 +4862,19 @@ str2nr( {expr} [, {base}])				*str2nr()*
 		Text after the number is silently ignored.
 
 
+str2float( {expr})					*str2float()*
+		Convert string {expr} to a Float.  This works the same as when
+		using a floating point number directly, see
+		|floating-point-format|, but without the leading '&'.
+		A comma is also accepted for a decimal point.
+		Text after the number is silently ignored.
+		A second comma or decimal point also ends the number:
+		"12,345.67" is converted to 12.345.  You can strip out
+		thousands separators with |substitute()|: >
+			let f = str2float(substitute(text, ',', '', 'g'))
+<		{only when compiled with the |+float| feature}
+
+
 strftime({format} [, {time}])				*strftime()*
 		The result is a String, which is a formatted date and time, as
 		specified by the {format} string.  The given {time} is used,
@@ -4827,11 +4915,12 @@ stridx({haystack}, {needle} [, {start}])		*stridx()*
 
 							*string()*
 string({expr})	Return {expr} converted to a String.  If {expr} is a Number,
-		String or a composition of them, then the result can be parsed
-		back with |eval()|.
+		Float, String or a composition of them, then the result can be
+		parsed back with |eval()|.
 			{expr} type	result ~
 			String		'string'
 			Number		123
+			Float		&123.456789 or &1.234567e8
 			Funcref		function('name')
 			List		[item, item]
 			Dictionary	{key: value, key: value}
@@ -5148,12 +5237,14 @@ type({expr})	The result is a Number, depending on the type of {expr}:
 			Funcref:    2
 			List:	    3
 			Dictionary: 4
+			Float:      5
 		To avoid the magic numbers it should be used this way: >
 			:if type(myvar) == type(0)
 			:if type(myvar) == type("")
 			:if type(myvar) == type(function("tr"))
 			:if type(myvar) == type([])
 			:if type(myvar) == type({})
+			:if type(myvar) == type(&0)
 
 values({dict})						*values()*
 		Return a |List| with all the values of {dict}.  The |List| is
@@ -5384,6 +5475,7 @@ filterpipe		When 'shelltemp' is off pipes are used for shell
 			read/write/filter commands
 find_in_path		Compiled with support for include file searches
 			|+find_in_path|.
+float			Compiled with support for |Float|.
 fname_case		Case in file names matters (for Amiga, MS-DOS, and
 			Windows this is not present).
 folding			Compiled with |folding| support.

@@ -1,4 +1,4 @@
-*print.txt*     For Vim version 7.1.  Last change: 2007 Sep 10
+*print.txt*     For Vim version 7.1.  Last change: 2008 Apr 30
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -25,6 +25,9 @@ On MS-Windows Vim can print your text on any installed printer.  On other
 systems a PostScript file is produced.  This can be directly sent to a
 PostScript printer.  For other printers a program like ghostscript needs to be
 used.
+
+Note: If you have problems printing with |:hardcopy|, an alternative is to use
+|:TOhtml| and print the resulting html file from a browser.
 
 					*:ha* *:hardcopy* *E237* *E238* *E324*
 :[range]ha[rdcopy][!] [arguments]

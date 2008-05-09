@@ -1,4 +1,4 @@
-*usr_41.txt*	For Vim version 7.1.  Last change: 2008 Feb 20
+*usr_41.txt*	For Vim version 7.1.  Last change: 2008 May 05
 
 		     VIM USER MANUAL - by Bram Moolenaar
 
@@ -950,13 +950,13 @@ These will have the line numbers from the range the function was called with.
 Example: >
 
 	:function Count_words() range
-	:  let n = a:firstline
-	:  let count = 0
-	:  while n <= a:lastline
-	:    let count = count + Wordcount(getline(n))
-	:    let n = n + 1
+	:  let lnum = a:firstline
+	:  let n = 0
+	:  while lnum <= a:lastline
+	:    let n = n + len(split(getline(lnum)))
+	:    let lnum = lnum + 1
 	:  endwhile
-	:  echo "found " . count . " words"
+	:  echo "found " . n . " words"
 	:endfunction
 
 You can call this function with: >
@@ -1208,7 +1208,7 @@ over them: >
 	one ~
 	two ~
 
-The will notice the keys are not ordered.  You can sort the list to get a
+You will notice the keys are not ordered.  You can sort the list to get a
 specific order: >
 
 	:for key in sort(keys(uk2nl))

@@ -1,7 +1,7 @@
 " Vim support file to detect file types
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2008 Apr 01
+" Last Change:	2008 Apr 28
 
 " Listen very carefully, I will say this only once
 if exists("did_load_filetypes")
@@ -539,8 +539,17 @@ au BufNewFile,BufRead denyhosts.conf		setf denyhosts
 " ROCKLinux package description
 au BufNewFile,BufRead *.desc			setf desc
 
-" the D language
-au BufNewFile,BufRead *.d			setf d
+" the D language or dtrace
+au BufNewFile,BufRead *.d			call s:DtraceCheck()
+
+func! s:DtraceCheck()
+  let lines = getline(1, min([line("$"), 100]))
+  if match(lines, '^#!\S\+dtrace\|#pragma\s\+D\s\+option\|:\S\{-}:\S\{-}:') > -1
+    setf dtrace
+  else
+    setf d
+  endif
+endfunc
 
 " Desktop files
 au BufNewFile,BufRead *.desktop,.directory	setf desktop
@@ -683,12 +692,17 @@ au BufNewFile,BufRead *.mo,*.gdmo		setf gdmo
 " Gedcom
 au BufNewFile,BufRead *.ged			setf gedcom
 
-" GIT
+" Git
 autocmd BufNewFile,BufRead *.git/COMMIT_EDITMSG    setf gitcommit
 autocmd BufNewFile,BufRead *.git/config,.gitconfig setf gitconfig
+autocmd BufNewFile,BufRead git-rebase-todo         setf gitrebase
 autocmd BufNewFile,BufRead .msg.[0-9]*
       \ if getline(1) =~ '^From.*# This line is ignored.$' |
       \   setf gitsendemail |
+      \ endif
+autocmd BufNewFile,BufRead *.git/**
+      \ if getline(1) =~ '^\x\{40\}\>\|^ref: ' |
+      \   setf git |
       \ endif
 
 " Gkrellmrc
@@ -1569,8 +1583,24 @@ au BufNewFile,BufRead *.siv			setf sieve
 " Sendmail
 au BufNewFile,BufRead sendmail.cf		setf sm
 
-" Sendmail .mc files are actually m4
-au BufNewFile,BufRead *.mc			setf m4
+" Sendmail .mc files are actually m4.  Could also be MS Message text file.
+au BufNewFile,BufRead *.mc			call s:McSetf()
+
+func! s:McSetf()
+  " Rely on the file to start with a comment.
+  " MS message text files use ';', Sendmail files use '#' or 'dnl'
+  for lnum in range(1, min([line("$"), 20]))
+    let line = getline(lnum)
+    if line =~ '^\s*\(#\|dnl\)'
+      setf m4  " Sendmail .mc file
+      return
+    elseif line =~ '^\s*;'
+      setf msmessages  " MS Message text file
+      return
+    endif
+  endfor
+  setf m4  " Default: Sendmail .mc file
+endfunc
 
 " Services
 au BufNewFile,BufRead /etc/services		setf services

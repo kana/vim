@@ -1,4 +1,4 @@
-*various.txt*   For Vim version 7.1.  Last change: 2008 Jan 23
+*various.txt*   For Vim version 7.1.  Last change: 2008 Apr 30
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -687,7 +687,7 @@ g CTRL-A		Only when Vim was compiled with MEM_PROFILING defined
 			Cannot be followed by another command, everything is
 			used as part of the pattern.  But you can use
 			|:execute| when needed.
-			Compressed help files will not be searched (Debian
+			Compressed help files will not be searched (Fedora
 			compresses the help files).
 			{not in Vi}
 

@@ -1,4 +1,4 @@
-*filetype.txt*  For Vim version 7.1.  Last change: 2007 Dec 20
+*filetype.txt*  For Vim version 7.1.  Last change: 2008 Apr 28
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -504,7 +504,7 @@ detection of source format see |ft-fortran-syntax|.
 
 GIT COMMIT                                              *ft-gitcommit-plugin*
 
-One command, :GitDiffCached, is provided to show a diff of the current commit
+One command, :DiffGitCached, is provided to show a diff of the current commit
 in the preview window.  It is equivalent to calling "git diff --cached" plus
 any arguments given to the command.
 
