@@ -2340,7 +2340,7 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 :maca	gui_mac.txt	/*:maca*
 :macaction	gui_mac.txt	/*:macaction*
 :macm	gui_mac.txt	/*:macm*
-:macmenukey	gui_mac.txt	/*:macmenukey*
+:macmenu	gui_mac.txt	/*:macmenu*
 :mak	quickfix.txt	/*:mak*
 :make	quickfix.txt	/*:make*
 :make_makeprg	quickfix.txt	/*:make_makeprg*
