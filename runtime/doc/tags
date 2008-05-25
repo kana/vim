@@ -6289,10 +6289,12 @@ mac-vimfile	os_mac.txt	/*mac-vimfile*
 macintosh	os_mac.txt	/*macintosh*
 macro	map.txt	/*macro*
 macvim	gui_mac.txt	/*macvim*
+macvim-backspace	gui_mac.txt	/*macvim-backspace*
 macvim-clientserver	remote.txt	/*macvim-clientserver*
 macvim-colors	gui_mac.txt	/*macvim-colors*
 macvim-colorscheme	gui_mac.txt	/*macvim-colorscheme*
 macvim-default-menu	gui_mac.txt	/*macvim-default-menu*
+macvim-delete	gui_mac.txt	/*macvim-delete*
 macvim-dialogs	gui_mac.txt	/*macvim-dialogs*
 macvim-differences	gui_mac.txt	/*macvim-differences*
 macvim-drag-n-drop	gui_mac.txt	/*macvim-drag-n-drop*
