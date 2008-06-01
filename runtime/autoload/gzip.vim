@@ -1,6 +1,6 @@
 " Vim autoload file for editing compressed files.
 " Maintainer: Bram Moolenaar <Bram@vim.org>
-" Last Change: 2008 May 29
+" Last Change: 2007 May 10
 
 " These functions are used by the gzip plugin.
 
@@ -73,15 +73,8 @@ fun gzip#read(cmd)
   let empty = line("'[") == 1 && line("']") == line("$")
   let tmp = tempname()
   let tmpe = tmp . "." . expand("<afile>:e")
-  if exists('*fnameescape')
-    let tmp_esc = fnameescape(tmp)
-    let tmpe_esc = fnameescape(tmpe)
-  else
-    let tmp_esc = escape(tmp, ' ')
-    let tmpe_esc = escape(tmpe, ' ')
-  endif
   " write the just read lines to a temp file "'[,']w tmp.gz"
-  execute "silent '[,']w " . tmpe_esc
+  execute "silent '[,']w " . escape(tmpe, ' ')
   " uncompress the temp file: call system("gzip -dn tmp.gz")
   call system(a:cmd . " " . s:escape(tmpe))
   if !filereadable(tmp)
@@ -102,12 +95,12 @@ fun gzip#read(cmd)
     setlocal nobin
     if exists(":lockmarks")
       if empty
-	execute "silent lockmarks " . l . "r ++edit " . tmp_esc
+	execute "silent lockmarks " . l . "r ++edit " . tmp
       else
-	execute "silent lockmarks " . l . "r " . tmp_esc
+	execute "silent lockmarks " . l . "r " . tmp
       endif
     else
-      execute "silent " . l . "r " . tmp_esc
+      execute "silent " . l . "r " . tmp
     endif
 
     " if buffer became empty, delete trailing blank line
@@ -117,8 +110,8 @@ fun gzip#read(cmd)
     endif
     " delete the temp file and the used buffers
     call delete(tmp)
-    silent! exe "bwipe " . tmp_esc
-    silent! exe "bwipe " . tmpe_esc
+    silent! exe "bwipe " . tmp
+    silent! exe "bwipe " . tmpe
   endif
 
   " Restore saved option values.
@@ -131,15 +124,10 @@ fun gzip#read(cmd)
 
   " When uncompressed the whole buffer, do autocommands
   if ok && empty
-    if exists('*fnameescape')
-      let fname = fnameescape(expand("%:r"))
-    else
-      let fname = escape(expand("%:r"), " \t\n*?[{`$\\%#'\"|!<")
-    endif
     if &verbose >= 8
-      execute "doau BufReadPost " . fname
+      execute "doau BufReadPost " . expand("%:r")
     else
-      execute "silent! doau BufReadPost " . fname
+      execute "silent! doau BufReadPost " . expand("%:r")
     endif
   endif
 endfun
