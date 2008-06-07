@@ -32,6 +32,8 @@ if !exists("sisu_no_identifiers")
   syn match   sisu_markpara            contains=@NoSpell                  "<:i[1-9]>"
   syn match   sisu_link                                                   " \*\~\S\+"
   syn match   sisu_action                                                 "^<:insert\d\+>"
+  syn match   sisu_require             contains=@NoSpell                  "^<<\s*[a-zA-Z0-9^._-]\+\.ss[it]$"
+  syn match   sisu_require             contains=@NoSpell                  "^<<{[a-zA-Z0-9^._-]\+\.ss[it]}$"
   syn match   sisu_contain                                                "<:e>"
   syn match   sisu_sem_marker                                             ";{\|};[a-z._]*[a-z]"
   syn match   sisu_sem_marker_block                                       "\([a-z][a-z._]*\|\):{\|}:[a-z._]*[a-z]"
@@ -154,6 +156,7 @@ hi def link sisu_heading          Title
 hi def link sisu_structure        Operator
 hi def link sisu_contain          Include
 hi def link sisu_mark_endnote     Include
+hi def link sisu_require          NonText
 hi def link sisu_link             NonText
 hi def link sisu_linked           String
 hi def link sisu_fontface         Include

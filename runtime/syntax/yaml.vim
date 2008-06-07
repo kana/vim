@@ -132,7 +132,7 @@ syn region  yamlDocumentHeader
       \ end='$'
       \ contains=yamlDirective
 syn match   yamlDocumentEnd
-      \ '...'
+      \ '\.\.\.'
 
 syn match   yamlDirective
       \ contained

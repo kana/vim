@@ -1,4 +1,4 @@
-*pi_tar.txt*	For Vim version 7.1.  Last change: 2008 Jan 07
+*pi_tar.txt*	For Vim version 7.1.  Last change: 2008 May 30
 
        	       	       +====================+
        	       	       | Tar File Interface |
@@ -43,6 +43,11 @@ Copyright 2005-2008: The GPL (gnu public license) applies to	*tar-copyright*
 ==============================================================================
 4. History						*tar-history*
 
+   v14 May 09, 2008 * arno caught a security bug
+       May 28, 2008 * various security improvements.  Now requires patch 299
+                      which provides the fnameescape() function
+       May 30, 2008 * allows one to view *.gz and *.bz2 files that are in
+                      *.tar files.
    v12 Sep 07, 2007 * &shq now used if not the empty string for g:tar_shq
    v10 May 02, 2006 * now using "redraw then echo" to show messages, instead
                       of "echo and prompt user"

@@ -1,4 +1,4 @@
-*map.txt*       For Vim version 7.1.  Last change: 2008 May 05
+*map.txt*       For Vim version 7.1.  Last change: 2008 May 07
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -507,9 +507,9 @@ defined.  Changing "mapleader" after that has no effect for already defined
 mappings.
 
 					*<LocalLeader>* *maplocalleader*
-Just like <Leader>, except that it uses "maplocalleader" instead of
-"mapleader".  <LocalLeader> is to be used for mappings which are local to a
-buffer.  Example: >
+<LocalLeader> is just like <Leader>, except that it uses "maplocalleader"
+instead of "mapleader".  <LocalLeader> is to be used for mappings which are
+local to a buffer.  Example: >
       :map <LocalLeader>q  \DoItNow
 <
 In a global plugin <Leader> should be used and in a filetype plugin

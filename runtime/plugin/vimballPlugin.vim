@@ -16,7 +16,7 @@
 if &cp || exists("g:loaded_vimballPlugin")
  finish
 endif
-let g:loaded_vimballPlugin = "v25"
+let g:loaded_vimballPlugin = "v26"
 let s:keepcpo              = &cpo
 set cpo&vim
 
@@ -25,7 +25,7 @@ set cpo&vim
 com! -ra   -complete=file -na=+ -bang MkVimball call vimball#MkVimball(<line1>,<line2>,<bang>0,<f-args>)
 com! -na=? -complete=dir  UseVimball  call vimball#Vimball(1,<f-args>)
 com! -na=0                VimballList call vimball#Vimball(0)
-com! -na=* -complete=dir  RmVimball   call vimball#RmVimball(<f-args>)
+com! -na=* -complete=dir  RmVimball   call vimball#SaveSettings()|call vimball#RmVimball(<f-args>)|call vimball#RestoreSettings()
 au BufEnter  *.vba.gz,*.vba.bz2,*.vba.zip call vimball#Decompress(expand("<amatch>"))
 au BufEnter  *.vba setlocal ff=unix noma bt=nofile fmr=[[[,]]] fdm=marker|call vimball#ShowMesg(0,"Source this file to extract it! (:so %)")
 
