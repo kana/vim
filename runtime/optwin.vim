@@ -1,7 +1,7 @@
 " These commands create the option window.
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2008 Jan 22
+" Last Change:	2008 May 12
 
 " If there already is an option window, jump to that one.
 if bufwinnr("option-window") > 0
@@ -147,7 +147,7 @@ endwhile
 
 " Open the window
 new option-window
-setlocal ts=15 tw=0
+setlocal ts=15 tw=0 noro
 
 " Insert help and a "set" command for each option.
 call append(0, '" Each "set" line shows the current value of an option (on the left).')
