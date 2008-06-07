@@ -1,6 +1,6 @@
 " Vim Plugin:	Edit the file with an existing Vim if possible
 " Maintainer:	Bram Moolenaar
-" Last Change:	2007 Aug 12
+" Last Change:	2008 May 29
 
 " This is a plugin, drop it in your (Unix) ~/.vim/plugin or (Win32)
 " $VIM/vimfiles/plugin directory.  Or make a symbolic link, so that you
@@ -105,8 +105,10 @@ func! EditExisting(fname, command)
 
   if winnr > 0
     exe winnr . "wincmd w"
+  elseif exists('*fnameescape')
+    exe "split " . fnameescape(a:fname)
   else
-    exe "split " . escape(a:fname, ' #%"|')
+    exe "split " . escape(a:fname, " \t\n*?[{`$\\%#'\"|!<")
   endif
 
   if a:command != ''

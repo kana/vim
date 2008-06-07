@@ -25,10 +25,10 @@ all fetch:
   @if get_md5(file) != "90fc32a08e0c4befdf86153d6947fd42":
     :fetch {fetch = $fetcha} $file
   file = doc/change.txt
-  @if get_md5(file) != "3de25a7c66bfa7342bc9e798c30719e5":
+  @if get_md5(file) != "aa1a9165651f28f6b56f9c73a51f0176":
     :fetch {fetch = $fetcha} $file
   file = doc/cmdline.txt
-  @if get_md5(file) != "11031e5a5d6b9bc3a3f7beed7272eabe":
+  @if get_md5(file) != "598af7cdc83a7b2dbc30526e07bd4bce":
     :fetch {fetch = $fetcha} $file
   file = doc/debug.txt
   @if get_md5(file) != "62f5da81e22b7481be04702f4abee724":
@@ -49,7 +49,7 @@ all fetch:
   @if get_md5(file) != "8a3025910524f7ce15177b66288bfe1a":
     :fetch {fetch = $fetcha} $file
   file = doc/eval.txt
-  @if get_md5(file) != "a8819532e07d9c929b44a25746761d5b":
+  @if get_md5(file) != "fb25c2877d895ab8b68d18efc9f1c9ca":
     :fetch {fetch = $fetcha} $file
   file = doc/farsi.txt
   @if get_md5(file) != "a03717a5a3d602b1ee31c97bfad0246e":
@@ -76,7 +76,7 @@ all fetch:
   @if get_md5(file) != "e49e6d726fa7bbf46283c4d12971d88f":
     :fetch {fetch = $fetcha} $file
   file = doc/map.txt
-  @if get_md5(file) != "5a3d005fa1fb08b107936a6fc1c8fa32":
+  @if get_md5(file) != "5bd47b2b5828eeaa678f50733f91e999":
     :fetch {fetch = $fetcha} $file
   file = doc/hebrew.txt
   @if get_md5(file) != "ecce71c02e9bea0f92342afd2e2de346":
@@ -139,7 +139,7 @@ all fetch:
   @if get_md5(file) != "41644e56be8eba17fd7f84bd9d256f11":
     :fetch {fetch = $fetcha} $file
   file = doc/options.txt
-  @if get_md5(file) != "7262e051563c7b18277301000350e544":
+  @if get_md5(file) != "8f3e6a0477fae7f0641e1ffd190fe7da":
     :fetch {fetch = $fetcha} $file
   file = doc/os_390.txt
   @if get_md5(file) != "7d700761ce1b8191d36dc430184eee27":
@@ -199,10 +199,10 @@ all fetch:
   @if get_md5(file) != "e9cffe18156bf2fbf5335b7ebb036a0a":
     :fetch {fetch = $fetcha} $file
   file = doc/pi_tar.txt
-  @if get_md5(file) != "a82543702614be70da746d2f4c6b5d8d":
+  @if get_md5(file) != "6c96f4d6d1102c7292a9892355860687":
     :fetch {fetch = $fetcha} $file
   file = doc/pi_vimball.txt
-  @if get_md5(file) != "e67f73bea2db99429caaef6b992272cb":
+  @if get_md5(file) != "9b1ab2a18a3c33e7446dc2ea44bd3cfe":
     :fetch {fetch = $fetcha} $file
   file = doc/pi_zip.txt
   @if get_md5(file) != "c45c1499cefbb9586017bc8ae68aab8f":
@@ -226,7 +226,7 @@ all fetch:
   @if get_md5(file) != "091fb5b61bc3758ea16c82303ed8f7f9":
     :fetch {fetch = $fetcha} $file
   file = doc/remote.txt
-  @if get_md5(file) != "7f2f9fc1976c6872eb7dce63563b8136":
+  @if get_md5(file) != "d9a60eece22aa3ea7a3f82400335c0ad":
     :fetch {fetch = $fetcha} $file
   file = doc/repeat.txt
   @if get_md5(file) != "2eaa40fde2870acd3855b7f749b7ed77":
@@ -253,7 +253,7 @@ all fetch:
   @if get_md5(file) != "837bad117e515c7f34c6b1e0405cde0d":
     :fetch {fetch = $fetcha} $file
   file = doc/syntax.txt
-  @if get_md5(file) != "ef8d75e762ccbbd618f91bc789dcda1b":
+  @if get_md5(file) != "6be4c637552d8e3c8182d9653bdac8b3":
     :fetch {fetch = $fetcha} $file
   file = doc/tabpage.txt
   @if get_md5(file) != "41ab372c309517455f66feb20300f150":
@@ -268,7 +268,7 @@ all fetch:
   @if get_md5(file) != "8dea209a381e7fb5a9dcf53c683ca256":
     :fetch {fetch = $fetcha} $file
   file = doc/todo.txt
-  @if get_md5(file) != "2787a518a3915dd0d2195aff4b42ada6":
+  @if get_md5(file) != "fafbb537fd97193227ca1a0385927deb":
     :fetch {fetch = $fetcha} $file
   file = doc/uganda.txt
   @if get_md5(file) != "95036d8022007f88d08c3a9358a04d74":
@@ -277,7 +277,7 @@ all fetch:
   @if get_md5(file) != "6afe93dc1f5d60336320774d2f76b978":
     :fetch {fetch = $fetcha} $file
   file = doc/usr_01.txt
-  @if get_md5(file) != "77dd400f1fbe643a1ac82670fe517eee":
+  @if get_md5(file) != "10c81a02400bfff718a0c88a63f2b88d":
     :fetch {fetch = $fetcha} $file
   file = doc/usr_02.txt
   @if get_md5(file) != "4e4c7bc10bf7308b0e318079bd01031b":
@@ -355,7 +355,7 @@ all fetch:
   @if get_md5(file) != "1d7c817fa0127fffeda9ace837d80591":
     :fetch {fetch = $fetcha} $file
   file = doc/usr_41.txt
-  @if get_md5(file) != "9e53b879b309db3c7bf4a6695bc5927b":
+  @if get_md5(file) != "890db1bcb6606992b88215a2ac26cadd":
     :fetch {fetch = $fetcha} $file
   file = doc/usr_42.txt
   @if get_md5(file) != "2ffdf76a8dbd49e8c110800c9e5c5fcf":
@@ -437,7 +437,7 @@ all fetch:
   @if get_md5(file) != "ea76c9cd25984e17d11c25047880ceb9":
     :fetch {fetch = $fetcha} $file
   file = macros/editexisting.vim
-  @if get_md5(file) != "9e331590a201a2f410cf3edea5cd2b6b":
+  @if get_md5(file) != "89ad7924fdfb051898a27b338afcf527":
     :fetch {fetch = $fetcha} $file
   :mkdir {f} macros/hanoi
   file = macros/hanoi/click.me
@@ -525,7 +525,7 @@ all fetch:
   @if get_md5(file) != "8302f7de1988d2a2fb1ab9025fc1420a":
     :fetch {fetch = $fetcha} $file
   file = optwin.vim
-  @if get_md5(file) != "6323856f9856e0a33688270792660537":
+  @if get_md5(file) != "6d8266c212ba95fd52206e8d1c03ef3b":
     :fetch {fetch = $fetcha} $file
   file = ftplugin.vim
   @if get_md5(file) != "7b4eec0415f447140c174a741f4ff503":
@@ -608,7 +608,7 @@ all fetch:
   @if get_md5(file) != "39e91c28c9212c776c25be69847eee58":
     :fetch {fetch = $fetcha} $file
   file = tutor/tutor
-  @if get_md5(file) != "68ad947b92ba50ec27cbf0b428152ea0":
+  @if get_md5(file) != "89dc613b87da92e94ff615f505b73d4b":
     :fetch {fetch = $fetcha} $file
   file = tutor/tutor.vim
   @if get_md5(file) != "1950435d77e9a4da5c6f710873392066":
@@ -617,13 +617,13 @@ all fetch:
   @if get_md5(file) != "c242c2e543f2b7b85cd0a86ada3ad528":
     :fetch {fetch = $fetcha} $file
   file = filetype.vim
-  @if get_md5(file) != "6b5ccfdacc908cb9e4f69eddb6811ed6":
+  @if get_md5(file) != "ce814a0a49e30e99cb330aa5f616c60e":
     :fetch {fetch = $fetcha} $file
   file = scripts.vim
   @if get_md5(file) != "d12fede790b223bb56d42e35a0de6152":
     :fetch {fetch = $fetcha} $file
   file = menu.vim
-  @if get_md5(file) != "d85147ade87c2f352bbb09ca2574ec27":
+  @if get_md5(file) != "3bafb4f8404882b85d45c3871ba0bf31":
     :fetch {fetch = $fetcha} $file
   file = macmap.vim
   @if get_md5(file) != "74777953bb8d0667d691d779ea135c8e":
@@ -654,13 +654,13 @@ all fetch:
   @if get_md5(file) != "3b8cffd8e9dafdae5d96a56daee0cae4":
     :fetch {fetch = $fetcha} $file
   file = autoload/getscript.vim
-  @if get_md5(file) != "f5ebc661c5266a26f31878b050b07450":
+  @if get_md5(file) != "70c3aff4ee9badc1dc3c2d691f55b981":
     :fetch {fetch = $fetcha} $file
   file = autoload/gnat.vim
   @if get_md5(file) != "a4edca34180ac960f356646f5f8b542c":
     :fetch {fetch = $fetcha} $file
   file = autoload/gzip.vim
-  @if get_md5(file) != "d116d6843ac85e4b03f109ce1b662110":
+  @if get_md5(file) != "7e554b24bc66a3925aa239a17f94d452":
     :fetch {fetch = $fetcha} $file
   file = autoload/htmlcomplete.vim
   @if get_md5(file) != "320e6b2f287f35433d1b1a4ed33f5863":
@@ -690,7 +690,7 @@ all fetch:
   @if get_md5(file) != "a3531058b12c52d27fe77bfa53a78be6":
     :fetch {fetch = $fetcha} $file
   file = autoload/spellfile.vim
-  @if get_md5(file) != "f5855aa7722fe8e503ea5463ff325617":
+  @if get_md5(file) != "5b944373c38159ea95a96e3a317c5ef0":
     :fetch {fetch = $fetcha} $file
   file = autoload/sqlcomplete.vim
   @if get_md5(file) != "b98354d00da75ced24225a99ede26153":
@@ -699,10 +699,10 @@ all fetch:
   @if get_md5(file) != "f9720c367264ffa0a4dc71d245ed8593":
     :fetch {fetch = $fetcha} $file
   file = autoload/tar.vim
-  @if get_md5(file) != "93583b7a5a2a5a01d025f2d90e19e46c":
+  @if get_md5(file) != "fb8763aa7f9e9f2791c0584aaef1f886":
     :fetch {fetch = $fetcha} $file
   file = autoload/vimball.vim
-  @if get_md5(file) != "632f873a8e53685c71aa85aeb7d4bb06":
+  @if get_md5(file) != "9104b0382b2c7c8d120af969737fe5cd":
     :fetch {fetch = $fetcha} $file
   file = autoload/xmlcomplete.vim
   @if get_md5(file) != "162431c8ad7e4bd183d460bc9736aef1":
@@ -806,7 +806,7 @@ all fetch:
   @if get_md5(file) != "65826e552fe6f873c9b97004d74e1895":
     :fetch {fetch = $fetcha} $file
   file = colors/README.txt
-  @if get_md5(file) != "626bba1c8056f288f175d0849c17507e":
+  @if get_md5(file) != "180ac44704885707617e5017b96bb02e":
     :fetch {fetch = $fetcha} $file
   :mkdir {f} compiler
   file = compiler/ant.vim
@@ -1686,7 +1686,7 @@ all fetch:
     :fetch {fetch = $fetcha} $file
   :mkdir {f} plugin
   file = plugin/getscriptPlugin.vim
-  @if get_md5(file) != "1055741892bab2a6e1b3c6ef2d451315":
+  @if get_md5(file) != "2f090b5acc6dbc973e275083e276c232":
     :fetch {fetch = $fetcha} $file
   file = plugin/gzip.vim
   @if get_md5(file) != "b06e4f43926d782d1196290892f9f678":
@@ -1698,19 +1698,19 @@ all fetch:
   @if get_md5(file) != "e2828d73d629a3fda0037c491e986486":
     :fetch {fetch = $fetcha} $file
   file = plugin/rrhelper.vim
-  @if get_md5(file) != "38ca7f4948f45790c4843f945aa11b04":
+  @if get_md5(file) != "43cf94ae9c34e18e86ecde61f31f17b0":
     :fetch {fetch = $fetcha} $file
   file = plugin/spellfile.vim
   @if get_md5(file) != "78a26299e645b91f831e66c34c2b61cb":
     :fetch {fetch = $fetcha} $file
   file = plugin/tarPlugin.vim
-  @if get_md5(file) != "5052fa6f98c1f8dbc54f99f311ed04a1":
+  @if get_md5(file) != "b113e567973ed28841381d3268ad31d9":
     :fetch {fetch = $fetcha} $file
   file = plugin/tohtml.vim
   @if get_md5(file) != "2b3dc0d481bf35fbcd9c3d29f9fc04f8":
     :fetch {fetch = $fetcha} $file
   file = plugin/vimballPlugin.vim
-  @if get_md5(file) != "edf248d325f9d7d9c2d9bdeca3348c8d":
+  @if get_md5(file) != "c2de03bffced08fbf98f80a8bac33f61":
     :fetch {fetch = $fetcha} $file
   file = plugin/zipPlugin.vim
   @if get_md5(file) != "c636fe725bc148eec8617c9b1fede2a1":
@@ -2059,7 +2059,7 @@ all fetch:
   @if get_md5(file) != "30fec07dd6cd50e45f375e3fa3e456cf":
     :fetch {fetch = $fetcha} $file
   file = syntax/dosbatch.vim
-  @if get_md5(file) != "434d684e70577c40cbceddadd330468b":
+  @if get_md5(file) != "3afad7cf793ca096597084ce6b2ea165":
     :fetch {fetch = $fetcha} $file
   file = syntax/dosini.vim
   @if get_md5(file) != "baddbf17427e6a7e34d89678f4f0853b":
@@ -2905,7 +2905,7 @@ all fetch:
   @if get_md5(file) != "ecef6e9fa1df58b5d050057bceeede93":
     :fetch {fetch = $fetcha} $file
   file = syntax/sisu.vim
-  @if get_md5(file) != "9736f6dac2d33f3298c9de294ea9102a":
+  @if get_md5(file) != "c04ec27555b79da04c92242698938dff":
     :fetch {fetch = $fetcha} $file
   file = syntax/skill.vim
   @if get_md5(file) != "3f17400206b7bb6f05e2873b36b02367":
@@ -3073,7 +3073,7 @@ all fetch:
   @if get_md5(file) != "9a8f9e123e0c1dabd1f884f56c2c05a8":
     :fetch {fetch = $fetcha} $file
   file = syntax/tex.vim
-  @if get_md5(file) != "e70fcd20dd4527305bb004ac8c39a1ab":
+  @if get_md5(file) != "6b10ccf5b48fa6d7b0925b7c12428b0d":
     :fetch {fetch = $fetcha} $file
   file = syntax/texinfo.vim
   @if get_md5(file) != "7e6043d43c41dd2b27f6e3a5abe82773":
@@ -3232,10 +3232,10 @@ all fetch:
   @if get_md5(file) != "9428f6bce6588ea26917049e7d12b310":
     :fetch {fetch = $fetcha} $file
   file = syntax/xpm.vim
-  @if get_md5(file) != "6b8a7f43478f4ac84fc0a4625def0c1f":
+  @if get_md5(file) != "3386431145a00c0a5ab82e30c70cb747":
     :fetch {fetch = $fetcha} $file
   file = syntax/xpm2.vim
-  @if get_md5(file) != "5eb1086e921135e881425a3c3763c4ee":
+  @if get_md5(file) != "c7ce305c81e0cb9e739c570aa40787d9":
     :fetch {fetch = $fetcha} $file
   file = syntax/xquery.vim
   @if get_md5(file) != "d6be0141d1a91c8641de0a143688039b":
@@ -3256,7 +3256,7 @@ all fetch:
   @if get_md5(file) != "f108b496f8d85c866f82bb34063601cd":
     :fetch {fetch = $fetcha} $file
   file = syntax/yaml.vim
-  @if get_md5(file) != "08b2c4e2d1fd11a18f120aa59c4c4aaf":
+  @if get_md5(file) != "c44acd35beb48fb81bee6df05e4a0580":
     :fetch {fetch = $fetcha} $file
   file = syntax/z8a.vim
   @if get_md5(file) != "5becbc40361c55087d45d023d9781ac4":
@@ -4135,7 +4135,7 @@ all fetch:
   @if get_md5(file) != "af0da03b5c998a8f8ed94a66763febd9":
     :fetch {fetch = $fetcha} $file
   file = doc/tags
-  @if get_md5(file) != "93e268acdb0ac2a961c83de191b685d7":
+  @if get_md5(file) != "b36b151a7409d2ee5d2819d9dea3d806":
     :fetch {fetch = $fetcha} $file
   :mkdir {f} print
   file = print/ascii.ps

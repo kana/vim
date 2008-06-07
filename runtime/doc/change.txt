@@ -1,4 +1,4 @@
-*change.txt*    For Vim version 7.1.  Last change: 2008 May 02
+*change.txt*    For Vim version 7.1.  Last change: 2008 Jun 04
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -230,15 +230,17 @@ Replace mode" |mode-ins-repl|).
 
 						*cw* *cW*
 Special case: "cw" and "cW" work the same as "ce" and "cE" if the cursor is
-on a non-blank.  This is because Vim interprets "cw" as change-word, and a
-word does not include the following white space.  {Vi: "cw" when on a blank
-followed by other blanks changes only the first blank; this is probably a
-bug, because "dw" deletes all the blanks; use the 'w' flag in 'cpoptions' to
-make it work like Vi anyway}
+on a non-blank and not at the end of a word.  This is because Vim interprets
+"cw" as change-word, and a word does not include the following white space.
+{Vi: "cw" when on a blank followed by other blanks changes only the first
+blank; this is probably a bug, because "dw" deletes all the blanks; use the
+'w' flag in 'cpoptions' to make it work like Vi anyway}
 
 If you prefer "cw" to include the space after a word, use this mapping: >
 	:map cw dwi
-<
+If you want to change a word when the cursor is not at the start use "ciw"
+(|c| |iw|).
+
 							*:c* *:ch* *:change*
 :{range}c[hange][!]	Replace lines of text with some different text.
 			Type a line containing only "." to stop replacing.

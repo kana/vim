@@ -5343,6 +5343,7 @@ fname_diff-variable	eval.txt	/*fname_diff-variable*
 fname_in-variable	eval.txt	/*fname_in-variable*
 fname_new-variable	eval.txt	/*fname_new-variable*
 fname_out-variable	eval.txt	/*fname_out-variable*
+fnameescape()	eval.txt	/*fnameescape()*
 fnamemodify()	eval.txt	/*fnamemodify()*
 fo-table	change.txt	/*fo-table*
 fold-behavior	fold.txt	/*fold-behavior*
@@ -5563,6 +5564,7 @@ g:ada_space_errors	ada.txt	/*g:ada_space_errors*
 g:ada_standard_types	ada.txt	/*g:ada_standard_types*
 g:ada_with_gnat_project_files	ada.txt	/*g:ada_with_gnat_project_files*
 g:ada_withuse_ordinary	ada.txt	/*g:ada_withuse_ordinary*
+g:colors_name	options.txt	/*g:colors_name*
 g:decada	ada.txt	/*g:decada*
 g:decada.Error_Format	ada.txt	/*g:decada.Error_Format*
 g:decada.Make()	ada.txt	/*g:decada.Make()*
@@ -5650,6 +5652,7 @@ g:tar_readoptions	pi_tar.txt	/*g:tar_readoptions*
 g:tar_writeoptions	pi_tar.txt	/*g:tar_writeoptions*
 g:var	eval.txt	/*g:var*
 g:vimball_home	pi_vimball.txt	/*g:vimball_home*
+g:vimball_mkdir	pi_vimball.txt	/*g:vimball_mkdir*
 g:vimball_path_escape	pi_vimball.txt	/*g:vimball_path_escape*
 g:vimsyn_embed	syntax.txt	/*g:vimsyn_embed*
 g:vimsyn_folding	syntax.txt	/*g:vimsyn_folding*
@@ -7672,6 +7675,7 @@ tex-error	syntax.txt	/*tex-error*
 tex-folding	syntax.txt	/*tex-folding*
 tex-math	syntax.txt	/*tex-math*
 tex-morecommands	syntax.txt	/*tex-morecommands*
+tex-nospell	syntax.txt	/*tex-nospell*
 tex-package	syntax.txt	/*tex-package*
 tex-runon	syntax.txt	/*tex-runon*
 tex-slow	syntax.txt	/*tex-slow*
@@ -7994,6 +7998,7 @@ vimball	pi_vimball.txt	/*vimball*
 vimball-contents	pi_vimball.txt	/*vimball-contents*
 vimball-extract	pi_vimball.txt	/*vimball-extract*
 vimball-history	pi_vimball.txt	/*vimball-history*
+vimball-intro	pi_vimball.txt	/*vimball-intro*
 vimball-manual	pi_vimball.txt	/*vimball-manual*
 vimdev	intro.txt	/*vimdev*
 vimdiff	diff.txt	/*vimdiff*

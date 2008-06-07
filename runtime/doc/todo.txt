@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.1.  Last change: 2008 May 06
+*todo.txt*      For Vim version 7.1.  Last change: 2008 Jun 04
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,15 +30,27 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
+Finish incomplete utf-8 sequences patch. (Ben Schmidt)
+
+Bug when reading file with one byte 0xfc in utf-8. (Dominique Pelle, 2008 Apr
+6)  Ben Schmidt mentions it's already fixed by his patch (2008 May 16).
+
+Patch for BSD console mouse support.  Paul Mahol, 2008 Apr 9, 2008 Apr 21.
+
+Problems with using :execute in Vim scripts. (rdancer / Jan Minar, 2008 May
+14)  Unpacked in /tmp/vulnerablevim/
+Problems with tar.vim, zip.vim and netrw forwarded to Charles Campbell.
+Check out use of :exe starting with  scripts.vim
+
+Crash with specific regexp. (Andreas Politz, 2008 May 22)
+
+Win32: patch for if_python.c  /tmp/vim-win64.diff.1
+
 Fix for matchparen HL doesn't work.  beep.
 
 debian runtime files. (James Vega)
 
-Bug when reading file with one byte 0xfc in utf-8. (Dominique Pelle, 2008 Apr
-6)
-
-Patch to clean up shortpath_for_invalid_fname(). (Yegappan Lakshmanan, 2008
-Mar 31)
+Don't install gvimtutor when compiled without GUI. (NAKAGAWA Tsuneo)
 
 Ukranian translations.  Uses utf-8, add conversions in Makefile.
 
@@ -48,8 +60,6 @@ ccline?  (Dominique Pelle)
 Wildmenu not deleted: "gvim -u NONE", ":set nocp wildmenu cmdheight=3
 laststatus=2", CTRL-D CTRL-H CTRL-H CTRL-H. (A.Politz, 2008 April 1)
 Works OK with Vim in an xterm.
-
-Patch to expand <leader>.  Charles Campbell, 2008 Mar 19.
 
 Test 11 breaks after patch 7.1.186 on Win32 console. (Daniel Shahaf, 2008 Apr
 10)
@@ -64,8 +74,6 @@ Returns ['12a4', 'aaa', '4aaa'], should be ['12a4', 'aaa', '']
 Backreference not cleared when retrying after \@<= fails?
 (Brett Stahlman, 2008 March 8)
 
-Patch for SELinux support. (James Vega, 2008 Apr 10)
-
 Docs corrections. (Adri Verhoef, 2008 Apr 23)
 
 When adding path to 'tags' with a wildcard, it appears only a first match is
@@ -74,16 +82,14 @@ is not supported, only in the path?
 
 Have a look at patch for utf-8 line breaking. (Yongwei Wu, 2008 Mar 1, Mar 23)
 
-Patch for netbeans.txt, Thoml, 2008 Mar 20
-
-Patch for BSD console mouse support.  Paul Mahol, 2008 Apr 9, 2008 Apr 21.
-
 Setting 'pastetoggle' to "jj" doesn't work.  Was OK in vim 7.0. (James Vega,
 2008 May 4)
 
 ":let &g:tw = 44" sets the local option value. (Cyril Slobin, 2008 Apr 25)
 
 Problem with 'langmap' parsing. (James Vega, 2008 Jan 27)
+Problem with 'langmap' being used on the rhs of a mapping. (Nikolai Weibull,
+2008 May 14)
 
 Problem with CTRL-F. (Charles Campbell, 2008 March 21)
 Only happens with "gvim -geometry "160x26+4+27" -u NONE -U NONE prop.c".
@@ -92,24 +98,27 @@ Only happens with "gvim -geometry "160x26+4+27" -u NONE -U NONE prop.c".
 Unexpectedly inserting a double quote. (Anton Woellert, 2008 Mar 23)
 Works OK when 'cmdheight' is 2.
 
-Win32: patch for if_python.c  /tmp/vim-win64.diff.1
-
 The utf class table is missing some entries:
 	0x2212, minus sign 
 	0x2217, star
 	0x2500, bar
 	0x26ab, circle
 
+Patch for netbeans.txt, Thoml, 2008 Mar 20
+Large update for netbeans.txt, Philippe Fremy, 2008 May 26
+
 Visual line mode doesn't highlight properly when 'showbreak' is used and the
 line doesn't fit. (Dasn, 2008 May 1)
+
+Patch to reduce FileChangedShellPost events. (John Little, 2008 May 18)
+
+GTK: Patch to avoid the command line going below the screen when Vim is
+maximized. (Geoffrey Antos, 2008 May 5)
 
 Mac: patch for mouse wheel scroll under Leopard. (Eckehard Berns, 2007 Dec 7)
 
 Mac: patch to make it build with GTK. (Ben Schmidt, 2008 Jan 5, update 2008
 Mar 29)
-
-GTK: Patch to avoid the command line going below the screen when Vim is
-maximized. (Geoffrey Antos, 2008 May 5)
 
 Mac: After a ":vsplit" the left scrollbar doesn't appear until 'columns' is
 changed or the window is resized.
@@ -131,6 +140,9 @@ the rest not to be cleared.
 Patch for redo register. (Ben Schmidt, 2007 Oct 19)
 Await response to question to make the register writable.
 
+Internal error when compiled with EXITFREE and using the nerd_tree plugin.
+With patch.  (Dominique Pelle, 2008 May 17)
+
 Problem with 'ts' set to 9 and 'showbreak' to ">>>". (Matthew Winn, 2007 Oct
 1)
 
@@ -139,8 +151,11 @@ Patch to make <S-Space> work in GTK with XIM. (Yukihiro Nakadaira, 2008 Feb
 
 "vim -O aa aa" gives only one window. (Zdenek Sekera, 2008 Apr 16)
 
+Patch for glob() with special characters, avoid "echo -n". (Gary Johnson, 2008
+May 8)
+
 Problem with 'wildmenu' after ":lcd", up/down arrows don't work. (Tony
-Mechelynck, 2008 April 13)  patch from Erik Falor, 2008 Apr 16.
+Mechelynck, 2008 April 13)  patch from Erik Falor, 2008 Apr 16, June 1.
 
 Find a way to include the regexp code:
 	http://vim-soc-regexp.googlecode.com/svn/  (sbboat one)
@@ -165,8 +180,14 @@ Syntax highlighting wrong for transparent region. (Doug Kearns, 2007 Feb 26)
 Bug in using a transparent syntax region. (Hanlen in vim-dev maillist, 2007
 Jul 31)
 
+Patch for netbeans event handling, avoid that events are handled while
+updating the screen. (Xavier de Gaye, 2008 May 31)
+
 C syntax: {} inside () causes following {} to be highlighted as error.
 (Michalis Giannakidis, 2006 Jun 1)
+
+'ic' and 'smartcase' don't work properly when using \%V in search pattern.
+(fritzophrenic, 2008 May 15)
 
 Win32: use of get_short_pathname() is bad.  Add comments for function
 arguments.  Check what happens for ":echo fnamemodify('c:\abc\abc', ':8')".
@@ -200,6 +221,9 @@ globpath() doesn't work as expected.  The example shows using 'path', but the
 
 Error when cancelling completion menu and auto-formatting. (Tim Weber, 2008
 Apr 17)
+
+Problem with compound words?  (Bert, 2008 May 6)
+No warning for when flags are defined after they are used in an affix.
 
 With Visual selection, "r" and then CTRL-C  Visual mode is stopped but the
 highlighting is not removed.
@@ -241,7 +265,8 @@ Hangs for about 5 seconds.  Appears to be caused by finding include files with
 When the file name has parenthesis, e.g., "foo (bar).txt", ":!ls '%'" has the
 parenthesis escaped but not the space.  That's inconsistent.  Either escape
 neither or both.  No escaping might be best, because it doesn't depend on
-particularities of the shell. (Zvi Har'El, 2007 Nov 10)
+particularities of the shell. (Zvi Har'El, 2007 Nov 10) (Teemu Likonen, 2008
+Jun 3)
 However, for backwards compatibility escaping might be necessary.  Check if
 the user put quotes around the expanded item?
 
@@ -401,7 +426,7 @@ Windows installer could add a "open in new tab of existing Vim" menu entry.
 Gvimext: patch to add "Edit with single Vim &tabbed" menu entry.
 Just have two choices, always using one Vim and selecting between using an
 argument list or opening each file in a separate tab.
-(Erik Falor, 2008 Feb 6, patch is backwards)
+(Erik Falor, 2008 May 21)
 
 GUI: When combining fg en bg make sure they are not equal.
 
@@ -418,6 +443,10 @@ The generated vim.bat can avoid the loop for NT. (Carl Zmola, 2006 Sep 3)
 
 Session file creation: 'autochdir' causes trouble.  Keep it off until after
 loading all files.
+
+When showing a diff between a non-existant file and an existing one, with the
+cursor in the empty buffer, the other buffer only shows the last line.  Change
+the "insert" into a change from one line to many? (Yakov Lerner, 2008 May 27)
 
 Add autocommand for when a tabpage is being closed.  Also for when a tab page
 has been created.
@@ -608,8 +637,11 @@ Griffis, 2007 Sep 19)
 Patch for configure.in to support cross-compiling: Marc Haisenko, 2007 Sep 24.
 Again 2007 Dec 12, 2008 Jan 9.  Some more from Philip Prindeville, 2007 Dec 18.
 Patch for /usr/local: Michael Haubenwallner, 2008 Jan 11
+Remarks by TPS Nakagawa, 2008 May 14.
 
 Patch for supporting #rrggbb in color terminals.  Patch by Matt Wozniski.
+
+Create a gvimtutor.1 file and change Makefiles to install it.
 
 
 Vim 7.2:
@@ -2231,6 +2263,8 @@ Built-in script language:
 	shorten(fname)		shorten a file name, like home_replace()
 	perl(cmd)		call Perl and return string
 	inputrl()		like input() but right-to-left
+	typed()			return the characters typed and consumed (to
+				find out what happened)
 	virtualmode()		add argument to obtain whether "$" was used in
 				Visual block mode.
 	getacp()		Win32: get codepage (Glenn Maynard)

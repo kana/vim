@@ -1,4 +1,4 @@
-*usr_41.txt*	For Vim version 7.1.  Last change: 2008 May 05
+*usr_41.txt*	For Vim version 7.1.  Last change: 2008 May 28
 
 		     VIM USER MANUAL - by Bram Moolenaar
 
@@ -583,6 +583,7 @@ String manipulation:
 	printf()		format a string according to % items
 	escape()		escape characters in a string with a '\'
 	shellescape()		escape a string for use with a shell command
+	fnameescape()		escape a file name for use with a Vim command
 	tr()			translate characters from one set to another
 	strtrans()		translate a string to make it printable
 	tolower()		turn a string to lowercase

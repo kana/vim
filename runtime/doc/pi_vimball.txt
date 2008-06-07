@@ -1,4 +1,4 @@
-*pi_vimball.txt*	For Vim version 7.1.  Last change: 2008 Apr 01
+*pi_vimball.txt*	For Vim version 7.1.  Last change: 2008 May 30
 
 			       ----------------
 			       Vimball Archiver
@@ -6,7 +6,7 @@
 
 Author:  Charles E. Campbell, Jr.  <NdrOchip@ScampbellPfamily.AbizM>
 	  (remove NOSPAM from Campbell's email first)
-Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*Vimball-copyright*
+Copyright: (c) 2004-2008 by Charles E. Campbell, Jr.	*Vimball-copyright*
 	   The VIM LICENSE applies to Vimball.vim, and Vimball.txt
 	   (see |copyright|) except use "Vimball" instead of "Vim".
 	   No warranty, express or implied.
@@ -16,15 +16,44 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*Vimball-copyright*
 1. Contents				*vba* *vimball* *vimball-contents*
 
 	1. Contents......................................: |vimball-contents|
-	2. Vimball Manual................................: |vimball-manual|
+	3. Vimball Manual................................: |vimball-manual|
 	   MkVimball.....................................: |:MkVimball|
 	   UseVimball....................................: |:UseVimball|
 	   RmVimball.....................................: |:RmVimball|
-	3. Vimball History...............................: |vimball-history|
+	4. Vimball History...............................: |vimball-history|
 
 
 ==============================================================================
-2. Vimball Manual					*vimball-manual*
+2. Vimball Introduction						*vimball-intro*
+
+	Vimball is intended to make life simpler for users of plugins.  All
+	a user needs to do with a vimball is: >
+		vim someplugin.vba
+		:so %
+		:q
+<	and the plugin and all its components will be installed into their
+	appropriate directories.  Note that one doesn't need to be in any
+	particular directory when one does this.  Plus, any help for the
+	plugin will also be automatically installed.
+
+	If a user has decided to use the AsNeeded plugin, vimball is smart
+	enough to put scripts nominally intended for .vim/plugin/ into
+	.vim/AsNeeded/ instead.
+
+	Removing a plugin that was installed with vimball is really easy: >
+		vim
+		:RmVimball someplugin
+<	This operation is not at all easy for zips and tarballs, for example.
+
+	Vimball examines the user's |'runtimepath'| to determine where to put
+	the scripts.  The first directory mentioned on the runtimepath is
+	usually used if possible.  Use >
+		:echo &rtp
+<	to see that directory.
+
+
+==============================================================================
+3. Vimball Manual					*vimball-manual*
 
 							*:MkVimball*
 		:[range]MkVimball[!] filename [path]
@@ -49,6 +78,19 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*Vimball-copyright*
 	If you use the exclamation point (!), then MkVimball will create the
 	"filename.vba" file, overwriting it if it already exists.  This
 	behavior resembles that for |:w|.
+
+							*g:vimball_mkdir*
+	First, the |mkdir()| command is tried (not all systems support it).
+
+	If it doesn't exist, then g:vimball_mkdir doesn't exist, it is set to:
+	  |g:netrw_local_mkdir|, if it exists
+	   "mkdir", if it is executable
+	   "makedir", if it is executable
+	   Otherwise, it is undefined.
+	One may explicitly specify the directory making command using
+	g:vimball_mkdir.  This command is used to make directories that
+	are needed as indicated by the vimball.
+
 							*g:vimball_home*
 	You may override the use of the |'runtimepath'| by specifying a
 	variable, g:vimball_home.
@@ -96,10 +138,19 @@ Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.	*Vimball-copyright*
 
 
 ==============================================================================
-3. Vimball History					*vimball-history* {{{1
+4. Vimball History					*vimball-history* {{{1
 
 	25 : Mar 24, 2008 * changed vimball#Vimball() to recognize doc/*.??x
 			    files as help files, too.
+	     Apr 18, 2008 * RmVimball command is now protected by saving and
+	                    restoring settings -- in particular, acd was
+			    causing problems as reported by Zhang Shuhan
+	     May 27, 2008 * g:vimball_mkdir usage installed.  Makes the
+	                    $HOME/.vim (or $HOME\vimfiles) directory if
+			    necessary.
+	     May 30, 2008 * (tnx to Bill McCarthy) found and fixed a bug:
+			    vimball wasn't updating plugins to AsNeeded/
+			    when it should
 	24 : Nov 15, 2007 * |g:vimball_path_escape| used by s:Path() to
 	                    prevent certain characters from causing trouble
 	22 : Mar 21, 2007 * uses setlocal instead of set during BufEnter

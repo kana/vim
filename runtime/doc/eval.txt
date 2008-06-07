@@ -1,4 +1,4 @@
-*eval.txt*      For Vim version 7.1.  Last change: 2008 May 05
+*eval.txt*      For Vim version 7.1.  Last change: 2008 May 29
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -1652,6 +1652,7 @@ finddir( {name}[, {path}[, {count}]])
 				String	find directory {name} in {path}
 findfile( {name}[, {path}[, {count}]])
 				String	find file {name} in {path}
+fnameescape( {fname})		String	escape special characters in {fname}
 fnamemodify( {fname}, {mods})	String	modify file name
 foldclosed( {lnum})		Number	first line of fold at {lnum} if closed
 foldclosedend( {lnum})		Number	last line of fold at {lnum} if closed
@@ -1894,7 +1895,7 @@ argv([{nr}])	The result is the {nr}th file in the argument list of the
 		Example: >
 	:let i = 0
 	:while i < argc()
-	:  let f = escape(argv(i), '. ')
+	:  let f = escape(fnameescape(argv(i)), '.')
 	:  exe 'amenu Arg.' . f . ' :e ' . f . '<CR>'
 	:  let i = i + 1
 	:endwhile
@@ -2360,8 +2361,9 @@ escape({string}, {chars})				*escape()*
 			:echo escape('c:\program files\vim', ' \')
 <		results in: >
 			c:\\program\ files\\vim
+<		Also see |shellescape()|.
 
-<							*eval()*
+							*eval()*
 eval({string})	Evaluate {string} and return the result.  Especially useful to
 		turn the result of |string()| back into the original value.
 		This works for Numbers, Floats, Strings and composites of
@@ -2666,6 +2668,19 @@ findfile({name}[, {path}[, {count}]])				*findfile()*
 			:echo findfile("tags.vim", ".;")
 <		Searches from the directory of the current file upwards until
 		it finds the file "tags.vim".
+
+fnameescape({string})					*fnameescape()*
+		Escape {string} for use as file name command argument.  All
+		characters that have a special meaning, such as '%' and '|'
+		are escaped with a backslash.
+		For most systems the characters escaped are "".  For systems
+		where a backslash appears in a filename, it depends on the
+		value of 'isfname'.
+		Example: >
+			:let fname = 'some str%nge|name'
+			:exe "edit " . fnameescape(fname)
+<		results in executing: >
+			edit some\ str\%nge\|name
 
 fnamemodify({fname}, {mods})				*fnamemodify()*
 		Modify file name {fname} according to {mods}.  {mods} is a
@@ -6478,6 +6493,11 @@ This would call the function "my_func_whizz(parameter)".
 		:execute "normal ixxx\<Esc>"
 <			This has an <Esc> character, see |expr-string|.
 
+			Be careful to correctly escape special characters in
+			file names.  The |fnameescape()| function can be used
+			for this.  Example: >
+		:execute "e " . fnameescape(filename)
+<
 			Note: The executed string may be any command-line, but
 			you cannot start or end a "while", "for" or "if"
 			command.  Thus this is illegal: >
@@ -7347,7 +7367,7 @@ parentheses can be cut out from |v:exception| with the ":substitute" command.
 	:
 	:function! Write(file)
 	:  try
-	:    execute "write" a:file
+	:    execute "write" fnameescape(a:file)
 	:  catch /^Vim(write):/
 	:    throw "EXCEPT:IO(" . getcwd() . ", " . a:file . "):WRITEERR"
 	:  endtry

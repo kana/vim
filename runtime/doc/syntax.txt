@@ -1,4 +1,4 @@
-*syntax.txt*	For Vim version 7.1.  Last change: 2008 May 02
+*syntax.txt*	For Vim version 7.1.  Last change: 2008 Jun 03
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -103,7 +103,7 @@ To put this into a mapping, you can use: >
 	\ endif <CR>
 [using the |<>| notation, type this literally]
 
-Details
+Details:
 The ":syntax" commands are implemented by sourcing a file.  To see exactly how
 this works, look in the file:
     command		file ~
@@ -2548,6 +2548,14 @@ in your <.vimrc>, and :set fdm=syntax.  I suggest doing the latter via a
 modeline at the end of your LaTeX file: >
 	% vim: fdm=syntax
 <
+								*tex-nospell*
+Don't Want Spell Checking In Comments? ~
+
+Some folks like to include things like source code in comments and so would
+prefer that spell checking be disabled in comments in LaTeX files.  To do
+this, put the following in your <.vimrc>: >
+      let g:tex_comment_nospell= 1
+<
 								*tex-runon*
 Run-on Comments/Math? ~
 
@@ -3527,9 +3535,9 @@ single name.
 	remove={group-name}..
 		The specified groups are removed from the cluster.
 
-A cluster so defined may be referred to in a contains=.., nextgroup=.., add=..
-or remove=.. list with a "@" prefix.  You can also use this notation to
-implicitly declare a cluster before specifying its contents.
+A cluster so defined may be referred to in a contains=.., containedin=..,
+nextgroup=.., add=..  or remove=.. list with a "@" prefix.  You can also use
+this notation to implicitly declare a cluster before specifying its contents.
 
 Example: >
    :syntax match Thing "# [^#]\+ #" contains=@ThingMembers

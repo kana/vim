@@ -1,7 +1,7 @@
 " tar.vim: Handles browsing tarfiles
 "            AUTOLOAD PORTION
-" Date:			Jan 07, 2008
-" Version:		13
+" Date:			May 30, 2008
+" Version:		14
 " Maintainer:	Charles E Campbell, Jr <NdrOchip@ScampbellPfamily.AbizM-NOSPAM>
 " License:		Vim License  (see vim's :help license)
 "
@@ -24,8 +24,11 @@ set cpo&vim
 if &cp || exists("g:loaded_tar") || v:version < 700
  finish
 endif
-let g:loaded_tar= "v13"
+let g:loaded_tar= "v14"
 "call Decho("loading autoload/tar.vim")
+if v:version < 701 || (v:version == 701 && !has("patch299"))
+ echoerr "(autoload/tar.vim) need vim v7.1 with patchlevel 299"
+endif
 
 " ---------------------------------------------------------------------
 "  Default Settings: {{{1
@@ -41,15 +44,22 @@ endif
 if !exists("g:tar_writeoptions")
  let g:tar_writeoptions= "uf"
 endif
-if !exists("g:tar_shq")
- if &shq != ""
-  let g:tar_shq= &shq
- elseif has("unix")
-  let g:tar_shq= "'"
- else
-  let g:tar_shq= '"'
+
+ " set up shell quoting character
+ if !exists("g:tar_shq")
+  if exists("&shq") && &shq != ""
+   let g:tar_shq= &shq
+  elseif has("win32") || has("win95") || has("win64") || has("win16")
+   if g:netrw_cygwin
+    let g:tar_shq= "'"
+   else
+    let g:tar_shq= '"'
+   endif
+  else
+   let g:tar_shq= "'"
+  endif
+" call Decho("g:tar_shq<".g:tar_shq.">")
  endif
-endif
 
 " ----------------
 "  Functions: {{{1
@@ -97,29 +107,31 @@ fun! tar#Browse(tarfile)
 
   " give header
 "  call Decho("printing header")
-  exe "$put ='".'\"'." tar.vim version ".g:loaded_tar."'"
-  exe "$put ='".'\"'." Browsing tarfile ".a:tarfile."'"
-  exe "$put ='".'\"'." Select a file with cursor and press ENTER"."'"
+  let lastline= line("$")
+  call setline(lastline+1,'" tar.vim version '.g:loaded_tar)
+  call setline(lastline+2,'" Browsing tarfile '.a:tarfile)
+  call setline(lastline+3,'" Select a file with cursor and press ENTER')
   0d
   $
 
   let tarfile= a:tarfile
   if has("win32") && executable("cygpath")
    " assuming cygwin
-   let tarfile=substitute(system("cygpath -u ".tarfile),'\n$','','e')
+   let tarfile=substitute(system("cygpath -u ".s:Escape(tarfile)),'\n$','','e')
   endif
   let curlast= line("$")
   if tarfile =~# '\.\(gz\|tgz\)$'
-"   call Decho("exe silent r! gzip -d -c ".g:tar_shq.tarfile.g:tar_shq." | ".g:tar_cmd." -".g:tar_browseoptions." - ")
-   exe "silent r! gzip -d -c ".g:tar_shq.tarfile.g:tar_shq." | ".g:tar_cmd." -".g:tar_browseoptions." - "
+"   call Decho("1: exe silent r! gzip -d -c ".s:Escape(tarfile)." | ".g:tar_cmd." -".g:tar_browseoptions." - ")
+   exe "silent r! gzip -d -c -- ".s:Escape(tarfile)." | ".g:tar_cmd." -".g:tar_browseoptions." - "
   elseif tarfile =~# '\.lrp'
-   exe "silent r! cat ".g:tar_shq.tarfile.g:tar_shq."|gzip -d -c -|".g:tar_cmd." -".g:tar_browseoptions." - "
+"   call Decho("2: exe silent r! cat -- ".s:Escape(tarfile)."|gzip -d -c -|".g:tar_cmd." -".g:tar_browseoptions." - ")
+   exe "silent r! cat -- ".s:Escape(tarfile)."|gzip -d -c -|".g:tar_cmd." -".g:tar_browseoptions." - "
   elseif tarfile =~# '\.bz2$'
-"   call Decho("exe silent r! bzip2 -d -c ".g:tar_shq.tarfile.g:tar_shq." | ".g:tar_cmd." -".g:tar_browseoptions." - ")
-   exe "silent r! bzip2 -d -c ".g:tar_shq.tarfile.g:tar_shq." | ".g:tar_cmd." -".g:tar_browseoptions." - "
+"   call Decho("3: exe silent r! bzip2 -d -c ".s:Escape(tarfile)." | ".g:tar_cmd." -".g:tar_browseoptions." - ")
+   exe "silent r! bzip2 -d -c -- ".s:Escape(tarfile)." | ".g:tar_cmd." -".g:tar_browseoptions." - "
   else
-"   call Decho("exe silent r! ".g:tar_cmd." -".g:tar_browseoptions." ".g:tar_shq.tarfile.g:tar_shq)
-   exe "silent r! ".g:tar_cmd." -".g:tar_browseoptions." ".g:tar_shq.tarfile.g:tar_shq
+"   call Decho("4: exe silent r! ".g:tar_cmd." -".g:tar_browseoptions." ".s:Escape(tarfile))
+   exe "silent r! ".g:tar_cmd." -".g:tar_browseoptions." ".s:Escape(tarfile)
   endif
   if v:shell_error != 0
    redraw!
@@ -170,7 +182,7 @@ fun! s:TarBrowseSelect()
   let curfile= expand("%")
   if has("win32") && executable("cygpath")
    " assuming cygwin
-   let tarfile=substitute(system("cygpath -u ".tarfile),'\n$','','e')
+   let tarfile=substitute(system("cygpath -u ".s:Escape(tarfile)),'\n$','','e')
   endif
 
   new
@@ -195,24 +207,43 @@ fun! tar#Read(fname,mode)
   let fname   = substitute(a:fname,'tarfile:.\{-}:\(.*\)$','\1','')
   if has("win32") && executable("cygpath")
    " assuming cygwin
-   let tarfile=substitute(system("cygpath -u ".tarfile),'\n$','','e')
+   let tarfile=substitute(system("cygpath -u ".s:Escape(tarfile)),'\n$','','e')
   endif
 "  call Decho("tarfile<".tarfile.">")
 "  call Decho("fname<".fname.">")
 
-  if tarfile =~# '\.\(gz\|tgz\)$'
-"   call Decho("exe silent r! gzip -d -c ".g:tar_shq.tarfile.g:tar_shq."| ".g:tar_cmd." -".g:tar_readoptions." - ".g:tar_shq.fname.g:tar_shq)
-   exe "silent r! gzip -d -c ".g:tar_shq.tarfile.g:tar_shq."| ".g:tar_cmd." -".g:tar_readoptions." - ".g:tar_shq.fname.g:tar_shq
-  elseif tarfile =~# '\.lrp$'
-"   call Decho("exe silent r! cat ".g:tar_shq.tarfile.g:tar_shq." | gzip -d -c - | ".g:tar_cmd." -".g:tar_readoptions." - ".g:tar_shq.fname.g:tar_shq)
-   exe "silent r! cat ".g:tar_shq.tarfile.g:tar_shq." | gzip -d -c - | ".g:tar_cmd." -".g:tar_readoptions." - ".g:tar_shq.fname.g:tar_shq
-  elseif tarfile =~# '\.bz2$'
-"   call Decho("exe silent r! bzip2 -d -c ".g:tar_shq.tarfile.g:tar_shq."| ".g:tar_cmd." -".g:tar_readoptions." - ".g:tar_shq.fname.g:tar_shq)
-   exe "silent r! bzip2 -d -c ".g:tar_shq.tarfile.g:tar_shq."| ".g:tar_cmd." -".g:tar_readoptions." - ".g:tar_shq.fname.g:tar_shq
+  if      fname =~ '\.gz$'  && executable("zcat")
+   let decmp= "|zcat"
+   let doro = 1
+  elseif  fname =~ '\.bz2$' && executable("bzcat")
+   let decmp= "|bzcat"
+   let doro = 1
   else
-"   call Decho("exe silent r! ".g:tar_cmd." -".g:tar_readoptions." ".g:tar_shq.tarfile.g:tar_shq." ".g:tar_shq.fname.g:tar_shq)
-   exe "silent r! ".g:tar_cmd." -".g:tar_readoptions." ".g:tar_shq.tarfile.g:tar_shq." ".g:tar_shq.fname.g:tar_shq
+   let decmp=""
+   if fname =~ '\.gz$\|\.bz2$\|\.Z$\|\.zip$'
+    setlocal bin
+   endif
   endif
+
+  if tarfile =~# '\.\(gz\|tgz\)$'
+"   call Decho("5: exe silent r! gzip -d -c -- ".s:Escape(tarfile)."| ".g:tar_cmd.' -'.g:tar_readoptions.' - '.s:Escape(fname))
+   exe "silent r! gzip -d -c -- ".s:Escape(tarfile)."| ".g:tar_cmd." -".g:tar_readoptions." - ".s:Escape(fname).decmp
+  elseif tarfile =~# '\.lrp$'
+"   call Decho("6: exe silent r! cat ".s:Escape(tarfile)." | gzip -d -c - | ".g:tar_cmd." -".g:tar_readoptions." - ".s:Escape(fname).decmp)
+   exe "silent r! cat -- ".s:Escape(tarfile)." | gzip -d -c - | ".g:tar_cmd." -".g:tar_readoptions." - ".s:Escape(fname).decmp
+  elseif tarfile =~# '\.bz2$'
+"   call Decho("7: exe silent r! bzip2 -d -c ".s:Escape(tarfile)."| ".g:tar_cmd." -".g:tar_readoptions." - ".s:Escape(fname).decmp)
+   exe "silent r! bzip2 -d -c -- ".s:Escape(tarfile)."| ".g:tar_cmd." -".g:tar_readoptions." - ".s:Escape(fname).decmp
+  else
+"   call Decho("8: exe silent r! ".g:tar_cmd." -".g:tar_readoptions." -- ".s:Escape(tarfile)." ".s:Escape(fname))
+   exe "silent r! ".g:tar_cmd." -".g:tar_readoptions." ".s:Escape(tarfile)." -- ".s:Escape(fname).decmp
+  endif
+
+  if doro
+   " because the reverse process of compressing changed files back into the tarball is not currently supported
+   setlocal ro
+  endif
+
   let w:tarfile= a:fname
   exe "file tarfile:".fname
 
@@ -260,7 +291,7 @@ fun! tar#Write(fname)
 
   " attempt to change to the indicated directory
   try
-   exe "cd ".escape(tmpdir,' \')
+   exe "cd ".fnameescape(tmpdir)
   catch /^Vim\%((\a\+)\)\=:E344/
    redraw!
    echohl Error | echo "***error*** (tar#Write) cannot cd to temporary directory" | Echohl None
@@ -284,19 +315,21 @@ fun! tar#Write(fname)
 
   " handle compressed archives
   if tarfile =~# '\.gz'
-   call system("gzip -d ".tarfile)
+   call system("gzip -d -- ".tarfile)
    let tarfile = substitute(tarfile,'\.gz','','e')
-   let compress= "gzip '".tarfile."'"
+   let compress= "gzip ".s:Escape(tarfile)
   elseif tarfile =~# '\.tgz'
-   call system("gzip -d ".tarfile)
+   call system("gzip -d -- ".s:Escape(tarfile))
    let tarfile = substitute(tarfile,'\.tgz','.tar','e')
-   let compress= "gzip '".tarfile."'"
+   let compress= "gzip -- ".s:Escape(tarfile)
    let tgz     = 1
   elseif tarfile =~# '\.bz2'
-   call system("bzip2 -d ".tarfile)
+   call system("bzip2 -d -- ".s:Escape(tarfile))
    let tarfile = substitute(tarfile,'\.bz2','','e')
-   let compress= "bzip2 '".tarfile."'"
+   let compress= "bzip2 -- ".s:Escape(tarfile)
   endif
+"  call Decho("tarfile<".tarfile.">")
+"  call Decho("compress<".compress.">")
 
   if v:shell_error != 0
    redraw!
@@ -318,26 +351,26 @@ fun! tar#Write(fname)
    endif
 "   call Decho("tarfile<".tarfile."> fname<".fname.">")
  
-   exe "w! ".fname
+   exe "w! ".fnameescape(fname)
    if executable("cygpath")
-    let tarfile = substitute(system("cygpath ".tarfile),'\n','','e')
+    let tarfile = substitute(system("cygpath ".s:Escape(tarfile)),'\n','','e')
    endif
  
    " delete old file from tarfile
-"   call Decho("tar --delete -f '".tarfile."' '".fname."'")
-   call system("tar --delete -f '".tarfile."' '".fname."'")
+"   call Decho("system(tar --delete -f ".s:Escape(tarfile)." -- ".s:Escape(fname).")")
+   call system("tar --delete -f ".s:Escape(tarfile)." -- ".s:Escape(fname))
    if v:shell_error != 0
     redraw!
-    echohl Error | echo "***error*** (tar#Write) sorry, unable to update ".tarfile." with ".fname | echohl None
+    echohl Error | echo "***error*** (tar#Write) sorry, unable to update ".fnameescape(tarfile)." with ".fnameescape(fname) | echohl None
 "    call inputsave()|call input("Press <cr> to continue")|call inputrestore()
    else
  
     " update tarfile with new file 
-"    call Decho("tar -".g:tar_writeoptions." '".tarfile."' '".fname."'")
-    call system("tar -".g:tar_writeoptions." '".tarfile."' '".fname."'")
+"    call Decho("tar -".g:tar_writeoptions." ".s:Escape(tarfile)." -- ".s:Escape(fname))
+    call system("tar -".g:tar_writeoptions." ".s:Escape(tarfile)." -- ".s:Escape(fname))
     if v:shell_error != 0
      redraw!
-     echohl Error | echo "***error*** (tar#Write) sorry, unable to update ".tarfile." with ".fname | echohl None
+     echohl Error | echo "***error*** (tar#Write) sorry, unable to update ".fnameescape(tarfile)." with ".fnameescape(fname) | echohl None
 "     call inputsave()|call input("Press <cr> to continue")|call inputrestore()
     elseif exists("compress")
 "     call Decho("call system(".compress.")")
@@ -381,18 +414,30 @@ endfun
 fun! s:Rmdir(fname)
 "  call Dfunc("Rmdir(fname<".a:fname.">)")
   if has("unix")
-   call system("/bin/rm -rf ".a:fname)
+   call system("/bin/rm -rf -- ".s:Escape(a:fname))
   elseif has("win32") || has("win95") || has("win64") || has("win16")
    if &shell =~? "sh$"
-    call system("/bin/rm -rf ".a:fname)
+    call system("/bin/rm -rf -- ".s:Escape(a:fname))
    else
-    call system("del /S ".a:fname)
+    call system("del /S ".s:Escape(a:fname))
    endif
   endif
 "  call Dret("Rmdir")
 endfun
 
-" ------------------------------------------------------------------------
+" ---------------------------------------------------------------------
+" s:Escape: {{{2
+fun s:Escape(name)
+  " shellescape() was added by patch 7.0.111
+  if exists("*shellescape")
+   let name= shellescape(a:name)
+  else
+   let name= g:tar_shq . a:name . g:tar_shq
+  endif
+  return name
+endfun
+
+" ---------------------------------------------------------------------
 " Modelines And Restoration: {{{1
 let &cpo= s:keepcpo
 unlet s:keepcpo

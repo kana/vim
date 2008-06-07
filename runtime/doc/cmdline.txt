@@ -1,4 +1,4 @@
-*cmdline.txt*   For Vim version 7.1.  Last change: 2008 Mar 25
+*cmdline.txt*   For Vim version 7.1.  Last change: 2008 Jun 03
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -720,6 +720,9 @@ to insert special things while typing you can use the CTRL-R command.  For
 example, "%" stands for the current file name, while CTRL-R % inserts the
 current file name right away.  See |c_CTRL-R|.
 
+Note: If you want to avoid the special characters in a Vim script you may want
+to use |fnameescape()|.
+
 
 In Ex commands, at places where a file name can be used, the following
 characters have a special meaning.  These can also be used in the expression
@@ -895,10 +898,10 @@ Examples: (alternate file name is "?readme?")
 	:cd <cfile>*	:cd {file name under cursor plus "*" and then expanded}
 
 When the expanded argument contains a "!" and it is used for a shell command
-(":!cmd", ":r !cmd" or ":w !cmd"), it is escaped with a backslash to avoid it
-being expanded into a previously used command.  When the 'shell' option
-contains "sh", this is done twice, to avoid the shell trying to expand the
-"!".
+(":!cmd", ":r !cmd" or ":w !cmd"), the "!" is escaped with a backslash to
+avoid it being expanded into a previously used command.  When the 'shell'
+option contains "sh", this is done twice, to avoid the shell trying to expand
+the "!".
 
 							*filename-backslash*
 For filesystems that use a backslash as directory separator (MS-DOS, Windows,
