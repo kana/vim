@@ -379,8 +379,17 @@ ignorecase(pat)
 	    }
 	    else
 #endif
-		if (*p == '\\' && p[1] != NUL)	/* skip "\S" et al. */
-		    p += 2;
+		if (*p == '\\')
+		{
+		    if (p[1] == '_' && p[2] != NUL)  /* skip "\_X" et al. */
+			p += 3;
+		    else if (p[1] == '%' && p[2] != NUL)  /* skip "\%V" et al. */
+			p += 3;
+		    else if (p[1] != NUL)  /* skip "\X" et al. */
+			p += 2;
+		    else
+			p += 1;
+		}
 		else if (isupper(*p))
 		{
 		    ic = FALSE;
