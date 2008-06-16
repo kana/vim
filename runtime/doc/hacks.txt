@@ -15,7 +15,8 @@ MISC. INFORMATION					*hacks-misc-info*
 
 Base Source Code					*hacks-base*
 
-All hacks are based on <http://vim.svn.sourceforge.net/svnroot/vim/trunk@931>.
+All hacks are based on the latest version of Vim - currently, 7.1.{x}.
+See included_patches in src/version.c for {x}.
 
 
 
