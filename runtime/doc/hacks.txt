@@ -1,5 +1,5 @@
 *hacks.txt*	Notes on hacks in this version of Vim.
-Copyright (C) 2008 kana <http://nicht.s8.xrea.com>
+Copyright (C) 2008 kana <http://whileimautomaton.net/>
 
 This document explains what hacks are included in this version of Vim.
 All changes are licensed under the same terms of Vim.  See |license|.
