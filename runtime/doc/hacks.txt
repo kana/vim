@@ -7,6 +7,10 @@ All changes are licensed under the same terms of Vim.  See |license|.
 ==============================================================================
 INDEX OF HACKS						*hacks-index*
 
+Fix incorect modeline in ada.txt	      *hacks-bugfix-help-ada-modeline*
+	Fix the incorrect option 'encoding' in the modelines of :help ada.txt.
+	It should be 'fileencoding'.
+
 
 
 
