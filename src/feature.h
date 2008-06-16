@@ -963,7 +963,7 @@
  *			a modifed version of Vim.
  *			Also from the "--with-modified-by" configure argument.
  */
-#define MODIFIED_BY "kana <http://nicht.s8.xrea.com/>"
+#define MODIFIED_BY "kana <http://whileimautomaton.net/>"
 
 /*
  * Machine dependent:
