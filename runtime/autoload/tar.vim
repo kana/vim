@@ -1,7 +1,7 @@
 " tar.vim: Handles browsing tarfiles
 "            AUTOLOAD PORTION
-" Date:			May 30, 2008
-" Version:		14
+" Date:			Jun 12, 2008
+" Version:		16
 " Maintainer:	Charles E Campbell, Jr <NdrOchip@ScampbellPfamily.AbizM-NOSPAM>
 " License:		Vim License  (see vim's :help license)
 "
@@ -24,7 +24,7 @@ set cpo&vim
 if &cp || exists("g:loaded_tar") || v:version < 700
  finish
 endif
-let g:loaded_tar= "v14"
+let g:loaded_tar= "v16"
 "call Decho("loading autoload/tar.vim")
 if v:version < 701 || (v:version == 701 && !has("patch299"))
  echoerr "(autoload/tar.vim) need vim v7.1 with patchlevel 299"
@@ -45,21 +45,33 @@ if !exists("g:tar_writeoptions")
  let g:tar_writeoptions= "uf"
 endif
 
- " set up shell quoting character
- if !exists("g:tar_shq")
-  if exists("&shq") && &shq != ""
-   let g:tar_shq= &shq
-  elseif has("win32") || has("win95") || has("win64") || has("win16")
-   if g:netrw_cygwin
-    let g:tar_shq= "'"
-   else
-    let g:tar_shq= '"'
-   endif
+if !exists("g:netrw_cygwin")
+ if has("win32") || has("win95") || has("win64") || has("win16")
+  if &shell =~ '\%(\<bash\>\|\<zsh\>\)\%(\.exe\)\=$'
+   let g:netrw_cygwin= 1
   else
-   let g:tar_shq= "'"
+   let g:netrw_cygwin= 0
   endif
-" call Decho("g:tar_shq<".g:tar_shq.">")
+ else
+  let g:netrw_cygwin= 0
  endif
+endif
+
+" set up shell quoting character
+if !exists("g:tar_shq")
+ if exists("&shq") && &shq != ""
+  let g:tar_shq= &shq
+ elseif has("win32") || has("win95") || has("win64") || has("win16")
+  if exists("g:netrw_cygwin") && g:netrw_cygwin
+   let g:tar_shq= "'"
+  else
+   let g:tar_shq= '"'
+  endif
+ else
+  let g:tar_shq= "'"
+ endif
+" call Decho("g:tar_shq<".g:tar_shq.">")
+endif
 
 " ----------------
 "  Functions: {{{1
@@ -111,6 +123,7 @@ fun! tar#Browse(tarfile)
   call setline(lastline+1,'" tar.vim version '.g:loaded_tar)
   call setline(lastline+2,'" Browsing tarfile '.a:tarfile)
   call setline(lastline+3,'" Select a file with cursor and press ENTER')
+  $put =''
   0d
   $
 
@@ -190,7 +203,7 @@ fun! s:TarBrowseSelect()
    wincmd _
   endif
   let s:tblfile_{winnr()}= curfile
-  call tar#Read("tarfile:".tarfile.':'.fname,1)
+  call tar#Read("tarfile:".tarfile.'::'.fname,1)
   filetype detect
 
   let &report= repkeep
@@ -203,8 +216,8 @@ fun! tar#Read(fname,mode)
 "  call Dfunc("tar#Read(fname<".a:fname.">,mode=".a:mode.")")
   let repkeep= &report
   set report=10
-  let tarfile = substitute(a:fname,'tarfile:\(.\{-}\):.*$','\1','')
-  let fname   = substitute(a:fname,'tarfile:.\{-}:\(.*\)$','\1','')
+  let tarfile = substitute(a:fname,'tarfile:\(.\{-}\)::.*$','\1','')
+  let fname   = substitute(a:fname,'tarfile:.\{-}::\(.*\)$','\1','')
   if has("win32") && executable("cygpath")
    " assuming cygwin
    let tarfile=substitute(system("cygpath -u ".s:Escape(tarfile)),'\n$','','e')
@@ -220,6 +233,7 @@ fun! tar#Read(fname,mode)
    let doro = 1
   else
    let decmp=""
+   let doro = 0
    if fname =~ '\.gz$\|\.bz2$\|\.Z$\|\.zip$'
     setlocal bin
    endif
@@ -245,7 +259,7 @@ fun! tar#Read(fname,mode)
   endif
 
   let w:tarfile= a:fname
-  exe "file tarfile:".fname
+  exe "file tarfile::".fname
 
   " cleanup
   0d
@@ -310,8 +324,8 @@ fun! tar#Write(fname)
   cd _ZIPVIM_
 "  call Decho("current directory now: ".getcwd())
 
-  let tarfile = substitute(w:tarfile,'tarfile:\(.\{-}\):.*$','\1','')
-  let fname   = substitute(w:tarfile,'tarfile:.\{-}:\(.*\)$','\1','')
+  let tarfile = substitute(w:tarfile,'tarfile:\(.\{-}\)::.*$','\1','')
+  let fname   = substitute(w:tarfile,'tarfile:.\{-}::\(.*\)$','\1','')
 
   " handle compressed archives
   if tarfile =~# '\.gz'
@@ -430,11 +444,11 @@ endfun
 fun s:Escape(name)
   " shellescape() was added by patch 7.0.111
   if exists("*shellescape")
-   let name= shellescape(a:name)
+   let qnameq= shellescape(a:name)
   else
-   let name= g:tar_shq . a:name . g:tar_shq
+   let qnameq= g:tar_shq . a:name . g:tar_shq
   endif
-  return name
+  return qnameq
 endfun
 
 " ---------------------------------------------------------------------

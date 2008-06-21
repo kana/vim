@@ -1,7 +1,7 @@
 " Vim support file to detect file types
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2008 May 28
+" Last Change:	2008 Jun 20
 
 " Listen very carefully, I will say this only once
 if exists("did_load_filetypes")
@@ -532,6 +532,10 @@ au BufNewFile,BufRead *.si			setf cuplsim
 
 " Debian Control
 au BufNewFile,BufRead */debian/control		setf debcontrol
+au BufNewFile,BufRead control
+	\  if getline(1) =~ '^Source:'
+	\|   setf debcontrol
+	\| endif
 
 " Debian Sources.list
 au BufNewFile,BufRead /etc/apt/sources.list	setf debsources
@@ -747,6 +751,9 @@ au BufNewFile,BufRead *.hsc,*.hsm		setf hamster
 au BufNewFile,BufRead *.hs			setf haskell
 au BufNewFile,BufRead *.lhs			setf lhaskell
 au BufNewFile,BufRead *.chs			setf chaskell
+
+" Haste
+au BufNewFile,BufRead *.ht			setf haste
 
 " Hercules
 au BufNewFile,BufRead *.vc,*.ev,*.rs,*.sum,*.errsum	setf hercules
@@ -1789,16 +1796,21 @@ au BufNewFile,BufRead *.rules			call s:FTRules()
 
 let s:ft_rules_udev_rules_pattern = '^\s*\cudev_rules\s*=\s*"\([^"]\{-1,}\)/*".*'
 func! s:FTRules()
+  if expand('<amatch>:p') =~ '^/etc/udev/rules\.d/.*\.rules$'
+    setf udevrules
+    return
+  endif
   try
     let config_lines = readfile('/etc/udev/udev.conf')
   catch /^Vim\%((\a\+)\)\=:E484/
     setf hog
     return
   endtry
+  let dir = expand('<amatch>:p:h')
   for line in config_lines
     if line =~ s:ft_rules_udev_rules_pattern
       let udev_rules = substitute(line, s:ft_rules_udev_rules_pattern, '\1', "")
-      if expand('<amatch>:p:h') == udev_rules
+      if dir == udev_rules
         setf udevrules
       endif
       break
@@ -2008,9 +2020,6 @@ au BufNewFile,BufRead *.uit,*.uil		setf uil
 
 " Udev conf
 au BufNewFile,BufRead /etc/udev/udev.conf	setf udevconf
-
-" Udev rules
-au BufNewFile,BufRead /etc/udev/rules.d/*.rules setf udevrules
 
 " Udev permissions
 au BufNewFile,BufRead /etc/udev/permissions.d/*.permissions setf udevperm

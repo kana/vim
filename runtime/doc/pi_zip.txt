@@ -1,4 +1,4 @@
-*pi_zip.txt*	For Vim version 7.1.  Last change: 2008 Jan 07
+*pi_zip.txt*	For Vim version 7.1.  Last change: 2008 Jun 12
 
 				+====================+
 				| Zip File Interface |
@@ -51,12 +51,12 @@ Copyright: Copyright (C) 2005-2008 Charles E Campbell, Jr *zip-copyright*
 
    							*g:zip_unzipcmd*
    Use this option to specify the program which does the duty of "unzip".
-   Its used during browsing. By default: >
+   It's used during browsing. By default: >
    	let g:zip_unzipcmd= "unzip"
 <
 							*g:zip_zipcmd*
    Use this option to specify the program which does the duty of "zip".
-   Its used during the writing (updating) of a file already in a zip
+   It's used during the writing (updating) of a file already in a zip
    file; by default: >
    	let g:zip_zipcmd= "zip"
 <
@@ -75,6 +75,7 @@ Copyright: Copyright (C) 2005-2008 Charles E Campbell, Jr *zip-copyright*
 
 ==============================================================================
 4. History					*zip-history* {{{1
+   v17 May 09, 2008 * arno caught a security bug
    v15 Sep 07, 2007 * &shq now used if not the empty string for g:zip_shq
    v14 May 07, 2007 * using b:zipfile instead of w:zipfile to avoid problem
                       when editing alternate file to bring up a zipfile

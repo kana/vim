@@ -1,4 +1,4 @@
-*syntax.txt*	For Vim version 7.1.  Last change: 2008 Jun 03
+*syntax.txt*	For Vim version 7.1.  Last change: 2008 Jun 16
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -4229,7 +4229,7 @@ WildMenu	current match in 'wildmenu' completion
 The 'statusline' syntax allows the use of 9 different highlights in the
 statusline and ruler (via 'rulerformat').  The names are User1 to User9.
 
-For the GUI you can use these groups to set the colors for the menu,
+For the GUI you can use the following groups to set the colors for the menu,
 scrollbars and tooltips.  They don't have defaults.  This doesn't work for the
 Win32 GUI.  Only three highlight arguments have any effect here: font, guibg,
 and guifg.

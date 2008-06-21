@@ -1126,6 +1126,7 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 +feature-list	various.txt	/*+feature-list*
 +file_in_path	various.txt	/*+file_in_path*
 +find_in_path	various.txt	/*+find_in_path*
++float	various.txt	/*+float*
 +folding	various.txt	/*+folding*
 +footer	various.txt	/*+footer*
 +fork	various.txt	/*+fork*
@@ -4117,6 +4118,7 @@ E804	eval.txt	/*E804*
 E805	eval.txt	/*E805*
 E806	eval.txt	/*E806*
 E807	eval.txt	/*E807*
+E808	eval.txt	/*E808*
 E81	map.txt	/*E81*
 E82	message.txt	/*E82*
 E83	message.txt	/*E83*
@@ -4233,6 +4235,7 @@ Normal	intro.txt	/*Normal*
 Normal-mode	intro.txt	/*Normal-mode*
 Nread	pi_netrw.txt	/*Nread*
 Nsource	pi_netrw.txt	/*Nsource*
+Number	eval.txt	/*Number*
 Nvi	intro.txt	/*Nvi*
 Nwrite	pi_netrw.txt	/*Nwrite*
 O	insert.txt	/*O*
@@ -4782,6 +4785,7 @@ catch-interrupt	eval.txt	/*catch-interrupt*
 catch-order	eval.txt	/*catch-order*
 catch-text	eval.txt	/*catch-text*
 cc	change.txt	/*cc*
+ceil()	eval.txt	/*ceil()*
 ch.vim	syntax.txt	/*ch.vim*
 change-list-jumps	motion.txt	/*change-list-jumps*
 change-tabs	change.txt	/*change-tabs*
@@ -5026,6 +5030,7 @@ dab	motion.txt	/*dab*
 dap	motion.txt	/*dap*
 das	motion.txt	/*das*
 dav	pi_netrw.txt	/*dav*
+davs	pi_netrw.txt	/*davs*
 daw	motion.txt	/*daw*
 dd	change.txt	/*dd*
 debug-gcc	debug.txt	/*debug-gcc*
@@ -5338,7 +5343,9 @@ fixed-6.3	version6.txt	/*fixed-6.3*
 fixed-6.4	version6.txt	/*fixed-6.4*
 fixed-7.1	version7.txt	/*fixed-7.1*
 flexwiki.vim	syntax.txt	/*flexwiki.vim*
+float2nr()	eval.txt	/*float2nr()*
 floating-point-format	eval.txt	/*floating-point-format*
+floor()	eval.txt	/*floor()*
 fname_diff-variable	eval.txt	/*fname_diff-variable*
 fname_in-variable	eval.txt	/*fname_in-variable*
 fname_new-variable	eval.txt	/*fname_new-variable*
@@ -5645,6 +5652,7 @@ g:netrw_use_noswf	pi_netrw.txt	/*g:netrw_use_noswf*
 g:netrw_use_nt_rcp	pi_netrw.txt	/*g:netrw_use_nt_rcp*
 g:netrw_win95ftp	pi_netrw.txt	/*g:netrw_win95ftp*
 g:netrw_winsize	pi_netrw.txt	/*g:netrw_winsize*
+g:netrw_xstrlen	pi_netrw.txt	/*g:netrw_xstrlen*
 g:tar_browseoptions	pi_tar.txt	/*g:tar_browseoptions*
 g:tar_cmd	pi_tar.txt	/*g:tar_cmd*
 g:tar_nomax	pi_tar.txt	/*g:tar_nomax*
@@ -6273,6 +6281,7 @@ locale-name	mbyte.txt	/*locale-name*
 localtime()	eval.txt	/*localtime()*
 location-list	quickfix.txt	/*location-list*
 location-list-window	quickfix.txt	/*location-list-window*
+log10()	eval.txt	/*log10()*
 long-lines	version5.txt	/*long-lines*
 lowercase	change.txt	/*lowercase*
 lpc.vim	syntax.txt	/*lpc.vim*
@@ -6515,7 +6524,6 @@ netrw-bookmark	pi_netrw.txt	/*netrw-bookmark*
 netrw-bookmarks	pi_netrw.txt	/*netrw-bookmarks*
 netrw-browse	pi_netrw.txt	/*netrw-browse*
 netrw-browse-cmds	pi_netrw.txt	/*netrw-browse-cmds*
-netrw-browse-intro	pi_netrw.txt	/*netrw-browse-intro*
 netrw-browse-maps	pi_netrw.txt	/*netrw-browse-maps*
 netrw-browser	pi_netrw.txt	/*netrw-browser*
 netrw-browser-options	pi_netrw.txt	/*netrw-browser-options*
@@ -6530,7 +6538,6 @@ netrw-cr	pi_netrw.txt	/*netrw-cr*
 netrw-credits	pi_netrw.txt	/*netrw-credits*
 netrw-ctrl-h	pi_netrw.txt	/*netrw-ctrl-h*
 netrw-ctrl-l	pi_netrw.txt	/*netrw-ctrl-l*
-netrw-ctrl_h	pi_netrw.txt	/*netrw-ctrl_h*
 netrw-ctrl_l	pi_netrw.txt	/*netrw-ctrl_l*
 netrw-curdir	pi_netrw.txt	/*netrw-curdir*
 netrw-d	pi_netrw.txt	/*netrw-d*
@@ -6554,11 +6561,13 @@ netrw-gx	pi_netrw.txt	/*netrw-gx*
 netrw-handler	pi_netrw.txt	/*netrw-handler*
 netrw-help	pi_netrw.txt	/*netrw-help*
 netrw-hexplore	pi_netrw.txt	/*netrw-hexplore*
+netrw-hide	pi_netrw.txt	/*netrw-hide*
 netrw-hiding	pi_netrw.txt	/*netrw-hiding*
 netrw-history	pi_netrw.txt	/*netrw-history*
 netrw-horiz	pi_netrw.txt	/*netrw-horiz*
 netrw-i	pi_netrw.txt	/*netrw-i*
 netrw-incompatible	pi_netrw.txt	/*netrw-incompatible*
+netrw-intro-browse	pi_netrw.txt	/*netrw-intro-browse*
 netrw-list	pi_netrw.txt	/*netrw-list*
 netrw-listbookmark	pi_netrw.txt	/*netrw-listbookmark*
 netrw-listhack	pi_netrw.txt	/*netrw-listhack*
@@ -6569,6 +6578,7 @@ netrw-mc	pi_netrw.txt	/*netrw-mc*
 netrw-md	pi_netrw.txt	/*netrw-md*
 netrw-me	pi_netrw.txt	/*netrw-me*
 netrw-mf	pi_netrw.txt	/*netrw-mf*
+netrw-mg	pi_netrw.txt	/*netrw-mg*
 netrw-mh	pi_netrw.txt	/*netrw-mh*
 netrw-ml_get	pi_netrw.txt	/*netrw-ml_get*
 netrw-mm	pi_netrw.txt	/*netrw-mm*
@@ -6611,6 +6621,11 @@ netrw-psftp	pi_netrw.txt	/*netrw-psftp*
 netrw-putty	pi_netrw.txt	/*netrw-putty*
 netrw-qb	pi_netrw.txt	/*netrw-qb*
 netrw-qf	pi_netrw.txt	/*netrw-qf*
+netrw-quickcom	pi_netrw.txt	/*netrw-quickcom*
+netrw-quickcoms	pi_netrw.txt	/*netrw-quickcoms*
+netrw-quickhelp	pi_netrw.txt	/*netrw-quickhelp*
+netrw-quickmap	pi_netrw.txt	/*netrw-quickmap*
+netrw-quickmaps	pi_netrw.txt	/*netrw-quickmaps*
 netrw-r	pi_netrw.txt	/*netrw-r*
 netrw-read	pi_netrw.txt	/*netrw-read*
 netrw-ref	pi_netrw.txt	/*netrw-ref*
@@ -6870,6 +6885,7 @@ postscript-print-encoding	print.txt	/*postscript-print-encoding*
 postscript-print-trouble	print.txt	/*postscript-print-trouble*
 postscript-print-util	print.txt	/*postscript-print-util*
 postscript-printing	print.txt	/*postscript-printing*
+pow()	eval.txt	/*pow()*
 ppwiz.vim	syntax.txt	/*ppwiz.vim*
 press-enter	message.txt	/*press-enter*
 press-return	message.txt	/*press-return*
@@ -7049,6 +7065,7 @@ riscos-remote	os_risc.txt	/*riscos-remote*
 riscos-shell	os_risc.txt	/*riscos-shell*
 riscos-temp-files	os_risc.txt	/*riscos-temp-files*
 rot13	change.txt	/*rot13*
+round()	eval.txt	/*round()*
 rsync	pi_netrw.txt	/*rsync*
 ruby	if_ruby.txt	/*ruby*
 ruby-buffer	if_ruby.txt	/*ruby-buffer*
@@ -7325,6 +7342,7 @@ sqlinformix.vim	syntax.txt	/*sqlinformix.vim*
 sqlj	sql.txt	/*sqlj*
 sqlserver	sql.txt	/*sqlserver*
 sqlsettype	sql.txt	/*sqlsettype*
+sqrt()	eval.txt	/*sqrt()*
 sscanf	eval.txt	/*sscanf*
 standard-plugin	usr_05.txt	/*standard-plugin*
 standard-plugin-list	help.txt	/*standard-plugin-list*
@@ -7704,6 +7722,7 @@ toolbar-icon	gui.txt	/*toolbar-icon*
 toupper()	eval.txt	/*toupper()*
 tr()	eval.txt	/*tr()*
 trojan-horse	starting.txt	/*trojan-horse*
+trunc()	eval.txt	/*trunc()*
 try-conditionals	eval.txt	/*try-conditionals*
 try-echoerr	eval.txt	/*try-echoerr*
 try-finally	eval.txt	/*try-finally*

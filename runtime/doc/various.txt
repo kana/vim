@@ -1,4 +1,4 @@
-*various.txt*   For Vim version 7.1.  Last change: 2008 Apr 30
+*various.txt*   For Vim version 7.1.  Last change: 2008 Jun 08
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -317,6 +317,7 @@ N  *+folding*		|folding|
    *+footer*		|gui-footer|
    *+fork*		Unix only: |fork| shell commands
 m  *+fullscreen*        MacVim only: edit in full-screen
+   *+float*		Floating point support
 N  *+gettext*		message translations |multi-lang|
    *+GUI_Athena*	Unix only: Athena |GUI|
    *+GUI_neXtaw*	Unix only: neXtaw |GUI|

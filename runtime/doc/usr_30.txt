@@ -200,14 +200,14 @@ Then have Vim read this file with: >
 Jumping to errors will work like with the ":make" command.
 
 ==============================================================================
-*30.2*	Indenting C files
+*30.2*	Indenting C style text
 
 A program is much easier to understand when the lines have been properly
-indented.  Vim offers various ways to make this less work.
-   For C programs set the 'cindent' option.  Vim knows a lot about C programs
-and will try very hard to automatically set the indent for you.  Set the
-'shiftwidth' option to the amount of spaces you want for a deeper level.  Four
-spaces will work fine.  One ":set" command will do it: >
+indented.  Vim offers various ways to make this less work.  For C or C style
+programs like Java or C++, set the 'cindent' option.  Vim knows a lot about C
+programs and will try very hard to automatically set the indent for you.  Set
+the 'shiftwidth' option to the amount of spaces you want for a deeper level.
+Four spaces will work fine.  One ":set" command will do it: >
 
 	:set cindent shiftwidth=4
 

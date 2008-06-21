@@ -1,4 +1,4 @@
-*eval.txt*      For Vim version 7.1.  Last change: 2008 May 29
+*eval.txt*      For Vim version 7.1.  Last change: 2008 Jun 19
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -39,10 +39,10 @@ done, the features in this document are not available.  See |+eval| and
 							*E712*
 There are six types of variables:
 
-Number		A 32 bit signed number.  |expr-number|
+Number		A 32 bit signed number.  |expr-number| *Number*
 		Examples:  -123  0x10  0177
 
-Float           A floating point number. |floating-point-format| *Float*
+Float		A floating point number. |floating-point-format| *Float*
 		{only when compiled with the |+float| feature}
 		Examples: 123.456  1.15e-6  -1.1e3
 
@@ -96,9 +96,10 @@ use strlen(): >
 <				*E745* *E728* *E703* *E729* *E730* *E731*
 List, Dictionary and Funcref types are not automatically converted.
 
-							*E805* *E806*
+							*E805* *E806* *E808*
 When mixing Number and Float the Number is converted to Float.  Otherwise
-there is no automatic conversion of Float.
+there is no automatic conversion of Float.  You can use str2float() for String
+to Float, printf() for Float to String and float2nr() for Float to Number.
 
 								*E706*
 You will get an error if you try to change the type of a variable.  You need
@@ -801,16 +802,16 @@ Note the difference between "+" and ".":
 	"123" . "456" = "123456"
 
 Since '.' has the same precedence as '+' and '-', you need to read: >
-	1.90+&90
+	1 . 90 + 90.0
 As: >
-	(1 . 90) + &90
+	(1 . 90) + 90.0
 That works, since the String "190" is automatically converted to the Number
-190, which can be added to the float 90.  However: >
-	1.90*&90
+190, which can be added to the Float 90.0.  However: >
+	1 . 90 * 90.0
 Should be read as: >
-	1 . (90 * &90)
+	1 . (90 * 90.0)
 Since '.' has lower precedence than '*'.  This does NOT work, since this
-attempts to concatenate a Float to a String.
+attempts to concatenate a Float and a String.
 
 When the righthand side of '/' is zero, the result is 0x7fffffff.
 When the righthand side of '%' is zero, the result is 0.
@@ -933,24 +934,41 @@ Decimal, Hexadecimal (starting with 0x or 0X), or Octal (starting with 0).
 
 						*floating-point-format*
 Floating point numbers can be written in two forms:
-- &N.M, where N and M are numbers.  The .M can be omitted.  The N cannot be
-  omitted.  There can be a minus sign in the N.  Examples:
-	&123.456
-  	&0.0001
-	&55
-	&-0.123
-  Only a decimal point is accepted, not a comma.  No matter what the current
-  locale is.
-- Same, with a following exponent in the form "eX", where X is a decimal
-  number with an optional minus sign.  The 'e' can also be upper case.
-  Examples:
-  	&1.234e3
-	&1E-6
-	&-3.1416e88
-The precision and range of floating points numbers depends on the library Vim
-was compiled with.  There is no way to change this at runtime.
+
+	[-+]{N}.{M}
+	[-+]{N}.{M}e[-+]{exp}
+
+{N} and {M} are numbers.  Both {N} and {M} must be present and can only
+contain digits.
+[-+] means there is an optional plus or minus sign.
+{exp} is the exponent, power of 10.
+Only a decimal point is accepted, not a comma.  No matter what the current
+locale is.
 {only when compiled with the |+float| feature}
 
+Examples:
+	123.456
+  	+0.0001
+	55.0
+	-0.123
+  	1.234e03
+	1.0E-6
+	-3.1416e+88
+
+These are INVALID:
+	3.		empty {M}
+	1e40		missing .{M}
+
+The precision and range of floating points numbers depends on the library Vim
+was compiled with.  There is no way to change this at runtime.
+
+Rationale:
+Before floating point was introduced, the text "123.456" was interpreted as
+the two numbers "123" and "456", both converted to a string and concatenated,
+resulting in the string "123456".  Since this was considered pointless, and we
+could not find it actually being used in Vim scripts, this backwards
+incompatibility was accepted in favor of being able to use the normal notation
+for floating point numbers.
 
 
 string							*expr-string* *E114*
@@ -1611,6 +1629,7 @@ byte2line( {byte})		Number	line number at byte count {byte}
 byteidx( {expr}, {nr})		Number	byte index of {nr}'th char in {expr}
 call( {func}, {arglist} [, {dict}])
 				any	call {func} with arguments {arglist}
+ceil( {expr})			Float   round {expr} up
 changenr()			Number  current change number
 char2nr( {expr})		Number	ASCII value of first char in {expr}
 cindent( {lnum})		Number	C indent for line {lnum}
@@ -1652,6 +1671,8 @@ finddir( {name}[, {path}[, {count}]])
 				String	find directory {name} in {path}
 findfile( {name}[, {path}[, {count}]])
 				String	find file {name} in {path}
+float2nr( {expr})		Number	convert Float {expr} to a Number
+floor( {expr})			Float	round {expr} down
 fnameescape( {fname})		String	escape special characters in {fname}
 fnamemodify( {fname}, {mods})	String	modify file name
 foldclosed( {lnum})		Number	first line of fold at {lnum} if closed
@@ -1730,6 +1751,7 @@ line( {expr})			Number	line nr of cursor, last line or mark
 line2byte( {lnum})		Number	byte count of line {lnum}
 lispindent( {lnum})		Number	Lisp indent for line {lnum}
 localtime()			Number	current time
+log10( {expr})			Float	logarithm of Float {expr} to base 10
 map( {expr}, {string})		List/Dict  change each item in {expr} to {expr}
 maparg( {name}[, {mode} [, {abbr}]])
 				String	rhs of mapping {name} in mode {mode}
@@ -1755,6 +1777,7 @@ mode()				String	current editing mode
 nextnonblank( {lnum})		Number	line nr of non-blank line >= {lnum}
 nr2char( {expr})		String	single char with ASCII value {expr}
 pathshorten( {expr})		String	shorten directory names in a path
+pow( {x}, {y})			Float   {x} to the power of {y}
 prevnonblank( {lnum})		Number	line nr of non-blank line <= {lnum}
 printf( {fmt}, {expr1}...)	String  format text
 pumvisible()			Number  whether popup menu is visible
@@ -1778,6 +1801,7 @@ rename( {from}, {to})		Number	rename (move) file from {from} to {to}
 repeat( {expr}, {count})	String	repeat {expr} {count} times
 resolve( {filename})		String	get filename a shortcut points to
 reverse( {list})		List	reverse {list} in-place
+round( {expr})			Float	round off {expr}
 search( {pattern} [, {flags} [, {stopline} [, {timeout}]]])
 				Number	search for {pattern}
 searchdecl({name} [, {global} [, {thisblock}]])
@@ -1813,7 +1837,8 @@ spellsuggest( {word} [, {max} [, {capital}]])
 				List	spelling suggestions
 split( {expr} [, {pat} [, {keepempty}]])
 				List	make |List| from {pat} separated {expr}
-str2nr( {expr} [, {base}])	Number	convert string to number
+str2float( {expr})		Float   convert String to Float
+str2nr( {expr} [, {base}])	Number	convert String to Number
 strftime( {format}[, {time}])	String	time in specified format
 stridx( {haystack}, {needle}[, {start}])
 				Number	index of {needle} in {haystack}
@@ -1844,6 +1869,7 @@ tolower( {expr})		String	the String {expr} switched to lowercase
 toupper( {expr})		String	the String {expr} switched to uppercase
 tr( {src}, {fromstr}, {tostr})	String	translate chars of {src} in {fromstr}
 					to chars in {tostr}
+trunc( {expr}			Float	truncate Float {expr}
 type( {name})			Number	type of variable {name}
 values( {dict})			List	values in {dict}
 virtcol( {expr})		Number	screen column of cursor or mark
@@ -2055,6 +2081,19 @@ call({func}, {arglist} [, {dict}])			*call()* *E699*
 		Returns the return value of the called function.
 		{dict} is for functions with the "dict" attribute.  It will be
 		used to set the local variable "self". |Dictionary-function|
+
+ceil({expr})							*ceil()*
+		Return the smallest integral value greater than or equal to
+		{expr} as a |Float| (round up).
+		{expr} must evaluate to a |Float| or a |Number|.
+		Examples: >
+			echo ceil(1.456)
+<			2.0  >
+			echo ceil(-5.456)
+<			-5.0  >
+			echo ceil(4.0)
+<			4.0
+		{only available when compiled with the |+float| feature}
 
 changenr()						*changenr()*
 		Return the number of the most recent change.  This is the same
@@ -2669,13 +2708,46 @@ findfile({name}[, {path}[, {count}]])				*findfile()*
 <		Searches from the directory of the current file upwards until
 		it finds the file "tags.vim".
 
+float2nr({expr})					*float2nr()*
+		Convert {expr} to a Number by omitting the part after the
+		decimal point.
+		{expr} must evaluate to a |Float| or a Number.
+		When the value of {expr} is out of range for a |Number| the
+		result is truncated to 0x7fffffff or -0x7fffffff.
+		Examples: >
+			echo float2nr(3.95)
+<			3  >
+			echo float2nr(-23.45)
+<			-23  >
+			echo float2nr(1.0e100)
+<			2147483647  >
+			echo float2nr(-1.0e150)
+<			-2147483647  >
+			echo float2nr(1.0e-100)
+<			0
+		{only available when compiled with the |+float| feature}
+
+
+floor({expr})							*floor()*
+		Return the largest integral value less than or equal to
+		{expr} as a |Float| (round down).
+		{expr} must evaluate to a |Float| or a |Number|.
+		Examples: >
+			echo floor(1.856)
+<			1.0  >
+			echo floor(-5.456)
+<			-6.0  >
+			echo floor(4.0)
+<			4.0
+		{only available when compiled with the |+float| feature}
+		
 fnameescape({string})					*fnameescape()*
 		Escape {string} for use as file name command argument.  All
 		characters that have a special meaning, such as '%' and '|'
 		are escaped with a backslash.
-		For most systems the characters escaped are "".  For systems
-		where a backslash appears in a filename, it depends on the
-		value of 'isfname'.
+		For most systems the characters escaped are
+		" \t\n*?[{`$\\%#'\"|!<".  For systems where a backslash
+		appears in a filename, it depends on the value of 'isfname'.
 		Example: >
 			:let fname = 'some str%nge|name'
 			:exe "edit " . fnameescape(fname)
@@ -3167,7 +3239,7 @@ has_key({dict}, {key})					*has_key()*
 
 haslocaldir()						*haslocaldir()*
 		The result is a Number, which is 1 when the current
-                window has set a local path via |:lcd|, and 0 otherwise.
+		window has set a local path via |:lcd|, and 0 otherwise.
 
 hasmapto({what} [, {mode} [, {abbr}]])			*hasmapto()*
 		The result is a Number, which is 1 if there is a mapping that
@@ -3563,6 +3635,10 @@ line({expr})	The result is a Number, which is the line number of the file
 			    returned)
 		    w0	    first line visible in current window
 		    w$	    last line visible in current window
+		    v	    In Visual mode: the start of the Visual area (the
+			    cursor is the end).  When not in Visual mode
+			    returns the cursor position.  Differs from |'<| in
+			    that it's updated right away.
 		Note that a mark in another file can be used.  The line number
 		then applies to another buffer.
 		To get the column number use |col()|.  To get both use
@@ -3602,6 +3678,16 @@ localtime()						*localtime()*
 		1970.  See also |strftime()| and |getftime()|.
 
 
+log10({expr})						*log10()*
+		Return the logarithm of Float {expr} to base 10 as a |Float|.
+		{expr} must evaluate to a |Float| or a |Number|.
+		Examples: >
+			:echo log10(1000)
+<			3.0 >
+			:echo log10(0.01)
+<			-2.0
+		{only available when compiled with the |+float| feature}
+		
 map({expr}, {string})					*map()*
 		{expr} must be a |List| or a |Dictionary|.
 		Replace each item in {expr} with the result of evaluating
@@ -3929,6 +4015,16 @@ pathshorten({expr})					*pathshorten()*
 <			~/.v/a/myfile.vim ~
 		It doesn't matter if the path exists or not.
 
+pow({x}, {y})						*pow()*
+		Return the power of {x} to the exponent {y} as a |Float|.
+		{x} and {y} must evaluate to a |Float| or a |Number|.
+		Examples: >
+			:echo pow(3, 3)
+<			27.0 >
+			:echo pow(2, 16)
+<			65536.0
+		{only available when compiled with the |+float| feature}
+		
 prevnonblank({lnum})					*prevnonblank()*
 		Return the line number of the first line at or above {lnum}
 		that is not blank.  Example: >
@@ -4068,11 +4164,17 @@ printf({fmt}, {expr1} ...)				*printf()*
 			digits after the decimal point.  When the precision is
 			zero the decimal point is omitted.  When the precision
 			is not specified 6 is used.  A really big number
-			(dividing by zero) results in "inf".
+			(out of range or dividing by zero) results in "inf".
+			"0.0 / 0.0" results in "nan".
+			Example: >
+				echo printf("%.2f", 12.115)
+<				12.12
+			Note that roundoff depends on the system libraries.
+			Use |round()| when in doubt.
 
 							*printf-e* *printf-E*
 		e E	The Float argument is converted into a string of the
-			form 1.234e3 or 1.234E3 (when using 'E').  The
+			form 1.234e+03 or 1.234E+03 when using 'E'.  The
 			precision specifies the number of digits after the
 			decimal point, like with 'f'.
 
@@ -4080,7 +4182,10 @@ printf({fmt}, {expr1} ...)				*printf()*
 		g G	The Float argument is converted like with 'f' if the
 			value is between 0.001 (inclusive) and 10000000.0
 			(exclusive).  Otherwise 'e' is used for 'g' and 'E'
-			for 'G'.
+			for 'G'.  When no precision is specified superfluous
+			zeroes and '+' signs are removed, except for the zero
+			immediately after the decimal point.  Thus 10000000.0
+			results in 1.0e7.
 
 							*printf-%*
 		%	A '%' is written.  No argument is converted.  The
@@ -4313,6 +4418,21 @@ reverse({list})	Reverse the order of items in {list} in-place.  Returns
 		If you want a list to remain unmodified make a copy first: >
 			:let revlist = reverse(copy(mylist))
 
+round({expr})							*round()*
+		Round off {expr} to a the nearest integral value and return it
+		as a |Float|.  If {expr} lies halfway between two integral
+		values, then use the larger one (away from zero).
+		{expr} must evaluate to a |Float| or a |Number|.
+		Examples: >
+			echo round(0.456)
+<			0.0  >
+			echo round(4.5)
+<			5.0 >
+			echo round(-4.5)
+<			-5.0
+		{only available when compiled with the |+float| feature}
+		
+		
 search({pattern} [, {flags} [, {stopline} [, {timeout}]]])	*search()*
 		Search for regexp pattern {pattern}.  The search starts at the
 		cursor position (you can use |cursor()| to set it).
@@ -4866,6 +4986,18 @@ split({expr} [, {pattern} [, {keepempty}]])			*split()*
 <		The opposite function is |join()|.
 
 
+sqrt({expr})						*sqrt()*
+		Return the non-negative square root of Float {expr} as a
+		|Float|.
+		{expr} must evaluate to a |Float| or a |Number|.  When {expr}
+		is negative the result is NaN (Not a Number).
+		Examples: >
+			:echo sqrt(100)
+<			10.0 >
+			:echo sqrt(-4.01)
+<			nan
+		{only available when compiled with the |+float| feature}
+		
 str2nr( {expr} [, {base}])				*str2nr()*
 		Convert string {expr} to a number.
 		{base} is the conversion base, it can be 8, 10 or 16.
@@ -4878,16 +5010,18 @@ str2nr( {expr} [, {base}])				*str2nr()*
 
 
 str2float( {expr})					*str2float()*
-		Convert string {expr} to a Float.  This works the same as when
-		using a floating point number directly, see
-		|floating-point-format|, but without the leading '&'.
-		A comma is also accepted for a decimal point.
+		Convert string {expr} to a Float.  This mostly works the same
+		as when using a floating point number in an expression, see
+		|floating-point-format|.  But it's a bit more permissive.
+		E.g., "1e40" is accepted, while in an expression you need to
+		write "1.0e40".
 		Text after the number is silently ignored.
-		A second comma or decimal point also ends the number:
-		"12,345.67" is converted to 12.345.  You can strip out
-		thousands separators with |substitute()|: >
+		The decimal point is always '.', no matter what the locale is
+		set to.  A comma ends the number: "12,345.67" is converted to
+		12.0.  You can strip out thousands separators with
+		|substitute()|: >
 			let f = str2float(substitute(text, ',', '', 'g'))
-<		{only when compiled with the |+float| feature}
+<		{only available when compiled with the |+float| feature}
 
 
 strftime({format} [, {time}])				*strftime()*
@@ -4935,7 +5069,7 @@ string({expr})	Return {expr} converted to a String.  If {expr} is a Number,
 			{expr} type	result ~
 			String		'string'
 			Number		123
-			Float		&123.456789 or &1.234567e8
+			Float		123.456789 or 1.234567e8
 			Funcref		function('name')
 			List		[item, item]
 			Dictionary	{key: value, key: value}
@@ -5245,6 +5379,19 @@ tr({src}, {fromstr}, {tostr})				*tr()*
 			echo tr("<blob>", "<>", "{}")
 <		returns "{blob}"
 
+trunc({expr})							*trunc()*
+		Return the largest integral value with magnituted less than or
+		equal to {expr} as a |Float| (truncate towards zero).
+		{expr} must evaluate to a |Float| or a |Number|.
+		Examples: >
+			echo trunc(1.456)
+<			1.0  >
+			echo trunc(-5.456)
+<			-5.0  >
+			echo trunc(4.0)
+<			4.0
+		{only available when compiled with the |+float| feature}
+		
 							*type()*
 type({expr})	The result is a Number, depending on the type of {expr}:
 			Number:	    0
@@ -5259,7 +5406,7 @@ type({expr})	The result is a Number, depending on the type of {expr}:
 			:if type(myvar) == type(function("tr"))
 			:if type(myvar) == type([])
 			:if type(myvar) == type({})
-			:if type(myvar) == type(&0)
+			:if type(myvar) == type(0.0)
 
 values({dict})						*values()*
 		Return a |List| with all the values of {dict}.  The |List| is
@@ -7595,11 +7742,11 @@ code can be used: >
       " Only do non-blank lines.
       if line =~ '\S'
 	" Get the first number in the line.
-        let nr = matchstr(line, '\d\+')
+	let nr = matchstr(line, '\d\+')
 	" Get the file name, remove the script number " 123: ".
-        let name = substitute(line, '.\+:\s*', '', '')
+	let name = substitute(line, '.\+:\s*', '', '')
 	" Add an item to the Dictionary
-        let scripts[nr] = name
+	let scripts[nr] = name
       endif
     endfor
     unlet scriptnames_output

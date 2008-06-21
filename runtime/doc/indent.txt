@@ -6,22 +6,27 @@
 
 This file is about indenting C programs and other files.
 
-1. Indenting C programs		|C-indenting|
+1. Indenting C style programs	|C-indenting|
 2. Indenting by expression	|indent-expression|
 
 ==============================================================================
-1. Indenting C programs					*C-indenting*
+1. Indenting C style programs				*C-indenting*
 
-The basics for C indenting are explained in section |30.2| of the user manual.
+The basics for C style indenting are explained in section |30.2| of the user
+manual.
 
-Vim has options for automatically indenting C program files.  These options
-affect only the indent and do not perform other formatting.  For comment
-formatting, see |format-comments|.
+Vim has options for automatically indenting C style program files. Many
+programming languages including Java and C++ follow very closely the
+formatting conventions established with C.  These options affect only the
+indent and do not perform other formatting.  There are additional options that
+affect other kinds of formatting as well as indenting, see |format-comments|,
+|format-table|, |gq| and |formatting| for the main ones.
 
 Note that this will not work when the |+smartindent| or |+cindent| features
 have been disabled at compile time.
 
-There are in fact four methods available for indentation:
+There are in fact four main methods available for indentation, each one
+overrides the previous if it is enabled, or non-empty for 'indentexpr':
 'autoindent'	uses the indent from the previous line.
 'smartindent'	is like 'autoindent' but also recognizes some C syntax to
 		increase/reduce the indent where appropriate.

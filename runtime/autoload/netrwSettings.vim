@@ -146,6 +146,7 @@ fun! netrwSettings#NetrwSettings()
   let tmpfileescline= line("$")
   put ='let g:netrw_tmpfile_escape...'
   put = 'let g:netrw_use_noswf         = '.g:netrw_use_noswf
+  put = 'let g:netrw_xstrlen           = '.g:netrw_xstrlen
   put = 'let g:netrw_winsize           = '.g:netrw_winsize
 
   put =''
