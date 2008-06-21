@@ -1,4 +1,4 @@
-*usr_41.txt*	For Vim version 7.1.  Last change: 2008 May 28
+*usr_41.txt*	For Vim version 7.1.  Last change: 2008 Jun 18
 
 		     VIM USER MANUAL - by Bram Moolenaar
 
@@ -579,7 +579,8 @@ the function name to jump to detailed help on it.
 String manipulation:
 	nr2char()		get a character by its ASCII value
 	char2nr()		get ASCII value of a character
-	str2nr()		convert a string to a number
+	str2nr()		convert a string to a Number
+	str2float()		convert a string to a Float
 	printf()		format a string according to % items
 	escape()		escape characters in a string with a '\'
 	shellescape()		escape a string for use with a shell command
@@ -647,6 +648,16 @@ Dictionary manipulation:
 	max()			maximum value in a Dictionary
 	min()			minimum value in a Dictionary
 	count()			count number of times a value appears
+
+Floating point computation:
+	ceil()			round up
+	float2nr()		convert Float to Number
+	floor()			round down
+	log10()			logarithm to base 10
+	pow()			value of x to the exponent y
+	round()			round off
+	sqrt()			square root
+	trunc()			remove value after decimal point
 
 Variables:
 	type()			type of a variable

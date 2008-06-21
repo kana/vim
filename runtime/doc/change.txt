@@ -1,4 +1,4 @@
-*change.txt*    For Vim version 7.1.  Last change: 2008 Jun 04
+*change.txt*    For Vim version 7.1.  Last change: 2008 Jun 20
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -229,17 +229,17 @@ key restores the original text (if there was any).  (See section "Insert and
 Replace mode" |mode-ins-repl|).
 
 						*cw* *cW*
-Special case: "cw" and "cW" work the same as "ce" and "cE" if the cursor is
-on a non-blank and not at the end of a word.  This is because Vim interprets
-"cw" as change-word, and a word does not include the following white space.
+Special case: When the cursor is in a word, "cw" and "cW" do not include the
+white space after a word, they only change up to the end of the word.  This is
+because Vim interprets "cw" as change-word, and a word does not include the
+following white space.
 {Vi: "cw" when on a blank followed by other blanks changes only the first
 blank; this is probably a bug, because "dw" deletes all the blanks; use the
 'w' flag in 'cpoptions' to make it work like Vi anyway}
 
 If you prefer "cw" to include the space after a word, use this mapping: >
 	:map cw dwi
-If you want to change a word when the cursor is not at the start use "ciw"
-(|c| |iw|).
+Or use "caw" (see |aw|).
 
 							*:c* *:ch* *:change*
 :{range}c[hange][!]	Replace lines of text with some different text.
@@ -1261,9 +1261,11 @@ an external command, like "par" (e.g.: "!}par" to format until the end of the
 paragraph) or set 'formatprg' to "par".
 
 							*format-comments*
-Vim can format comments in a special way.  Vim recognizes a comment by a
-specific string at the start of the line (ignoring white space).  Three types
-of comments can be used:
+An overview of comment formatting is in section |30.6| of the user manual.
+
+Vim can automatically insert and format comments in a special way.  Vim
+recognizes a comment by a specific string at the start of the line (ignoring
+white space).  Three types of comments can be used:
 
 - A comment string that repeats at the start of each line.  An example is the
   type of comment used in shell scripts, starting with "#".
@@ -1271,7 +1273,7 @@ of comments can be used:
   lines.  An example is this list with dashes.
 - Three-piece comments that have a start string, an end string, and optional
   lines in between.  The strings for the start, middle and end are different.
-  An example is the C-style comment:
+  An example is the C style comment:
 	/*
 	 * this is a C comment
 	 */
@@ -1297,23 +1299,24 @@ type of comment string.  A part consists of:
 
   e	End of a three-piece comment
 
-  l	Left adjust middle with start or end (default).  Only recognized when
-	used together with 's' or 'e'.
+  l	Left align. Used together with 's' or 'e', the leftmost character of
+	start or end will line up with the leftmost character from the middle.
+	This is the default and can be omitted. See below for more details.
 
-  r	Right adjust middle with start or end.  Only recognized when used
-	together with 's' or 'e'.
+  r	Right align. Same as above but rightmost instead of leftmost. See
+	below for more details.
 
-  O	Don't use this one for the "O" command.
+  O	Don't consider this comment for the "O" command.
 
   x	Allows three-piece comments to be ended by just typing the last
-	character of the end-comment string as the first character on a new
-	line, when the middle-comment string has already been inserted
-	automatically.  See below for more details.
+	character of the end-comment string as the first action on a new
+	line when the middle-comment string has been inserted automatically.
+	See below for more details.
 
   {digits}
-	When together with 's' or 'e': add extra indent for the middle part.
-	This can be used to left-align the middle part with the start or end
-	and then add an offset.
+	When together with 's' or 'e': add {digit} amount of offset to an
+	automatically inserted middle or end comment leader. The offset begins
+	from a left alignment. See below for more details.
 
   -{digits}
 	Like {digits} but reduce the indent.  This only works when there is
@@ -1342,12 +1345,42 @@ have a middle string because otherwise Vim can't recognize the middle lines.
 
 Notice the use of the "x" flag in the above three-piece comment definition.
 When you hit Return in a C-comment, Vim will insert the middle comment leader
-for the new line, e.g. " * ".  To close this comment you just have to type "/"
+for the new line: " * ".  To close this comment you just have to type "/"
 before typing anything else on the new line.  This will replace the
-middle-comment leader with the end-comment leader, leaving just " */".  There
-is no need to hit BackSpace first.
+middle-comment leader with the end-comment leader and apply any specified
+alignment, leaving just " */".  There is no need to hit BackSpace first.
 
-Examples: >
+
+Here is an example of alignment flags at work to make a comment stand out
+(kind of looks like a 1 too). Consider comment string >
+	sr:/***,m:**,ex2:******/
+
+                                   /***
+                                     **<--right aligned from "r" flag
+                                     **
+offset 2 spaces from the "2" flag--->**
+                                   ******/
+In this case, the first comment was typed, then return was pressed 4 times,
+then "/" was pressed to end the comment.
+
+Here are some finer points of three part comments. There are three times when
+alignment and offset flags are taken into consideration: opening a new line
+after a start-comment, opening a new line before an end-comment, and
+automatically ending a three-piece comment.  The end alignment flag has a
+backwards perspective; the result is that the same alignment flag used with
+"s" and "e" will result in the same indent for the starting and ending pieces.
+Only one alignment per comment part is meant to be used, but an offset number
+will override the "r" and "l" flag.
+
+Enabling 'cindent' will override the alignment flags in many cases.
+Reindenting using a different method like |gq| or |=| will not consult
+alignment flags either. The same behaviour can be defined in those other
+formatting options. One consideration is that 'cindent' has additional options
+for context based indenting of comments but cannot replicate many three piece
+indent alignments.  However, 'indentexpr' is has the ability to work better
+with three piece comments.
+
+Other examples: >
    "b:*"	Includes lines starting with "*", but not if the "*" is
 		followed by a non-blank.  This avoids a pointer dereference
 		like "*str" to be recognized as a comment.
@@ -1357,17 +1390,6 @@ Examples: >
 By default, "b:#" is included.  This means that a line that starts with
 "#include" is not recognized as a comment line.  But a line that starts with
 "# define" is recognized.  This is a compromise.
-
-Often the alignment can be changed from right alignment to a left alignment
-with an additional space.  For example, for Javadoc comments, this can be
-used (insert a backslash before the space when using ":set"): >
-	s1:/*,mb:*,ex:*/
-Note that an offset is included with start, so that the middle part is left
-aligned with the start and then an offset of one character added.  This makes
-it possible to left align the start and middle for this construction: >
-	/**
-	 * comment
-	 */
 
 {not available when compiled without the |+comments| feature}
 

@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.1.  Last change: 2008 Jun 04
+*todo.txt*      For Vim version 7.1.  Last change: 2008 Jun 20
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,25 +30,8 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
-Finish incomplete utf-8 sequences patch. (Ben Schmidt)
-
-Bug when reading file with one byte 0xfc in utf-8. (Dominique Pelle, 2008 Apr
-6)  Ben Schmidt mentions it's already fixed by his patch (2008 May 16).
-
-Patch for BSD console mouse support.  Paul Mahol, 2008 Apr 9, 2008 Apr 21.
-
-Problems with using :execute in Vim scripts. (rdancer / Jan Minar, 2008 May
-14)  Unpacked in /tmp/vulnerablevim/
-Problems with tar.vim, zip.vim and netrw forwarded to Charles Campbell.
-Check out use of :exe starting with  scripts.vim
-
-Crash with specific regexp. (Andreas Politz, 2008 May 22)
-
-Win32: patch for if_python.c  /tmp/vim-win64.diff.1
-
-Fix for matchparen HL doesn't work.  beep.
-
-debian runtime files. (James Vega)
+Crash with dragn-n-drop of file combined with netrw (Marius Gedminas, 2008 Jun
+11)
 
 Don't install gvimtutor when compiled without GUI. (NAKAGAWA Tsuneo)
 
@@ -57,6 +40,11 @@ Ukranian translations.  Uses utf-8, add conversions in Makefile.
 When reallocating cmdline xp_pattern becomes invalid.  Move expand_T xpc into
 ccline?  (Dominique Pelle)
 
+Docs corrections. (Adri Verhoef, 2008 Apr 23, Update Jun 19)
+More docs corrections (John Beckett, Jun 19)
+
+Patch for BSD console mouse support.  Paul Mahol, 2008 Apr 9, 2008 Apr 21.
+
 Wildmenu not deleted: "gvim -u NONE", ":set nocp wildmenu cmdheight=3
 laststatus=2", CTRL-D CTRL-H CTRL-H CTRL-H. (A.Politz, 2008 April 1)
 Works OK with Vim in an xterm.
@@ -64,9 +52,16 @@ Works OK with Vim in an xterm.
 Test 11 breaks after patch 7.1.186 on Win32 console. (Daniel Shahaf, 2008 Apr
 10)
 
+Fix for matchparen HL doesn't work.  beep.
+
+Win32: associating a type of with Vim doesn't take care of space after a
+backslash? (Robert Vibrant, 2008 Jun 5)
+
 After using <Tab> for command line completion after ":ta blah" and getting E33
 (no tags file), further editing the command to e.g., ":echo 'blah'", the
 command is not executed.
+
+Patch to return more info with mode() function.  (Ben Schmidt, 2008 Jun 3)
 
 Test this some more:
 Regexp: matchlist('12a4aaa', '^\(.\{-}\)\(\%5c\@<=a\+\)\(.\+\)\?')
@@ -74,13 +69,13 @@ Returns ['12a4', 'aaa', '4aaa'], should be ['12a4', 'aaa', '']
 Backreference not cleared when retrying after \@<= fails?
 (Brett Stahlman, 2008 March 8)
 
-Docs corrections. (Adri Verhoef, 2008 Apr 23)
-
 When adding path to 'tags' with a wildcard, it appears only a first match is
 used. (Erik Falor, 2008 April 18)  Or is it that a wildcard in the file name
 is not supported, only in the path?
 
 Have a look at patch for utf-8 line breaking. (Yongwei Wu, 2008 Mar 1, Mar 23)
+
+Patch to return noting when 'key' is empty. (Ben Schmidt, 2008 Jun 13)
 
 Setting 'pastetoggle' to "jj" doesn't work.  Was OK in vim 7.0. (James Vega,
 2008 May 4)
@@ -105,10 +100,15 @@ The utf class table is missing some entries:
 	0x26ab, circle
 
 Patch for netbeans.txt, Thoml, 2008 Mar 20
-Large update for netbeans.txt, Philippe Fremy, 2008 May 26
+Large update for netbeans.txt, Philippe Fremy, 2008 May 26, June 13
+
+Patch for netbeans.c to improve error messages. (Philippe Fremy, 2008 Jun 6)
 
 Visual line mode doesn't highlight properly when 'showbreak' is used and the
 line doesn't fit. (Dasn, 2008 May 1)
+
+GUI: In Normal mode can't yank the modeless selection.  Make "gy" do this?
+Works like CTRL-Y in Command line mode.
 
 Patch to reduce FileChangedShellPost events. (John Little, 2008 May 18)
 
@@ -187,7 +187,7 @@ C syntax: {} inside () causes following {} to be highlighted as error.
 (Michalis Giannakidis, 2006 Jun 1)
 
 'ic' and 'smartcase' don't work properly when using \%V in search pattern.
-(fritzophrenic, 2008 May 15)
+(fritzophrenic, 2008 May 15)  Patch by Kana Natsuno (kana), 2008 Jun 12.
 
 Win32: use of get_short_pathname() is bad.  Add comments for function
 arguments.  Check what happens for ":echo fnamemodify('c:\abc\abc', ':8')".
@@ -343,6 +343,9 @@ properly?
 Cursor displayed in the wrong position when using 'numberwidth'. (James Vega,
 2007 Jun 21)
 
+When $VAR contains a backslash expand('$VAR') removes it. (Teemu Likonen, 2008
+Jun 18)
+
 If the variable "g:x#y#z" exists completion after ":echo g:x#" doesn't work.
 
 F1 - F4 in an xterm produce a different escape sequence when used with a
@@ -364,6 +367,9 @@ the function. (Hari Krishna Dara, 2006 Jun 28)
 C++ indenting wrong with "=". (James Kanze, 2007 Jan 26)
 
 ":lockvar" should use copyID to avoid endless loop.
+
+When using --remote-silent and the file name matches 'wildignore' get an E479
+error.  without --remoete-silent it works fine. (Ben Fritz, 2008 Jun 20)
 
 Patch to use xterm mouse codes for screen. (Micah Cowan, 2007 May 8)
 
@@ -687,7 +693,8 @@ Patches:
 -   ml_append_string(): efficiently append to an existing line. (Brad
     Beveridge, 2006 Aug 26)  Use in some situations, e.g., when pasting a
     character at a time?
--   gettabvar() and settabvar() functions. (Yegappan Lakshmanan, 2007 Sep 13)
+-   gettabvar() and settabvar() functions. (Yegappan Lakshmanan, 2007 Sep 13,
+    2008 Jun 12)
 -   recognize hex numbers better. (Mark Manning, 2006 Sep 13)
 
 
@@ -1342,8 +1349,6 @@ Macintosh:
 9   When "$" is in 'cpoptions' and folding is active, a "C" command changes
     the folds and resets w_lines_valid.  The display updating doesn't work
     then. (Pritesh Mistry)
-8   ":s!from!to!" works, but ":smagic!from!to!" doesn't.  It sees the "!" as a
-    flag to to the command.  Same for ":snomagic". (Johan Spetz)
 8   Using ":s" in a function changes the previous replacement string.  Save
     "old_sub" in save_search_patterns()?
 8   Should allow multi-byte characters for the delimiter: ":s+a+b+" where "+"

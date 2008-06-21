@@ -1,7 +1,7 @@
 " zip.vim: Handles browsing zipfiles
 "            AUTOLOAD PORTION
-" Date:		Jan 07, 2008
-" Version:	16
+" Date:		Jun 12, 2008
+" Version:	18
 " Maintainer:	Charles E Campbell, Jr <NdrOchip@ScampbellPfamily.AbizM-NOSPAM>
 " License:	Vim License  (see vim's :help license)
 " Copyright:    Copyright (C) 2005-2008 Charles E. Campbell, Jr. {{{1
@@ -22,7 +22,7 @@ if &cp || exists("g:loaded_zip") || v:version < 700
  finish
 endif
 
-let g:loaded_zip     = "v16"
+let g:loaded_zip     = "v18"
 let s:zipfile_escape = ' ?&;\'
 let s:ERROR          = 2
 let s:WARNING        = 1
@@ -323,8 +323,13 @@ endfun
 " QuoteFileDir: {{{2
 fun! s:QuoteFileDir(fname)
 "  call Dfunc("QuoteFileDir(fname<".a:fname.">)")
-"  call Dret("QuoteFileDir")
-  return g:zip_shq.a:fname.g:zip_shq
+  if has("*shellescape")
+   let qnameq= shellescape(a:fname)
+  else
+   let qnameq= g:zip_shq.escape(a:fname,g:zip_shq).g:zip_shq
+  endif
+"  call Dret("QuoteFileDir <".qnameq.">")
+  return qnameq
 endfun
 
 " ---------------------------------------------------------------------

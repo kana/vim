@@ -1,4 +1,4 @@
-*pi_vimball.txt*	For Vim version 7.1.  Last change: 2008 May 30
+*pi_vimball.txt*	For Vim version 7.1.  Last change: 2008 Jun 05
 
 			       ----------------
 			       Vimball Archiver
@@ -140,17 +140,17 @@ Copyright: (c) 2004-2008 by Charles E. Campbell, Jr.	*Vimball-copyright*
 ==============================================================================
 4. Vimball History					*vimball-history* {{{1
 
-	25 : Mar 24, 2008 * changed vimball#Vimball() to recognize doc/*.??x
-			    files as help files, too.
-	     Apr 18, 2008 * RmVimball command is now protected by saving and
-	                    restoring settings -- in particular, acd was
-			    causing problems as reported by Zhang Shuhan
-	     May 27, 2008 * g:vimball_mkdir usage installed.  Makes the
+	26 : May 27, 2008 * g:vimball_mkdir usage installed.  Makes the
 	                    $HOME/.vim (or $HOME\vimfiles) directory if
 			    necessary.
 	     May 30, 2008 * (tnx to Bill McCarthy) found and fixed a bug:
 			    vimball wasn't updating plugins to AsNeeded/
 			    when it should
+	25 : Mar 24, 2008 * changed vimball#Vimball() to recognize doc/*.??x
+			    files as help files, too.
+	     Apr 18, 2008 * RmVimball command is now protected by saving and
+	                    restoring settings -- in particular, acd was
+			    causing problems as reported by Zhang Shuhan
 	24 : Nov 15, 2007 * |g:vimball_path_escape| used by s:Path() to
 	                    prevent certain characters from causing trouble
 	22 : Mar 21, 2007 * uses setlocal instead of set during BufEnter

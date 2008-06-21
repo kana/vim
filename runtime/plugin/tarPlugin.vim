@@ -14,7 +14,7 @@
 if &cp || exists("g:loaded_tarPlugin")
  finish
 endif
-let g:loaded_tarPlugin = "v14"
+let g:loaded_tarPlugin = "v16"
 let s:keepcpo          = &cpo
 set cpo&vim
 
@@ -22,16 +22,16 @@ set cpo&vim
 "  Public Interface: {{{1
 augroup tar
   au!
-  au BufReadCmd   tarfile:*	call tar#Read(expand("<amatch>"), 1)
-  au FileReadCmd  tarfile:*	call tar#Read(expand("<amatch>"), 0)
-  au BufWriteCmd  tarfile:*	call tar#Write(expand("<amatch>"))
-  au FileWriteCmd tarfile:*	call tar#Write(expand("<amatch>"))
+  au BufReadCmd   tarfile::*	call tar#Read(expand("<amatch>"), 1)
+  au FileReadCmd  tarfile::*	call tar#Read(expand("<amatch>"), 0)
+  au BufWriteCmd  tarfile::*	call tar#Write(expand("<amatch>"))
+  au FileWriteCmd tarfile::*	call tar#Write(expand("<amatch>"))
 
   if has("unix")
-   au BufReadCmd   tarfile:*/*	call tar#Read(expand("<amatch>"), 1)
-   au FileReadCmd  tarfile:*/*	call tar#Read(expand("<amatch>"), 0)
-   au BufWriteCmd  tarfile:*/*	call tar#Write(expand("<amatch>"))
-   au FileWriteCmd tarfile:*/*	call tar#Write(expand("<amatch>"))
+   au BufReadCmd   tarfile::*/*	call tar#Read(expand("<amatch>"), 1)
+   au FileReadCmd  tarfile::*/*	call tar#Read(expand("<amatch>"), 0)
+   au BufWriteCmd  tarfile::*/*	call tar#Write(expand("<amatch>"))
+   au FileWriteCmd tarfile::*/*	call tar#Write(expand("<amatch>"))
   endif
 
   au BufReadCmd   *.tar.gz	call tar#Browse(expand("<amatch>"))

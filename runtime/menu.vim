@@ -2,7 +2,7 @@
 " You can also use this as a start for your own set of menus.
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2008 May 29
+" Last Change:	2008 Jun 16
 
 " Note that ":an" (short for ":anoremenu") is often used to make a menu work
 " in all modes and avoid side effects from mappings defined by the user.
@@ -812,7 +812,7 @@ if has("vertsplit")
       if @% == ""
 	20vsp .
       else
-	exe "20vsp " . expand("%:p:h")
+	exe "20vsp " . s:FnameEscape(expand("%:p:h"))
       endif
     endfun
   endif

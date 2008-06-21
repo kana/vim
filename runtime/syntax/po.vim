@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language:	po (gettext)
 " Maintainer:	Dwayne Bailey <dwayne@translate.org.za>
-" Last Change:	2007 Aug 23
+" Last Change:	2008 Jan 08
 " Contributors: Dwayne Bailey (Most advanced syntax highlighting)
 "               Leonardo Fontenelle (Spell checking)
 "               Nam SungHyun <namsh@kldp.org> (Original maintainer)
@@ -23,9 +23,10 @@ syn match  poPluralCaseN "[0-9]" contained
 syn match  poStatementMsgstr "^msgstr\(\[[0-9]\]\)" contains=poPluralCaseN
 
 " Simple HTML and XML highlighting
-syn match  poHtml "<[^<>]\+>" contains=poHtmlTranslatables
+syn match  poHtml "<\_[^<>]\+>" contains=poHtmlTranslatables,poLineBreak
 syn match  poHtmlNot +"<[^<]\+>"+ms=s+1,me=e-1
-syn region poHtmlTranslatables start=+alt=\\"+ms=e-1 end=+\\"+ contained
+syn region poHtmlTranslatables start=+\(abbr\|alt\|content\|summary\|standby\|title\)=\\"+ms=e-1 end=+\\"+ contained contains=@Spell
+syn match poLineBreak +"\n"+ contained
 
 " Translation blocks
 syn region     poMsgCTxt	matchgroup=poStatementMsgCTxt start=+^msgctxt "+rs=e-1 matchgroup=poStringCTxt end=+^msgid "+me=s-1 contains=poStringCTxt
@@ -115,6 +116,7 @@ if version >= 508 || !exists("did_po_syn_inits")
   HiLink poHtml              Identifier
   HiLink poHtmlNot           String
   HiLink poHtmlTranslatables String
+  HiLink poLineBreak         String
 
   HiLink poFormat	    poSpecial
   HiLink poSpecial	    Special

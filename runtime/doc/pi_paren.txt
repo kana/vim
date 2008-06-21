@@ -1,4 +1,4 @@
-*pi_paren.txt*  For Vim version 7.1.  Last change: 2008 Jan 06
+*pi_paren.txt*  For Vim version 7.1.  Last change: 2008 Jun 16
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -46,6 +46,12 @@ are:
   closed folds.
 - 'synmaxcol' times 2 bytes before or after the cursor to avoid a delay
   in a long line with syntax highlighting.
+
+
+If you would like the |%| command to work better, the matchit plugin can be
+used, see |matchit-install|.  This plugin also helps to skip matches in
+comments.  This is unrelated to the matchparen highlighting, they use a
+different mechanism.
 
 ==============================================================================
  vim:tw=78:ts=8:ft=help:norl:

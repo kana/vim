@@ -1,9 +1,9 @@
 " vimball.vim : construct a file containing both paths and files
 " Author:	Charles E. Campbell, Jr.
-" Date:		May 30, 2008
-" Version:	26	ASTRO-ONLY
+" Date:		Jun 05, 2008
+" Version:	27
 " GetLatestVimScripts: 1502 1 :AutoInstall: vimball.vim
-" Copyright: (c) 2004-2007 by Charles E. Campbell, Jr.
+" Copyright: (c) 2004-2008 by Charles E. Campbell, Jr.
 "            The VIM LICENSE applies to Vimball.vim, and Vimball.txt
 "            (see |copyright|) except use "Vimball" instead of "Vim".
 "            No warranty, express or implied.
@@ -15,7 +15,7 @@ if &cp || exists("g:loaded_vimball") || v:version < 700
  finish
 endif
 let s:keepcpo        = &cpo
-let g:loaded_vimball = "v26"
+let g:loaded_vimball = "v27"
 set cpo&vim
 "DechoTabOn
 
@@ -214,6 +214,12 @@ endfun
 "                  vimballs' prologue)
 fun! vimball#Vimball(really,...)
 "  call Dfunc("vimball#Vimball(really=".a:really.") a:0=".a:0)
+
+  if v:version < 701 || (v:version == 701 && !has("patch299"))
+   echoerr "This version of vimball requires vim 7.1 with patch 299"
+"   call Dret("vimball#Vimball : needs 7.1 with patch 299")
+   return
+  endif
 
   if getline(1) !~ '^" Vimball Archiver by Charles E. Campbell, Jr., Ph.D.$'
    echoerr "(Vimball) The current file does not appear to be a Vimball!"
