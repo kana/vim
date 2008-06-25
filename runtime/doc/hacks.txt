@@ -7,6 +7,12 @@ All changes are licensed under the same terms of Vim.  See |license|.
 ==============================================================================
 INDEX OF HACKS						*hacks-index*
 
+Fix |getbufvar()| with {varname} ""	   *hacks-bugfix-getbufvar-scope-dict*
+	Fix the bug that |getbufvar()| with {varname} == "" did return the
+	dictionary of variables which are local to the current buffer instead
+	of the buffer specified by {expr}.  It should return the dictionary of
+	the latter buffer.
+
 
 
 
