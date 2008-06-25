@@ -7,7 +7,7 @@ All changes are licensed under the same terms of Vim.  See |license|.
 ==============================================================================
 INDEX OF HACKS						*hacks-index*
 
-Fix 'smartcase' bug					*hacks-smartcase-bug*
+Fix 'smartcase' bug			      *hacks-bugfix-smartcase-parsing*
 	Fix the bug that Vim (up to version 7.1.314) doesn't override
 	'ignorecase' for some sorts of regular expressions such as "\%Vfoo"
 	and "\_Xbar".
