@@ -348,6 +348,7 @@ static struct vimvar
     {VV_NAME("mouse_col",	 VAR_NUMBER), 0},
     {VV_NAME("operator",	 VAR_STRING), VV_RO},
     {VV_NAME("searchforward",	 VAR_NUMBER), 0},
+    {VV_NAME("motion_force",	 VAR_STRING), VV_RO},
 };
 
 /* shorthand */

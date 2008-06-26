@@ -7,6 +7,10 @@ All changes are licensed under the same terms of Vim.  See |license|.
 ==============================================================================
 INDEX OF HACKS						*hacks-index*
 
+|v:motion_force|				   *hacks-vimvar-motion_force*
+	New predefined variable to contains the motion-forcing information for
+	the last operator such as |o_v|.
+
 
 
 

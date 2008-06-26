@@ -1728,7 +1728,8 @@ typedef int proftime_T;	    /* dummy for function prototypes */
 #define VV_MOUSE_COL	51
 #define VV_OP		52
 #define VV_SEARCHFORWARD 53
-#define VV_LEN		54	/* number of v: vars */
+#define VV_MOTION_FORCE	54
+#define VV_LEN		55	/* number of v: vars */
 
 #ifdef FEAT_CLIPBOARD
 

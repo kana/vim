@@ -1469,6 +1469,16 @@ v:lnum		Line number for the 'foldexpr' |fold-expr| and 'indentexpr'
 		'guitabtooltip'.  Only valid while one of these expressions is
 		being evaluated.  Read-only when in the |sandbox|.
 
+					*v:motion_force* *motion_force-variable*
+v:motion_force	The motion-forcing information for the last operator, such as
+		|o_v| and others:
+
+			value		meaning ~
+			v		|o_v| is given
+			V		|o_V| is given
+			<C-v>		|o_CTRL-V| is given
+			(null string)	motion type is not forced
+
 					*v:mouse_win* *mouse_win-variable*
 v:mouse_win	Window number for a mouse click obtained with |getchar()|.
 		First window has number 1, like with |winnr()|.  The value is

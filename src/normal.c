@@ -1424,6 +1424,26 @@ do_pending_operator(cap, old_col, gui_yank)
 #endif
 		) && oap->op_type != OP_NOP)
     {
+#ifdef FEAT_EVAL
+	switch (oap->motion_force)
+	{
+	    default:
+		/* FALLTHRU */
+	    case NUL:
+		set_vim_var_string(VV_MOTION_FORCE, NULL, 0);
+		break;
+	    case 'v':
+		set_vim_var_string(VV_MOTION_FORCE, (char_u *)"v", 1);
+		break;
+	    case 'V':
+		set_vim_var_string(VV_MOTION_FORCE, (char_u *)"V", 1);
+		break;
+	    case Ctrl_V:
+		set_vim_var_string(VV_MOTION_FORCE, (char_u *)"\x16", 1);
+		break;
+	}
+#endif
+
 #ifdef FEAT_VISUAL
 	oap->is_VIsual = VIsual_active;
 	if (oap->motion_force == 'V')
@@ -8734,6 +8754,10 @@ nv_esc(cap)
 #endif
 	if (no_reason)
 	    vim_beep();
+#ifdef FEAT_EVAL
+    if (cap->oap->op_type != OP_NOP)  /* the operator is canceled by ESC */
+	set_vim_var_string(VV_MOTION_FORCE, NULL, 0);
+#endif
     clearop(cap->oap);
 
     /* A CTRL-C is often used at the start of a menu.  When 'insertmode' is
