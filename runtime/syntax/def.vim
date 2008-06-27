@@ -1,9 +1,9 @@
 " Vim syntax file
 " Language:	Microsoft Module-Definition (.def) File
-" Maintainer:	Rob Brady <robb@datatone.com>
-" Last Change:	$Date: 2004/06/13 18:26:37 $
-" URL: http://www.datatone.com/~robb/vim/syntax/def.vim
-" $Revision: 1.1 $
+" Orig Author:	Rob Brady <robb@datatone.com>
+" Maintainer:	Wu Yongwei <wuyongwei@gmail.com>
+" Last Change:	$Date: 2008/06/25 19:58:18 $
+" $Revision: 1.3 $
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded
@@ -23,7 +23,7 @@ syn keyword defKeyword	HEAPSIZE DATA
 syn keyword defStorage	LOADONCALL MOVEABLE DISCARDABLE SINGLE
 syn keyword defStorage	FIXED PRELOAD
 
-syn match   defOrdinal	"@\d\+"
+syn match   defOrdinal	"\s\+@\d\+"
 
 syn region  defString	start=+'+ end=+'+
 
