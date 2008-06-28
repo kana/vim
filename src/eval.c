@@ -10442,17 +10442,12 @@ f_getbufvar(argvars, rettv)
 
     if (buf != NULL && varname != NULL)
     {
+	/* set curbuf to be our buf, temporarily */
+	save_curbuf = curbuf;
+	curbuf = buf;
+
 	if (*varname == '&')	/* buffer-local-option */
-	{
-	    /* set curbuf to be our buf, temporarily */
-	    save_curbuf = curbuf;
-	    curbuf = buf;
-
 	    get_option_tv(&varname, rettv, TRUE);
-
-	    /* restore previous notion of curbuf */
-	    curbuf = save_curbuf;
-	}
 	else
 	{
 	    if (*varname == NUL)
@@ -10461,10 +10456,13 @@ f_getbufvar(argvars, rettv)
 		 * find_var_in_ht(). */
 		varname = (char_u *)"b:" + 2;
 	    /* look up the variable */
-	    v = find_var_in_ht(&buf->b_vars.dv_hashtab, varname, FALSE);
+	    v = find_var_in_ht(&curbuf->b_vars.dv_hashtab, varname, FALSE);
 	    if (v != NULL)
 		copy_tv(&v->di_tv, rettv);
 	}
+
+	/* restore previous notion of curbuf */
+	curbuf = save_curbuf;
     }
 
     --emsg_off;
@@ -18504,11 +18502,11 @@ get_tv_number_chk(varp, denote)
 	    return (long)(varp->vval.v_number);
 #ifdef FEAT_FLOAT
 	case VAR_FLOAT:
-	    EMSG(_("E805: Using a Float as a number"));
+	    EMSG(_("E805: Using a Float as a Number"));
 	    break;
 #endif
 	case VAR_FUNC:
-	    EMSG(_("E703: Using a Funcref as a number"));
+	    EMSG(_("E703: Using a Funcref as a Number"));
 	    break;
 	case VAR_STRING:
 	    if (varp->vval.v_string != NULL)
@@ -18516,10 +18514,10 @@ get_tv_number_chk(varp, denote)
 							TRUE, TRUE, &n, NULL);
 	    return n;
 	case VAR_LIST:
-	    EMSG(_("E745: Using a List as a number"));
+	    EMSG(_("E745: Using a List as a Number"));
 	    break;
 	case VAR_DICT:
-	    EMSG(_("E728: Using a Dictionary as a number"));
+	    EMSG(_("E728: Using a Dictionary as a Number"));
 	    break;
 	default:
 	    EMSG2(_(e_intern2), "get_tv_number()");
