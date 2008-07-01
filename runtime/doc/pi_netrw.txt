@@ -1,4 +1,4 @@
-*pi_netrw.txt*  For Vim version 7.1.  Last change: 2008 Jun 12
+*pi_netrw.txt*  For Vim version 7.2a.  Last change: 2008 Jun 21
 
 	    -----------------------------------------------------
 	    NETRW REFERENCE MANUAL    by Charles E. Campbell, Jr.
@@ -1362,7 +1362,7 @@ will end up.  One may change the sorting sequence by modifying the
 g:netrw_sort_sequence variable (either manually or in your <.vimrc>) or by
 using the "S" map.
 
-Related topics:              |g:netrw-s| |g:netrw-S|
+Related topics:              |netrw-s|
 Associated setting variable: |g:netrw_sort_sequence|
 
 
@@ -1657,7 +1657,7 @@ MARKED FILES: TAGGING						*netrw-mT* {{{2
 	    (See |netrw-mf| and |netrw-mr| for how to mark files)
 		      (uses the global marked file list)
 
-The "mt" mapping will apply the command in |g:netrw_ctags| (by default, its
+The "mt" mapping will apply the command in g:netrw_ctags (by default, its
 "ctags") to marked files.  For remote browsing, in order to create a tags file
 netrw will use ssh (see |g:netrw_ssh_cmd|), and so ssh must be available for
 this to work on remote systems.  For your local system, see |ctags| on how to
@@ -1676,7 +1676,7 @@ preceded by the netrw-compatible url used to obtain it.  When one subsequently
 uses one of the go to tag actions (|tags|), the url will be used by netrw to
 edit the desired file and go to the tag.
 
-Associated setting variables: |g:netrw_ctags| |g:netrw_ssh_cmd|
+Associated setting variables: |g:netrw_ssh_cmd|
 
 
 MARKED FILES: SETTING THE TARGET DIRECTORY			*netrw-mt* {{{2
@@ -2096,7 +2096,7 @@ REVERSING SORTING ORDER		*netrw-r* *netrw-reverse* {{{2
 One may toggle between normal and reverse sorting order by pressing the
 "r" key.
 
-Related topics:              |g:netrw-s|
+Related topics:              |netrw-s|
 Associated setting variable: |g:netrw_sort_direction|
 
 
@@ -2106,7 +2106,7 @@ One may select the sorting style by name, time, or (file) size.  The "s" map
 allows one to circulate amongst the three choices; the directory listing will
 automatically be refreshed to reflect the selected style.
 
-Related topics:               |g:netrw-r| |g:netrw-S|
+Related topics:               |netrw-r| |netrw-S|
 Associated setting variables: |g:netrw_sort_by| |g:netrw_sort_sequence|
 
 
@@ -2314,11 +2314,11 @@ Associated setting variables: |g:netrw_sort_by| |g:netrw_sort_sequence|
 			let g:netrw_altv = 1
 		* Edit the current directory:  :e .
 		* Select some file, press v
-		* Resize the windows as you wish (see |ctrl-w_<| and
-		  |ctrl-w_>|).  If you're using gvim, you can drag
+		* Resize the windows as you wish (see |CTRL-W_<| and
+		  |CTRL-W_>|).  If you're using gvim, you can drag
 		  the separating bar with your mouse.
 		* When you want a new file, use  ctrl-w h  to go back to the
-		  netrw browser, select a file, then press P  (see |ctrl-w_h|
+		  netrw browser, select a file, then press P  (see |CTRL-W_h|
 		  and |netrw-P|).  If you're using gvim, you can press
 		  <leftmouse> in the browser window and then press the
 		  <middlemouse> to select the file.
@@ -2542,7 +2542,7 @@ which is loaded automatically at startup (assuming :set nocp).
 	      Sep 20, 2007 * (Nico Weber) the "x" command has been extended
 			     to Mac's OS/X (macunix); it now uses open to
 			     handle |netrw-x| browsing with special files.
-	      Sep 22, 2007 * Added |g:netrw_noretmap| to netrw at Tony M's
+	      Sep 22, 2007 * Added g:netrw_noretmap to netrw at Tony M's
 			     request.
 			   * Included path to NetrwRemoteRmFile()
 	v112: Aug 18, 2007 * added mx (|netrw-mx|) for executing arbitrary

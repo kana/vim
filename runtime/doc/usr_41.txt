@@ -1,4 +1,4 @@
-*usr_41.txt*	For Vim version 7.1.  Last change: 2008 Jun 18
+*usr_41.txt*	For Vim version 7.2a.  Last change: 2008 Jun 21
 
 		     VIM USER MANUAL - by Bram Moolenaar
 
@@ -650,14 +650,18 @@ Dictionary manipulation:
 	count()			count number of times a value appears
 
 Floating point computation:
-	ceil()			round up
 	float2nr()		convert Float to Number
+	abs()			absolute value (also works for Number)
+	round()			round off
+	ceil()			round up
 	floor()			round down
+	trunc()			remove value after decimal point
 	log10()			logarithm to base 10
 	pow()			value of x to the exponent y
-	round()			round off
 	sqrt()			square root
-	trunc()			remove value after decimal point
+	sin()			sine
+	cos()			cosine
+	atan()			arc tangent
 
 Variables:
 	type()			type of a variable
@@ -902,8 +906,8 @@ are local unless prefixed by something like "g:", "a:", or "s:".
 
 	Note:
 	To access a global variable from inside a function you must prepend
-	"g:" to it.  Thus "g:count" inside a function is used for the global
-	variable "count", and "count" is another variable, local to the
+	"g:" to it.  Thus "g:today" inside a function is used for the global
+	variable "today", and "today" is another variable, local to the
 	function.
 
 You now use the ":return" statement to return the smallest number to the user.

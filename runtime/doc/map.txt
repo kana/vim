@@ -1,4 +1,4 @@
-*map.txt*       For Vim version 7.1.  Last change: 2008 May 07
+*map.txt*       For Vim version 7.2a.  Last change: 2008 Jun 21
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -1383,10 +1383,10 @@ This will invoke: >
 
    :" A more substantial example
    :function Allargs(command)
-   :	let i = 0
-   :	while i < argc()
-   :	   if filereadable(argv(i))
-   :	    execute "e " . argv(i)
+   :   let i = 0
+   :   while i < argc()
+   :	  if filereadable(argv(i))
+   :	     execute "e " . argv(i)
    :	     execute a:command
    :      endif
    :      let i = i + 1

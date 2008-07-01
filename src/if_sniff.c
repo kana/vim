@@ -2,7 +2,7 @@
  *
  * if_sniff.c Interface between Vim and SNiFF+
  *
- * $Id: if_sniff.c,v 1.4 2006/03/06 23:13:51 vimboss Exp $
+ * $Id: if_sniff.c,v 1.6 2008/06/25 19:55:22 vimboss Exp $
  *
  * See README.txt for an overview of the Vim source code.
  */
@@ -11,7 +11,6 @@
 
 #ifdef WIN32
 # include <stdio.h>
-# include <fcntl.h>
 # include "vimio.h"
 # include <process.h>
 # include <string.h>

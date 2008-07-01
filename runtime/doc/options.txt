@@ -1,4 +1,4 @@
-*options.txt*	For Vim version 7.1.  Last change: 2008 May 29
+*options.txt*	For Vim version 7.2a.  Last change: 2008 Jun 24
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -4730,8 +4730,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global
 			{not in Vi}
 	Enable the use of the mouse.  Only works for certain terminals
-	(xterm, MS-DOS, Win32 |win32-mouse|, QNX pterm, and Linux console
-	with gpm).  For using the mouse in the GUI, see |gui-mouse|.
+	(xterm, MS-DOS, Win32 |win32-mouse|, QNX pterm, *BSD console with
+	sysmouse and Linux console with gpm).  For using the mouse in the
+	GUI, see |gui-mouse|.
 	The mouse can be enabled for different modes:
 		n	Normal mode
 		v	Visual mode
@@ -5061,6 +5062,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Note that typing <F10> in paste mode inserts "<F10>", since in paste
 	mode everything is inserted literally, except the 'pastetoggle' key
 	sequence.
+	When the value has several bytes 'ttimeoutlen' applies.
 
 						*'pex'* *'patchexpr'*
 'patchexpr' 'pex'	string	(default "")
@@ -6596,6 +6598,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	   split	If included, split the current window before loading
 			a buffer.  Otherwise: do not split, use current window.
 			Supported in |quickfix| commands that display errors.
+	   newtab	Like "split", but open a new tab page.  Overrules
+	   		"split" when both are present.
 
 						*'synmaxcol'* *'smc'*
 'synmaxcol' 'smc'	number	(default 3000)
@@ -7219,7 +7223,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	"xterm", when the terminal name doesn't start with "xterm", but it can
 	handle xterm mouse codes.
 	The "xterm2" value will be set if the xterm version is reported to be
-	95 of higher.  This only works when compiled with the |+termresponse|
+	95 or higher.  This only works when compiled with the |+termresponse|
 	feature and if |t_RV| is set to the escape sequence to request the
 	xterm version number.  Otherwise "xterm2" must be set explicitly.
 	If you do not want 'ttymouse' to be set to "xterm2" automatically, set

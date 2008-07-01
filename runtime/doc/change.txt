@@ -1,4 +1,4 @@
-*change.txt*    For Vim version 7.1.  Last change: 2008 Jun 20
+*change.txt*    For Vim version 7.2a.  Last change: 2008 Jun 22
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -1136,7 +1136,10 @@ nothing is returned.  {not in Vi}
 Contains the most recent search-pattern.  This is used for "n" and 'hlsearch'.
 It is writable with ":let", you can change it to have 'hlsearch' highlight
 other matches without actually searching.  You can't yank or delete into this
-register.  {not in Vi}
+register.  The search direction is available in |v:searchforward|.
+Note that the valued is restored when returning from a function
+|function-search-undo|.
+{not in Vi}
 
 							*@/*
 You can write to a register with a ":let" command |:let-@|.  Example: >

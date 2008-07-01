@@ -1,4 +1,4 @@
-*pattern.txt*   For Vim version 7.1.  Last change: 2008 Feb 27
+*pattern.txt*   For Vim version 7.2a.  Last change: 2008 Jun 21
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -597,9 +597,9 @@ overview.
 
 	Example			matches ~
 	ab\{2,3}c		"abbc" or "abbbc"
-	a\{5}			"aaaaa".
-	ab\{2,}c		"abbc", "abbbc", "abbbbc", etc
-	ab\{,3}c		"ac", "abc", "abbc" or "abbbc".
+	a\{5}			"aaaaa"
+	ab\{2,}c		"abbc", "abbbc", "abbbbc", etc.
+	ab\{,3}c		"ac", "abc", "abbc" or "abbbc"
 	a[bc]\{3}d		"abbbd", "abbcd", "acbcd", "acccd", etc.
 	a\(bc\)\{1,2}d		"abcd" or "abcbcd"
 	a[bc]\{-}[cd]		"abc" in "abcd"
@@ -682,11 +682,11 @@ overview.
 	for a match).
 	Example			matches ~
 	\(foo\)\@<!bar		any "bar" that's not in "foobar"
-	\(\/\/.*\)\@\<!in	"in" which is not after "//"
+	\(\/\/.*\)\@<!in	"in" which is not after "//"
 
 							*/\@>*
 \@>	Matches the preceding atom like matching a whole pattern. {not in Vi}
-	Like '(?>pattern)" in Perl.
+	Like "(?>pattern)" in Perl.
 	Example		matches ~
 	\(a*\)\@>a	nothing (the "a*" takes all the "a"'s, there can't be
 			another one following)
@@ -871,7 +871,7 @@ $	At end of pattern or in front of "\|", "\)" or "\n" ('magic' on):
 	WARNING: When inserting or deleting text Vim does not automatically
 	update highlighted matches.  This means Syntax highlighting quickly
 	becomes wrong.
-	Example, to highlight the all characters after virtual column 72: >
+	Example, to highlight all the characters after virtual column 72: >
 		/\%>72v.*
 <	When 'hlsearch' is set and you move the cursor around and make changes
 	this will clearly show when the match is updated or not.

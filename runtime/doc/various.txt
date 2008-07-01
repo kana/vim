@@ -1,4 +1,4 @@
-*various.txt*   For Vim version 7.1.  Last change: 2008 Jun 08
+*various.txt*   For Vim version 7.2a.  Last change: 2008 Jun 08
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -346,6 +346,7 @@ B  *+mouse_dec*		Unix only: Dec terminal mouse handling |dec-mouse|
 N  *+mouse_gpm*		Unix only: Linux console mouse handling |gpm-mouse|
 B  *+mouse_netterm*	Unix only: netterm mouse handling |netterm-mouse|
 N  *+mouse_pterm*	QNX only: pterm mouse handling |qnx-terminal|
+N  *+mouse_sysmouse*	Unix only: *BSD console mouse handling |sysmouse|
 N  *+mouse_xterm*	Unix only: xterm mouse handling |xterm-mouse|
 B  *+multi_byte*	Korean and other languages |multibyte|
    *+multi_byte_ime*	Win32 input method for multibyte chars |multibyte-ime|
@@ -818,7 +819,7 @@ The second one finds the English user manual, even when 'helplang' is set to
 "it".
 
 When using command-line completion for the ":help" command, the "@en"
-extention is only shown when a tag exists for multiple languages.  When the
+extension is only shown when a tag exists for multiple languages.  When the
 tag only exists for English "@en" is omitted.
 
 When using |CTRL-]| or ":help!" in a non-English help file Vim will try to

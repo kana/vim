@@ -1,4 +1,4 @@
-*quickfix.txt*  For Vim version 7.1.  Last change: 2008 Mar 14
+*quickfix.txt*  For Vim version 7.2a.  Last change: 2008 Mar 14
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -162,12 +162,12 @@ command with 'l'.
 			the location list.
 
 
-:cg[etfile][!] [errorfile]				*:cg* *:cgetfile*
+:cg[etfile] [errorfile]					*:cg* *:cgetfile*
 			Read the error file.  Just like ":cfile" but don't
 			jump to the first error.
 
 
-:lg[etfile][!] [errorfile]				*:lg* *:lgetfile*
+:lg[etfile] [errorfile]					*:lg* *:lgetfile*
 			Same as ":cgetfile", except the location list for the
 			current window is used instead of the quickfix list.
 
@@ -232,15 +232,15 @@ command with 'l'.
 			current window is used instead of the quickfix list.
 
 							*:cgete* *:cgetexpr*
-:cgete[xpr][!] {expr}	Create a quickfix list using the result of {expr}.
+:cgete[xpr] {expr}	Create a quickfix list using the result of {expr}.
 			Just like ":cexpr", but don't jump to the first error.
 
 							*:lgete* *:lgetexpr*
-:lgete[xpr][!] {expr}	Same as ":cgetexpr", except the location list for the
+:lgete[xpr] {expr}	Same as ":cgetexpr", except the location list for the
 			current window is used instead of the quickfix list.
 
 							*:cad* *:caddexpr*
-:cad[dexpr][!] {expr}	Evaluate {expr} and add the resulting lines to the
+:cad[dexpr] {expr}	Evaluate {expr} and add the resulting lines to the
 			current quickfix list. If a quickfix list is not
 			present, then a new list is created. The current
 			cursor position will not be changed. See |:cexpr| for
@@ -249,7 +249,7 @@ command with 'l'.
     :g/mypattern/caddexpr expand("%") . ":" . line(".") .  ":" . getline(".")
 <
 							*:lad* *:laddexpr*
-:lad[dexpr][!] {expr}	Same as ":caddexpr", except the location list for the
+:lad[dexpr] {expr}	Same as ":caddexpr", except the location list for the
 			current window is used instead of the quickfix list.
 
 							*:cl* *:clist*
