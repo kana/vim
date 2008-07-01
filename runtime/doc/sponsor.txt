@@ -1,4 +1,4 @@
-*sponsor.txt*   For Vim version 7.1.  Last change: 2007 Oct 11
+*sponsor.txt*   For Vim version 7.2a.  Last change: 2008 Jun 21
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -74,7 +74,7 @@ Other methods	See |iccf-donations|.
 		amount you transferred if you want to vote for features and
 		show others you are a registered Vim user or sponsor.
 
-Cash		Small amounts can be send with ordinary mail.  Put something
+Cash		Small amounts can be sent with ordinary mail.  Put something
 		around the money, so that it's not noticeable from the
 		outside.  Mention your e-mail address if you want to vote for
 		features and show others you are a registered Vim user or

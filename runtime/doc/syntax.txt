@@ -1,4 +1,4 @@
-*syntax.txt*	For Vim version 7.1.  Last change: 2008 Jun 16
+*syntax.txt*	For Vim version 7.2a.  Last change: 2008 Jun 21
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -2511,7 +2511,7 @@ scripts.  You can change Vim's default from Oracle to any of the current SQL
 supported types.  You can also easily alter the SQL dialect being used on a
 buffer by buffer basis.
 
-For more detailed instructions see |sql.txt|.
+For more detailed instructions see |ft_sql.txt|.
 
 
 TCSH						*tcsh.vim* *ft-tcsh-syntax*
@@ -3193,7 +3193,7 @@ line break.
 
 fold							*:syn-fold*
 
-The "fold" argument makes the fold level increased by one for this item.
+The "fold" argument makes the fold level increase by one for this item.
 Example: >
    :syn region myFold start="{" end="}" transparent fold
    :syn sync fromstart
@@ -3355,7 +3355,7 @@ use another character that is not used in the pattern.	Examples: >
   :syntax region String   start=+"+    end=+"+	 skip=+\\"+
 
 See |pattern| for the explanation of what a pattern is.  Syntax patterns are
-always interpreted like the 'magic' options is set, no matter what the actual
+always interpreted like the 'magic' option is set, no matter what the actual
 value of 'magic' is.  And the patterns are interpreted like the 'l' flag is
 not included in 'cpoptions'.  This was done to make syntax files portable and
 independent of 'compatible' and 'magic' settings.
@@ -3414,6 +3414,8 @@ Notes:
 - The highlighted area will never be outside of the matched text.
 - A negative offset for an end pattern may not always work, because the end
   pattern may be detected when the highlighting should already have stopped.
+- Until Vim 7.2 the offsets were counted in bytes instead of characters.  This
+  didn't work well for multi-byte characters.
 - The start of a match cannot be in a line other than where the pattern
   matched.  This doesn't work: "a\nb"ms=e.  You can make the highlighting
   start in another line, this does work: "a\nb"hs=e.

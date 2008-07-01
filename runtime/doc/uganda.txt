@@ -1,4 +1,4 @@
-*uganda.txt*    For Vim version 7.1.  Last change: 2008 Jan 10
+*uganda.txt*    For Vim version 7.2a.  Last change: 2008 Jun 21
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -217,7 +217,7 @@ USA:		The methods mentioned below can be used.
 		is no longer possible, unfortunately. We are looking for
 		another way to get you an IRS tax receipt. 
 		For sponsoring a child contact KCF in Canada (see below). US
-		checks can be send to them to lower banking costs.
+		checks can be sent to them to lower banking costs.
 
 Canada:		Contact Kibaale Children's Fund (KCF) in Surrey, Canada.  They
 		take care of the Canadian sponsors for the children in

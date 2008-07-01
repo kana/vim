@@ -1,4 +1,4 @@
-*cmdline.txt*   For Vim version 7.1.  Last change: 2008 Jun 03
+*cmdline.txt*   For Vim version 7.2a.  Last change: 2008 Jun 21
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -62,7 +62,7 @@ Notes:
   old one is removed (to avoid repeated commands moving older commands out of
   the history).
 - Only commands that are typed are remembered.  Ones that completely come from
-  mappings are not put in the history
+  mappings are not put in the history.
 - All searches are put in the search history, including the ones that come
   from commands like "*" and "#".  But for a mapping, only the last search is
   remembered (to avoid that long mappings trash the history).

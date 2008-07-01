@@ -1,9 +1,9 @@
 " Vim syntax file
-" Language:			ProMeLa
+" Language:		ProMeLa
 " Maintainer:		Maurizio Tranchero <maurizio.tranchero@polito.it> - <maurizio.tranchero@gmail.com>
 " First Release:	Mon Oct 16 08:49:46 CEST 2006
 " Last Change:		Sat May 16 12:20:43 CEST 2007
-" Version:			0.2
+" Version:		0.2
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded
