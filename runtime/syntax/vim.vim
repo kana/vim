@@ -615,9 +615,9 @@ unlet trytcl
 " [-- mzscheme --] {{{3
 if (g:vimsyn_embed =~ 'm' && has("mzscheme")) && filereadable(expand("<sfile>:p:h")."/scheme.vim")
  unlet! b:current_syntax
- let iskKeep= &isk
+ let original_iskeyword = &l:iskeyword
  syn include @vimMzSchemeScript <sfile>:p:h/scheme.vim
- let &isk= iskKeep
+ let &l:iskeyword = original_iskeyword
  if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 'm'
   syn region vimMzSchemeRegion fold matchgroup=vimScriptDelim start=+mz\%[scheme]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimMzSchemeScript
   syn region vimMzSchemeRegion fold matchgroup=vimScriptDelim start=+mz\%[scheme]\s*<<\s*$+ end=+\.$+ contains=@vimMzSchemeScript

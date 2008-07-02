@@ -40,6 +40,11 @@ Auto setting 'paste'					*hacks-autopaste*
 	New predefined variable to contains the information about |o_v| and
 	others to force a motion.
 
+					   *hacks-bugfix-syntax-vim-iskeyword*
+Fix overriding 'iskeyword' in syntax/vim.vim
+	Fix the bug that syntax/vim.vim overrides the global value of
+	'iskeyword' after including syntax/scheme.vim.
+
 
 
 
