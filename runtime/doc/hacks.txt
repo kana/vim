@@ -7,6 +7,11 @@ All changes are licensed under the same terms of Vim.  See |license|.
 ==============================================================================
 INDEX OF HACKS						*hacks-index*
 
+					   *hacks-bugfix-syntax-vim-iskeyword*
+Fix overriding 'iskeyword' in syntax/vim.vim
+	Fix the bug that syntax/vim.vim overrides the global value of
+	'iskeyword' after including syntax/scheme.vim.
+
 
 
 
