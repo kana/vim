@@ -1,4 +1,4 @@
-*pi_netrw.txt*  For Vim version 7.2a.  Last change: 2008 Jun 21
+*pi_netrw.txt*  For Vim version 7.2a.  Last change: 2008 Jun 30
 
 	    -----------------------------------------------------
 	    NETRW REFERENCE MANUAL    by Charles E. Campbell, Jr.
@@ -1362,7 +1362,7 @@ will end up.  One may change the sorting sequence by modifying the
 g:netrw_sort_sequence variable (either manually or in your <.vimrc>) or by
 using the "S" map.
 
-Related topics:              |netrw-s|
+Related topics:              |netrw-s| |netrw-S|
 Associated setting variable: |g:netrw_sort_sequence|
 
 
@@ -1657,7 +1657,7 @@ MARKED FILES: TAGGING						*netrw-mT* {{{2
 	    (See |netrw-mf| and |netrw-mr| for how to mark files)
 		      (uses the global marked file list)
 
-The "mt" mapping will apply the command in g:netrw_ctags (by default, its
+The "mt" mapping will apply the command in |g:netrw_ctags| (by default, its
 "ctags") to marked files.  For remote browsing, in order to create a tags file
 netrw will use ssh (see |g:netrw_ssh_cmd|), and so ssh must be available for
 this to work on remote systems.  For your local system, see |ctags| on how to
@@ -1676,7 +1676,7 @@ preceded by the netrw-compatible url used to obtain it.  When one subsequently
 uses one of the go to tag actions (|tags|), the url will be used by netrw to
 edit the desired file and go to the tag.
 
-Associated setting variables: |g:netrw_ssh_cmd|
+Associated setting variables: |g:netrw_ctags| |g:netrw_ssh_cmd|
 
 
 MARKED FILES: SETTING THE TARGET DIRECTORY			*netrw-mt* {{{2
@@ -1745,6 +1745,9 @@ your browsing preferences.  (see also: |netrw-settings|)
   *g:netrw_compress*		="gzip"
 				    Will compress marked files with this
 				    command
+
+  *g:netrw_ctags*		="ctags"
+				The default external program used to create tags
 
   *g:netrw_decompress*		= { ".gz" : "gunzip" ,
 				    ".bz2" : "bunzip2" ,

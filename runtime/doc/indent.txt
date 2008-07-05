@@ -1,4 +1,4 @@
-*indent.txt*    For Vim version 7.2a.  Last change: 2008 Jun 28
+*indent.txt*    For Vim version 7.2a.  Last change: 2008 Jun 30
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -516,8 +516,8 @@ those useless characters first with a command like: >
 
     :%s /\r$//g
 
-Or, you can simply |let| the variable PHP_removeCRwhenUnix to 1 and the script
-will silently remove them when Vim loads a PHP file (at each|BufRead|).
+Or, you can simply |:let| the variable PHP_removeCRwhenUnix to 1 and the
+script will silently remove them when Vim loads a PHP file (at each|BufRead|).
 
 OPTIONS: ~
 
