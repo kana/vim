@@ -5586,6 +5586,7 @@ g:netrw_browse_split	pi_netrw.txt	/*g:netrw_browse_split*
 g:netrw_browsex_viewer	pi_netrw.txt	/*g:netrw_browsex_viewer*
 g:netrw_cd_escape	pi_netrw.txt	/*g:netrw_cd_escape*
 g:netrw_compress	pi_netrw.txt	/*g:netrw_compress*
+g:netrw_ctags	pi_netrw.txt	/*g:netrw_ctags*
 g:netrw_cygwin	pi_netrw.txt	/*g:netrw_cygwin*
 g:netrw_dav_cmd	pi_netrw.txt	/*g:netrw_dav_cmd*
 g:netrw_decompress	pi_netrw.txt	/*g:netrw_decompress*

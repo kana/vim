@@ -1,4 +1,4 @@
-*version7.txt*  For Vim version 7.2a.  Last change: 2008 Jun 29
+*version7.txt*  For Vim version 7.2a.  Last change: 2008 Jun 30
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -263,7 +263,7 @@ Currently supported languages:
 	Ruby					|ft-ruby-omni|
 	SQL					|ft-sql-omni|
 	XML					|ft-xml-omni|
-	any language with syntax highligting	|ft-syntax-omni|
+	any language with syntax highlighting	|ft-syntax-omni|
 
 You can add your own omni completion scripts.
 

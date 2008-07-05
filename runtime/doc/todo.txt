@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.2a.  Last change: 2008 Jun 29
+*todo.txt*      For Vim version 7.2a.  Last change: 2008 Jul 02
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,8 +30,18 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
+Ruby runtime files. (Doug Kearns, Jun 30)
+
+Crash with dragn-n-drop of file combined with netrw (Marius Gedminas, 2008 Jun
+11)  I can't reproduce it.  It's probably caused by a ui_focus_change() call
+at an unexpected moment, when structures are not valid and the window is
+redrawn.  Another valgrind output Jun 30.
+
 Drawing popup menu isn't quite right when there are double-wide characters.
 patch from Yukihiro Nakadaira, 2008 Jun 25.
+
+":pedit %" with a BufReadPre autocommand causes the cursor to move to the
+first line. (Ingo Karkat, 2008 Jul 1)
 
 Have a look at patch for utf-8 line breaking. (Yongwei Wu, 2008 Mar 1, Mar 23)
 
@@ -50,11 +60,6 @@ laststatus=2", CTRL-D CTRL-H CTRL-H CTRL-H. (A.Politz, 2008 April 1)
 Works OK with Vim in an xterm.
 
 Fix for matchparen HL doesn't work.  beep.
-
-Crash with dragn-n-drop of file combined with netrw (Marius Gedminas, 2008 Jun
-11)  I can't reproduce it.  It's probably caused by a ui_focus_change() call
-at an unexpected moment, when structures are not valid and the window is
-redrawn.
 
 Win32: associating a type with Vim doesn't take care of space after a
 backslash? (Robert Vibrant, 2008 Jun 5)
@@ -3575,6 +3580,8 @@ Multiple Windows:
 7   Use CTRL-W <Tab>, like alt-tab, to switch between buffers.  Repeat <Tab>
     to select another buffer (only loaded ones?), <BS> to go back, <Enter> to
     select buffer, <Esc> to go back to original buffer.
+7   Make it possible to edit a new buffer in the preview window.  A script can
+    then fill it with something.  ":popen"?
 7   Add a 'tool' window: behaves like a preview window but there can be
     several.  Don't count it in only_one_window(). (Alexei Alexandrov)
 6   Add an option to resize the shell when splitting and/or closing a window.

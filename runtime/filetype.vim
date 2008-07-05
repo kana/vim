@@ -1,7 +1,7 @@
 " Vim support file to detect file types
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2008 Jun 29
+" Last Change:	2008 Jun 30
 
 " Listen very carefully, I will say this only once
 if exists("did_load_filetypes")
@@ -739,7 +739,7 @@ au BufNewFile,BufRead *.groovy			setf groovy
 au BufNewFile,BufRead *.gsp			setf gsp
 
 " Group file
-au BufNewFile,BufRead /etc/group,/etc/group.edit,/etc/gshadow,/etc/gshadow.edit,/var/backups/group.bak,/var/backups/gshadow.bak		setf group
+au BufNewFile,BufRead /etc/group,/etc/group-,/etc/group.edit,/etc/gshadow,/etc/gshadow-,/etc/gshadow.edit,/var/backups/group.bak,/var/backups/gshadow.bak		setf group
 
 " GTK RC
 au BufNewFile,BufRead .gtkrc,gtkrc		setf gtkrc
@@ -1230,7 +1230,7 @@ au BufNewFile,BufRead /etc/pam.conf		setf pamconf
 au BufNewFile,BufRead *.papp,*.pxml,*.pxsl	setf papp
 
 " Password file
-au BufNewFile,BufRead /etc/passwd,/etc/passwd.edit,/etc/shadow,/etc/shadow-,/var/backups/passwd.bak,/var/backups/shadow.bak setf passwd
+au BufNewFile,BufRead /etc/passwd,/etc/passwd-,/etc/passwd.edit,/etc/shadow,/etc/shadow-,/var/backups/passwd.bak,/var/backups/shadow.bak setf passwd
 
 " Pascal (also *.p)
 au BufNewFile,BufRead *.pas			setf pascal
