@@ -13,6 +13,8 @@ Fix |getbufvar()| with {varname} ""	   *hacks-bugfix-getbufvar-scope-dict*
 	of the buffer specified by {expr}.  It should return the dictionary of
 	the latter buffer.
 
+	Note that this hack is included as Vim 7.2a.002.
+
 
 
 
