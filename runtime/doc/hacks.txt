@@ -7,10 +7,21 @@ All changes are licensed under the same terms of Vim.  See |license|.
 ==============================================================================
 INDEX OF HACKS						*hacks-index*
 
-					   *hacks-bugfix-syntax-vim-iskeyword*
-Fix overriding 'iskeyword' in syntax/vim.vim
-	Fix the bug that syntax/vim.vim overrides the global value of
-	'iskeyword' after including syntax/scheme.vim.
+							*hacks-bugfix-runtime*
+Fix misc. bugs in runtime files
+	Fix wrong handling 'iskeyword' in 7 runtime files.  Especially, they
+	set the local value of 'iskeyword' AND the global value of
+	'iskeyword', but the latter must not be modified.  Because it causes
+	unexpected 'iskeyword' value for newly created buffers.  Also, fix the
+	way to refer the local value of 'iskeyword' not to be misread:
+
+		runtime/autoload/ada.vim
+		runtime/autoload/sqlcomplete.vim
+		runtime/autoload/syntaxcomplete.vim
+		runtime/autoload/xmlcomplete.vim
+		runtime/ftplugin/man.vim
+		runtime/syntax/sdl.vim
+		runtime/syntax/vim.vim
 
 
 

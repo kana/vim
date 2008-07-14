@@ -92,7 +92,7 @@ syn region  sdlString		start=+'+  skip=+''+  end=+'+
 
 " No, this doesn't happen, I just wanted to scare you. SDL really allows all
 " these characters for identifiers; fortunately, keywords manage without them.
-" set iskeyword=@,48-57,_,192-214,216-246,248-255,-
+" setlocal iskeyword=@,48-57,_,192-214,216-246,248-255,-
 
 syn region sdlComment		start="/\*"  end="\*/"
 syn region sdlComment		start="comment"  end=";"
