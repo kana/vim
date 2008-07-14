@@ -351,7 +351,7 @@ function! s:SyntaxCSyntaxGroupItems( group_name, syntax_full )
             " This will replace non-word characters with spaces.
             let syn_list = substitute( syn_list, '[^0-9A-Za-z_ ]', ' ', 'g' )
         else
-            let accept_chars = ','.&iskeyword.','
+            let accept_chars = ','.&l:iskeyword.','
             " Remove all character ranges
             " let accept_chars = substitute(accept_chars, ',[^,]\+-[^,]\+,', ',', 'g')
             let accept_chars = substitute(accept_chars, ',\@<=[^,]\+-[^,]\+,', '', 'g')

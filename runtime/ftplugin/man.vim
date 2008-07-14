@@ -54,7 +54,7 @@ endtry
 
 func <SID>PreGetPage(cnt)
   if a:cnt == 0
-    let old_isk = &iskeyword
+    let old_isk = &l:iskeyword
     setl iskeyword+=(,)
     let str = expand("<cword>")
     let &l:iskeyword = old_isk
