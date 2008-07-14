@@ -15,7 +15,7 @@ MISC. INFORMATION					*hacks-misc-info*
 
 Base Source Code					*hacks-base*
 
-All hacks are based on the latest version of Vim - currently, 7.1.{x}.
+All hacks are based on the latest version of Vim - currently, 7.2b.{x}.
 See included_patches in src/version.c for {x}.
 
 
