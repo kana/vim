@@ -12,6 +12,8 @@ Fix 'smartcase' bug			      *hacks-bugfix-smartcase-parsing*
 	'ignorecase' for some sorts of regular expressions such as "\%Vfoo"
 	and "\_Xbar".
 
+	Note that this fix is included in Vim 7.2a.000.
+
 
 
 
