@@ -11,6 +11,8 @@ Fix incorect modeline in ada.txt	      *hacks-bugfix-help-ada-modeline*
 	Fix the incorrect option 'encoding' in the modelines of :help ada.txt.
 	It should be 'fileencoding'.
 
+	Note that the latset version of runtime files already fixed this bug.
+
 
 
 
