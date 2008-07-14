@@ -404,14 +404,14 @@ endfunction ada#User_Complete
 "
 " Word completion (^N/^R/^X^]) - force '.' inclusion
 function ada#Completion (cmd)
-   set iskeyword+=46
+   setlocal iskeyword+=46
    return a:cmd . "\<C-R>=ada#Completion_End ()\<CR>"
 endfunction ada#Completion
 
 " Section: ada#Completion_End () {{{2
 "
 function ada#Completion_End ()
-   set iskeyword-=46
+   setlocal iskeyword-=46
    return ''
 endfunction ada#Completion_End
 
