@@ -1,17 +1,17 @@
 "----------------------------------------------------------------------------
 "  Description: Vim Ada syntax file
 "     Language: Ada (2005)
-"	   $Id: ada.vim,v 1.7 2008/06/25 20:00:04 vimboss Exp $
+"	   $Id: ada.vim,v 1.8 2008/07/13 17:40:37 vimboss Exp $
 "    Copyright: Copyright (C) 2006 Martin Krischik
 "   Maintainer: Martin Krischik
 "		David A. Wheeler <dwheeler@dwheeler.com>
 "		Simon Bradley <simon.bradley@pitechnology.com>
 " Contributors: Preben Randhol.
 "      $Author: vimboss $
-"	 $Date: 2008/06/25 20:00:04 $
-"      Version: 4.2
-"    $Revision: 1.7 $
-"     $HeadURL: https://svn.sourceforge.net/svnroot/gnuada/trunk/tools/vim/syntax/ada.vim $
+"	 $Date: 2008/07/13 17:40:37 $
+"      Version: 4.6
+"    $Revision: 1.8 $
+"     $HeadURL: https://gnuada.svn.sourceforge.net/svnroot/gnuada/trunk/tools/vim/syntax/ada.vim $
 "		http://www.dwheeler.com/vim
 "      History: 24.05.2006 MK Unified Headers
 "		26.05.2006 MK ' should not be in iskeyword.
@@ -38,8 +38,6 @@ let b:current_syntax = "ada"
 " Section: Ada is entirely case-insensitive. {{{1
 "
 syntax   case ignore
-setlocal nosmartcase
-setlocal ignorecase
 
 " Section: Highlighting commands {{{1
 "
@@ -98,7 +96,8 @@ syntax keyword  adaSpecial	    <>
 "
 if exists("g:ada_rainbow_color")
     syntax match	adaSpecial	 "[:;.,]"
-    runtime plugin/Rainbow_Parenthsis.vim
+    call rainbow_parenthsis#LoadRound ()
+    call rainbow_parenthsis#Activate ()
 else
     syntax match	adaSpecial	 "[:;().,]"
 endif
@@ -159,7 +158,7 @@ endif
 " Section: end {{{1
 " Unless special ("end loop", "end if", etc.), "end" marks the end of a
 " begin, package, task etc. Assiging it to adaEnd.
-syntax match    adaEnd	"\<end\>"
+syntax match    adaEnd	/\<end\>/
 
 syntax keyword  adaPreproc		 pragma
 
@@ -346,9 +345,6 @@ else
 endif
 
 
-" Section: formatoptions {{{1
-"
-setlocal formatoptions+=ron
 
 " Section: sync {{{1
 "
