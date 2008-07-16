@@ -5584,7 +5584,6 @@ g:netrw_alto	pi_netrw.txt	/*g:netrw_alto*
 g:netrw_altv	pi_netrw.txt	/*g:netrw_altv*
 g:netrw_browse_split	pi_netrw.txt	/*g:netrw_browse_split*
 g:netrw_browsex_viewer	pi_netrw.txt	/*g:netrw_browsex_viewer*
-g:netrw_cd_escape	pi_netrw.txt	/*g:netrw_cd_escape*
 g:netrw_compress	pi_netrw.txt	/*g:netrw_compress*
 g:netrw_ctags	pi_netrw.txt	/*g:netrw_ctags*
 g:netrw_cygwin	pi_netrw.txt	/*g:netrw_cygwin*
@@ -5627,10 +5626,10 @@ g:netrw_rsync_cmd	pi_netrw.txt	/*g:netrw_rsync_cmd*
 g:netrw_scp_cmd	pi_netrw.txt	/*g:netrw_scp_cmd*
 g:netrw_scpport	pi_netrw.txt	/*g:netrw_scpport*
 g:netrw_sftp_cmd	pi_netrw.txt	/*g:netrw_sftp_cmd*
-g:netrw_shq	pi_netrw.txt	/*g:netrw_shq*
 g:netrw_silent	pi_netrw.txt	/*g:netrw_silent*
 g:netrw_sort_by	pi_netrw.txt	/*g:netrw_sort_by*
 g:netrw_sort_direction	pi_netrw.txt	/*g:netrw_sort_direction*
+g:netrw_sort_options	pi_netrw.txt	/*g:netrw_sort_options*
 g:netrw_sort_sequence	pi_netrw.txt	/*g:netrw_sort_sequence*
 g:netrw_special_syntax	pi_netrw.txt	/*g:netrw_special_syntax*
 g:netrw_ssh_browse_reject	pi_netrw.txt	/*g:netrw_ssh_browse_reject*
@@ -6477,6 +6476,7 @@ netbeans-support	netbeans.txt	/*netbeans-support*
 netbeans.txt	netbeans.txt	/*netbeans.txt*
 netreadfixup	pi_netrw.txt	/*netreadfixup*
 netrw	pi_netrw.txt	/*netrw*
+netrw-%	pi_netrw.txt	/*netrw-%*
 netrw--	pi_netrw.txt	/*netrw--*
 netrw-D	pi_netrw.txt	/*netrw-D*
 netrw-O	pi_netrw.txt	/*netrw-O*
@@ -6709,6 +6709,7 @@ nice	todo.txt	/*nice*
 no-eval-feature	eval.txt	/*no-eval-feature*
 no_buffers_menu	gui.txt	/*no_buffers_menu*
 non-greedy	pattern.txt	/*non-greedy*
+non-zero-arg	eval.txt	/*non-zero-arg*
 normal-index	index.txt	/*normal-index*
 not-compatible	usr_01.txt	/*not-compatible*
 not-edited	editing.txt	/*not-edited*

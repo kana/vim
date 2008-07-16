@@ -1,8 +1,8 @@
 " Vim syntax file
 " Language:	Vim 7.2 script
 " Maintainer:	Dr. Charles E. Campbell, Jr. <NdrOchipS@PcampbellAfamily.Mbiz>
-" Last Change:	July 01, 2008
-" Version:	7.2-78
+" Last Change:	Jul 10, 2008
+" Version:	7.2-79+
 " Automatically generated keyword lists: {{{1
 
 " Quit when a syntax file was already loaded {{{2
@@ -157,7 +157,7 @@ syn cluster vimFuncBodyList	contains=vimAddress,vimAutoCmd,vimCmplxRepeat,vimCom
 if !exists("g:vimsyn_noerror")
  syn match   vimFunctionError	"\<fu\%[nction]!\=\s\+\zs\U\i\{-}\ze\s*("                	contains=vimFuncKey,vimFuncBlank nextgroup=vimFuncBody
 endif
-syn match   vimFunction	"\<fu\%[nction]!\=\s\+\(\(<[sS][iI][dD]>\|[Ss]:\|\u\|\i\+#\)\i*\|g:\(\I\i*\.\)\+\I\i*\)\ze\s*("	contains=@vimFuncList nextgroup=vimFuncBody
+syn match   vimFunction	"\<fu\%[nction]!\=\s\+\(\(<[sS][iI][dD]>\|[Ss]:\|\u\|\i\+#\)\i*\|\(g:\)\=\(\I\i*\.\)\+\I\i*\)\ze\s*("	contains=@vimFuncList nextgroup=vimFuncBody
 if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 'f'
  syn region  vimFuncBody  contained	fold start="\ze("	matchgroup=vimCommand end="\<\(endf\>\|endfu\%[nction]\>\)"		contains=@vimFuncBodyList
 else                                                                                                          
@@ -547,6 +547,9 @@ if (g:vimsyn_embed =~ 'p' && has("perl")) && filereadable(expand("<sfile>:p:h").
   syn region vimPerlRegion matchgroup=vimScriptDelim start=+pe\%[rl]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimPerlScript
   syn region vimPerlRegion matchgroup=vimScriptDelim start=+pe\%[rl]\s*<<\s*$+ end=+\.$+ contains=@vimPerlScript
  endif
+else
+ syn region vimEmbedError start=+pe\%[rl]\s*<<\s*\z(.*\)$+ end=+^\z1$+
+ syn region vimEmbedError start=+pe\%[rl]\s*<<\s*$+ end=+\.$+
 endif
 
 " [-- ruby --] {{{3
@@ -556,9 +559,12 @@ if (g:vimsyn_embed =~ 'r' && has("ruby")) && filereadable(expand("<sfile>:p:h").
  if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 'r'
   syn region vimRubyRegion fold matchgroup=vimScriptDelim start=+rub[y]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimRubyScript
  else
-  syn region vimRubyRegion fold matchgroup=vimScriptDelim start=+rub[y]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimRubyScript
+  syn region vimRubyRegion matchgroup=vimScriptDelim start=+rub[y]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimRubyScript
  endif
  syn region vimRubyRegion matchgroup=vimScriptDelim start=+rub[y]\s*<<\s*$+ end=+\.$+ contains=@vimRubyScript
+else
+ syn region vimEmbedError start=+rub[y]\s*<<\s*\z(.*\)$+ end=+^\z1$+
+ syn region vimEmbedError start=+rub[y]\s*<<\s*$+ end=+\.$+
 endif
 
 " [-- python --] {{{3
@@ -572,6 +578,9 @@ if (g:vimsyn_embed =~ 'P' && has("python")) && filereadable(expand("<sfile>:p:h"
   syn region vimPythonRegion matchgroup=vimScriptDelim start=+py\%[thon]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimPythonScript
   syn region vimPythonRegion matchgroup=vimScriptDelim start=+py\%[thon]\s*<<\s*$+ end=+\.$+ contains=@vimPythonScript
  endif
+else
+ syn region vimEmbedError start=+py\%[thon]\s*<<\s*\z(.*\)$+ end=+^\z1$+
+ syn region vimEmbedError start=+py\%[thon]\s*<<\s*$+ end=+\.$+
 endif
 
 " [-- tcl --] {{{3
@@ -593,6 +602,9 @@ if trytcl
    syn region vimTclRegion matchgroup=vimScriptDelim start=+tc[l]\=\s*<<\s*$+ end=+\.$+ contains=@vimTclScript
   endif
  endif
+else
+ syn region vimEmbedError start=+tc[l]\=\s*<<\s*\z(.*\)$+ end=+^\z1$+
+ syn region vimEmbedError start=+tc[l]\=\s*<<\s*$+ end=+\.$+
 endif
 unlet trytcl
 
@@ -602,13 +614,16 @@ if (g:vimsyn_embed =~ 'm' && has("mzscheme")) && filereadable(expand("<sfile>:p:
  let iskKeep= &isk
  syn include @vimMzSchemeScript <sfile>:p:h/scheme.vim
  let &isk= iskKeep
- if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 't'
+ if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 'm'
   syn region vimMzSchemeRegion fold matchgroup=vimScriptDelim start=+mz\%[scheme]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimMzSchemeScript
   syn region vimMzSchemeRegion fold matchgroup=vimScriptDelim start=+mz\%[scheme]\s*<<\s*$+ end=+\.$+ contains=@vimMzSchemeScript
  else
   syn region vimMzSchemeRegion matchgroup=vimScriptDelim start=+mz\%[scheme]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimMzSchemeScript
   syn region vimMzSchemeRegion matchgroup=vimScriptDelim start=+mz\%[scheme]\s*<<\s*$+ end=+\.$+ contains=@vimMzSchemeScript
  endif
+else
+ syn region vimEmbedError start=+mz\%[scheme]\s*<<\s*\z(.*\)$+ end=+^\z1$+
+ syn region vimEmbedError start=+mz\%[scheme]\s*<<\s*$+ end=+\.$+
 endif
 
 " Synchronize (speed) {{{2
@@ -635,6 +650,7 @@ if !exists("g:vimsyn_noerror")
  hi def link vimBehaveError	vimError
  hi def link vimCollClassErr	vimError
  hi def link vimErrSetting	vimError
+ hi def link vimEmbedError	vimError
  hi def link vimFTError	vimError
  hi def link vimFunctionError	vimError
  hi def link vimFunc         	vimError
