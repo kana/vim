@@ -1,7 +1,7 @@
 " Vim support file to detect file types
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2008 Jun 30
+" Last Change:	2008 Jul 08
 
 " Listen very carefully, I will say this only once
 if exists("did_load_filetypes")
@@ -743,6 +743,9 @@ au BufNewFile,BufRead /etc/group,/etc/group-,/etc/group.edit,/etc/gshadow,/etc/g
 
 " GTK RC
 au BufNewFile,BufRead .gtkrc,gtkrc		setf gtkrc
+
+" Haml
+au BufNewFile,BufRead *.haml			setf haml
 
 " Hamster Classic | Playground files
 au BufNewFile,BufRead *.hsc,*.hsm		setf hamster
@@ -1575,6 +1578,9 @@ au BufNewFile,BufRead smb.conf			setf samba
 
 " SAS script
 au BufNewFile,BufRead *.sas			setf sas
+
+" Sass
+au BufNewFile,BufRead *.sass			setf sass
 
 " Sather
 au BufNewFile,BufRead *.sa			setf sather

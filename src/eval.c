@@ -10,7 +10,7 @@
 /*
  * eval.c: Expression evaluation.
  */
-#if defined(MSDOS) || defined(MSWIN)
+#if defined(MSDOS) || defined(WIN16) || defined(WIN32) || defined(_WIN64)
 # include "vimio.h"	/* for mch_open(), must be before vim.h */
 #endif
 
@@ -9697,15 +9697,19 @@ f_filereadable(argvars, rettv)
     typval_T	*argvars;
     typval_T	*rettv;
 {
-    FILE	*fd;
+    int		fd;
     char_u	*p;
     int		n;
 
+#ifndef O_NONBLOCK
+# define O_NONBLOCK 0
+#endif
     p = get_tv_string(&argvars[0]);
-    if (*p && !mch_isdir(p) && (fd = mch_fopen((char *)p, "r")) != NULL)
+    if (*p && !mch_isdir(p) && (fd = mch_open((char *)p,
+					      O_RDONLY | O_NONBLOCK, 0)) >= 0)
     {
 	n = TRUE;
-	fclose(fd);
+	close(fd);
     }
     else
 	n = FALSE;
@@ -15013,7 +15017,7 @@ do_searchpair(spat, mpat, epat, dir, skip, flags, match_pos,
 
     /* Make 'cpoptions' empty, the 'l' flag should not be used here. */
     save_cpo = p_cpo;
-    p_cpo = (char_u *)"";
+    p_cpo = empty_option;
 
 #ifdef FEAT_RELTIME
     /* Set the time limit, if there is one. */
@@ -15128,7 +15132,11 @@ do_searchpair(spat, mpat, epat, dir, skip, flags, match_pos,
 theend:
     vim_free(pat2);
     vim_free(pat3);
-    p_cpo = save_cpo;
+    if (p_cpo == empty_option)
+	p_cpo = save_cpo;
+    else
+	/* Darn, evaluating the {skip} expression changed the value. */
+	free_string_option(save_cpo);
 
     return retval;
 }
@@ -21995,7 +22003,7 @@ shortpath_for_invalid_fname(fname, bufp, fnamelen)
 	ch = *endp;
 	*endp = 0;
 	short_fname = save_fname;
-	len = STRLEN(short_fname) + 1;
+	len = (int)STRLEN(short_fname) + 1;
 	if (get_short_pathname(&short_fname, &pbuf_unused, &len) == FAIL)
 	{
 	    retval = FAIL;
@@ -22519,7 +22527,7 @@ do_string_sub(str, pat, sub, flags)
 
     /* Make 'cpoptions' empty, so that the 'l' flag doesn't work here */
     save_cpo = p_cpo;
-    p_cpo = (char_u *)"";
+    p_cpo = empty_option;
 
     ga_init2(&ga, 1, 200);
 
@@ -22580,7 +22588,11 @@ do_string_sub(str, pat, sub, flags)
 
     ret = vim_strsave(ga.ga_data == NULL ? str : (char_u *)ga.ga_data);
     ga_clear(&ga);
-    p_cpo = save_cpo;
+    if (p_cpo == empty_option)
+	p_cpo = save_cpo;
+    else
+	/* Darn, evaluating {sub} expression changed the value. */
+	free_string_option(save_cpo);
 
     return ret;
 }
