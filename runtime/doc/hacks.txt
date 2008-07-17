@@ -7,6 +7,11 @@ All changes are licensed under the same terms of Vim.  See |license|.
 ==============================================================================
 INDEX OF HACKS						*hacks-index*
 
+|<AbbrExpand>|						*hacks-<AbbrExpand>*
+	Pseudo key like |i_CTRL-]| which triggers abbreviation without
+	inserting a character.  The difference is that |<AbbrExpand>|
+	triggers abbreviation even if it is used via key mappings.
+
 
 
 

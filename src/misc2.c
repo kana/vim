@@ -2316,6 +2316,7 @@ static struct key_name_entry
     {K_SNR,		(char_u *)"SNR"},
 #endif
     {K_PLUG,		(char_u *)"Plug"},
+    {K_ABBREXPAND,	(char_u *)"AbbrExpand"},
     {0,			NULL}
 };
 

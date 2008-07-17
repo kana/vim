@@ -4266,8 +4266,8 @@ check_abbr(c, ptr, col, mincol)
 
     if (typebuf.tb_no_abbr_cnt)	/* abbrev. are not recursive */
 	return FALSE;
-    if ((KeyNoremap & (RM_NONE|RM_SCRIPT)) != 0)
-	/* no remapping implies no abbreviation */
+    if (((KeyNoremap & (RM_NONE|RM_SCRIPT)) != 0) && (c != K_ABBREXPAND))
+	/* no remapping implies no abbreviation except <AbbrExpand> */
 	return FALSE;
 
     /*
@@ -4368,7 +4368,7 @@ check_abbr(c, ptr, col, mincol)
 	     */
 	    j = 0;
 					/* special key code, split up */
-	    if (c != Ctrl_RSB)
+	    if ((c != Ctrl_RSB) && (c != K_ABBREXPAND))
 	    {
 		if (IS_SPECIAL(c) || c == K_SPECIAL)
 		{
