@@ -61,6 +61,11 @@ Fix misc. bugs in runtime files
 		runtime/syntax/sdl.vim
 		runtime/syntax/vim.vim
 
+|<AbbrExpand>|						*hacks-<AbbrExpand>*
+	Pseudo key like |i_CTRL-]| which triggers abbreviation without
+	inserting a character.  The difference is that |<AbbrExpand>|
+	triggers abbreviation even if it is used via key mappings.
+
 
 
 
