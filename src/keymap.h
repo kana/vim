@@ -257,6 +257,7 @@ enum key_extra
     , KE_NOP		/* doesn't do something */
     , KE_FOCUSGAINED	/* focus gained */
     , KE_FOCUSLOST	/* focus lost */
+    , KE_ABBREXPAND	/* expand abbreviation */
 };
 
 /*
@@ -453,6 +454,8 @@ enum key_extra
 
 #define K_CURSORHOLD	TERMCAP2KEY(KS_EXTRA, KE_CURSORHOLD)
 #define K_NCMDUNDEFINED	TERMCAP2KEY(KS_EXTRA, KE_NCMDUNDEFINED)
+
+#define K_ABBREXPAND	TERMCAP2KEY(KS_EXTRA, KE_ABBREXPAND)
 
 /* Bits for modifier mask */
 /* 0x01 cannot be used, because the modifier must be 0x02 or higher */
