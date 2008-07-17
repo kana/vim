@@ -490,9 +490,9 @@ scenario: >
 	:imap <M-C> foo
 	:set encoding=utf-8
 The mapping for <M-C> is defined with the latin1 encoding, resulting in a 0xc3
-byte.  If you type the character แ (0xe1 <M-a>) in UTF-8 encoding this is the
+byte.  If you type the character รก (0xe1 <M-a>) in UTF-8 encoding this is the
 two bytes 0xc3 0xa1.  You don't want the 0xc3 byte to be mapped then,
-otherwise it would be impossible to type the แ character.
+otherwise it would be impossible to type the รก character.
 
 					*<Leader>* *mapleader*
 To define a mapping which uses the "mapleader" variable, the special string
@@ -844,7 +844,21 @@ Example: >
    :ab hh	hello
 <	    "hh<Space>" is expanded to "hello<Space>"
 	    "hh<C-]>" is expanded to "hello"
+						*<AbbrExpand>*
+Also there is a pseudo key <AbbrExpand>.  All keys other than <AbbrExpand>
+don't expand abbreviations if they come from key mappings which cannot be
+remapped (|:noremap| and others).  But <AbbrExpand> does expand an
+abbreviation even if it comes from such key mappings.  For exmaple, the
+following key mapping will insert <CR> regardless of the popup menu is
+appeared or not, but then, <CR> won't expand abbreviations.  <AbbrExpand> is
+useful for such case: >
 
+	" This <CR> doesn't expand abbreviations.
+	ino <expr> <CR> pumvisible() ? "\<C-Y>\<CR>" : "\<CR>"
+
+	" This <CR> expand abbreviations.
+	ino <expr> <CR> pumvisible() ? "\<C-Y>\<CR>" : "\<AbbrExpand>\<CR>"
+<
 The characters before the cursor must match the abbreviation.  Each type has
 an additional rule:
 
