@@ -1,4 +1,4 @@
-*options.txt*	For Vim version 7.2b.  Last change: 2008 Jul 05
+*options.txt*	For Vim version 7.2b.  Last change: 2008 Jul 22
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -4898,7 +4898,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	name, datestamp and permissions.  This option contains the extra
 	information, the nature of which will vary between systems.
 	The value of this option is usually set when the file is loaded, and
-	use to set the file type when file is written.
+	is used to set the operating system file type when file is written.
 	It can affect the pattern matching of the automatic commands.
 	|autocmd-osfiletypes|
 

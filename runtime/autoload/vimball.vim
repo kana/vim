@@ -1,7 +1,7 @@
 " vimball.vim : construct a file containing both paths and files
 " Author:	Charles E. Campbell, Jr.
 " Date:		Jun 05, 2008
-" Version:	27
+" Version:	27 modified by Bram
 " GetLatestVimScripts: 1502 1 :AutoInstall: vimball.vim
 " Copyright: (c) 2004-2008 by Charles E. Campbell, Jr.
 "            The VIM LICENSE applies to Vimball.vim, and Vimball.txt
@@ -15,7 +15,7 @@ if &cp || exists("g:loaded_vimball") || v:version < 700
  finish
 endif
 let s:keepcpo        = &cpo
-let g:loaded_vimball = "v27"
+let g:loaded_vimball = "v27+b"
 set cpo&vim
 "DechoTabOn
 
@@ -169,7 +169,8 @@ fun! vimball#MkVimball(line1,line2,writelevel,...) range
    call setline(lastline+1,0)
 
    " write the file from the tab
-   let svfilepath= s:Path(svfile,'')
+   "let svfilepath= s:Path(svfile,'')
+   let svfilepath= svfile
 "   call Decho("exe $r ".fnameescape(svfilepath))
    exe "$r ".fnameescape(svfilepath)
 
@@ -186,11 +187,13 @@ fun! vimball#MkVimball(line1,line2,writelevel,...) range
   call s:ChgDir(curdir)
   setlocal ff=unix
   if a:writelevel
-   let vbnamepath= s:Path(vbname,'')
+   " let vbnamepath= s:Path(vbname,'')
+   let vbnamepath= vbname
 "   call Decho("exe w! ".fnameescape(vbnamepath))
    exe "w! ".fnameescape(vbnamepath)
   else
-   let vbnamepath= s:Path(vbname,'')
+   " let vbnamepath= s:Path(vbname,'')
+   let vbnamepath= vbname
 "   call Decho("exe w ".fnameescape(vbnamepath))
    exe "w ".fnameescape(vbnamepath)
   endif
@@ -338,7 +341,8 @@ fun! vimball#Vimball(really,...)
 
    " write tab to file
    if a:really
-    let fnamepath= s:Path(home."/".fname,'')
+    " let fnamepath= s:Path(home."/".fname,'')
+    let fnamepath= home."/".fname
 "    call Decho("exe w! ".fnameescape(fnamepath))
 	exe "silent w! ".fnameescape(fnamepath)
     echo "wrote ".fnamepath
@@ -364,9 +368,10 @@ fun! vimball#Vimball(really,...)
   " set up help
 "  call Decho("about to set up help: didhelp<".didhelp.">")
   if didhelp != ""
-   let htpath= s:Path(home."/".didhelp,"")
+   " let htpath= s:Path(home."/".didhelp,"")
+   let htpath= home."/".didhelp
 "   call Decho("exe helptags ".htpath)
-   exe "helptags ".htpath
+   exe "helptags ".fnameescape(htpath)
    echo "did helptags"
   endif
 
@@ -577,26 +582,26 @@ fun! s:ChgDir(newdir)
 "  call Dret("ChgDir : curdir<".getcwd().">")
 endfun
 
-" ---------------------------------------------------------------------
-" s:Path: prepend and append quotes and do escaping {{{2
-fun! s:Path(cmd,quote)
-"  call Dfunc("Path(cmd<".a:cmd."> quote<".a:quote.">) vimball_path_escape<".g:vimball_path_escape.">")
-  if (has("win32") || has("win95") || has("win64") || has("win16"))
-"   let cmdpath= a:quote.substitute(a:cmd,'/','\\','g').a:quote
-   let cmdpath= a:quote.substitute(a:cmd,'\\','/','g').a:quote
-"   call Decho("cmdpath<".cmdpath."> (win32 mod)")
-  else
-   let cmdpath= a:quote.a:cmd.a:quote
-"   call Decho("cmdpath<".cmdpath."> (not-win32 mod)")
-  endif
-  if a:quote == "" && g:vimball_path_escape !~ ' '
-   let cmdpath= escape(cmdpath,' ')
-"   call Decho("cmdpath<".cmdpath."> (empty quote case)")
-  endif
-  let cmdpath= escape(cmdpath,g:vimball_path_escape)
-"  call Dret("Path <".cmdpath.">")
-  return cmdpath
-endfun
+"" ---------------------------------------------------------------------
+"" s:Path: prepend and append quotes and do escaping {{{2
+"fun! s:Path(cmd,quote)
+""  call Dfunc("Path(cmd<".a:cmd."> quote<".a:quote.">) vimball_path_escape<".g:vimball_path_escape.">")
+"  if (has("win32") || has("win95") || has("win64") || has("win16"))
+""   let cmdpath= a:quote.substitute(a:cmd,'/','\\','g').a:quote
+"   let cmdpath= a:quote.substitute(a:cmd,'\\','/','g').a:quote
+""   call Decho("cmdpath<".cmdpath."> (win32 mod)")
+"  else
+"   let cmdpath= a:quote.a:cmd.a:quote
+""   call Decho("cmdpath<".cmdpath."> (not-win32 mod)")
+"  endif
+"  if a:quote == "" && g:vimball_path_escape !~ ' '
+"   let cmdpath= escape(cmdpath,' ')
+""   call Decho("cmdpath<".cmdpath."> (empty quote case)")
+"  endif
+"  let cmdpath= escape(cmdpath,g:vimball_path_escape)
+""  call Dret("Path <".cmdpath.">")
+"  return cmdpath
+"endfun
 
 " ---------------------------------------------------------------------
 " s:RecordInVar: record a un-vimball command in the .VimballRecord file {{{2

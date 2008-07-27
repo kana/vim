@@ -296,7 +296,7 @@ CONVERTED = \
 .SUFFIXES:
 .SUFFIXES: .c .o .txt .html
 
-all: tags vim.man vimdiff.man vimtutor.man xxd.man $(CONVERTED)
+all: tags vim.man evim.man vimdiff.man vimtutor.man xxd.man $(CONVERTED)
 
 # Use Vim to generate the tags file.  Can only be used when Vim has been
 # compiled and installed.  Supports multiple languages.
@@ -313,6 +313,9 @@ doctags: doctags.c
 
 vim.man: vim.1
 	nroff -man vim.1 | sed -e s/.//g > vim.man
+
+evim.man: evim.1
+	nroff -man evim.1 | sed -e s/.//g > evim.man
 
 vimdiff.man: vimdiff.1
 	nroff -man vimdiff.1 | sed -e s/.//g > vimdiff.man
