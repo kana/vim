@@ -3946,7 +3946,7 @@ rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
 
   if test "$enable_darwin" = "yes"; then
     MACOSX=yes
-    OS_EXTRA_SCR="os_macosx.c os_mac_conv.c";
+    OS_EXTRA_SRC="os_macosx.c os_mac_conv.c";
     OS_EXTRA_OBJ="objects/os_macosx.o objects/os_mac_conv.o"
         CPPFLAGS="$CPPFLAGS -DMACOS_X_UNIX -no-cpp-precomp"
     if test "x$MACARCH" = "xboth"; then
@@ -5114,16 +5114,17 @@ $as_echo "can't find it!" >&6; }
   $as_echo_n "(cached) " >&6
 else
 
-	    tmp_mkf="/tmp/Makefile-conf$$"
-	    cat ${PYTHON_CONFDIR}/Makefile - <<'eof' >${tmp_mkf}
+	    pwd=`pwd`
+	    tmp_mkf="$pwd/config-PyMake$$"
+	    cat -- "${PYTHON_CONFDIR}/Makefile" - <<'eof' >"${tmp_mkf}"
 __:
 	@echo "python_MODLIBS='$(MODLIBS)'"
 	@echo "python_LIBS='$(LIBS)'"
 	@echo "python_SYSLIBS='$(SYSLIBS)'"
 	@echo "python_LINKFORSHARED='$(LINKFORSHARED)'"
 eof
-	    	    eval "`cd ${PYTHON_CONFDIR} && make -f ${tmp_mkf} __ | sed '/ directory /d'`"
-	    rm -f ${tmp_mkf}
+	    	    eval "`cd ${PYTHON_CONFDIR} && make -f "${tmp_mkf}" __ | sed '/ directory /d'`"
+	    rm -f -- "${tmp_mkf}"
 	    if test "x$MACOSX" = "xyes" && ${vi_cv_path_python} -c \
 		"import sys; sys.exit(${vi_cv_var_python_version} < 2.3)"; then
 	      vi_cv_path_python_plibs="-framework Python"
@@ -5598,7 +5599,7 @@ $as_echo_n "checking for location of tclConfig.sh script... " >&6; }
 $as_echo "$try/tclConfig.sh" >&6; }
 	    . $try/tclConfig.sh
 	    	    TCL_LIBS=`eval echo "$TCL_LIB_SPEC $TCL_LIBS"`
-	    	    	    TCL_DEFS=`echo $TCL_DEFS | sed -e 's/\\\\ /\\\\X/g' | tr ' ' '\012' | sed -e '/^-[^D]/d' -e '/-D[^_]/d' -e 's/-D_/ -D_/' | tr '\012' ' ' | sed -e 's/\\\\X/\\\\ /g'`
+	    	    	    TCL_DEFS=`echo $TCL_DEFS | sed -e 's/\\\\ /\\\\X/g' | tr ' ' '\012' | sed -e '/^[^-]/d' -e '/^-[^D]/d' -e '/-D[^_]/d' -e 's/-D_/ -D_/' | tr '\012' ' ' | sed -e 's/\\\\X/\\\\ /g'`
 	    break
 	  fi
 	done
