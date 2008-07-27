@@ -1,4 +1,4 @@
-*version7.txt*  For Vim version 7.2b.  Last change: 2008 Jul 13
+*version7.txt*  For Vim version 7.2b.  Last change: 2008 Jul 14
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -6849,7 +6849,7 @@ Problem:    When a file name has an illegal byte sequence Vim may read
 Solution:   Don't use UTF_COMPOSINGLIKE() on an illegal byte.  In
 	    msg_outtrans_len_attr() use char2cells() instead of ptr2cells().
 	    In utf_ptr2char() don't check second byte when first byte is
-	    illega.  (Dominique Pelle)
+	    illegal.  (Dominique Pelle)
 Files:	    src/mbyte.c, src/message.c
 
 Patch 7.2a.011
@@ -6918,7 +6918,7 @@ Overlapping STRCPY() arguments when using %r item in 'errorformat'.  Use
 STRMOVE() instead. (Ralf Wildenhues)
 
 Mac: On Leopard gvim, when using the mouse wheel nothing would happen until
-another event occures, such as moving the mouse.  Then the recorded scrolling
+another event occurs, such as moving the mouse.  Then the recorded scrolling
 would take place all at once. (Eckehard Berns)
 
 Solution for cursor color not reflecting IM status for GTK 2.  Add

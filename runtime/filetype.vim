@@ -1,7 +1,7 @@
 " Vim support file to detect file types
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2008 Jul 08
+" Last Change:	2008 Jul 25
 
 " Listen very carefully, I will say this only once
 if exists("did_load_filetypes")
@@ -92,9 +92,9 @@ au BufNewFile,BufRead *.wrm			setf acedb
 " Ada (83, 9X, 95)
 au BufNewFile,BufRead *.adb,*.ads,*.ada		setf ada
 if has("vms")
-  au BufNewFile,BufRead *.gpr,*.ada_m,*.adc 	setf ada
+  au BufNewFile,BufRead *.gpr,*.ada_m,*.adc	setf ada
 else
-  au BufNewFile,BufRead *.gpr 			setf ada
+  au BufNewFile,BufRead *.gpr			setf ada
 endif
 
 " AHDL
@@ -181,7 +181,7 @@ func! s:FTasm()
     endif
   endif
 
-  exe "setf " . b:asmsyntax
+  exe "setf " . fnameescape(b:asmsyntax)
 endfunc
 
 func! s:FTasmsyntax()
@@ -189,8 +189,9 @@ func! s:FTasmsyntax()
   " b:asmsyntax appropriately
   let head = " ".getline(1)." ".getline(2)." ".getline(3)." ".getline(4).
 	\" ".getline(5)." "
-  if head =~ '\sasmsyntax=\S\+\s'
-    let b:asmsyntax = substitute(head, '.*\sasmsyntax=\([a-zA-Z0-9]\+\)\s.*','\1', "")
+  let match = matchstr(head, '\sasmsyntax=\zs[a-zA-Z0-9]\+\ze\s')
+  if match != ''
+    let b:asmsyntax = match
   elseif ((head =~? '\.title') || (head =~? '\.ident') || (head =~? '\.macro') || (head =~? '\.subtitle') || (head =~? '\.library'))
     let b:asmsyntax = "vmasm"
   endif
@@ -290,6 +291,9 @@ endfunc
 
 " Blank
 au BufNewFile,BufRead *.bl			setf blank
+
+" Blkid cache file
+au BufNewFile,BufRead /etc/blkid.tab,/etc/blkid.tab.old   setf xml
 
 " C or lpc
 au BufNewFile,BufRead *.c			call s:FTlpc()
@@ -687,6 +691,9 @@ if has("fname_case")
 endif
 au BufNewFile,BufRead   *.f,*.for,*.fortran,*.fpp,*.ftn,*.f77,*.f90,*.f95  setf fortran
 
+" Framescript
+au BufNewFile,BufRead *.fsl			setf framescript
+
 " FStab
 au BufNewFile,BufRead fstab,mtab		setf fstab
 
@@ -739,7 +746,7 @@ au BufNewFile,BufRead *.groovy			setf groovy
 au BufNewFile,BufRead *.gsp			setf gsp
 
 " Group file
-au BufNewFile,BufRead /etc/group,/etc/group-,/etc/group.edit,/etc/gshadow,/etc/gshadow-,/etc/gshadow.edit,/var/backups/group.bak,/var/backups/gshadow.bak		setf group
+au BufNewFile,BufRead /etc/group,/etc/group-,/etc/group.edit,/etc/gshadow,/etc/gshadow-,/etc/gshadow.edit,/var/backups/group.bak,/var/backups/gshadow.bak  setf group
 
 " GTK RC
 au BufNewFile,BufRead .gtkrc,gtkrc		setf gtkrc
@@ -800,6 +807,9 @@ au BufNewFile,BufRead *.tmpl			setf htmlcheetah
 " Host config
 au BufNewFile,BufRead /etc/host.conf		setf hostconf
 
+" Hosts access
+au BufNewFile,BufRead /etc/hosts.allow,/etc/hosts.deny  setf hostsaccess
+
 " Hyper Builder
 au BufNewFile,BufRead *.hb			setf hb
 
@@ -850,7 +860,7 @@ endfunc
 
 
 " Indent RC
-au BufNewFile,BufRead indentrc			setf indentrc
+au BufNewFile,BufRead indentrc			setf indent
 
 " Inform
 au BufNewFile,BufRead *.inf,*.INF		setf inform
@@ -1341,7 +1351,7 @@ func! s:FTinc()
     else
       call s:FTasmsyntax()
       if exists("b:asmsyntax")
-	exe "setf " . b:asmsyntax
+	exe "setf " . fnameescape(b:asmsyntax)
       else
 	setf pov
       endif
@@ -1463,6 +1473,9 @@ au BufNewFile,BufRead *.pyx,*.pxd		setf pyrex
 " Python
 au BufNewFile,BufRead *.py,*.pyw		setf python
 
+" Quixote (Python-based web framework)
+au BufNewFile,BufRead *.ptl			setf python
+
 " Radiance
 au BufNewFile,BufRead *.rad,*.mat		setf radiance
 
@@ -1560,6 +1573,9 @@ au BufNewFile,BufRead *.rst			setf rst
 
 " RTF
 au BufNewFile,BufRead *.rtf			setf rtf
+
+" Interactive Ruby shell
+au BufNewFile,BufRead .irbrc,irbrc		setf ruby
 
 " Ruby
 au BufNewFile,BufRead *.rb,*.rbw,*.gem,*.gemspec	setf ruby
@@ -1739,6 +1755,7 @@ endfunc
 " Z-Shell script
 au BufNewFile,BufRead .zprofile,/etc/zprofile,.zfbfmarks  setf zsh
 au BufNewFile,BufRead .zsh*,.zlog*,.zcompdump*  call s:StarSetf('zsh')
+au BufNewFile,BufRead *.zsh 			setf zsh
 
 " Scheme
 au BufNewFile,BufRead *.scm,*.ss		setf scheme

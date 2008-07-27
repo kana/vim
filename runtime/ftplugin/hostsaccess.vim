@@ -1,5 +1,5 @@
 " Vim filetype plugin file
-" Language:         xmodmap(1) definition file
+" Language:         hosts_access(5) control file
 " Maintainer:       Nikolai Weibull <now@bitwi.se>
 " Latest Revision:  2008-07-09
 
@@ -13,7 +13,7 @@ set cpo&vim
 
 let b:undo_ftplugin = "setl com< cms< fo<"
 
-setlocal comments=:! commentstring=!\ %s formatoptions-=t formatoptions+=croql
+setlocal comments=:# commentstring=#\ %s formatoptions-=t formatoptions+=croql
 
 let &cpo = s:cpo_save
 unlet s:cpo_save

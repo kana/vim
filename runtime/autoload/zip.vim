@@ -99,8 +99,8 @@ fun! zip#Browse(zipfile)
   0d
   $
 
-"  call Decho("exe silent r! ".g:zip_unzipcmd." -l ".s:Escape(a:zipfile,1))
-  exe "silent r! ".g:zip_unzipcmd." -l ".s:Escape(a:zipfile,1)
+"  call Decho("exe silent r! ".g:zip_unzipcmd." -l -- ".s:Escape(a:zipfile,1))
+  exe "silent r! ".g:zip_unzipcmd." -l -- ".s:Escape(a:zipfile,1)
   if v:shell_error != 0
    redraw!
    echohl WarningMsg | echo "***warning*** (zip#Browse) ".fnameescape(a:zipfile)." is not a zip file" | echohl None
@@ -193,8 +193,8 @@ fun! zip#Read(fname,mode)
 "  call Decho("zipfile<".zipfile.">")
 "  call Decho("fname  <".fname.">")
 
-"  call Decho("exe r! ".g:zip_unzipcmd." -p ".s:Escape(zipfile,1)." ".s:Escape(fname,1))
-  exe "silent r! ".g:zip_unzipcmd." -p ".s:Escape(zipfile,1)." ".s:Escape(fname,1)
+"  call Decho("exe r! ".g:zip_unzipcmd." -p -- ".s:Escape(zipfile,1)." ".s:Escape(fname,1))
+  exe "silent r! ".g:zip_unzipcmd." -p -- ".s:Escape(zipfile,1)." ".s:Escape(fname,1)
 
   " cleanup
   0d
@@ -286,8 +286,8 @@ fun! zip#Write(fname)
     let fname = substitute(fname, '[', '[[]', 'g')
   endif
 
-"  call Decho(g:zip_zipcmd." -u ".s:Escape(zipfile,0)." ".s:Escape(fname,0))
-  call system(g:zip_zipcmd." -u ".s:Escape(zipfile,0)." ".s:Escape(fname,0))
+"  call Decho(g:zip_zipcmd." -u ".s:Escape(fnamemodify(zipfile,":p"),0)." ".s:Escape(fname,0))
+  call system(g:zip_zipcmd." -u ".s:Escape(fnamemodify(zipfile,":p"),0)." ".s:Escape(fname,0))
   if v:shell_error != 0
    redraw!
    echohl Error | echo "***error*** (zip#Write) sorry, unable to update ".zipfile." with ".fname | echohl None
