@@ -6340,6 +6340,7 @@ macvim-shift-movement	gui_mac.txt	/*macvim-shift-movement*
 macvim-start	gui_mac.txt	/*macvim-start*
 macvim-todo	gui_mac.txt	/*macvim-todo*
 macvim-toolbar	gui_mac.txt	/*macvim-toolbar*
+macvim-user-defaults	gui_mac.txt	/*macvim-user-defaults*
 macvim-window-title	gui_mac.txt	/*macvim-window-title*
 macvim-windows	gui_mac.txt	/*macvim-windows*
 mail-list	intro.txt	/*mail-list*
