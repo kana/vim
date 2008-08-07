@@ -2,8 +2,8 @@
 " Language:	Microsoft Module-Definition (.def) File
 " Orig Author:	Rob Brady <robb@datatone.com>
 " Maintainer:	Wu Yongwei <wuyongwei@gmail.com>
-" Last Change:	$Date: 2008/07/13 17:32:51 $
-" $Revision: 1.4 $
+" Last Change:	$Date: 2008/08/06 16:54:13 $
+" $Revision: 1.5 $
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded

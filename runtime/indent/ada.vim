@@ -1,15 +1,15 @@
 "------------------------------------------------------------------------------
 "  Description: Vim Ada indent file
 "     Language: Ada (2005)
-"	   $Id: ada.vim,v 1.10 2008/07/13 17:22:14 vimboss Exp $
+"	   $Id: ada.vim,v 1.11 2008/08/06 16:39:14 vimboss Exp $
 "    Copyright: Copyright (C) 2006 Martin Krischik
 "   Maintainer: Martin Krischik <krischik@users.sourceforge.net>
 "		Neil Bird <neil@fnxweb.com>
 "		Ned Okie <nokie@radford.edu>
 "      $Author: vimboss $
-"	 $Date: 2008/07/13 17:22:14 $
+"	 $Date: 2008/08/06 16:39:14 $
 "      Version: 4.6
-"    $Revision: 1.10 $
+"    $Revision: 1.11 $
 "     $HeadURL: https://gnuada.svn.sourceforge.net/svnroot/gnuada/trunk/tools/vim/indent/ada.vim $
 "      History: 24.05.2006 MK Unified Headers
 "		16.07.2006 MK Ada-Mode as vim-ball
