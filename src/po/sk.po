@@ -1,7 +1,7 @@
 # Slovak translation of vim
 # Lubomir Host 'rajo' <rajo AT platon.sk>
 # 2005 - Platon Group, http://platon.sk/
-# $Revision: 1.7 $
+# $Revision: 1.8 $
 # $LastChangedDate: 2005-10-08 12:00:24 +0200 (Sat, 08 Oct 2005) $
 msgid ""
 msgstr ""
@@ -4644,7 +4644,7 @@ msgstr "Príli¹ mnoho odlo¾ených prípon"
 msgid "Too many compound flags"
 msgstr "Príli¹ mnoho upravovacích príznakov"
 
-msgid "Too many posponed prefixes and/or compound flags"
+msgid "Too many postponed prefixes and/or compound flags"
 msgstr "Príli¹ mnoho odlo¾ených prípon a/alebo upravovacích príznakov"
 
 #, c-format

@@ -1,7 +1,7 @@
 " Vim indent file
 " Language:	cobol
 " Author:	Tim Pope <vimNOSPAM@tpope.info>
-" $Id: cobol.vim,v 1.7 2008/07/13 17:35:58 vimboss Exp $
+" $Id: cobol.vim,v 1.8 2008/08/06 16:58:18 vimboss Exp $
 
 if exists("b:did_indent")
     finish
