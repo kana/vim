@@ -4387,7 +4387,10 @@ ExpandFromContext(xp, pat, num_file, file, options)
     *num_file = 0;
     if (xp->xp_context == EXPAND_HELP)
     {
-	if (find_help_tags(pat, num_file, file, FALSE) == OK)
+	/* With an empty argument we would get all the help tags, which is
+	 * very slow.  Get matches for "help" instead. */
+	if (find_help_tags(*pat == NUL ? (char_u *)"help" : pat,
+						 num_file, file, FALSE) == OK)
 	{
 #ifdef FEAT_MULTI_LANG
 	    cleanup_help_tags(*num_file, *file);
@@ -6252,7 +6255,10 @@ script_get(eap, cmd)
 	    NUL, eap->cookie, 0);
 
 	if (theline == NULL || STRCMP(end_pattern, theline) == 0)
+	{
+	    vim_free(theline);
 	    break;
+	}
 
 	ga_concat(&ga, theline);
 	ga_append(&ga, '\n');
