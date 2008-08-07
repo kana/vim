@@ -1,7 +1,7 @@
 " Vim compiler file
 " Language:		Test::Unit - Ruby Unit Testing Framework
 " Maintainer:		Doug Kearns <dougkearns@gmail.com>
-" Info:			$Id: rubyunit.vim,v 1.7 2008/07/13 17:41:10 vimboss Exp $
+" Info:			$Id: rubyunit.vim,v 1.8 2008/08/06 17:05:14 vimboss Exp $
 " URL:			http://vim-ruby.rubyforge.org
 " Anon CVS:		See above site
 " Release Coordinator:	Doug Kearns <dougkearns@gmail.com>
