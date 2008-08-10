@@ -2,9 +2,9 @@
 " Language:     Bazaar (bzr) commit file
 " Maintainer:   Dmitry Vasiliev <dima at hlabs dot spb dot ru>
 " URL:          http://www.hlabs.spb.ru/vim/bzr.vim
-" Revision:     $Id: bzr.vim,v 1.1 2007/05/05 17:20:51 vimboss Exp $
+" Revision:     $Id: bzr.vim 683 2008-07-30 11:52:38Z hdima $
 " Filenames:    bzr_log.*
-" Version:      1.0
+" Version:      1.1
 
 " For version 5.x: Clear all syntax items.
 " For version 6.x: Quit when a syntax file was already loaded.
@@ -14,7 +14,7 @@ elseif exists("b:current_syntax")
   finish
 endif
 
-syn region bzrRegion   start="^-\{14} This line and the following will be ignored -\{14}$" end="\%$" contains=ALL
+syn region bzrRegion   start="^-\{14} This line and the following will be ignored -\{14}$" end="\%$" contains=ALL contains=@NoSpell
 syn match bzrRemoved   "^removed:$" contained
 syn match bzrAdded     "^added:$" contained
 syn match bzrRenamed   "^renamed:$" contained

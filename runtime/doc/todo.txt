@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.2b.  Last change: 2008 Jul 24
+*todo.txt*      For Vim version 7.2.  Last change: 2008 Aug 09
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -35,6 +35,9 @@ first line. (Ingo Karkat, 2008 Jul 1)  Ian Kelling is working on this.
 
 Have a look at patch for utf-8 line breaking. (Yongwei Wu, 2008 Mar 1, Mar 23)
 
+netrw: dragging status line causes selection of entry.  Should check row
+number to be below last visible line.
+
 Runtime files for Clojure. (Toralf Wittner, 2008 Jun 25)
 
 Patch to add extra argument to glob() and globpath() to ignore 'wildignore'.
@@ -66,10 +69,7 @@ backslash? (Robert Vibrant, 2008 Jun 5)
 
 After using <Tab> for command line completion after ":ta blah" and getting E33
 (no tags file), further editing the command to e.g., ":echo 'blah'", the
-command is not executed.
-
-When 'bomb' is changed the window title is updated to show/hide a "+", but the
-tab page label isn't. (Patrick Texier, 2008 Jun 24)
+command is not executed.  Fix by Ian Kelling?
 
 ":help s/~" jumps to *s/\~*, while ":help s/\~" doesn't find anything. (Tim
 Chase)  Fix by Ian Kelling, 2008 Jul 14.
@@ -122,6 +122,9 @@ changed or the window is resized.
 
 Mac: Patch for configure: remove arch from ruby link args. (Knezevic, 2008
 Mar 5)  Alternative: Kazuki Sakamoto, Mar 7.
+
+Mac: trouble compiling with Motif, requires --disable-darwin. (Raf, 2008 Aug
+1)  Reply by Ben Schmidt.
 
 ":emenu" works with the translated menu name.  Should also work with the
 untranslated name.  Would need to store both the English and the translated
@@ -182,8 +185,9 @@ Asked about latest version: 0.77.1 is on www.vim.org.
 
 More AmigaOS4 patches. (Peter Bengtsson, Nov 9)
 
-Error when cancelling completion menu and auto-formatting. (Tim Weber, 2008
-Apr 17)
+Insert mode completion: When editing the text and pressing CTRL-N again goes
+back to originally completed text, edited text is gone. (Peng Yu, 2008 Jul 24)
+Suggestion by Ben Schmidt, 2008 Aug 6.
 
 Problem with compound words?  (Bert, 2008 May 6)
 No warning for when flags are defined after they are used in an affix.
@@ -207,6 +211,9 @@ popup menu over it, first draw the new popup menu, remember its position and
 size and then redraw the text, skipping the characters under the popup menu.
 This should avoid flicker.  Other solution by A.Politz, 2007 Aug 22.
 
+When the popup menu is close to the edge of the window it is truncated.  Patch
+to anchor the popup menu in a different way. (James Vega, 2008 Jul 30)
+
 Spell checking: Add a way to specify punctuation characters.  Add the
 superscript numbers by default: 0x2070, 0xb9, 0xb2, 0xb3, 0x2074 - 0x2079.
 
@@ -214,9 +221,9 @@ Windows 98: pasting from the clipboard with text from another application has
 a trailing NUL.  (Joachim Hofmann)  Perhaps the length specified for CF_TEXT
 isn't right?
 
-Completion: Scanning for tags doesn't check for typed key now and then?
-Hangs for about 5 seconds.  Appears to be caused by finding include files with
-"foo/**" in 'path'.  (Kalisiak, 2006 July 15)
+Command line completion: Scanning for tags doesn't check for typed key now and
+then?  Hangs for about 5 seconds.  Appears to be caused by finding include
+files with "foo/**" in 'path'.  (Kalisiak, 2006 July 15)
 Additional info: When using the |wildcards| ** globing, vim hangs
 indefinitely on lots of directories. The |file-searching| globing, like in
 ":set path=/**" does not hang as often as with globing with |wildcards|, like
@@ -248,7 +255,7 @@ go to Insert mode and add a few lines.  Then backspacing every other time
 moves the cursor instead of deleting. (Chris Kaiser, 2007 Sep 25)
 
 Redraw problem when appending digraph causes line to wrap. (James Vega, 2007
-Sep 18)
+Sep 18)  Patch by Ian Kelling, 2008 Aug 8.
 
 Changes for Win32 makefile. (Mike Williams, 2007 Jan 22, Alexei Alexandrov,
 2007 Feb 8)
@@ -260,6 +267,9 @@ Patch for Win32 clipboard under Cygwin. (Frodak Baksik, Feb 15)
 Win32: Patch for convert_filterW(). (Taro Muraoka, 2007 Mar 2)
 
 Win32: Patch for cscope external command. (Mike Williams, 2007 Aug 7)
+
+":cscope find f  filename" doesn't work because of the extra space. (Ethan
+Mallove)
 
 Win32: XPM support only works with path without spaces.  Patch by Mathias
 Michaelis, 2006 Jun 9.  Another patch for more path names, 2006 May 31.
@@ -280,7 +290,10 @@ Win32: after "[I" showing matches, scroll wheel messes up screen. (Tsakiridis,
 Patch by Alex Dobrynin, 2007 Jun 3.  Also fixes other scroll wheel problems.
 
 Win32: using CTRL-S in Insert mode doesn't remove the "+" from the tab pages
-label.  (Tsakiridis, 2007 Feb 18)
+label.  (Tsakiridis, 2007 Feb 18)  Patch from Ian Kelling, 2008 Aug 6.
+
+When 'bomb' is changed the window title is updated to show/hide a "+", but the
+tab page label isn't. (Patrick Texier, 2008 Jun 24)
 
 Win32: using "gvim --remote-tab-silent fname" sometimes gives an empty screen
 with the more prompt.  Caused by setting the guitablabel?  (Thomas Michael
@@ -293,6 +306,10 @@ Win64: Seek error in swap file for a very big file (3 Gbyte).  Check storing
 pointer in long and seek offset in 64 bit var.
 
 Win32: patch for fullscreen mode. (Liushaolin, 2008 April 17)
+
+When file b is a link to file a and editing b twice you get the correct
+warning for existing swap file, but when trying to recover it doesn't find the
+swapfile. (Matt Wozniski, 2008 Aug 5)
 
 Pressing the 'pastetoggle' key doesn't update the statusline. (Jan Christoph
 Ebersbach, 2008 Feb 1)
@@ -466,7 +483,7 @@ show more text of the completions.  Shorten the items that don't fit in the
 middle?
 
 When running inside screen it's possible to kill the X server and restart it
-(using pty's the program can keep on running).  Vim dies because it looses the
+(using pty's the program can keep on running).  Vim dies because it loses the
 connection to the X server.  Can Vim simply quit using the X server instead of
 dying?  Also relevant when running in a console.
 
@@ -506,10 +523,6 @@ number. (Tony Mechelynck, 2007 Feb 6)
 
 GTK: when using the -geom argument with an offset from the right edge and the
 size is smaller than the default, the Vim window is not positioned properly.
-
-GTK: when editing a directory with the netrw plugin in a terminal and doing
-":gui" Vim hangs in obtaining the selection.  Workaround patch 7.1.209 is a
-hack (timeout after 3 seconds).  Why don't we get the selection here?
 
 After starting Vim, using '0 to jump somewhere in a file, ":sp" doesn't center
 the cursor line.  It works OK after some other commands.
@@ -1502,6 +1515,13 @@ Problems that will (probably) not be solved:
 -   GTK: when using the popup menu with spelling suggestions and releasing the
     right mouse button before the menu appears selecting an item with the
     right mouse button has no effect.  GTK does not produce an event for this.
+-   GTK 2: Cannot use the file selector.  When using it many things become
+    slow.  This is caused by some code in GTK that writes
+    ~/.recently-used.xbel every time an event is handled.  It assumes the main
+    loop is never quit, which is a wrong assumption.  Also, it overwrites the
+    file with different file permissions, which is a privacy issue.  This
+    needs to be fixed in GTK.  A solution in Vim would be really complicated.
+    (2008 Jul 31)
 -   xterm title: The following scenario may occur (esp. when running the Vim
     test script): Vim 1 sets the title to "file1", then restores the title to
     "xterm" with an ESC sequence when exiting.  Vim 2 obtains the old title

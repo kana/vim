@@ -1275,7 +1275,8 @@ eval_to_string(arg, nextcmd, dolist)
 	if (dolist && tv.v_type == VAR_LIST)
 	{
 	    ga_init2(&ga, (int)sizeof(char), 80);
-	    list_join(&ga, tv.vval.v_list, (char_u *)"\n", TRUE, 0);
+	    if (tv.vval.v_list != NULL)
+		list_join(&ga, tv.vval.v_list, (char_u *)"\n", TRUE, 0);
 	    ga_append(&ga, NUL);
 	    retval = (char_u *)ga.ga_data;
 	}
@@ -1380,6 +1381,7 @@ restore_vimvar(idx, save_tv)
 /*
  * Evaluate an expression to a list with suggestions.
  * For the "expr:" part of 'spellsuggest'.
+ * Returns NULL when there is an error.
  */
     list_T *
 eval_spell_expr(badword, expr)
@@ -1587,8 +1589,9 @@ call_func_retnr(func, argc, argv, safe)
 # endif
 
 /*
- * Call vimL function "func" and return the result as a list
+ * Call vimL function "func" and return the result as a List.
  * Uses argv[argc] for the function arguments.
+ * Returns NULL when there is something wrong.
  */
     void *
 call_func_retlist(func, argc, argv, safe)
@@ -5817,6 +5820,8 @@ list_equal(l1, l2, ic)
 {
     listitem_T	*item1, *item2;
 
+    if (l1 == NULL || l2 == NULL)
+	return FALSE;
     if (l1 == l2)
 	return TRUE;
     if (list_len(l1) != list_len(l2))
@@ -5855,6 +5860,8 @@ dict_equal(d1, d2, ic)
     dictitem_T	*item2;
     int		todo;
 
+    if (d1 == NULL || d2 == NULL)
+	return FALSE;
     if (d1 == d2)
 	return TRUE;
     if (dict_len(d1) != dict_len(d2))
@@ -6224,8 +6231,11 @@ list_extend(l1, l2, bef)
     listitem_T	*bef;
 {
     listitem_T	*item;
+    int		todo = l2->lv_len;
 
-    for (item = l2->lv_first; item != NULL; item = item->li_next)
+    /* We also quit the loop when we have inserted the original item count of
+     * the list, avoid a hang when we extend a list with itself. */
+    for (item = l2->lv_first; item != NULL && --todo >= 0; item = item->li_next)
 	if (list_insert_tv(l1, &item->li_tv, bef) == FAIL)
 	    return FAIL;
     return OK;
@@ -6242,6 +6252,9 @@ list_concat(l1, l2, tv)
     typval_T	*tv;
 {
     list_T	*l;
+
+    if (l1 == NULL || l2 == NULL)
+	return FAIL;
 
     /* make a copy of the first list. */
     l = list_copy(l1, FALSE, 0);
