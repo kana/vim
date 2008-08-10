@@ -3,7 +3,7 @@
 " Maintainer:  Johannes Ranke <jranke@uni-bremen.de>
 " Last Change: 2007 Mär 30
 " Version:     0.8
-" SVN:	       $Id: rnoweb.vim,v 1.10 2008/08/06 16:53:22 vimboss Exp $
+" SVN:	       $Id: rnoweb.vim,v 1.11 2008/08/09 17:49:45 vimboss Exp $
 " Remarks:     - This file is inspired by the proposal of 
 "				 Fernando Henrique Ferraz Pereira da Rosa <feferraz@ime.usp.br>
 "			     http://www.ime.usp.br/~feferraz/en/sweavevim.html

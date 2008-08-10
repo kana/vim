@@ -1,7 +1,7 @@
 # Slovak translation of vim
 # Lubomir Host 'rajo' <rajo AT platon.sk>
 # 2005 - Platon Group, http://platon.sk/
-# $Revision: 1.8 $
+# $Revision: 1.9 $
 # $LastChangedDate: 2005-10-08 12:00:24 +0200 (Sat, 08 Oct 2005) $
 msgid ""
 msgstr ""
