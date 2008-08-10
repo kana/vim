@@ -1,15 +1,15 @@
 "------------------------------------------------------------------------------
 "  Description: Perform Ada specific completion & tagging.
 "     Language: Ada (2005)
-"	   $Id: ada.vim,v 1.8 2008/08/06 16:55:19 vimboss Exp $
+"	   $Id: ada.vim,v 1.9 2008/08/09 17:50:44 vimboss Exp $
 "   Maintainer: Martin Krischik <krischik@users.sourceforge.net>
 "		Taylor Venable <taylor@metasyntax.net>
 "		Neil Bird <neil@fnxweb.com>
 "		Ned Okie <nokie@radford.edu>
 "      $Author: vimboss $
-"	 $Date: 2008/08/06 16:55:19 $
+"	 $Date: 2008/08/09 17:50:44 $
 "      Version: 4.6
-"    $Revision: 1.8 $
+"    $Revision: 1.9 $
 "     $HeadURL: https://gnuada.svn.sourceforge.net/svnroot/gnuada/trunk/tools/vim/autoload/ada.vim $
 "      History: 24.05.2006 MK Unified Headers
 "		26.05.2006 MK ' should not be in iskeyword.
