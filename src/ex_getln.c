@@ -3717,7 +3717,7 @@ vim_strsave_fnameescape(fname, shell)
 	if ((*p != '[' && *p != '{') || !vim_isfilec(*p))
 	    buf[j++] = *p;
     buf[j] = NUL;
-    return vim_strsave_escaped(fname, buf);
+    p = vim_strsave_escaped(fname, buf);
 #else
     p = vim_strsave_escaped(fname, shell ? SHELL_ESC_CHARS : PATH_ESC_CHARS);
     if (shell && csh_like_shell() && p != NULL)
@@ -3730,8 +3730,14 @@ vim_strsave_fnameescape(fname, shell)
 	vim_free(p);
 	p = s;
     }
-    return p;
 #endif
+
+    /* '>' and '+' are special at the start of some commands, e.g. ":edit" and
+     * ":write".  "cd -" has a special meaning. */
+    if (*p == '>' || *p == '+' || (*p == '-' && p[1] == NUL))
+	escape_fname(&p);
+
+    return p;
 }
 
 /*
@@ -4387,7 +4393,10 @@ ExpandFromContext(xp, pat, num_file, file, options)
     *num_file = 0;
     if (xp->xp_context == EXPAND_HELP)
     {
-	if (find_help_tags(pat, num_file, file, FALSE) == OK)
+	/* With an empty argument we would get all the help tags, which is
+	 * very slow.  Get matches for "help" instead. */
+	if (find_help_tags(*pat == NUL ? (char_u *)"help" : pat,
+						 num_file, file, FALSE) == OK)
 	{
 #ifdef FEAT_MULTI_LANG
 	    cleanup_help_tags(*num_file, *file);
@@ -6252,7 +6261,10 @@ script_get(eap, cmd)
 	    NUL, eap->cookie, 0);
 
 	if (theline == NULL || STRCMP(end_pattern, theline) == 0)
+	{
+	    vim_free(theline);
 	    break;
+	}
 
 	ga_concat(&ga, theline);
 	ga_append(&ga, '\n');
