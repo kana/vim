@@ -338,9 +338,9 @@ endfunction
           let b:_build_path = finddir('_build',';')
           if b:_build_path != ''
             let project_path                = substitute(b:_build_path,'/_build$','','')
-            let path_relative_to_project    = substitute(s:Fnameescape(expand('%:p:h')),project_path.'/','','')
+            let path_relative_to_project    = s:Fnameescape(substitute(expand('%:p:h'),project_path.'/','',''))
             let b:annot_file_path           = findfile(annot_file_name,project_path.'/_build/'.path_relative_to_project)
-            let b:source_file_relative_path = substitute(s:Fnameescape(expand('%:p')),project_path.'/','','')
+            let b:source_file_relative_path = s:Fnameescape(substitute(expand('%:p'),project_path.'/','',''))
           else
             let b:annot_file_path = findfile(annot_file_name,'**')
             "4th case : what if the user decided to change the name of the _build directory ?

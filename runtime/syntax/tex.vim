@@ -1,8 +1,8 @@
 " Vim syntax file
 " Language:	TeX
 " Maintainer:	Dr. Charles E. Campbell, Jr. <NdrchipO@ScampbellPfamily.AbizM>
-" Last Change:	July 13, 2008
-" Version:	42
+" Last Change:	Jun 03, 2008
+" Version:	41
 " URL:		http://mysite.verizon.net/astronaut/vim/index.html#vimlinks_syntax
 "
 " Notes: {{{1
@@ -507,7 +507,6 @@ if did_tex_syntax_inits == 1
    HiLink texMathDelimSet2	texMathDelim
    HiLink texMathDelimKey	texMathDelim
    HiLink texMathMatcher	texMath
-   HiLink texMathZoneV		texMath
    HiLink texMathZoneW		texMath
    HiLink texMathZoneX		texMath
    HiLink texMathZoneY		texMath

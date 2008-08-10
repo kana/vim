@@ -1,7 +1,7 @@
 " zip.vim: Handles browsing zipfiles
 "            AUTOLOAD PORTION
-" Date:		Jul 12, 2008
-" Version:	21 (modified by Bram)
+" Date:		Jul 30, 2008
+" Version:	22
 " Maintainer:	Charles E Campbell, Jr <NdrOchip@ScampbellPfamily.AbizM-NOSPAM>
 " License:	Vim License  (see vim's :help license)
 " Copyright:    Copyright (C) 2005-2008 Charles E. Campbell, Jr. {{{1
@@ -22,7 +22,7 @@ if &cp || exists("g:loaded_zip") || v:version < 700
  finish
 endif
 
-let g:loaded_zip     = "v21+b"
+let g:loaded_zip     = "v22"
 let s:zipfile_escape = ' ?&;\'
 let s:ERROR          = 2
 let s:WARNING        = 1
@@ -58,6 +58,12 @@ fun! zip#Browse(zipfile)
   set report=10
 
   " sanity checks
+  if !exists("*fnameescape")
+   if &verbose > 1
+    echoerr "the zip plugin is not available (your vim doens't support fnameescape())"
+   endif
+   return
+  endif
   if !executable(g:zip_unzipcmd)
    redraw!
    echohl Error | echo "***error*** (zip#Browse) unzip not available on your system"
@@ -342,9 +348,8 @@ endfun
 fun! s:ChgDir(newdir,errlvl,errmsg)
 "  call Dfunc("ChgDir(newdir<".a:newdir."> errlvl=".a:errlvl."  errmsg<".a:errmsg.">)")
 
-
   try
-   exe "cd ".fnameescape(newdir)
+   exe "cd ".fnameescape(a:newdir)
   catch /^Vim\%((\a\+)\)\=:E344/
    redraw!
    if a:errlvl == s:NOTE

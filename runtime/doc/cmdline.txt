@@ -1,4 +1,4 @@
-*cmdline.txt*   For Vim version 7.2b.  Last change: 2008 Jul 21
+*cmdline.txt*   For Vim version 7.2.  Last change: 2008 Jul 29
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -109,7 +109,8 @@ CTRL-H							*c_<BS>* *c_CTRL-H*
 		character before the cursor) (see |:fixdel| if your <Del>
 		key does not do what you want).
 							*c_CTRL-W*
-CTRL-W		Delete the |WORD| before the cursor.
+CTRL-W		Delete the |word| before the cursor.  This depends on the
+		'iskeyword' option.
 							*c_CTRL-U*
 CTRL-U		Remove all characters between the cursor position and
 		the beginning of the line.  Previous versions of vim
