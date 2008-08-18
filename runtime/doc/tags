@@ -6342,6 +6342,7 @@ macvim-shift-movement	gui_mac.txt	/*macvim-shift-movement*
 macvim-start	gui_mac.txt	/*macvim-start*
 macvim-todo	gui_mac.txt	/*macvim-todo*
 macvim-toolbar	gui_mac.txt	/*macvim-toolbar*
+macvim-url-handler	gui_mac.txt	/*macvim-url-handler*
 macvim-user-defaults	gui_mac.txt	/*macvim-user-defaults*
 macvim-window-title	gui_mac.txt	/*macvim-window-title*
 macvim-windows	gui_mac.txt	/*macvim-windows*
@@ -6488,6 +6489,7 @@ multilang-menus	mlang.txt	/*multilang-menus*
 multilang-messages	mlang.txt	/*multilang-messages*
 multilang-scripts	mlang.txt	/*multilang-scripts*
 mvim	gui_mac.txt	/*mvim*
+mvim://	gui_mac.txt	/*mvim:\/\/*
 myfiletypefile	syntax.txt	/*myfiletypefile*
 myscriptsfile	syntax.txt	/*myscriptsfile*
 mysql	ft_sql.txt	/*mysql*
