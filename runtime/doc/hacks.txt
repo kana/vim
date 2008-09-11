@@ -7,6 +7,15 @@ All changes are licensed under the same terms of Vim.  See |license|.
 ==============================================================================
 INDEX OF HACKS						*hacks-index*
 
+Fix behavior 'foldopen' on search	     *hacks-bugfix-foldopen-on-search*
+	Whenever '/' or '?' is used and the cursor is moved in closed folds,
+	the folds will be opened (see also 'foldopen').  Vim checks whether
+	'/' or '?' has been invoked via a key mapping, if so, Vim will not
+	open folds.  But Vim also checks how {pattern} for '/' or '?' has been
+	inputted, via a key mapping or not.  It seems to be strange and it
+	annoys some people who love to input <Enter> with other key such as
+	Semicolon key.  Fix this behavior, so Vim doesn't check on {pattern}.
+
 
 
 
