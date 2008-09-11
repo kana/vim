@@ -11872,6 +11872,10 @@ f_has(argvars, rettv)
 	else if (STRICMP(name, "iconv") == 0)
 	    n = iconv_enabled(FALSE);
 #endif
+#ifdef DYNAMIC_GAUCHE
+	else if (STRICMP(name, "gauche") == 0)
+	    n = gauche_enabled(FALSE);
+#endif
 #ifdef DYNAMIC_MZSCHEME
 	else if (STRICMP(name, "mzscheme") == 0)
 	    n = mzscheme_enabled(FALSE);
