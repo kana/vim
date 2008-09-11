@@ -7,6 +7,9 @@ All changes are licensed under the same terms of Vim.  See |license|.
 ==============================================================================
 INDEX OF HACKS						*hacks-index*
 
+Gauche interface				      *hacks-gauche-interface*
+	Add interface to use Gauche in Vim.  See |if_gosh| for the details.
+
 
 
 

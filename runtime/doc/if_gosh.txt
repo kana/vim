@@ -1,0 +1,78 @@
+*if_gosh.txt*	For Vim version 7.2.  Last change: 2006 Apr 30
+
+
+		  VIM REFERENCE MANUAL    by Kana Natsuno
+
+
+The Gauche Interface to Vim				*gosh* *Gauche*
+
+1. Commands			|gauche-commands|
+2. The vim module		|gauche-vim|
+3. Remarks			|gauche-remarks|
+
+{Vi does not have any of these commands}
+
+The Gauche interface is available only when Vim was compiled with the
+|+gauche| feature.
+
+==============================================================================
+1. Commands						*gauche-commands*
+
+							*:gauche*
+:[range]ga[uche] {stmt}
+			Execute Gauche statement {stmt}.
+
+:[range]ga[uche] << {endmarker}
+{script}
+{endmarker}
+			Execute Gauche script {script}.
+			Note: This command doesn't work when the Gauche
+			feature wasn't compiled in.  To avoid errors, see
+			|script-here|.
+
+							*:gafile* *:gaf*
+:[range]gaf[ile] {file}
+			Execute the Gauche script in {file}.  The whole
+			argument is used as a single file name.  {not in Vi}
+
+Both of these commands do essentially the same thing - they execute a piece of
+Gauche code, with the "current range" set to the given line range.  See also
+|gauche-range|.
+
+In the case of :gauche, the code to execute is in the command-line.
+In the case of :gafile, the code to execute is the contents of the given file.
+
+Gauche commands cannot be used in the |sandbox|.
+
+==============================================================================
+2. The vim module					*gauche-vim*
+
+Gauche interface provides the "vim" module for the Scheme world.  It is
+automatically loaded and it exports the following content:
+
+Function: (vim-execute {vim-script})			*(vim-execute)*
+			Execute a string as {vim-script}.  Return value is
+			undefined.  This is equivalent to |:execute| in Vim
+			script.
+
+Function: (vim-eval {vim-script})			*(vim-eval)*
+			Evaluate a string as {vim-script}, then return the
+			result.  This is equivalent to |eval()| in Vim script.
+
+			Note that {vim-script} must be a valid one noted in
+			|expression-syntax|, for example, "1 + 2".  It cannot
+			be a usual Vim script such as "wincmd k".
+
+==============================================================================
+3. Remarks						*gauche-remarks*
+
+Output to (standard-output-port) is showed as if it is given to |:echomsg|.
+Output to (standard-error-port) is showed as if it is given to |:echoerr|.
+
+Input from (standard-input-port) is not supported.  Don't use it or Vim will
+be crashed.
+
+There should be many API to easily control/interact Vim from the Gauche world.
+
+==============================================================================
+ vim:tw=78:ts=8:ft=help:norl:
