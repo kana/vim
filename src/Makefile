@@ -38,6 +38,7 @@
 #	  could be lost.
 #	- Uncomment one or more of these lines to include an interface;
 #	  each makes Vim quite a bit bigger:
+#		--enable-gaucheinterp	for Gauche interpreter
 #		--enable-perlinterp	for Perl interpreter
 #		--enable-pythoninterp	for Python interpreter
 #		--enable-rubyinterp	for Ruby interpreter
@@ -396,6 +397,10 @@ CClink = $(CC)
 # RUBY
 # Uncomment this when you want to include the Ruby interface.
 #CONF_OPT_RUBY = --enable-rubyinterp
+
+# GAUCHE
+# Uncomment this when you want to include the Gauche interface.
+#CONF_OPT_GAUCHE = --enable-gaucheinterp
 
 # MZSCHEME
 # Uncomment this when you want to include the MzScheme interface.
@@ -1302,7 +1307,7 @@ SHELL = /bin/sh
 .SUFFIXES: .c .o .pro
 
 PRE_DEFS = -Iproto $(DEFS) $(GUI_DEFS) $(GUI_IPATH) $(CPPFLAGS) $(EXTRA_IPATHS)
-POST_DEFS = $(X_CFLAGS) $(MZSCHEME_CFLAGS) $(PERL_CFLAGS) $(PYTHON_CFLAGS) $(TCL_CFLAGS) $(RUBY_CFLAGS) $(EXTRA_DEFS)
+POST_DEFS = $(X_CFLAGS) $(GAUCHE_CFLAGS) $(MZSCHEME_CFLAGS) $(PERL_CFLAGS) $(PYTHON_CFLAGS) $(TCL_CFLAGS) $(RUBY_CFLAGS) $(EXTRA_DEFS)
 
 ALL_CFLAGS = $(PRE_DEFS) $(CFLAGS) $(PROFILE_CFLAGS) $(POST_DEFS)
 
@@ -1322,7 +1327,7 @@ DEPEND_CFLAGS = -DPROTO -DDEPEND -DFEAT_GUI $(LINT_CFLAGS)
 PFLAGS = $(PROTO_FLAGS) -DPROTO $(LINT_CFLAGS)
 
 ALL_LIB_DIRS = $(GUI_LIBS_DIR) $(X_LIBS_DIR)
-ALL_LIBS = $(GUI_LIBS1) $(GUI_X_LIBS) $(GUI_LIBS2) $(X_PRE_LIBS) $(X_LIBS) $(X_EXTRA_LIBS) $(LIBS) $(EXTRA_LIBS) $(MZSCHEME_LIBS) $(PERL_LIBS) $(PYTHON_LIBS) $(TCL_LIBS) $(RUBY_LIBS) $(PROFILE_LIBS)
+ALL_LIBS = $(GUI_LIBS1) $(GUI_X_LIBS) $(GUI_LIBS2) $(X_PRE_LIBS) $(X_LIBS) $(X_EXTRA_LIBS) $(LIBS) $(EXTRA_LIBS) $(GAUCHE_LIBS) $(MZSCHEME_LIBS) $(PERL_LIBS) $(PYTHON_LIBS) $(TCL_LIBS) $(RUBY_LIBS) $(PROFILE_LIBS)
 
 # abbreviations
 DEST_BIN = $(DESTDIR)$(BINDIR)
@@ -1423,13 +1428,13 @@ BASIC_SRC = \
 	window.c \
 	$(OS_EXTRA_SRC)
 
-SRC =	$(BASIC_SRC) $(GUI_SRC) $(HANGULIN_SRC) $(MZSCHEME_SRC) \
+SRC =	$(BASIC_SRC) $(GUI_SRC) $(HANGULIN_SRC) $(GAUCHE_SRC) $(MZSCHEME_SRC) \
 	$(PERL_SRC) $(PYTHON_SRC) $(TCL_SRC) $(RUBY_SRC) \
 	$(SNIFF_SRC) $(WORKSHOP_SRC) $(WSDEBUG_SRC)
 
 TAGS_SRC = *.c *.cpp if_perl.xs
 
-EXTRA_SRC = hangulin.c if_mzsch.c auto/if_perl.c if_perlsfio.c \
+EXTRA_SRC = hangulin.c if_gosh.c if_mzsch.c auto/if_perl.c if_perlsfio.c \
 	    if_python.c if_tcl.c if_ruby.c if_sniff.c gui_beval.c \
 	    workshop.c wsdebug.c integration.c netbeans.c
 
@@ -1494,6 +1499,7 @@ OBJ = \
 	objects/undo.o \
 	objects/window.o \
 	$(GUI_OBJ) \
+	$(GAUCHE_OBJ) \
 	$(MZSCHEME_OBJ) \
 	$(PERL_OBJ) \
 	$(PYTHON_OBJ) \
@@ -1592,7 +1598,7 @@ config auto/config.mk: auto/configure config.mk.in config.h.in
 		$(CONF_OPT_SNIFF) $(CONF_OPT_FEAT) $(CONF_TERM_LIB) \
 		$(CONF_OPT_COMPBY) $(CONF_OPT_ACL)  $(CONF_OPT_NETBEANS) \
 		$(CONF_ARGS) $(CONF_OPT_MZSCHEME) $(CONF_OPT_PLTHOME) \
-		$(CONF_OPT_SYSMOUSE)
+		$(CONF_OPT_GAUCHE) $(CONF_OPT_SYSMOUSE)
 
 # Use "make reconfig" to rerun configure without cached values.
 # When config.h changes, most things will be recompiled automatically.
@@ -2440,6 +2446,9 @@ objects/if_mzsch.o: if_mzsch.c $(MZSCHEME_EXTRA)
 mzscheme_base.c:
 	$(MZSCHEME_MZC) --c-mods mzscheme_base.c ++lib scheme/base
 
+objects/if_gosh.o: if_gosh.c
+	$(CCC) -o $@ if_gosh.c
+
 objects/if_perl.o: auto/if_perl.c
 	$(CCC) -o $@ auto/if_perl.c
 
@@ -2926,6 +2935,10 @@ objects/pty.o: pty.c vim.h auto/config.h feature.h os_unix.h auto/osdef.h ascii.
   keymap.h term.h macros.h option.h structs.h regexp.h gui.h gui_beval.h \
   proto/gui_beval.pro ex_cmds.h proto.h globals.h farsi.h arabic.h
 objects/hangulin.o: hangulin.c vim.h auto/config.h feature.h os_unix.h \
+  auto/osdef.h ascii.h keymap.h term.h macros.h option.h structs.h \
+  regexp.h gui.h gui_beval.h proto/gui_beval.pro ex_cmds.h proto.h \
+  globals.h farsi.h arabic.h
+objects/if_gosh.o: if_gosh.c vim.h auto/config.h feature.h os_unix.h \
   auto/osdef.h ascii.h keymap.h term.h macros.h option.h structs.h \
   regexp.h gui.h gui_beval.h proto/gui_beval.pro ex_cmds.h proto.h \
   globals.h farsi.h arabic.h

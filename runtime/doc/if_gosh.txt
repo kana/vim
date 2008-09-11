@@ -1,4 +1,4 @@
-*if_gosh.txt*	For Vim version 7.2.  Last change: 2006 Apr 30
+*if_gosh.txt*	For Vim version 7.2.  Last change: 2008 Sep 12
 
 
 		  VIM REFERENCE MANUAL    by Kana Natsuno
@@ -14,6 +14,9 @@ The Gauche Interface to Vim				*gosh* *Gauche*
 
 The Gauche interface is available only when Vim was compiled with the
 |+gauche| feature.
+
+Note: Still under development -- not all of the following features are not
+implemented yet.
 
 ==============================================================================
 1. Commands						*gauche-commands*

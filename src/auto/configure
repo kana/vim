@@ -793,6 +793,7 @@ with_python_config_dir
 enable_tclinterp
 with_tclsh
 enable_rubyinterp
+enable_gaucheinterp
 enable_cscope
 enable_workshop
 enable_netbeans
@@ -1465,6 +1466,7 @@ Optional Features:
   --enable-pythoninterp   Include Python interpreter.
   --enable-tclinterp      Include Tcl interpreter.
   --enable-rubyinterp     Include Ruby interpreter.
+  --enable-gaucheinterp     Include Gauche interpreter.
   --enable-cscope         Include cscope interface.
   --enable-workshop       Include Sun Visual Workshop support.
   --disable-netbeans      Disable NetBeans integration support.
@@ -5799,6 +5801,144 @@ $as_echo "not found" >&6; }
     else
       { $as_echo "$as_me:$LINENO: result: too old; need Ruby version 1.6.0 or later" >&5
 $as_echo "too old; need Ruby version 1.6.0 or later" >&6; }
+    fi
+  fi
+fi
+
+
+
+
+
+
+{ $as_echo "$as_me:$LINENO: checking --enable-gaucheinterp argument" >&5
+$as_echo_n "checking --enable-gaucheinterp argument... " >&6; }
+# Check whether --enable-gaucheinterp was given.
+if test "${enable_gaucheinterp+set}" = set; then
+  enableval=$enable_gaucheinterp;
+else
+  enable_gaucheinterp="no"
+fi
+
+{ $as_echo "$as_me:$LINENO: result: $enable_gaucheinterp" >&5
+$as_echo "$enable_gaucheinterp" >&6; }
+if test "$enable_gaucheinterp" = "yes"; then
+
+
+  # Extract the first word of "gosh", so it can be a program name with args.
+set dummy gosh; ac_word=$2
+{ $as_echo "$as_me:$LINENO: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_vi_cv_path_gosh+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  case $vi_cv_path_gosh in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_vi_cv_path_gosh="$vi_cv_path_gosh" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_vi_cv_path_gosh="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+vi_cv_path_gosh=$ac_cv_path_vi_cv_path_gosh
+if test -n "$vi_cv_path_gosh"; then
+  { $as_echo "$as_me:$LINENO: result: $vi_cv_path_gosh" >&5
+$as_echo "$vi_cv_path_gosh" >&6; }
+else
+  { $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  # Extract the first word of "gauche-config", so it can be a program name with args.
+set dummy gauche-config; ac_word=$2
+{ $as_echo "$as_me:$LINENO: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_vi_cv_path_gauche_config+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  case $vi_cv_path_gauche_config in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_vi_cv_path_gauche_config="$vi_cv_path_gauche_config" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_vi_cv_path_gauche_config="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+vi_cv_path_gauche_config=$ac_cv_path_vi_cv_path_gauche_config
+if test -n "$vi_cv_path_gauche_config"; then
+  { $as_echo "$as_me:$LINENO: result: $vi_cv_path_gauche_config" >&5
+$as_echo "$vi_cv_path_gauche_config" >&6; }
+else
+  { $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  if test "X$vi_cv_path_gosh" != "X" && test "X$vi_cv_path_gauche_config" != "X"; then
+    { $as_echo "$as_me:$LINENO: checking Gauche version" >&5
+$as_echo_n "checking Gauche version... " >&6; }
+    if $vi_cv_path_gosh <<'END' >/dev/null 2>/dev/null; then
+      	(use gauche.config)
+      	(use gauche.version)
+	(exit (if (version<=? "0.8.13" (gauche-config "-V"))
+	          0
+		  1))
+END
+      { $as_echo "$as_me:$LINENO: result: OK" >&5
+$as_echo "OK" >&6; }
+      { $as_echo "$as_me:$LINENO: checking Gauche header files" >&5
+$as_echo_n "checking Gauche header files... " >&6; }
+      gauchecflags=`$vi_cv_path_gauche_config -I`
+      if test "X$gauchecflags" != "X"; then
+	{ $as_echo "$as_me:$LINENO: result: $gauchecflags" >&5
+$as_echo "$gauchecflags" >&6; }
+	GAUCHE_CFLAGS="$gauchecflags"
+	GAUCHE_LIBS=`$vi_cv_path_gauche_config -l`
+	LDFLAGS="`$vi_cv_path_gauche_config -L` $LDFLAGS"
+	GAUCHE_SRC="if_gosh.c"
+	GAUCHE_OBJ="objects/if_gosh.o"
+	GAUCHE_PRO="if_gosh.pro"
+	cat >>confdefs.h <<\_ACEOF
+#define FEAT_GAUCHE 1
+_ACEOF
+
+      else
+	{ $as_echo "$as_me:$LINENO: result: not found" >&5
+$as_echo "not found" >&6; }
+      fi
+    else
+      { $as_echo "$as_me:$LINENO: result: too old; need Gauche version 0.8.13 or later" >&5
+$as_echo "too old; need Gauche version 0.8.13 or later" >&6; }
     fi
   fi
 fi
