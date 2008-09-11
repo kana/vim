@@ -317,6 +317,7 @@ N  *+folding*		|folding|
    *+footer*		|gui-footer|
    *+fork*		Unix only: |fork| shell commands
    *+float*		Floating point support
+m  *+gauche*		Gauche interface |gauche|
 N  *+gettext*		message translations |multi-lang|
    *+GUI_Athena*	Unix only: Athena |GUI|
    *+GUI_neXtaw*	Unix only: neXtaw |GUI|
