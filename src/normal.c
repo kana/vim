@@ -6131,6 +6131,7 @@ nv_search(cap)
     cmdarg_T	    *cap;
 {
     oparg_T	*oap = cap->oap;
+    int		save_KeyTyped;
 
     if (cap->cmdchar == '?' && cap->oap->op_type == OP_ROT13)
     {
@@ -6141,7 +6142,14 @@ nv_search(cap)
 	return;
     }
 
+    /* Use only how '/' or '?' is invoked and don't use how {pattern} is
+     * inputted to determine whether folds should be opened or not.  Without
+     * saving KeyTyped at here, Vim will use also how {pattern} is inputted for
+     * 'foldopen' behavior and it annoys some people who love to swap
+     * Semicolon and Enter.  */
+    save_KeyTyped = KeyTyped;
     cap->searchbuf = getcmdline(cap->cmdchar, cap->count1, 0);
+    KeyTyped = save_KeyTyped;
 
     if (cap->searchbuf == NULL)
     {
