@@ -1211,6 +1211,8 @@ The commands are sorted on the non-optional part of their name.
 |:for|		:for		for loop
 |:function|	:fu[nction]	define a user function
 |:global|	:g[lobal]	execute commands for matching lines
+|:gauche|	:ga[uche]	execute Gauche script
+|:gafile|	:gaf[ile]	execute Gauche script file
 |:goto|		:go[to]		go to byte in the buffer
 |:grep|		:gr[ep]		run 'grepprg' and jump to first match
 |:grepadd|	:grepa[dd]	like :grep, but append to current list
