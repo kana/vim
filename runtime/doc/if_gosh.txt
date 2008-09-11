@@ -21,7 +21,7 @@ implemented yet.
 ==============================================================================
 1. Commands						*gauche-commands*
 
-							*:gauche*
+							*:gauche* *:ga*
 :[range]ga[uche] {stmt}
 			Execute Gauche statement {stmt}.
 

@@ -37,13 +37,13 @@ gauche_end(void)
     void
 ex_gauche(exarg_T *eap)
 {
-    /* FIXME */
+    msg(":gauche");  /* FIXME: just a dummy to check how to add Ex command */
 }
 
     void
 ex_gafile(exarg_T *eap)
 {
-    /* FIXME */
+    emsg(":gafile");  /* FIXME: just a dummy to check how to add Ex command */
 }
 
 /* __END__ */

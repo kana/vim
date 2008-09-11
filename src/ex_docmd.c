@@ -2512,6 +2512,7 @@ do_one_cmd(cmdlinep, sourcing,
 	    case CMD_echomsg:
 	    case CMD_echon:
 	    case CMD_execute:
+	    case CMD_gauche:
 	    case CMD_help:
 	    case CMD_hide:
 	    case CMD_ijump:
