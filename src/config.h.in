@@ -284,6 +284,9 @@
 /* Define if you want huge features. */
 #undef FEAT_HUGE
 
+/* Define if you want to include the Gauche interpreter. */
+#undef FEAT_GAUCHE
+
 /* Define if you want to include the MzScheme interpreter. */
 #undef FEAT_MZSCHEME
 

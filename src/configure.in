@@ -977,6 +977,51 @@ AC_SUBST(RUBY_PRO)
 AC_SUBST(RUBY_CFLAGS)
 AC_SUBST(RUBY_LIBS)
 
+AC_MSG_CHECKING(--enable-gaucheinterp argument)
+AC_ARG_ENABLE(gaucheinterp,
+	[  --enable-gaucheinterp     Include Gauche interpreter.], ,
+	[enable_gaucheinterp="no"])
+AC_MSG_RESULT($enable_gaucheinterp)
+if test "$enable_gaucheinterp" = "yes"; then
+  AC_SUBST(vi_cv_path_gosh)
+  AC_SUBST(vi_cv_path_gauche_config)
+  AC_PATH_PROG(vi_cv_path_gosh, gosh)
+  AC_PATH_PROG(vi_cv_path_gauche_config, gauche-config)
+  if test "X$vi_cv_path_gosh" != "X" && test "X$vi_cv_path_gauche_config" != "X"; then
+    AC_MSG_CHECKING(Gauche version)
+    if $vi_cv_path_gosh <<'END' >/dev/null 2>/dev/null; then
+      	(use gauche.config)
+      	(use gauche.version)
+	(exit (if (version<=? "0.8.13" (gauche-config "-V"))
+	          0
+		  1))
+END
+      AC_MSG_RESULT(OK)
+      AC_MSG_CHECKING(Gauche header files)
+      gauchecflags=`$vi_cv_path_gauche_config -I`
+      if test "X$gauchecflags" != "X"; then
+	AC_MSG_RESULT($gauchecflags)
+	GAUCHE_CFLAGS="$gauchecflags"
+	GAUCHE_LIBS=`$vi_cv_path_gauche_config -l`
+	LDFLAGS="`$vi_cv_path_gauche_config -L` $LDFLAGS"
+	GAUCHE_SRC="if_gosh.c"
+	GAUCHE_OBJ="objects/if_gosh.o"
+	GAUCHE_PRO="if_gosh.pro"
+	AC_DEFINE(FEAT_GAUCHE)
+      else
+	AC_MSG_RESULT(not found, disabling Gauche)
+      fi
+    else
+      AC_MSG_RESULT(too old; need Gauche version 0.8.13 or later)
+    fi
+  fi
+fi
+AC_SUBST(GAUCHE_SRC)
+AC_SUBST(GAUCHE_OBJ)
+AC_SUBST(GAUCHE_PRO)
+AC_SUBST(GAUCHE_CFLAGS)
+AC_SUBST(GAUCHE_LIBS)
+
 AC_MSG_CHECKING(--enable-cscope argument)
 AC_ARG_ENABLE(cscope,
 	[  --enable-cscope         Include cscope interface.], ,

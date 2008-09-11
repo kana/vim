@@ -236,6 +236,9 @@ static char *(features[]) =
 #if !defined(USE_SYSTEM) && defined(UNIX)
 	"+fork()",
 #endif
+#ifdef FEAT_GAUCHE
+	"+gauche",
+#endif
 #ifdef FEAT_GETTEXT
 # ifdef DYNAMIC_GETTEXT
 	"+gettext/dyn",

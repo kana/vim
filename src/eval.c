@@ -11489,6 +11489,9 @@ f_has(argvars, rettv)
 #if !defined(USE_SYSTEM) && defined(UNIX)
 	"fork",
 #endif
+#ifdef FEAT_GAUCHE
+	"gauche",
+#endif
 #ifdef FEAT_GETTEXT
 	"gettext",
 #endif
