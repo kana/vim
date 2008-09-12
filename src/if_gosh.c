@@ -21,10 +21,10 @@
 
 
 
-/* echomsg-port and echoerr-port */
+/* vim-echomsg-port and vim-echoerr-port */
 
-static ScmObj scm_echomsg_port = SCM_UNBOUND;
-static ScmObj scm_echoerr_port = SCM_UNBOUND;
+static ScmObj scm_vim_echomsg_port = SCM_UNBOUND;
+static ScmObj scm_vim_echoerr_port = SCM_UNBOUND;
 
 
     static void
@@ -36,13 +36,13 @@ putx(char_u* s, ScmPort *p)
 }
 
     static void
-scm_echo_port_putb(ScmByte b, ScmPort *p)
+vim_echo_port_putb(ScmByte b, ScmPort *p)
 {
     char_u buf[2] = {b, '\0'};
     putx(buf, p);
 }
     static void
-scm_echo_port_putc(ScmChar c, ScmPort *p)
+vim_echo_port_putc(ScmChar c, ScmPort *p)
 {
     int nb = SCM_CHAR_NBYTES(c);
     char_u buf[nb+1];  /* FIXME: extension - not worked with old compiler */
@@ -51,7 +51,7 @@ scm_echo_port_putc(ScmChar c, ScmPort *p)
     putx(buf, p);
 }
     static void
-scm_echo_port_putz(const char *_buf, int size, ScmPort *p)
+vim_echo_port_putz(const char *_buf, int size, ScmPort *p)
 {
     char_u buf[size+1];  /* FIXME: extension - not worked with old compiler */
     memcpy(buf, _buf, size);
@@ -59,34 +59,34 @@ scm_echo_port_putz(const char *_buf, int size, ScmPort *p)
     putx(buf, p);
 }
     static void
-scm_echo_port_puts(ScmString *s, ScmPort *p)
+vim_echo_port_puts(ScmString *s, ScmPort *p)
 {
     putx((char_u *)Scm_GetStringConst(s), p);
 }
 
-static ScmPortVTable scm_echomsg_port_vtable = {
+static ScmPortVTable scm_vim_echomsg_port_vtable = {
     NULL,  /* (*Getb) */
     NULL,  /* (*Getc) */
     NULL,  /* (*Getz) */
     NULL,  /* (*Ready) */
-    scm_echo_port_putb,  /* (*Putb) */
-    scm_echo_port_putc,  /* (*Putc) */
-    scm_echo_port_putz,  /* (*Putz) */
-    scm_echo_port_puts,  /* (*Puts) */
+    vim_echo_port_putb,  /* (*Putb) */
+    vim_echo_port_putc,  /* (*Putc) */
+    vim_echo_port_putz,  /* (*Putz) */
+    vim_echo_port_puts,  /* (*Puts) */
     NULL,  /* (*Flush) */
     NULL,  /* (*Close) */
     NULL,  /* (*Seek) */
     msg  /* *data */
 };
-static ScmPortVTable scm_echoerr_port_vtable = {
+static ScmPortVTable scm_vim_echoerr_port_vtable = {
     NULL,  /* (*Getb) */
     NULL,  /* (*Getc) */
     NULL,  /* (*Getz) */
     NULL,  /* (*Ready) */
-    scm_echo_port_putb,  /* (*Putb) */
-    scm_echo_port_putc,  /* (*Putc) */
-    scm_echo_port_putz,  /* (*Putz) */
-    scm_echo_port_puts,  /* (*Puts) */
+    vim_echo_port_putb,  /* (*Putb) */
+    vim_echo_port_putc,  /* (*Putc) */
+    vim_echo_port_putz,  /* (*Putz) */
+    vim_echo_port_puts,  /* (*Puts) */
     NULL,  /* (*Flush) */
     NULL,  /* (*Close) */
     NULL,  /* (*Seek) */
@@ -95,15 +95,38 @@ static ScmPortVTable scm_echoerr_port_vtable = {
 
 
     static ScmObj
-Scm_EchomsgPort(void)
+Scm_VimEchomsgPort(void)
 {
-    return scm_echomsg_port;
+    return scm_vim_echomsg_port;
 }
     static ScmObj
-Scm_EchoerrPort(void)
+Scm_VimEchoerrPort(void)
 {
-    return scm_echoerr_port;
+    return scm_vim_echoerr_port;
 }
+
+
+    static ScmObj
+vim_echomsg_port_proc(ScmObj *args, int nargs, void *data)
+{
+    return Scm_VimEchomsgPort();
+}
+static SCM_DEFINE_STRING_CONST(vim_echomsg_port_NAME, "vim-echomsg-port",
+			       16, 16);
+static SCM_DEFINE_SUBR(vim_echomsg_port_STUB, 0, 0,
+		       SCM_OBJ(&vim_echomsg_port_NAME), vim_echomsg_port_proc,
+		       NULL, NULL);
+
+    static ScmObj
+vim_echoerr_port_proc(ScmObj *args, int nargs, void *data)
+{
+    return Scm_VimEchoerrPort();
+}
+static SCM_DEFINE_STRING_CONST(vim_echoerr_port_NAME, "vim-echoerr-port",
+			       16, 16);
+static SCM_DEFINE_SUBR(vim_echoerr_port_STUB, 0, 0,
+		       SCM_OBJ(&vim_echoerr_port_NAME), vim_echoerr_port_proc,
+		       NULL, NULL);
 
 
 
@@ -185,10 +208,15 @@ gauche_init()
     load_gauche_init();
 
     /* below is the initialization for +gauche own stuffs */
-    scm_echomsg_port = Scm_MakeVirtualPort(SCM_CLASS_PORT, SCM_PORT_OUTPUT,
-					   &scm_echomsg_port_vtable);
-    scm_echoerr_port = Scm_MakeVirtualPort(SCM_CLASS_PORT, SCM_PORT_OUTPUT,
-					   &scm_echoerr_port_vtable);
+    scm_vim_echomsg_port = Scm_MakeVirtualPort(SCM_CLASS_PORT, SCM_PORT_OUTPUT,
+					       &scm_vim_echomsg_port_vtable);
+    scm_vim_echoerr_port = Scm_MakeVirtualPort(SCM_CLASS_PORT, SCM_PORT_OUTPUT,
+					       &scm_vim_echoerr_port_vtable);
+
+    SCM_DEFINE(Scm_UserModule(), "vim-echomsg-port",
+	       SCM_OBJ(&vim_echomsg_port_STUB));
+    SCM_DEFINE(Scm_UserModule(), "vim-echoerr-port",
+	       SCM_OBJ(&vim_echoerr_port_STUB));
 }
 
 
