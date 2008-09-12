@@ -8,6 +8,9 @@
  */
 /*
  * Gauche extensions by Kana Natsuno.
+ *
+ * Functions which are called by Vim are written in old style.
+ * Functions which are called by Gauche are written in new style.
  */
 
 #include "vim.h"
@@ -17,6 +20,99 @@
 
 
 
+
+/* echomsg-port and echoerr-port */
+
+static ScmObj scm_echomsg_port = SCM_UNBOUND;
+static ScmObj scm_echoerr_port = SCM_UNBOUND;
+
+
+    static void
+putx(char_u* s, ScmPort *p)
+{
+    int (*fmsg)(char_u *);
+    fmsg = p->src.vt.data;
+    (*fmsg)(s);  /* s must be NUL-terminated */
+}
+
+    static void
+scm_echo_port_putb(ScmByte b, ScmPort *p)
+{
+    char_u buf[2] = {b, '\0'};
+    putx(buf, p);
+}
+    static void
+scm_echo_port_putc(ScmChar c, ScmPort *p)
+{
+    int nb = SCM_CHAR_NBYTES(c);
+    char_u buf[nb+1];  /* FIXME: extension - not worked with old compiler */
+    memset(buf, 0x00, sizeof(buf));
+    SCM_CHAR_PUT(buf, c);
+    putx(buf, p);
+}
+    static void
+scm_echo_port_putz(const char *_buf, int size, ScmPort *p)
+{
+    char_u buf[size+1];  /* FIXME: extension - not worked with old compiler */
+    memcpy(buf, _buf, size);
+    buf[size] = '\0';
+    putx(buf, p);
+}
+    static void
+scm_echo_port_puts(ScmString *s, ScmPort *p)
+{
+    putx((char_u *)Scm_GetStringConst(s), p);
+}
+
+static ScmPortVTable scm_echomsg_port_vtable = {
+    NULL,  /* (*Getb) */
+    NULL,  /* (*Getc) */
+    NULL,  /* (*Getz) */
+    NULL,  /* (*Ready) */
+    scm_echo_port_putb,  /* (*Putb) */
+    scm_echo_port_putc,  /* (*Putc) */
+    scm_echo_port_putz,  /* (*Putz) */
+    scm_echo_port_puts,  /* (*Puts) */
+    NULL,  /* (*Flush) */
+    NULL,  /* (*Close) */
+    NULL,  /* (*Seek) */
+    msg  /* *data */
+};
+static ScmPortVTable scm_echoerr_port_vtable = {
+    NULL,  /* (*Getb) */
+    NULL,  /* (*Getc) */
+    NULL,  /* (*Getz) */
+    NULL,  /* (*Ready) */
+    scm_echo_port_putb,  /* (*Putb) */
+    scm_echo_port_putc,  /* (*Putc) */
+    scm_echo_port_putz,  /* (*Putz) */
+    scm_echo_port_puts,  /* (*Puts) */
+    NULL,  /* (*Flush) */
+    NULL,  /* (*Close) */
+    NULL,  /* (*Seek) */
+    emsg  /* *data */
+};
+
+
+    static ScmObj
+Scm_EchomsgPort(void)
+{
+    return scm_echomsg_port;
+}
+    static ScmObj
+Scm_EchoerrPort(void)
+{
+    return scm_echoerr_port;
+}
+
+
+
+
+
+
+
+
+/* Initialization, finalization and misc. stuffs */
 
     int
 gauche_enabled(verbose)
@@ -87,10 +183,18 @@ gauche_init()
     sig_setup();
 
     load_gauche_init();
+
+    /* below is the initialization for +gauche own stuffs */
+    scm_echomsg_port = Scm_MakeVirtualPort(SCM_CLASS_PORT, SCM_PORT_OUTPUT,
+					   &scm_echomsg_port_vtable);
+    scm_echoerr_port = Scm_MakeVirtualPort(SCM_CLASS_PORT, SCM_PORT_OUTPUT,
+					   &scm_echoerr_port_vtable);
 }
 
 
 
+
+/* Ex commands */
 
     void
 ex_gauche(eap)
