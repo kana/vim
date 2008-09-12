@@ -179,6 +179,9 @@ main
      * NameBuff.  Thus emsg2() cannot be called!
      */
     mch_early_init();
+#ifdef FEAT_GAUCHE
+    gauche_init();
+#endif
 
     /* Many variables are in "params" so that we can pass them to invoked
      * functions without a lot of arguments.  "argc" and "argv" are also
@@ -1315,6 +1318,9 @@ getout(exitval)
 	windgoto((int)Rows - 1, 0);
 #endif
 
+#ifdef FEAT_GAUCHE
+    gauche_end();
+#endif
 #ifdef FEAT_MZSCHEME
     mzscheme_end();
 #endif
