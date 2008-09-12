@@ -19,7 +19,8 @@
 
 
     int
-gauche_enabled(int verbose)
+gauche_enabled(verbose)
+    int verbose;
 {
     /* FIXME */
     return TRUE;
@@ -27,14 +28,14 @@ gauche_enabled(int verbose)
 
 
     void
-gauche_end(void)
+gauche_end()
 {
     Scm_Cleanup();
 }
 
 
     static void
-sig_setup(void)
+sig_setup()
 {
     sigset_t set;
     sigfillset(&set);
@@ -68,7 +69,7 @@ sig_setup(void)
 }
 
     static void
-load_gauche_init(void)
+load_gauche_init()
 {
     ScmLoadPacket lpak;
     if (Scm_Load("gauche-init.scm", 0, &lpak) < 0) {
@@ -79,7 +80,7 @@ load_gauche_init(void)
 }
 
     void
-gauche_init(void)
+gauche_init()
 {
     GC_INIT();
     Scm_Init(GAUCHE_SIGNATURE);
@@ -92,13 +93,15 @@ gauche_init(void)
 
 
     void
-ex_gauche(exarg_T *eap)
+ex_gauche(eap)
+    exarg_T *eap;
 {
     MSG(":gauche");  /* FIXME: just a dummy to check how to add Ex command */
 }
 
     void
-ex_gafile(exarg_T *eap)
+ex_gafile(eap)
+    exarg_T *eap;
 {
     ScmLoadPacket lpak;
 
