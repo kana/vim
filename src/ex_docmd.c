@@ -241,6 +241,10 @@ static void	ex_popup __ARGS((exarg_T *eap));
 # define ex_spellinfo		ex_ni
 # define ex_spellrepall		ex_ni
 #endif
+#ifndef FEAT_GAUCHE
+# define ex_gauche		ex_script_ni
+# define ex_gafile		ex_ni
+#endif
 #ifndef FEAT_MZSCHEME
 # define ex_mzscheme		ex_script_ni
 # define ex_mzfile		ex_ni
