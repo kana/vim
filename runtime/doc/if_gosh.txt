@@ -87,11 +87,12 @@ Function: (vim-echoerr-port)				*(vim-echoerr-port)*
 ==============================================================================
 3. Remarks						*gauche-remarks*
 
-Output to (standard-output-port) is showed as if it is given to |:echomsg|.
-Output to (standard-error-port) is showed as if it is given to |:echoerr|.
+Don't use (standard-input-port), (standard-output-port) and
+(standard-error-port).  If they are used, Vim may be crashed.
 
-Input from (standard-input-port) is not supported.  Don't use it or Vim will
-be crashed.
+The initial values of (current-input-port), (current-output-port) and
+(current-error-port) are "null" ports, i.e., nothing can be read from it and
+writing to it does nothing.
 
 There should be many API to easily control/interact Vim from the Gauche world.
 
