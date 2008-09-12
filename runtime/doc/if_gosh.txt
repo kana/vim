@@ -36,7 +36,11 @@ implemented yet.
 							*:gafile* *:gaf*
 :[range]gaf[ile] {file}
 			Execute the Gauche script in {file}.  The whole
-			argument is used as a single file name.  {not in Vi}
+			argument is used as a single file name.
+			This command is equivalent to the following: >
+
+				:gauche (load {file})
+<
 
 Both of these commands do essentially the same thing - they execute a piece of
 Gauche code, with the "current range" set to the given line range.  See also
