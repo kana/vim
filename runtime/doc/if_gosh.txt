@@ -55,7 +55,8 @@ Gauche commands cannot be used in the |sandbox|.
 2. The vim module					*gauche-vim*
 
 Gauche interface provides the "vim" module for the Scheme world.  It is
-automatically loaded and it exports the following content:
+automatically loaded and it exports the following content.
+BUGS: Currently all content are defined in the user module, not vim module.
 
 Function: (vim-execute {vim-script})			*(vim-execute)*
 			Execute a string as {vim-script}.  Return value is
@@ -69,6 +70,19 @@ Function: (vim-eval {vim-script})			*(vim-eval)*
 			Note that {vim-script} must be a valid one noted in
 			|expression-syntax|, for example, "1 + 2".  It cannot
 			be a usual Vim script such as "wincmd k".
+
+Function: (vim-echomsg-port)				*(vim-echomsg-port)*
+			Return an output port.  Whenever an object is written
+			to this port, it will be showed by |:echomsg|.
+
+			Note that if you want to show a message with this
+			port, you have to give the message at once.  (format)
+			and other procedures may write to this port two or
+			more times, and if so, it causes multiple |:echomsg|.
+
+Function: (vim-echoerr-port)				*(vim-echoerr-port)*
+			Like |(vim-echomsg-port)|, but written object will be
+			showed by |:echoerr|.
 
 ==============================================================================
 3. Remarks						*gauche-remarks*
