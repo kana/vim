@@ -256,7 +256,20 @@ gauche_init()
 ex_gauche(eap)
     exarg_T *eap;
 {
-    MSG(":gauche");  /* FIXME: just a dummy to check how to add Ex command */
+    char_u *script;
+
+    script = script_get(eap, eap->arg);
+    if (!(eap->skip)) {
+	ScmObj s = SCM_MAKE_STR_COPYING((char *)(script != NULL ? script
+						                : eap->arg));
+	ScmObj inp = Scm_MakeInputStringPort(SCM_STRING(s), TRUE);
+	ScmObj inp_orig;
+
+	inp_orig = Scm_SetCurrentInputPort(SCM_PORT(inp));
+	Scm_Repl(SCM_FALSE, SCM_FALSE, Scm_NullProc(), Scm_NullProc());
+	Scm_SetCurrentInputPort(SCM_PORT(inp_orig));
+    }
+    vim_free(script);
 }
 
     void
