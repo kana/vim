@@ -64,6 +64,20 @@ vim_echo_port_puts(ScmString *s, ScmPort *p)
     putx((char_u *)Scm_GetStringConst(s), p);
 }
 
+static ScmPortVTable scm_null_port_vtable = {
+    NULL,  /* (*Getb) */
+    NULL,  /* (*Getc) */
+    NULL,  /* (*Getz) */
+    NULL,  /* (*Ready) */
+    NULL,  /* (*Putb) */
+    NULL,  /* (*Putc) */
+    NULL,  /* (*Putz) */
+    NULL,  /* (*Puts) */
+    NULL,  /* (*Flush) */
+    NULL,  /* (*Close) */
+    NULL,  /* (*Seek) */
+    NULL  /* *data */
+};
 static ScmPortVTable scm_vim_echomsg_port_vtable = {
     NULL,  /* (*Getb) */
     NULL,  /* (*Getc) */
@@ -208,15 +222,29 @@ gauche_init()
     load_gauche_init();
 
     /* below is the initialization for +gauche own stuffs */
+
+	/* (vim-echomsg-port) and (vim-echoerr-port) */
     scm_vim_echomsg_port = Scm_MakeVirtualPort(SCM_CLASS_PORT, SCM_PORT_OUTPUT,
 					       &scm_vim_echomsg_port_vtable);
     scm_vim_echoerr_port = Scm_MakeVirtualPort(SCM_CLASS_PORT, SCM_PORT_OUTPUT,
 					       &scm_vim_echoerr_port_vtable);
-
     SCM_DEFINE(Scm_UserModule(), "vim-echomsg-port",
 	       SCM_OBJ(&vim_echomsg_port_STUB));
     SCM_DEFINE(Scm_UserModule(), "vim-echoerr-port",
 	       SCM_OBJ(&vim_echoerr_port_STUB));
+
+	/* disable (current-input-port), (current-output-port) and
+	 * (current-error-port) to avoid some probnlems.
+	 * FIXME: Show warning if these ports are used.  */
+    Scm_SetCurrentInputPort(
+	SCM_PORT(Scm_MakeVirtualPort(SCM_CLASS_PORT, SCM_PORT_INPUT,
+				     &scm_null_port_vtable)));
+    Scm_SetCurrentOutputPort(
+	SCM_PORT(Scm_MakeVirtualPort(SCM_CLASS_PORT, SCM_PORT_OUTPUT,
+				     &scm_null_port_vtable)));
+    Scm_SetCurrentErrorPort(
+	SCM_PORT(Scm_MakeVirtualPort(SCM_CLASS_PORT, SCM_PORT_OUTPUT,
+				     &scm_null_port_vtable)));
 }
 
 
