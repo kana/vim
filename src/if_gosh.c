@@ -21,6 +21,47 @@
 
 
 
+/* Common Utilities */  /*{{{1*/
+
+/* Wrappers for Scm_Printf() - output by :echomsg or :echoerr */
+
+    static void
+Scm_Xmsgf(const char *fmt, va_list ap, int echoerrp)
+{
+    ScmObj s = Scm_Vsprintf(fmt, ap, TRUE);
+    if (echoerrp)
+	EMSG(Scm_GetString(SCM_STRING(s)));
+    else
+	MSG(Scm_GetString(SCM_STRING(s)));
+}
+
+    static void
+Scm_Msgf(const char *fmt, ...)
+{
+    va_list args;
+
+    va_start(args, fmt);
+    Scm_Xmsgf(fmt, args, FALSE);
+    va_end(args);
+}
+
+    static void
+Scm_Emsgf(const char* fmt, ...)
+{
+    va_list args;
+
+    va_start(args, fmt);
+    Scm_Xmsgf(fmt, args, TRUE);
+    va_end(args);
+}
+
+
+
+
+
+
+
+
 /* Stuffs for Gauche */  /*{{{1*/
 /* Initialization and Finalization */  /*{{{2*/
 
@@ -288,15 +329,9 @@ ex_gafile(eap)
     /* equivalent to :gauche (load file) */
     if (Scm_Load((char *)(eap->arg), 0, &lpak) < 0)
     {
-	/* FIXME: Here we should show also the message of a condition, but
-	 * it's a hard work at this moment.  So here we show only the name of
-	 * a condition.
-	 *
-	 * Scm_GetStringConst(
-	 *  SCM_STRING(Scm_ConditionMessage(lpak.exception))),  */
-	EMSG2("Error while loading file: (%s)",
-	      Scm_GetStringConst(
-		  SCM_STRING(Scm_ConditionTypeName(lpak.exception))));
+	Scm_Emsgf("Error while loading file: %A(%A)",
+		  Scm_ConditionMessage(lpak.exception),
+		  Scm_ConditionTypeName(lpak.exception));
     }
 }
 
