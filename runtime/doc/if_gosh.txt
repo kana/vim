@@ -8,7 +8,7 @@ The Gauche Interface to Vim				*gosh* *Gauche*
 
 1. Commands			|gauche-commands|
 2. The vim module		|gauche-vim|
-3. Rules for converting values	|gauche-conversion-rule|
+3. Rules for converting values	|gauche-vim-conversion-rule|
 4. Remarks			|gauche-remarks|
 
 {Vi does not have any of these commands}
@@ -70,6 +70,7 @@ Function: (vim-execute {vim-script})			*(vim-execute)*
 Function: (vim-eval {vim-script})			*(vim-eval)*
 			Evaluate a string as {vim-script}, then return the
 			result.  This is equivalent to |eval()| in Vim script.
+			See also |gauche-vim-conversion-rules|.
 
 			Note that {vim-script} must be a valid one noted in
 			|expression-syntax|, for example, "1 + 2".  It cannot
@@ -89,17 +90,24 @@ Function: (vim-echoerr-port)				*(vim-echoerr-port)*
 			showed by |:echoerr|.
 
 ==============================================================================
-3. Rules for converting values			     *gauche-conversion-rules*
+3. Rules for converting values			 *gauche-vim-conversion-rules*
+
+VIM TO GAUCHE						*vim-to-gauche*
 
 Vim script	Gauhce		Remarks ~
 ----------	------		-------
 Number		<integer>	error on overflow
-Float		<real>		may lose the original value
-				{only when compiled with the |+float| feature}
-String		<string>	immutable / may be incomplete string
-List		<vector>	immutable
-Dictionary	<hash-table>	immutable / type is string=?
+Float		<real>		|+float| is required
+String		<string>	may be incomplete string
+List		<list>		-
+Dictionary	<hash-table>	type is string=?
 Funcref		<vim-funcref>	applicable
+
+BUGS: Currently, lists and dictionaries which are circular cannot be
+converted.  If such values are exported to the Gauche level, Vim will be
+crashed.
+
+BUGS: Funcref is not supported yet.
 
 ==============================================================================
 4. Remarks						*gauche-remarks*

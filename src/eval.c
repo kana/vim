@@ -5866,7 +5866,8 @@ list_equal(l1, l2, ic)
     return item1 == NULL && item2 == NULL;
 }
 
-#if defined(FEAT_PYTHON) || defined(FEAT_MZSCHEME) || defined(PROTO)
+#if defined(FEAT_PYTHON) || defined(FEAT_MZSCHEME) || defined(PROTO) \
+    defined(FEAT_GAUCHE)
 /*
  * Return the dictitem that an entry in a hashtable points to.
  */
