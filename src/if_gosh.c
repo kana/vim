@@ -22,8 +22,7 @@
 
 
 /* Common Utilities */  /*{{{1*/
-
-/* Wrappers for Scm_Printf() - output by :echomsg or :echoerr */
+/* Wrappers for Scm_Printf() - output by :echomsg or :echoerr */  /*{{{2*/
 
     static void
 Scm_Xmsgf(const char *fmt, va_list ap, int echoerrp)
@@ -53,6 +52,83 @@ Scm_Emsgf(const char* fmt, ...)
     va_start(args, fmt);
     Scm_Xmsgf(fmt, args, TRUE);
     va_end(args);
+}
+
+
+
+
+/* Conversion rules for values between Vim script and Gauche */  /*{{{2*/
+
+    static ScmObj
+vim_to_gauche(typval_T* tv)
+{
+    switch (tv->v_type)
+    {
+    default:
+	Scm_Error("Internal error: Unexpected tv->v_type: %d",
+		  (int)(tv->v_type));
+    case VAR_NUMBER:
+	return Scm_MakeInteger(tv->vval.v_number);
+#ifdef FEAT_FLOAT
+    case VAR_FLOAT:
+	return Scm_MakeFlonum(tv->vval.v_float);
+#endif
+    case VAR_STRING:
+	return SCM_MAKE_STR_COPYING((char *)(tv->vval.v_string));
+
+    case VAR_LIST:  /* TODO: Support circular list */
+    {
+	list_T *l = tv->vval.v_list;
+	listitem_T *li;
+	ScmObj slist = SCM_NIL;
+
+	if (l != NULL)
+	{
+	    for (li = l->lv_last; li != NULL; li = li->li_prev)
+	    {
+		slist = Scm_Cons(vim_to_gauche(&(li->li_tv)), slist);
+	    }
+	}
+	return slist;
+    }
+    case VAR_DICT:  /* TODO: Support circular dictionary */
+    {
+	dict_T *vdict = tv->vval.v_dict;
+	ScmObj shash;
+
+	if (vdict != NULL)
+	{
+	    hashtab_T *ht = &(vdict->dv_hashtab);
+	    hashitem_T *hi;
+	    dictitem_T *di;
+	    long_u todo = ht->ht_used;
+	    shash = Scm_MakeHashTableSimple(SCM_HASH_STRING, (int)todo);
+
+	    for (hi = ht->ht_array; 0 < todo; hi++)
+	    {
+		if (!HASHITEM_EMPTY(hi))
+		{
+		    todo--;
+		    di = dict_lookup(hi);
+		    Scm_HashTableSet(
+			SCM_HASH_TABLE(shash),
+			SCM_MAKE_STR_COPYING((char *)(hi->hi_key)),
+		        vim_to_gauche(&(di->di_tv)),
+			0
+		    );
+		}
+	    }
+	}
+	else
+	{
+	    shash = Scm_MakeHashTableSimple(SCM_HASH_STRING, 0);
+	}
+	return shash;
+    }
+    case VAR_FUNC:
+	Scm_Error("Funcref is not supported yet");  /* TODO */
+    }
+    return SCM_NIL;
 }
 
 
@@ -243,7 +319,33 @@ static SCM_DEFINE_SUBR(vim_echoerr_port_STUB, 0, 0,
 
 
 
-/* vim-execute and vim-eval */  /*{{{2*/
+/* vim-eval and vim-execute */  /*{{{2*/
+/* TODO: provide choice for caller - do :echoerr by Vim or raise a condition
+ * for Gauche if an error is occured in the given vim script. */
+
+    static ScmObj
+vim_eval_proc(ScmObj *args, int nargs, void *data)
+{
+    ScmObj s = args[0];
+    typval_T *tv;
+    ScmObj result;
+
+    if (!SCM_STRINGP(s))
+	Scm_TypeError("vim-eval", "string", s);
+
+    tv = eval_expr((char_u *)Scm_GetString(SCM_STRING(s)), NULL);
+    if (tv == NULL)
+	Scm_Error("Invalid expression: %S", s);
+
+    result = vim_to_gauche(tv);
+
+    free_tv(tv);
+    return result;
+}
+static SCM_DEFINE_STRING_CONST(vim_eval_NAME, "vim-eval", 8, 8);
+static SCM_DEFINE_SUBR(vim_eval_STUB, 1, 0,
+		       SCM_OBJ(&vim_eval_NAME), vim_eval_proc,
+		       NULL, NULL);
 
     static ScmObj
 vim_execute_proc(ScmObj *args, int nargs, void *data)
@@ -253,9 +355,6 @@ vim_execute_proc(ScmObj *args, int nargs, void *data)
     if (!SCM_STRINGP(s))
 	Scm_TypeError("vim-execute", "string", s);
 
-	/* TODO: provide choice for caller - do :echoerr by Vim or raise
-	 * a condition for Gauche if an error is occured in the given vim
-	 * script. */
     do_cmdline_cmd((char_u*)Scm_GetString(SCM_STRING(s)));
     return SCM_UNDEFINED;
 }
@@ -323,7 +422,8 @@ gauche_init()
 	SCM_PORT(Scm_MakeVirtualPort(SCM_CLASS_PORT, SCM_PORT_OUTPUT,
 				     &scm_null_port_vtable)));
 
-	/* (vim-execute) and (vim-eval) */
+	/* (vim-eval) and (vim-execute) */
+    SCM_DEFINE(Scm_UserModule(), "vim-eval", SCM_OBJ(&vim_eval_STUB));
     SCM_DEFINE(Scm_UserModule(), "vim-execute", SCM_OBJ(&vim_execute_STUB));
 }
 
