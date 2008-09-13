@@ -16,6 +16,9 @@ The Gauche Interface to Vim				*gosh* *Gauche*
 The Gauche interface is available only when Vim was compiled with the
 |+gauche| feature.
 
+For the information about Gauche, see:
+	http://practical-scheme.net/gauche/
+
 Note: Still under development -- not all of the following features are not
 implemented yet.
 

@@ -7,7 +7,7 @@
  * See README.txt for an overview of the Vim source code.
  */
 /*
- * Gauche extensions by Kana Natsuno.
+ * Gauche extensions by Kana Natsuno <http://whileimautomaton.net/>
  *
  * Functions which are called by Vim are written in old style.
  * Functions which are called by Gauche are written in new style.
