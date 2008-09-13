@@ -104,7 +104,8 @@ sig_setup()
 load_gauche_init()
 {
     ScmLoadPacket lpak;
-    if (Scm_Load("gauche-init.scm", 0, &lpak) < 0) {
+    if (Scm_Load("gauche-init.scm", 0, &lpak) < 0)
+    {
 	Scm_Emsgf(
 	    "WARNING: Error while loading initialization file: %A(%A).",
 	    Scm_ConditionMessage(lpak.exception),
@@ -309,7 +310,8 @@ ex_gauche(eap)
     char_u *script;
 
     script = script_get(eap, eap->arg);
-    if (!(eap->skip)) {
+    if (!(eap->skip))
+    {
 	ScmObj s = SCM_MAKE_STR_COPYING((char *)(script != NULL ? script
 						                : eap->arg));
 	ScmObj inp = Scm_MakeInputStringPort(SCM_STRING(s), TRUE);
@@ -328,11 +330,13 @@ ex_gauche(eap)
 
 	errmsg = Scm_GetString(SCM_STRING(Scm_GetOutputString(SCM_PORT(errp),
 							      0)));
-	if (errmsg[0] != '\0') {
+	if (errmsg[0] != '\0')
+	{
 	    char* s = errmsg;
 	    char* e;
 
-	    while ((e = strchr(s, '\n')) != NULL) {
+	    while ((e = strchr(s, '\n')) != NULL)
+	    {
 		*e = '\0';
 		EMSG(s);
 		s = e + 1;
