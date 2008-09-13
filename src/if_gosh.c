@@ -243,6 +243,30 @@ static SCM_DEFINE_SUBR(vim_echoerr_port_STUB, 0, 0,
 
 
 
+/* vim-execute and vim-eval */  /*{{{2*/
+
+    static ScmObj
+vim_execute_proc(ScmObj *args, int nargs, void *data)
+{
+    ScmObj s = args[0];
+
+    if (!SCM_STRINGP(s))
+	Scm_TypeError("vim-execute", "string", s);
+
+	/* TODO: provide choice for caller - do :echoerr by Vim or raise
+	 * a condition for Gauche if an error is occured in the given vim
+	 * script. */
+    do_cmdline_cmd((char_u*)Scm_GetString(SCM_STRING(s)));
+    return SCM_UNDEFINED;
+}
+static SCM_DEFINE_STRING_CONST(vim_execute_NAME, "vim-execute", 11, 11);
+static SCM_DEFINE_SUBR(vim_execute_STUB, 1, 0,
+		       SCM_OBJ(&vim_execute_NAME), vim_execute_proc,
+		       NULL, NULL);
+
+
+
+
 
 
 
@@ -298,6 +322,9 @@ gauche_init()
     Scm_SetCurrentErrorPort(
 	SCM_PORT(Scm_MakeVirtualPort(SCM_CLASS_PORT, SCM_PORT_OUTPUT,
 				     &scm_null_port_vtable)));
+
+	/* (vim-execute) and (vim-eval) */
+    SCM_DEFINE(Scm_UserModule(), "vim-execute", SCM_OBJ(&vim_execute_STUB));
 }
 
 
