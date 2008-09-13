@@ -105,9 +105,11 @@ load_gauche_init()
 {
     ScmLoadPacket lpak;
     if (Scm_Load("gauche-init.scm", 0, &lpak) < 0) {
-	Scm_Printf(SCM_CURERR, "gosh: WARNING: Error while loading initialization file: %A(%A).\n",
-		   Scm_ConditionMessage(lpak.exception),
-		   Scm_ConditionTypeName(lpak.exception));
+	Scm_Emsgf(
+	    "WARNING: Error while loading initialization file: %A(%A).",
+	    Scm_ConditionMessage(lpak.exception),
+	    Scm_ConditionTypeName(lpak.exception)
+	);
     }
 }
 
