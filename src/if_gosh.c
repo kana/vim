@@ -328,8 +328,19 @@ ex_gauche(eap)
 
 	errmsg = Scm_GetString(SCM_STRING(Scm_GetOutputString(SCM_PORT(errp),
 							      0)));
-	if (errmsg[0] != '\0')
-	    EMSG(errmsg);
+	if (errmsg[0] != '\0') {
+	    char* s = errmsg;
+	    char* e;
+
+	    while ((e = strchr(s, '\n')) != NULL) {
+		*e = '\0';
+		EMSG(s);
+		s = e + 1;
+	    }
+
+	    if (*s != '\0')
+		EMSG(s);
+	}
     }
     vim_free(script);
 }
