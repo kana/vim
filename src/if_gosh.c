@@ -314,10 +314,22 @@ ex_gauche(eap)
 						                : eap->arg));
 	ScmObj inp = Scm_MakeInputStringPort(SCM_STRING(s), TRUE);
 	ScmObj inp_orig;
+	ScmObj errp = Scm_MakeOutputStringPort(TRUE);
+	ScmObj errp_orig;
+	char *errmsg;
 
 	inp_orig = Scm_SetCurrentInputPort(SCM_PORT(inp));
+	errp_orig = Scm_SetCurrentErrorPort(SCM_PORT(errp));
+
 	Scm_Repl(SCM_FALSE, SCM_FALSE, Scm_NullProc(), Scm_NullProc());
+
+	Scm_SetCurrentErrorPort(SCM_PORT(errp_orig));
 	Scm_SetCurrentInputPort(SCM_PORT(inp_orig));
+
+	errmsg = Scm_GetString(SCM_STRING(Scm_GetOutputString(SCM_PORT(errp),
+							      0)));
+	if (errmsg[0] != '\0')
+	    EMSG(errmsg);
     }
     vim_free(script);
 }
