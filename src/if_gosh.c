@@ -21,7 +21,8 @@
 
 
 
-/* vim-echomsg-port and vim-echoerr-port */
+/* Stuffs for Gauche */  /*{{{1*/
+/* vim-echomsg-port and vim-echoerr-port */  /*{{{2*/
 
 static ScmObj scm_vim_echomsg_port = SCM_UNBOUND;
 static ScmObj scm_vim_echoerr_port = SCM_UNBOUND;
@@ -149,7 +150,8 @@ static SCM_DEFINE_SUBR(vim_echoerr_port_STUB, 0, 0,
 
 
 
-/* Initialization, finalization and misc. stuffs */
+/* Stuffs for Vim */  /*{{{1*/
+/* Initialization, finalization and misc. stuffs */  /*{{{2*/
 
     int
 gauche_enabled(verbose)
@@ -250,7 +252,7 @@ gauche_init()
 
 
 
-/* Ex commands */
+/* Ex commands */  /*{{{2*/
 
     void
 ex_gauche(eap)
@@ -293,4 +295,13 @@ ex_gafile(eap)
     }
 }
 
-/* __END__ */
+
+
+
+
+
+
+
+/* __END__  {{{1
+ * vim: foldmethod=marker
+ */
