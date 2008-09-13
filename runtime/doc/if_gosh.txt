@@ -8,7 +8,8 @@ The Gauche Interface to Vim				*gosh* *Gauche*
 
 1. Commands			|gauche-commands|
 2. The vim module		|gauche-vim|
-3. Remarks			|gauche-remarks|
+3. Rules for converting values	|gauche-conversion-rule|
+4. Remarks			|gauche-remarks|
 
 {Vi does not have any of these commands}
 
@@ -85,7 +86,20 @@ Function: (vim-echoerr-port)				*(vim-echoerr-port)*
 			showed by |:echoerr|.
 
 ==============================================================================
-3. Remarks						*gauche-remarks*
+3. Rules for converting values			     *gauche-conversion-rules*
+
+Vim script	Gauhce		Remarks ~
+----------	------		-------
+Number		<integer>	error on overflow
+Float		<real>		may lose the original value
+				{only when compiled with the |+float| feature}
+String		<string>	immutable / may be incomplete string
+List		<vector>	immutable
+Dictionary	<hash-table>	immutable / type is string=?
+Funcref		<vim-funcref>	applicable
+
+==============================================================================
+4. Remarks						*gauche-remarks*
 
 Don't use (standard-input-port), (standard-output-port) and
 (standard-error-port).  If they are used, Vim may be crashed.
