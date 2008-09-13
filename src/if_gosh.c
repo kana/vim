@@ -22,6 +22,57 @@
 
 
 /* Stuffs for Gauche */  /*{{{1*/
+/* Initialization and Finalization */  /*{{{2*/
+
+    static void
+sig_setup()
+{
+    sigset_t set;
+    sigfillset(&set);
+    sigdelset(&set, SIGABRT);
+    sigdelset(&set, SIGILL);
+#ifdef SIGKILL
+    sigdelset(&set, SIGKILL);
+#endif
+#ifdef SIGCONT
+    sigdelset(&set, SIGCONT);
+#endif
+#ifdef SIGSTOP
+    sigdelset(&set, SIGSTOP);
+#endif
+    sigdelset(&set, SIGSEGV);
+#ifdef SIGBUS
+    sigdelset(&set, SIGBUS);
+#endif /*SIGBUS*/
+#if defined(GC_LINUX_THREADS)
+    /* some signals are used in the system */
+    sigdelset(&set, SIGPWR);  /* used in gc */
+    sigdelset(&set, SIGXCPU); /* used in gc */
+    sigdelset(&set, SIGUSR1); /* used in linux threads */
+    sigdelset(&set, SIGUSR2); /* used in linux threads */
+#endif /*GC_LINUX_THREADS*/
+#if defined(GC_FREEBSD_THREADS)
+    sigdelset(&set, SIGUSR1); /* used by GC to stop the world */
+    sigdelset(&set, SIGUSR2); /* used by GC to restart the world */
+#endif /*GC_FREEBSD_THREADS*/
+    Scm_SetMasterSigmask(&set);
+}
+
+
+    static void
+load_gauche_init()
+{
+    ScmLoadPacket lpak;
+    if (Scm_Load("gauche-init.scm", 0, &lpak) < 0) {
+	Scm_Printf(SCM_CURERR, "gosh: WARNING: Error while loading initialization file: %A(%A).\n",
+		   Scm_ConditionMessage(lpak.exception),
+		   Scm_ConditionTypeName(lpak.exception));
+    }
+}
+
+
+
+
 /* vim-echomsg-port and vim-echoerr-port */  /*{{{2*/
 
 static ScmObj scm_vim_echomsg_port = SCM_UNBOUND;
@@ -166,52 +217,6 @@ gauche_enabled(verbose)
 gauche_end()
 {
     Scm_Cleanup();
-}
-
-
-    static void
-sig_setup()
-{
-    sigset_t set;
-    sigfillset(&set);
-    sigdelset(&set, SIGABRT);
-    sigdelset(&set, SIGILL);
-#ifdef SIGKILL
-    sigdelset(&set, SIGKILL);
-#endif
-#ifdef SIGCONT
-    sigdelset(&set, SIGCONT);
-#endif
-#ifdef SIGSTOP
-    sigdelset(&set, SIGSTOP);
-#endif
-    sigdelset(&set, SIGSEGV);
-#ifdef SIGBUS
-    sigdelset(&set, SIGBUS);
-#endif /*SIGBUS*/
-#if defined(GC_LINUX_THREADS)
-    /* some signals are used in the system */
-    sigdelset(&set, SIGPWR);  /* used in gc */
-    sigdelset(&set, SIGXCPU); /* used in gc */
-    sigdelset(&set, SIGUSR1); /* used in linux threads */
-    sigdelset(&set, SIGUSR2); /* used in linux threads */
-#endif /*GC_LINUX_THREADS*/
-#if defined(GC_FREEBSD_THREADS)
-    sigdelset(&set, SIGUSR1); /* used by GC to stop the world */
-    sigdelset(&set, SIGUSR2); /* used by GC to restart the world */
-#endif /*GC_FREEBSD_THREADS*/
-    Scm_SetMasterSigmask(&set);
-}
-
-    static void
-load_gauche_init()
-{
-    ScmLoadPacket lpak;
-    if (Scm_Load("gauche-init.scm", 0, &lpak) < 0) {
-	Scm_Printf(SCM_CURERR, "gosh: WARNING: Error while loading initialization file: %A(%A).\n",
-		   Scm_ConditionMessage(lpak.exception),
-		   Scm_ConditionTypeName(lpak.exception));
-    }
 }
 
     void
