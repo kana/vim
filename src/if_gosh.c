@@ -126,9 +126,11 @@ static ScmObj scm_vim_echoerr_port = SCM_UNBOUND;
     static void
 putx(char_u* s, ScmPort *p)
 {
-    int (*fmsg)(char_u *);
-    fmsg = p->src.vt.data;
-    (*fmsg)(s);  /* s must be NUL-terminated */
+    /* s must be NUL-terminated */
+    if ((int)(p->src.vt.data))
+	EMSG(s);
+    else
+	MSG(s);
 }
 
     static void
@@ -186,7 +188,7 @@ static ScmPortVTable scm_vim_echomsg_port_vtable = {
     NULL,  /* (*Flush) */
     NULL,  /* (*Close) */
     NULL,  /* (*Seek) */
-    msg  /* *data */
+    (void*)FALSE  /* *data - use :echomsg */
 };
 static ScmPortVTable scm_vim_echoerr_port_vtable = {
     NULL,  /* (*Getb) */
@@ -200,7 +202,7 @@ static ScmPortVTable scm_vim_echoerr_port_vtable = {
     NULL,  /* (*Flush) */
     NULL,  /* (*Close) */
     NULL,  /* (*Seek) */
-    emsg  /* *data */
+    (void*)TRUE  /* *data - use :echoerr */
 };
 
 
