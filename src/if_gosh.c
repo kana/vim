@@ -9,8 +9,11 @@
 /*
  * Gauche extensions by Kana Natsuno <http://whileimautomaton.net/>
  *
- * Functions which are called by Vim are written in old style.
- * Functions which are called by Gauche are written in new style.
+ * Functions which can be called by the deep of Vim MUST be written in K&R
+ * style.  All of such functions are placed in the "Stuffs for Vim" section.
+ * Other functions which cannot be called by such places SHOULD be written in
+ * ANSI style.  All of such functions are not placed in the "Stuffs for Vim"
+ * section.
  */
 
 #include "vim.h"
@@ -24,7 +27,7 @@
 /* Common Utilities */  /*{{{1*/
 /* Wrappers for Scm_Printf() - output by :echomsg or :echoerr */  /*{{{2*/
 
-    static void
+static void
 Scm_Xmsgf(const char *fmt, va_list ap, int echoerrp)
 {
     ScmObj s = Scm_Vsprintf(fmt, ap, TRUE);
@@ -34,7 +37,7 @@ Scm_Xmsgf(const char *fmt, va_list ap, int echoerrp)
 	MSG(Scm_GetString(SCM_STRING(s)));
 }
 
-    static void
+static void
 Scm_Msgf(const char *fmt, ...)
 {
     va_list args;
@@ -44,7 +47,7 @@ Scm_Msgf(const char *fmt, ...)
     va_end(args);
 }
 
-    static void
+static void
 Scm_Emsgf(const char* fmt, ...)
 {
     va_list args;
@@ -59,7 +62,7 @@ Scm_Emsgf(const char* fmt, ...)
 
 /* Conversion rules for values between Vim script and Gauche */  /*{{{2*/
 
-    static ScmObj
+static ScmObj
 vim_to_gauche(typval_T* tv)
 {
     switch (tv->v_type)
@@ -132,7 +135,7 @@ vim_to_gauche(typval_T* tv)
 }
 
 
-    static void
+static void
 gauche_to_vim(ScmObj obj, typval_T *result)
 {
     result->v_type = VAR_NUMBER;
@@ -260,8 +263,8 @@ gauche_to_vim(ScmObj obj, typval_T *result)
 /* Stuffs for Gauche */  /*{{{1*/
 /* Initialization and Finalization */  /*{{{2*/
 
-    static void
-sig_setup()
+static void
+sig_setup(void)
 {
     sigset_t set;
     sigfillset(&set);
@@ -295,8 +298,8 @@ sig_setup()
 }
 
 
-    static void
-load_gauche_init()
+static void
+load_gauche_init(void)
 {
     ScmLoadPacket lpak;
     if (Scm_Load("gauche-init.scm", 0, &lpak) < 0)
@@ -318,7 +321,7 @@ static ScmObj scm_vim_echomsg_port = SCM_UNBOUND;
 static ScmObj scm_vim_echoerr_port = SCM_UNBOUND;
 
 
-    static void
+static void
 putx(char_u* s, ScmPort *p)
 {
     /* s must be NUL-terminated */
@@ -328,13 +331,13 @@ putx(char_u* s, ScmPort *p)
 	MSG(s);
 }
 
-    static void
+static void
 vim_echo_port_putb(ScmByte b, ScmPort *p)
 {
     char_u buf[2] = {b, '\0'};
     putx(buf, p);
 }
-    static void
+static void
 vim_echo_port_putc(ScmChar c, ScmPort *p)
 {
     int nb = SCM_CHAR_NBYTES(c);
@@ -343,7 +346,7 @@ vim_echo_port_putc(ScmChar c, ScmPort *p)
     SCM_CHAR_PUT(buf, c);
     putx(buf, p);
 }
-    static void
+static void
 vim_echo_port_putz(const char *_buf, int size, ScmPort *p)
 {
     char_u buf[size+1];  /* FIXME: extension - not worked with old compiler */
@@ -351,7 +354,7 @@ vim_echo_port_putz(const char *_buf, int size, ScmPort *p)
     buf[size] = '\0';
     putx(buf, p);
 }
-    static void
+static void
 vim_echo_port_puts(ScmString *s, ScmPort *p)
 {
     putx((char_u *)Scm_GetStringConst(s), p);
@@ -401,19 +404,19 @@ static ScmPortVTable scm_vim_echoerr_port_vtable = {
 };
 
 
-    static ScmObj
+static ScmObj
 Scm_VimEchomsgPort(void)
 {
     return scm_vim_echomsg_port;
 }
-    static ScmObj
+static ScmObj
 Scm_VimEchoerrPort(void)
 {
     return scm_vim_echoerr_port;
 }
 
 
-    static ScmObj
+static ScmObj
 vim_echomsg_port_proc(ScmObj *args, int nargs, void *data)
 {
     return Scm_VimEchomsgPort();
@@ -424,7 +427,7 @@ static SCM_DEFINE_SUBR(vim_echomsg_port_STUB, 0, 0,
 		       SCM_OBJ(&vim_echomsg_port_NAME), vim_echomsg_port_proc,
 		       NULL, NULL);
 
-    static ScmObj
+static ScmObj
 vim_echoerr_port_proc(ScmObj *args, int nargs, void *data)
 {
     return Scm_VimEchoerrPort();
@@ -440,7 +443,7 @@ static SCM_DEFINE_SUBR(vim_echoerr_port_STUB, 0, 0,
 
 /* vim-apply */  /*{{{2*/
 
-    static ScmObj
+static ScmObj
 vim_apply_proc(ScmObj *args, int nargs, void *data)
 {
     ScmObj func = args[0];
@@ -504,7 +507,7 @@ static SCM_DEFINE_SUBR(vim_apply_STUB, 2, 1,
 /* TODO: provide choice for caller - do :echoerr by Vim or raise a condition
  * for Gauche if an error is occured in the given vim script. */
 
-    static ScmObj
+static ScmObj
 vim_eval_proc(ScmObj *args, int nargs, void *data)
 {
     ScmObj s = args[0];
@@ -528,7 +531,7 @@ static SCM_DEFINE_SUBR(vim_eval_STUB, 1, 0,
 		       SCM_OBJ(&vim_eval_NAME), vim_eval_proc,
 		       NULL, NULL);
 
-    static ScmObj
+static ScmObj
 vim_execute_proc(ScmObj *args, int nargs, void *data)
 {
     ScmObj s = args[0];
