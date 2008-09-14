@@ -62,22 +62,24 @@ Scm_Emsgf(const char* fmt, ...)
 
 /* Conversion rules for values between Vim script and Gauche */  /*{{{2*/
 
-static ScmObj
-vim_to_gauche(typval_T* tv)
+static const char *
+vim_to_gauche(typval_T *tv, ScmObj *pobj)
 {
     switch (tv->v_type)
     {
     default:
-	Scm_Error("Internal error: Unexpected tv->v_type: %d",
-		  (int)(tv->v_type));
+	return "vim_to_gauche: Internal error: Unexpected tv->v_type";
     case VAR_NUMBER:
-	return Scm_MakeInteger(tv->vval.v_number);
+	*pobj = Scm_MakeInteger(tv->vval.v_number);
+	return NULL;
 #ifdef FEAT_FLOAT
     case VAR_FLOAT:
-	return Scm_MakeFlonum(tv->vval.v_float);
+	*pobj = Scm_MakeFlonum(tv->vval.v_float);
+	return NULL;
 #endif
     case VAR_STRING:
-	return SCM_MAKE_STR_COPYING((char *)(tv->vval.v_string));
+	*pobj = SCM_MAKE_STR_COPYING((char *)(tv->vval.v_string));
+	return NULL;
 
     case VAR_LIST:  /* TODO: Support circular list */
     {
@@ -89,10 +91,17 @@ vim_to_gauche(typval_T* tv)
 	{
 	    for (li = l->lv_last; li != NULL; li = li->li_prev)
 	    {
-		slist = Scm_Cons(vim_to_gauche(&(li->li_tv)), slist);
+		ScmObj obj;
+		const char *errmsg;
+
+		errmsg = vim_to_gauche(&(li->li_tv), &obj);
+		if (errmsg != NULL)
+		    return errmsg;
+		slist = Scm_Cons(obj, slist);
 	    }
 	}
-	return slist;
+	*pobj = slist;
+	return NULL;
     }
     case VAR_DICT:  /* TODO: Support circular dictionary */
     {
@@ -111,12 +120,19 @@ vim_to_gauche(typval_T* tv)
 	    {
 		if (!HASHITEM_EMPTY(hi))
 		{
+		    ScmObj obj;
+		    const char *errmsg;
+
+		    errmsg = vim_to_gauche(&(di->di_tv), &obj);
+		    if (errmsg != NULL)
+			return errmsg;
+
 		    todo--;
 		    di = dict_lookup(hi);
 		    Scm_HashTableSet(
 			SCM_HASH_TABLE(shash),
 			SCM_MAKE_STR_COPYING((char *)(hi->hi_key)),
-		        vim_to_gauche(&(di->di_tv)),
+			obj,
 			0
 		    );
 		}
@@ -126,12 +142,14 @@ vim_to_gauche(typval_T* tv)
 	{
 	    shash = Scm_MakeHashTableSimple(SCM_HASH_STRING, 0);
 	}
-	return shash;
+	*pobj = shash;
+	return NULL;
     }
     case VAR_FUNC:
-	Scm_Error("Funcref is not supported yet");  /* TODO */
+	return "Funcref is not supported yet";  /* TODO */
     }
-    return SCM_NIL;
+
+    return "vim_to_gauche: Internal error: UNREACHABLE";
 }
 
 
@@ -451,6 +469,7 @@ vim_apply_proc(ScmObj *args, int nargs, void *data)
     typval_T argvars[3+1];
     typval_T rettv;
     ScmObj result;
+    const char *errmsg;
 
     /* {func} */
     if (SCM_STRINGP(args[0]))
@@ -486,7 +505,9 @@ vim_apply_proc(ScmObj *args, int nargs, void *data)
     rettv.v_type = VAR_UNKNOWN;
     rettv.v_lock = 0;
     f_call(argvars, &rettv);
-    result = vim_to_gauche(&rettv);
+    errmsg = vim_to_gauche(&rettv, &result);
+    if (errmsg != NULL)
+	Scm_Error("%s", errmsg);
 
     /* clean up */
     clear_tv(argvars + 0);
@@ -513,6 +534,7 @@ vim_eval_proc(ScmObj *args, int nargs, void *data)
     ScmObj s = args[0];
     typval_T *tv;
     ScmObj result;
+    const char *errmsg;
 
     if (!SCM_STRINGP(s))
 	Scm_TypeError("vim-eval", "string", s);
@@ -521,7 +543,9 @@ vim_eval_proc(ScmObj *args, int nargs, void *data)
     if (tv == NULL)
 	Scm_Error("Invalid expression: %S", s);
 
-    result = vim_to_gauche(tv);
+    errmsg = vim_to_gauche(tv, &result);
+    if (errmsg != NULL)
+	Scm_Error("%s", errmsg);
 
     free_tv(tv);
     return result;
