@@ -75,6 +75,18 @@ Function: (vim-eval {vim-script})			*(vim-eval)*
 			Note that {vim-script} must be a valid one noted in
 			|expression-syntax|, for example, "1 + 2".  It cannot
 			be a usual Vim script such as "wincmd k".
+							*(vim-apply)*
+Function: (vim-apply {vim-func} {arg1} ... {args} &keyword {dict})
+			Like (apply), but call a {vim-func} with arguments
+			({arg1} ... . {args}), then return a result from the
+			function.  See also |gauche-vim-conversion-rules|.
+
+			{vim-func} is a <string> or <vim-funcref>.  If it is
+			a string, it will be treated as the name of a function
+			and the function will be called.
+
+			BUGS: {dict} is not supported yet.
+			BUGS: <vim-funcref> is not supported yet.
 
 Function: (vim-echomsg-port)				*(vim-echomsg-port)*
 			Return an output port.  Whenever an object is written
@@ -96,18 +108,47 @@ VIM TO GAUCHE						*vim-to-gauche*
 
 Vim script	Gauhce		Remarks ~
 ----------	------		-------
-Number		<integer>	error on overflow
+Number		<integer>	-
 Float		<real>		|+float| is required
 String		<string>	may be incomplete string
 List		<list>		-
 Dictionary	<hash-table>	type is string=?
-Funcref		<vim-funcref>	applicable
+Funcref		<vim-funcref>	applicable (not supported yet)
 
-BUGS: Currently, lists and dictionaries which are circular cannot be
-converted.  If such values are exported to the Gauche level, Vim will be
-crashed.
+GAUCHE TO VIM						*gauche-to-vim*
 
-BUGS: Funcref is not supported yet.
+Gauche		Vim script	Remarks ~
+------		----------	-------
+<integer>	Number		error on overflow
+<rational>	Float		|+float| required / inexact value
+<real>		Float		|+float| required
+<complex>	-		not supported
+<char>		String		#\c ==> "c"
+<string>	String		be careful with NUL-included string
+<symbol>	String		converted by (symbol->string)
+<keyword>	String		converted by (keyword->string)
+<boolean>	Number		0 for #f, 1 for other values
+<list>		List		(a b . c) ==> [a, b, c]
+<pair>		List		(a . b) ==> [a, b]
+<vector>	List		#(a b c) ==> [a, b, c]
+<hash-table>	Dictionary	stirng=? type only (not supported yet)
+other types	-		not supported
+
+BUGS
+
+Currently, circular data such as
+>
+	let l = [1, 2, 3]
+	let l[0] = l  "==> [[[..., 2, 3], 2, 3], 2, 3]
+	gauche (define l (vim-eval "l"))  ;==> crash!
+
+	gauche <<END
+		(define l (list 1 2 3))
+		(set-car! l l)  ;==> (((... 2 3 2 3) 2 3)
+		(vim-call "string" (list l))  ;==> crash!
+	END
+<
+are not supported.  If such values are converted, Vim will be crashed.
 
 ==============================================================================
 4. Remarks						*gauche-remarks*

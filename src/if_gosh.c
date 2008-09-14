@@ -132,6 +132,125 @@ vim_to_gauche(typval_T* tv)
 }
 
 
+    static void
+gauche_to_vim(ScmObj obj, typval_T *result)
+{
+    result->v_type = VAR_NUMBER;
+    result->v_lock = 0;
+    result->vval.v_number = -134;
+
+    if (SCM_INTEGERP(obj))
+    {
+	result->v_type = VAR_NUMBER;
+	result->vval.v_number = Scm_GetInteger(obj);
+    }
+#ifdef FEAT_FLOAT
+    else if (SCM_REALP(obj))
+    {
+	result->v_type = VAR_FLOAT;
+	result->vval.v_float = Scm_GetDouble(obj);
+    }
+#endif
+    else if (SCM_CHARP(obj))
+    {
+	ScmChar c = SCM_CHAR_VALUE(obj);
+	int nb = SCM_CHAR_NBYTES(c);
+	char_u buf[nb+1];  /* FIXME: extension */
+	memset(buf, 0x00, sizeof(buf));
+	SCM_CHAR_PUT(buf, c);
+
+	result->v_type = VAR_STRING;
+	result->vval.v_string = vim_strsave(buf);
+    }
+    else if (SCM_STRINGP(obj))
+    {
+	result->v_type = VAR_STRING;
+	result->vval.v_string =
+	    vim_strsave((char_u *)Scm_GetString(SCM_STRING(obj)));
+    }
+    else if (SCM_SYMBOLP(obj))
+    {
+	result->v_type = VAR_STRING;
+	result->vval.v_string =
+	    vim_strsave((char_u *)
+			Scm_GetString(SCM_STRING(SCM_SYMBOL_NAME(obj))));
+    }
+    else if (SCM_KEYWORDP(obj))
+    {
+	result->v_type = VAR_STRING;
+	result->vval.v_string =
+	    vim_strsave((char_u *)
+			Scm_GetString(SCM_STRING(SCM_KEYWORD_NAME(obj))));
+    }
+    else if (SCM_BOOLP(obj))
+    {
+	result->v_type = VAR_NUMBER;
+	result->vval.v_number = (SCM_FALSEP(obj) ? 0 : 1);
+    }
+    else if (SCM_LISTP(obj))
+    {
+	list_T *l = list_alloc();
+	typval_T v;
+	ScmObj p;
+
+	result->v_type = VAR_LIST;
+	result->vval.v_list = l;
+
+	if (l != NULL)
+	{
+	    l->lv_refcount = 1;
+	    p = obj;
+
+	    while (SCM_PAIRP(p))
+	    {
+		gauche_to_vim(SCM_CAR(p), &v);
+		list_append_tv(l, &v);
+		clear_tv(&v);
+		p = SCM_CDR(p);
+	    }
+
+	    if (!SCM_NULLP(p))
+	    {
+		gauche_to_vim(p, &v);
+		list_append_tv(l, &v);
+		clear_tv(&v);
+	    }
+	}
+    }
+    else if (SCM_VECTORP(obj))
+    {
+	list_T *l = list_alloc();
+	typval_T v;
+	int i;
+
+	result->v_type = VAR_LIST;
+	result->vval.v_list = l;
+
+	if (l != NULL)
+	{
+	    l->lv_refcount = 1;
+
+	    for (i = 0; i < SCM_VECTOR_SIZE(obj); i++)
+	    {
+		gauche_to_vim(SCM_VECTOR_ELEMENT(obj, i), &v);
+		list_append_tv(l, &v);
+		clear_tv(&v);
+	    }
+	}
+    }
+#if 0  /* TODO */
+    else if (SCM_HASH_TABLE_P(obj))
+    {
+    }
+#endif
+    else
+    {
+	/* FIXME: Vim's memory management */
+	Scm_Error("Unsupported object: %S(%S)", obj, Scm_ClassOf(obj));
+    }
+}
+
+
 
 
 
@@ -319,6 +438,68 @@ static SCM_DEFINE_SUBR(vim_echoerr_port_STUB, 0, 0,
 
 
 
+/* vim-apply */  /*{{{2*/
+
+    static ScmObj
+vim_apply_proc(ScmObj *args, int nargs, void *data)
+{
+    ScmObj func = args[0];
+    int i;
+    typval_T argvars[3+1];
+    typval_T rettv;
+    ScmObj result;
+
+    /* {func} */
+    if (SCM_STRINGP(args[0]))
+    {
+	argvars[0].v_type = VAR_STRING;
+	argvars[0].v_lock = 0;
+	argvars[0].vval.v_string =
+	    vim_strsave((char_u*)Scm_GetString(SCM_STRING(args[0])));
+    }
+    else
+    {
+	Scm_TypeError("vim-apply", "string", args[0]);
+    }
+
+    /* {arglist} */
+    /* Note that Gauche passes optional arguments as a list.  This subr is
+     * equivalent to (define (vim-apply func arg1 . args) ...), so Gauche
+     * passes just func as args[0], arg1 as args[1] and args as args[2].  */
+    {
+	int n;
+	ScmObj *a = Scm_ListToArray(Scm_Cons(args[1], args[2]), &n, NULL, 0);
+	ScmObj sargs = a[--n];
+	while (0 <= --n)
+	    sargs = Scm_Cons(a[n], sargs);
+	gauche_to_vim(sargs, argvars + 1);
+    }
+
+    /* {dict} */  /* TODO */
+    argvars[2].v_type = VAR_UNKNOWN;
+
+    /* :call */
+    argvars[3].v_type = VAR_UNKNOWN;
+    rettv.v_type = VAR_UNKNOWN;
+    rettv.v_lock = 0;
+    f_call(argvars, &rettv);
+    result = vim_to_gauche(&rettv);
+
+    /* clean up */
+    clear_tv(argvars + 0);
+    clear_tv(argvars + 1);
+    clear_tv(argvars + 2);
+    clear_tv(&rettv);
+    return result;
+}
+static SCM_DEFINE_STRING_CONST(vim_apply_NAME, "vim-apply", 9, 9);
+static SCM_DEFINE_SUBR(vim_apply_STUB, 2, 1,
+		       SCM_OBJ(&vim_apply_NAME), vim_apply_proc,
+		       NULL, NULL);
+
+
+
+
 /* vim-eval and vim-execute */  /*{{{2*/
 /* TODO: provide choice for caller - do :echoerr by Vim or raise a condition
  * for Gauche if an error is occured in the given vim script. */
@@ -425,6 +606,9 @@ gauche_init()
 	/* (vim-eval) and (vim-execute) */
     SCM_DEFINE(Scm_UserModule(), "vim-eval", SCM_OBJ(&vim_eval_STUB));
     SCM_DEFINE(Scm_UserModule(), "vim-execute", SCM_OBJ(&vim_execute_STUB));
+
+	/* (vim-apply) */
+    SCM_DEFINE(Scm_UserModule(), "vim-apply", SCM_OBJ(&vim_apply_STUB));
 }
 
 

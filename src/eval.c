@@ -433,7 +433,12 @@ static listitem_T *list_find __ARGS((list_T *l, long n));
 static long list_find_nr __ARGS((list_T *l, long idx, int *errorp));
 static long list_idx_of_item __ARGS((list_T *l, listitem_T *item));
 static void list_append __ARGS((list_T *l, listitem_T *item));
+#ifdef FEAT_GAUCHE
+int list_append_tv __ARGS((list_T *l, typval_T *tv));
+#else
 static int list_append_tv __ARGS((list_T *l, typval_T *tv));
+#endif
+static int list_append_string __ARGS((list_T *l, char_u *str, int len));
 static int list_append_number __ARGS((list_T *l, varnumber_T n));
 static int list_insert_tv __ARGS((list_T *l, typval_T *tv, listitem_T *item));
 static int list_extend __ARGS((list_T	*l1, list_T *l2, listitem_T *bef));
@@ -493,7 +498,11 @@ static void f_bufnr __ARGS((typval_T *argvars, typval_T *rettv));
 static void f_bufwinnr __ARGS((typval_T *argvars, typval_T *rettv));
 static void f_byte2line __ARGS((typval_T *argvars, typval_T *rettv));
 static void f_byteidx __ARGS((typval_T *argvars, typval_T *rettv));
+#ifdef FEAT_GAUCHE
+void f_call __ARGS((typval_T *argvars, typval_T *rettv));
+#else
 static void f_call __ARGS((typval_T *argvars, typval_T *rettv));
+#endif
 #ifdef FEAT_FLOAT
 static void f_ceil __ARGS((typval_T *argvars, typval_T *rettv));
 #endif
@@ -6148,7 +6157,11 @@ list_append(l, item)
  * Append typval_T "tv" to the end of list "l".
  * Return FAIL when out of memory.
  */
+#ifdef FEAT_GAUCHE
+    int
+#else
     static int
+#endif
 list_append_tv(l, tv)
     list_T	*l;
     typval_T	*tv;
@@ -8756,7 +8769,11 @@ f_byteidx(argvars, rettv)
 /*
  * "call(func, arglist)" function
  */
+#ifdef FEAT_GAUCHE
+    void
+#else
     static void
+#endif
 f_call(argvars, rettv)
     typval_T	*argvars;
     typval_T	*rettv;
