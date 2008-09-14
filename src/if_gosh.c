@@ -544,10 +544,10 @@ vim_eval_proc(ScmObj *args, int nargs, void *data)
 	Scm_Error("Invalid expression: %S", s);
 
     errmsg = vim_to_gauche(tv, &result);
+    free_tv(tv);
+
     if (errmsg != NULL)
 	Scm_Error("%s", errmsg);
-
-    free_tv(tv);
     return result;
 }
 static SCM_DEFINE_STRING_CONST(vim_eval_NAME, "vim-eval", 8, 8);
