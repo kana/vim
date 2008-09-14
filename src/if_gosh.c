@@ -501,17 +501,12 @@ vim_apply_proc(ScmObj *args, int nargs, void *data)
     const char *errmsg;
 
     /* {func} */
-    if (SCM_STRINGP(args[0]))
-    {
-	argvars[0].v_type = VAR_STRING;
-	argvars[0].v_lock = 0;
-	argvars[0].vval.v_string =
-	    vim_strsave((char_u*)Scm_GetString(SCM_STRING(args[0])));
-    }
-    else
-    {
+    if (!SCM_STRINGP(args[0]))
 	Scm_TypeError("vim-apply", "string", args[0]);
-    }
+    argvars[0].v_type = VAR_STRING;
+    argvars[0].v_lock = 0;
+    argvars[0].vval.v_string =
+	vim_strsave((char_u*)Scm_GetString(SCM_STRING(args[0])));
 
     /* {arglist} */
     /* Note that Gauche passes optional arguments as a list.  This subr is
@@ -525,7 +520,10 @@ vim_apply_proc(ScmObj *args, int nargs, void *data)
 	    sargs = Scm_Cons(a[n], sargs);
 	errmsg = gauche_to_vim(sargs, argvars + 1);
 	if (errmsg != NULL)
+	{
+	    clear_tv(argvars + 0);
 	    Scm_Error("%s", errmsg);
+	}
     }
 
     /* {dict} */  /* TODO */
@@ -537,14 +535,14 @@ vim_apply_proc(ScmObj *args, int nargs, void *data)
     rettv.v_lock = 0;
     f_call(argvars, &rettv);
     errmsg = vim_to_gauche(&rettv, &result);
-    if (errmsg != NULL)
-	Scm_Error("%s", errmsg);
 
     /* clean up */
     clear_tv(argvars + 0);
     clear_tv(argvars + 1);
     clear_tv(argvars + 2);
     clear_tv(&rettv);
+    if (errmsg != NULL)
+	Scm_Error("%s", errmsg);
     return result;
 }
 static SCM_DEFINE_STRING_CONST(vim_apply_NAME, "vim-apply", 9, 9);
