@@ -153,23 +153,23 @@ vim_to_gauche(typval_T *tv, ScmObj *pobj)
 }
 
 
-static void
+static const char *
 gauche_to_vim(ScmObj obj, typval_T *result)
 {
-    result->v_type = VAR_NUMBER;
     result->v_lock = 0;
-    result->vval.v_number = -134;
 
     if (SCM_INTEGERP(obj))
     {
 	result->v_type = VAR_NUMBER;
 	result->vval.v_number = Scm_GetInteger(obj);
+	return NULL;
     }
 #ifdef FEAT_FLOAT
     else if (SCM_REALP(obj))
     {
 	result->v_type = VAR_FLOAT;
 	result->vval.v_float = Scm_GetDouble(obj);
+	return NULL;
     }
 #endif
     else if (SCM_CHARP(obj))
@@ -182,12 +182,14 @@ gauche_to_vim(ScmObj obj, typval_T *result)
 
 	result->v_type = VAR_STRING;
 	result->vval.v_string = vim_strsave(buf);
+	return NULL;
     }
     else if (SCM_STRINGP(obj))
     {
 	result->v_type = VAR_STRING;
 	result->vval.v_string =
 	    vim_strsave((char_u *)Scm_GetString(SCM_STRING(obj)));
+	return NULL;
     }
     else if (SCM_SYMBOLP(obj))
     {
@@ -195,6 +197,7 @@ gauche_to_vim(ScmObj obj, typval_T *result)
 	result->vval.v_string =
 	    vim_strsave((char_u *)
 			Scm_GetString(SCM_STRING(SCM_SYMBOL_NAME(obj))));
+	return NULL;
     }
     else if (SCM_KEYWORDP(obj))
     {
@@ -202,62 +205,86 @@ gauche_to_vim(ScmObj obj, typval_T *result)
 	result->vval.v_string =
 	    vim_strsave((char_u *)
 			Scm_GetString(SCM_STRING(SCM_KEYWORD_NAME(obj))));
+	return NULL;
     }
     else if (SCM_BOOLP(obj))
     {
 	result->v_type = VAR_NUMBER;
 	result->vval.v_number = (SCM_FALSEP(obj) ? 0 : 1);
+	return NULL;
     }
     else if (SCM_LISTP(obj))
     {
 	list_T *l = list_alloc();
 	typval_T v;
 	ScmObj p;
+	const char *errmsg;
+
+	if (l == NULL)
+	    return "gauche_to_vim: Out of memory on list";
 
 	result->v_type = VAR_LIST;
 	result->vval.v_list = l;
+	l->lv_refcount = 1;
 
-	if (l != NULL)
+	p = obj;
+	while (SCM_PAIRP(p))
 	{
-	    l->lv_refcount = 1;
-	    p = obj;
-
-	    while (SCM_PAIRP(p))
+	    errmsg = gauche_to_vim(SCM_CAR(p), &v);
+	    if (errmsg != NULL)
 	    {
-		gauche_to_vim(SCM_CAR(p), &v);
-		list_append_tv(l, &v);
-		clear_tv(&v);
-		p = SCM_CDR(p);
+		clear_tv(result);
+		return errmsg;
 	    }
 
-	    if (!SCM_NULLP(p))
-	    {
-		gauche_to_vim(p, &v);
-		list_append_tv(l, &v);
-		clear_tv(&v);
-	    }
+	    list_append_tv(l, &v);
+	    clear_tv(&v);
+	    p = SCM_CDR(p);
 	}
+
+	if (!SCM_NULLP(p))
+	{
+	    errmsg = gauche_to_vim(p, &v);
+	    if (errmsg != NULL)
+	    {
+		clear_tv(result);
+		return errmsg;
+	    }
+
+	    list_append_tv(l, &v);
+	    clear_tv(&v);
+	}
+
+	return NULL;
     }
     else if (SCM_VECTORP(obj))
     {
 	list_T *l = list_alloc();
 	typval_T v;
 	int i;
+	const char *errmsg;
+
+	if (l == NULL)
+	    return "gauche_to_vim: Out of memory on vector";
 
 	result->v_type = VAR_LIST;
 	result->vval.v_list = l;
+	l->lv_refcount = 1;
 
-	if (l != NULL)
+	for (i = 0; i < SCM_VECTOR_SIZE(obj); i++)
 	{
-	    l->lv_refcount = 1;
-
-	    for (i = 0; i < SCM_VECTOR_SIZE(obj); i++)
+	    errmsg = gauche_to_vim(SCM_VECTOR_ELEMENT(obj, i), &v);
+	    if (errmsg != NULL)
 	    {
-		gauche_to_vim(SCM_VECTOR_ELEMENT(obj, i), &v);
-		list_append_tv(l, &v);
-		clear_tv(&v);
+		clear_tv(result);
+		return errmsg;
 	    }
+
+	    list_append_tv(l, &v);
+	    clear_tv(&v);
 	}
+
+	return NULL;
     }
 #if 0  /* TODO */
     else if (SCM_HASH_TABLE_P(obj))
@@ -266,8 +293,10 @@ gauche_to_vim(ScmObj obj, typval_T *result)
 #endif
     else
     {
-	/* FIXME: Vim's memory management */
-	Scm_Error("Unsupported object: %S(%S)", obj, Scm_ClassOf(obj));
+	ScmObj s = Scm_MakeOutputStringPort(TRUE);
+	Scm_Printf(SCM_PORT(s), "Unsupported object: %S(%S)",
+		   obj, Scm_ClassOf(obj));
+	return Scm_GetString(SCM_STRING(Scm_GetOutputString(SCM_PORT(s), 0)));
     }
 }
 
@@ -494,7 +523,9 @@ vim_apply_proc(ScmObj *args, int nargs, void *data)
 	ScmObj sargs = a[--n];
 	while (0 <= --n)
 	    sargs = Scm_Cons(a[n], sargs);
-	gauche_to_vim(sargs, argvars + 1);
+	errmsg = gauche_to_vim(sargs, argvars + 1);
+	if (errmsg != NULL)
+	    Scm_Error("%s", errmsg);
     }
 
     /* {dict} */  /* TODO */
