@@ -1,4 +1,4 @@
-*visual.txt*    For Vim version 7.2.  Last change: 2006 Sep 26
+*visual.txt*    For Vim version 7.2.  Last change: 2008 Aug 16
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -217,7 +217,7 @@ The objects that can be used are:
 	i[	inner [] block					|v_i[|
 
 Additionally the following commands can be used:
-	:	start ex command for highlighted lines (1)	|v_:|
+	:	start Ex command for highlighted lines (1)	|v_:|
 	r	change (4)					|v_r|
 	s	change						|v_s|
 	C	change (2)(4)					|v_C|

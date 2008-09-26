@@ -1,4 +1,4 @@
-*pi_netrw.txt*  For Vim version 7.2.  Last change: 2008 Aug 08
+*pi_netrw.txt*  For Vim version 7.2.  Last change: 2008 Sep 02
 
 	    -----------------------------------------------------
 	    NETRW REFERENCE MANUAL    by Charles E. Campbell, Jr.
@@ -1783,6 +1783,16 @@ your browsing preferences.  (see also: |netrw-settings|)
   *g:netrw_ctags*		="ctags"
 				The default external program used to create tags
 
+  *g:netrw_cursorline*		= 1 (default)
+				will use the |'cursorline'| local setting when
+				|g:netrw_liststyle| ==0 (thin listing) or
+				|g:netrw_liststyle| ==1 (long listing) or
+				|g:netrw_liststyle| ==3 (tree listing)
+				=0: off
+				=2: like ==1, but the wide listing gets both
+				cursorline and |'cursorcolumn'|locally set
+				(ie. doesn't affect the wide listing)
+
   *g:netrw_decompress*		= { ".gz" : "gunzip" ,
 				    ".bz2" : "bunzip2" ,
 				    ".zip" : "unzip" ,
@@ -2429,6 +2439,20 @@ which is loaded automatically at startup (assuming :set nocp).
 ==============================================================================
 12. History						*netrw-history* {{{1
 
+	v133: Aug 10, 2008 * NetReadFixup() for win95 was missing some "a:"s
+	      Aug 12, 2008 * (Jan Minář) an error condition in NetrwMethod()
+			     wasn't being used, resulting in b:netrw_fname
+			     undefined errors
+	      Aug 12, 2008 * (François Ingeirest) asked that "hi link" be
+			     changed to hi default link in the netrw syntax
+			     files.
+	      Aug 12, 2008 * using s:NetrwUnmarkList() more often.  Filenames
+			     were being left on the global list when removed
+			     from the buffer-local lists.
+	      Aug 14, 2008 * (Joshua Clayton) an errant extra ")" was left in
+			     the rcp-handling portion of NetRead().
+	      Sep 03, 2008 * added |'cursorline'| highlighting to thin, long,
+			     and tree displays.
 	v132: Aug 06, 2008 * Fixed marked file-based obtain
 	      Aug 08, 2008 * sourcing a file via ftp from a netrw-generated
 	                     buffer (or any buffer with |'nobl'|) left an

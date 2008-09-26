@@ -1,4 +1,4 @@
-*gui.txt*       For Vim version 7.2.  Last change: 2008 Jun 14
+*gui.txt*       For Vim version 7.2.  Last change: 2008 Aug 11
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -41,7 +41,7 @@ is always sourced after the |vimrc| file.  If you have one then the $MYGVIMRC
 environment variable has its name.
 
 When the GUI starts up initializations are carried out, in this order:
-- The 'term' option is set to "builgin_gui" and terminal options are reset to
+- The 'term' option is set to "builtin_gui" and terminal options are reset to
   their default value for the GUI |terminal-options|.
 - If the system menu file exists, it is sourced.  The name of this file is
   normally "$VIMRUNTIME/menu.vim".  You can check this with ":version".  Also

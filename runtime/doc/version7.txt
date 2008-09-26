@@ -1,4 +1,4 @@
-*version7.txt*  For Vim version 7.2.  Last change: 2008 Aug 09
+*version7.txt*  For Vim version 7.2.  Last change: 2008 Sep 01
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -4741,7 +4741,7 @@ Added floating point support. |Float|
 Added argument to mode() to return a bit more detail about the current mode.
 (Ben Schmidt)
 
-Added support for BSD console mouse: |sysmouse|.  (Paul Mahol)
+Added support for BSD console mouse: |sysmouse|.  (Paul B. Mahol)
 
 Added the "newtab" value for the 'switchbuf' option.  (partly by Yegappan
 Lakshmanan)
@@ -5903,7 +5903,7 @@ Files:	    src/ex_getln.c
 
 Patch 7.1.188
 Problem:    When 'showmode' is off the message for changing a readonly file is
-	    given in the second column instead of the first.  (Payl B.  Mahol)
+	    given in the second column instead of the first.  (Payl B. Mahol)
 Solution:   Put the W10 message in the first column.
 Files:	    src/edit.c
 

@@ -2,7 +2,7 @@
 " You can also use this as a start for your own set of menus.
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2008 Jun 30
+" Last Change:	2008 Aug 22
 
 " Note that ":an" (short for ":anoremenu") is often used to make a menu work
 " in all modes and avoid side effects from mappings defined by the user.
@@ -1016,10 +1016,9 @@ else
   tmenu ToolBar.Copy		Copy to clipboard
   tmenu ToolBar.Paste		Paste from Clipboard
   if !has("gui_athena")
-    tmenu ToolBar.Find		Find...
+    tmenu ToolBar.Replace	Find / Replace...
     tmenu ToolBar.FindNext	Find Next
     tmenu ToolBar.FindPrev	Find Previous
-    tmenu ToolBar.Replace		Find / Replace...
   endif
   tmenu ToolBar.LoadSesn	Choose a session to load
   tmenu ToolBar.SaveSesn	Save current session

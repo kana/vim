@@ -1,4 +1,4 @@
-*mbyte.txt*     For Vim version 7.2.  Last change: 2008 Jun 21
+*mbyte.txt*     For Vim version 7.2.  Last change: 2008 Sep 17
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar et al.
@@ -1402,7 +1402,7 @@ options.txt for detailed information.
 
 Contributions specifically for the multi-byte features by:
 	Chi-Deok Hwang <hwang@mizi.co.kr>
-	Nam SungHyun <namsh@kldp.org>
+	SungHyun Nam <goweol@gmail.com>
 	K.Nagano <nagano@atese.advantest.co.jp>
 	Taro Muraoka  <koron@tka.att.ne.jp>
 	Yasuhiro Matsumoto <mattn@mail.goo.ne.jp>
