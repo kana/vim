@@ -1,8 +1,8 @@
 " Vim syntax file
 " Language:	Yacc
 " Maintainer:	Charles E. Campbell, Jr. <NdrOchipS@PcampbellAfamily.Mbiz>
-" Last Change:	Jan 09, 2008
-" Version:	5
+" Last Change:	Sep 04, 2008
+" Version:	6
 " URL:	http://mysite.verizon.net/astronaut/vim/index.html#vimlinks_syntax
 "
 " Options: {{{1
@@ -49,8 +49,13 @@ syn match	yaccKey	"\$\(<[a-zA-Z_][a-zA-Z_0-9]*>\)\=[\$0-9]\+"
 syn keyword	yaccKeyActn	yyerrok yyclearin
 
 syn match	yaccUnionStart	"^%union"	skipwhite skipnl nextgroup=yaccUnion
-syn region	yaccUnion	contained matchgroup=yaccCurly start="{" matchgroup=yaccCurly end="}"	contains=@yaccUnionGroup
-syn region	yaccUnionCurly	contained matchgroup=yaccCurly start="{" matchgroup=yaccCurly end="}" contains=@yaccUnionGroup
+if has("folding")
+ syn region	yaccUnion	fold contained	matchgroup=yaccCurly start="{" matchgroup=yaccCurly end="}"	contains=@yaccUnionGroup
+ syn region	yaccUnionCurly	fold contained matchgroup=yaccCurly start="{" matchgroup=yaccCurly end="}" contains=@yaccUnionGroup
+else
+ syn region	yaccUnion	contained	matchgroup=yaccCurly start="{" matchgroup=yaccCurly end="}"	contains=@yaccUnionGroup
+ syn region	yaccUnionCurly	contained matchgroup=yaccCurly start="{" matchgroup=yaccCurly end="}" contains=@yaccUnionGroup
+endif
 syn match	yaccBrkt	contained "[<>]"
 syn match	yaccType	"<[a-zA-Z_][a-zA-Z0-9_]*>"	contains=yaccBrkt
 syn match	yaccDefinition	"^[A-Za-z][A-Za-z0-9_]*\_s*:"
@@ -64,7 +69,11 @@ syn match	yaccSep	"^[ \t]*%}"
 " ---------------------------------------------------------------------
 " I'd really like to highlight just the outer {}.  Any suggestions??? {{{1
 syn match	yaccCurlyError	"[{}]"
-syn region	yaccAction	matchgroup=yaccCurly start="{" end="}" contains=ALLBUT,@yaccActionGroup
+if has("folding")
+ syn region	yaccAction	fold	matchgroup=yaccCurly start="{" end="}" contains=ALLBUT,@yaccActionGroup
+else
+ syn region	yaccAction		matchgroup=yaccCurly start="{" end="}" contains=ALLBUT,@yaccActionGroup
+endif
 
 " ---------------------------------------------------------------------
 " Yacc synchronization: {{{1

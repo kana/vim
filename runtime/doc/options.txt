@@ -1,4 +1,4 @@
-*options.txt*	For Vim version 7.2.  Last change: 2008 Aug 22
+*options.txt*	For Vim version 7.2.  Last change: 2008 Sep 04
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -748,8 +748,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	     within a word (initial, medial, final and stand-alone).
 	  b) the enabling of the ability to compose characters
 	  c) the enabling of the required combining of some characters
-	When disabled the character display reverts back to each character's
-	true stand-alone form.
+	When disabled the display shows each character's true stand-alone
+	form.
 	Arabic is a complex language which requires other settings, for
 	further details see |arabic.txt|.
 

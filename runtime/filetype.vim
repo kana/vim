@@ -1,7 +1,7 @@
 " Vim support file to detect file types
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2008 Aug 03
+" Last Change:	2008 Sep 05
 
 " Listen very carefully, I will say this only once
 if exists("did_load_filetypes")
@@ -115,6 +115,9 @@ au BufNewFile,BufRead httpd.conf*,srm.conf*,access.conf*,apache.conf*,apache2.co
 
 " XA65 MOS6510 cross assembler
 au BufNewFile,BufRead *.a65			setf a65
+
+" Applescript
+au BufNewFile,BufRead *.scpt			setf applescript
 
 " Applix ELF
 au BufNewFile,BufRead *.am
@@ -364,9 +367,9 @@ au BufNewFile,BufRead *.h			call s:FTheader()
 func! s:FTheader()
   if match(getline(1, min([line("$"), 200])), '^@\(interface\|end\|class\)') > -1
     setf objc
-  elseif exists("c_syntax_for_h")
+  elseif exists("g:c_syntax_for_h")
     setf c
-  elseif exists("ch_syntax_for_h")
+  elseif exists("g:ch_syntax_for_h")
     setf ch
   else
     setf cpp

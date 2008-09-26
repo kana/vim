@@ -1,4 +1,4 @@
-*map.txt*       For Vim version 7.2.  Last change: 2008 Aug 09
+*map.txt*       For Vim version 7.2.  Last change: 2008 Aug 16
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -1078,7 +1078,7 @@ feature}.
 It is possible to define your own Ex commands.  A user-defined command can act
 just like a built-in command (it can have a range or arguments, arguments can
 be completed as filenames or buffer names, etc), except that when the command
-is executed, it is transformed into a normal ex command and then executed.
+is executed, it is transformed into a normal Ex command and then executed.
 
 For starters: See section |40.2| in the user manual.
 
@@ -1146,7 +1146,7 @@ See |:verbose-cmd| for more information.
 
 Command attributes
 
-User-defined commands are treated by Vim just like any other ex commands.  They
+User-defined commands are treated by Vim just like any other Ex commands.  They
 can have arguments, or have a range specified.  Arguments are subject to
 completion as filenames, buffers, etc.  Exactly how this works depends upon the
 command's attributes, which are specified when the command is defined.

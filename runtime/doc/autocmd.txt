@@ -1,4 +1,4 @@
-*autocmd.txt*   For Vim version 7.2.  Last change: 2008 Jun 27
+*autocmd.txt*   For Vim version 7.2.  Last change: 2008 Sep 16
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -827,9 +827,9 @@ The file pattern {pat} is tested for a match against the file name in one of
 two ways:
 1. When there is no '/' in the pattern, Vim checks for a match against only
    the tail part of the file name (without its leading directory path).
-2. When there is a '/' in the pattern,  Vim checks for a match against the
-   both short file name (as you typed it) and the full file name (after
-   expanding it to a full path and resolving symbolic links).
+2. When there is a '/' in the pattern, Vim checks for a match against both the
+   short file name (as you typed it) and the full file name (after expanding
+   it to a full path and resolving symbolic links).
 
 The special pattern <buffer> or <buffer=N> is used for buffer-local
 autocommands |autocmd-buflocal|.  This pattern is not matched against the name

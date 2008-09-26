@@ -1,4 +1,4 @@
-*starting.txt*  For Vim version 7.2.  Last change: 2008 Jun 21
+*starting.txt*  For Vim version 7.2.  Last change: 2008 Sep 14
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -330,12 +330,19 @@ a slash.  Thus "-R" means recovery and "-/R" readonly.
 							*-C*
 -C		Compatible mode.  Sets the 'compatible' option.  You can use
 		this to get 'compatible', even though a .vimrc file exists.
-		But the command ":set nocompatible" overrules it anyway.
-		Also see |compatible-default|.  {not in Vi}
+		Keep in mind that the command ":set nocompatible" in some
+		plugin or startup script overrules this, so you may end up
+		with 'nocmpatible' anyway.  To find out, use: >
+			:verbose set compatible?
+<		Several plugins won't work with 'compatible' set.  You may
+		want to set it after startup this way: >
+			vim "+set cp" filename
+<		Also see |compatible-default|.  {not in Vi}
 
 							*-N*
 -N		Not compatible mode.  Resets the 'compatible' option.  You can
-		use this to get 'nocompatible', when there is no .vimrc file.
+		use this to get 'nocompatible', when there is no .vimrc file
+		or when using "-u NONE".
 		Also see |compatible-default|.  {not in Vi}
 
 							*-y* *easy*
@@ -1338,8 +1345,9 @@ enter Vim and directly start working in your desired setup. |session-file|
 							*viminfo-read*
 When Vim is started and the 'viminfo' option is non-empty, the contents of
 the viminfo file are read and the info can be used in the appropriate places.
-The marks are not read in at startup (but file marks are).  See
-|initialization| for how to set the 'viminfo' option upon startup.
+The |v:oldfiles| variable is filled.  The marks are not read in at startup
+(but file marks are).  See |initialization| for how to set the 'viminfo'
+option upon startup.
 
 							*viminfo-write*
 When Vim exits and 'viminfo' is non-empty, the info is stored in the viminfo
@@ -1373,6 +1381,8 @@ cursor position when the file was last exited.  No marks are saved for files
 that start with any string given with the "r" flag in 'viminfo'.  This can be
 used to avoid saving marks for files on removable media (for MS-DOS you would
 use "ra:,rb:", for Amiga "rdf0:,rdf1:,rdf2:").
+The |v:oldfiles| variable is filled with the file names that the viminfo file
+has marks for.
 
 							*viminfo-file-marks*
 Uppercase marks ('A to 'Z) are stored when writing the viminfo file.  The
@@ -1430,7 +1440,7 @@ requires Vim to be compiled with the |+iconv| feature.  Filenames are not
 converted.
 
 
-MANUALLY READING AND WRITING
+MANUALLY READING AND WRITING				*viminfo-read-write*
 
 Two commands can be used to read and write the viminfo file manually.  This
 can be used to exchange registers between two running Vim programs: First
@@ -1464,8 +1474,8 @@ most of the information will be restored).
 						   *:rv* *:rviminfo* *E195*
 :rv[iminfo][!] [file]	Read from viminfo file [file] (default: see above).
 			If [!] is given, then any information that is
-			already set (registers, marks, etc.) will be
-			overwritten.  {not in Vi}
+			already set (registers, marks, |v:oldfiles|, etc.)
+			will be overwritten   {not in Vi}
 
 					*:wv* *:wviminfo* *E137* *E138* *E574*
 :wv[iminfo][!] [file]	Write to viminfo file [file] (default: see above).
@@ -1479,5 +1489,11 @@ most of the information will be restored).
 			~/.viminf*) and that you can write in the directory of
 			the .viminfo file.
 			{not in Vi}
+
+						*:ol* *:oldfiles*
+:ol[dfiles]		List the files that have marks stored in the viminfo
+			file.  This list is read on startup and only change
+			afterwards with ":rviminfo!".  Also see |v:oldfiles|.
+			{not in Vi, only when compiled with the +eval feature}
 
  vim:tw=78:ts=8:ft=help:norl:

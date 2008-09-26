@@ -2,8 +2,8 @@
 " Language:		shell (sh) Korn shell (ksh) bash (sh)
 " Maintainer:		Dr. Charles E. Campbell, Jr.  <NdrOchipS@PcampbellAfamily.Mbiz>
 " Previous Maintainer:	Lennart Schultz <Lennart.Schultz@ecmwf.int>
-" Last Change:		Jul 11, 2008
-" Version:		102
+" Last Change:		Sep 17, 2008
+" Version:		104
 " URL:		http://mysite.verizon.net/astronaut/vim/index.html#vimlinks_syntax
 " For options and settings, please use:      :help ft-sh-syntax
 " This file includes many ideas from Éric Brunet (eric.brunet@ens.fr)
@@ -71,7 +71,7 @@ syn cluster shErrorList	contains=shDoError,shIfError,shInError,shCaseError,shEsa
 if exists("b:is_kornshell")
  syn cluster ErrorList add=shDTestError
 endif
-syn cluster shArithParenList	contains=shArithmetic,shDeref,shDerefSimple,shEscape,shNumber,shOperator,shPosnParm,shExSingleQuote,shSingleQuote,shDoubleQuote,shStatement,shVariable,shAlias,shTest,shCtrlSeq,shSpecial,shParen
+syn cluster shArithParenList	contains=shArithmetic,shDeref,shDerefSimple,shEcho,shEscape,shNumber,shOperator,shPosnParm,shExSingleQuote,shRedir,shSingleQuote,shDoubleQuote,shStatement,shVariable,shAlias,shTest,shCtrlSeq,shSpecial,shParen
 syn cluster shArithList	contains=@shArithParenList,shParenError
 syn cluster shCaseEsacList	contains=shCaseStart,shCase,shCaseBar,shCaseIn,shComment,shDeref,shDerefSimple,shCaseCommandSub,shCaseExSingleQuote,shCaseSingleQuote,shCaseDoubleQuote,shCtrlSeq,@shErrorList,shStringSpecial
 syn cluster shCaseList	contains=@shCommandSubList,shCaseEsac,shColon,shCommandSub,shCommandSub,shComment,shDo,shEcho,shExpr,shFor,shHereDoc,shIf,shRedir,shSetList,shSource,shStatement,shVariable,shCtrlSeq
@@ -338,13 +338,13 @@ syn match  shSetOption	"\s\zs[-+][a-zA-Z0-9]\+\>"	contained
 syn match  shVariable	"\<\([bwglsav]:\)\=[a-zA-Z0-9.!@_%+,]*\ze="	nextgroup=shSetIdentifier
 syn match  shSetIdentifier	"="		contained	nextgroup=shPattern,shDeref,shDerefSimple,shDoubleQuote,shSingleQuote,shExSingleQuote
 if exists("b:is_bash")
- syn region shSetList oneline matchgroup=shSet start="\<\(declare\|typeset\|local\|export\|unset\)\>\ze[^/]" end="$"	matchgroup=shOperator end="\ze[}|);&]" matchgroup=NONE end="\ze#\|=" contains=@shIdList
- syn region shSetList oneline matchgroup=shSet start="\<set\>\ze[^/]" end="\ze[;|)]\|$"			matchgroup=shOperator end="\ze[}|);&]" matchgroup=NONE end="\ze[#=]" contains=@shIdList
+ syn region shSetList oneline matchgroup=shSet start="\<\(declare\|typeset\|local\|export\|unset\)\>\ze[^/]" end="$"	matchgroup=shOperator end="\ze[}|);&]" matchgroup=NONE end="\ze\s\+#\|=" contains=@shIdList
+ syn region shSetList oneline matchgroup=shSet start="\<set\>\ze[^/]" end="\ze[;|)]\|$"			matchgroup=shOperator end="\ze[}|);&]" matchgroup=NONE end="\ze\s\+[#=]" contains=@shIdList
 elseif exists("b:is_kornshell")
- syn region shSetList oneline matchgroup=shSet start="\<\(typeset\|export\|unset\)\>\ze[^/]" end="$"		matchgroup=shOperator end="\ze[}|);&]" matchgroup=NONE end="\ze[#=]" contains=@shIdList
- syn region shSetList oneline matchgroup=shSet start="\<set\>\ze[^/]" end="$"				matchgroup=shOperator end="\ze[}|);&]" matchgroup=NONE end="\ze[#=]" contains=@shIdList
+ syn region shSetList oneline matchgroup=shSet start="\<\(typeset\|export\|unset\)\>\ze[^/]" end="$"		matchgroup=shOperator end="\ze[}|);&]" matchgroup=NONE end="\ze\s\+[#=]" contains=@shIdList
+ syn region shSetList oneline matchgroup=shSet start="\<set\>\ze[^/]" end="$"				matchgroup=shOperator end="\ze[}|);&]" matchgroup=NONE end="\ze\s\+[#=]" contains=@shIdList
 else
- syn region shSetList oneline matchgroup=shSet start="\<\(set\|export\|unset\)\>\ze[^/]" end="$"		matchgroup=shOperator end="\ze[}|);&]" matchgroup=NONE end="\ze[#=]" contains=@shIdList
+ syn region shSetList oneline matchgroup=shSet start="\<\(set\|export\|unset\)\>\ze[^/]" end="$"		matchgroup=shOperator end="\ze[}|);&]" matchgroup=NONE end="\ze\s\+[#=]" contains=@shIdList
 endif
 
 " Functions: {{{1

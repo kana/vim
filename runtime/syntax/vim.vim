@@ -1,8 +1,8 @@
 " Vim syntax file
 " Language:	Vim 7.2 script
 " Maintainer:	Dr. Charles E. Campbell, Jr. <NdrOchipS@PcampbellAfamily.Mbiz>
-" Last Change:	July 29, 2008
-" Version:	7.2-82
+" Last Change:	Sep 10, 2008
+" Version:	7.2-84
 " Automatically generated keyword lists: {{{1
 
 " Quit when a syntax file was already loaded {{{2
@@ -283,10 +283,10 @@ syn match  vimFilter contained	"\A!.\{-}\(|\|$\)"ms=s+1	contains=vimSpecFile
 
 " Set command and associated set-options (vimOptions) with comment {{{2
 syn region vimSet		matchgroup=vimCommand start="\<\%(setl\%[ocal]\|setg\%[lobal]\|set\)\>" skip="\%(\\\\\)*\\." end="$" matchgroup=vimNotation end="<[cC][rR]>" keepend oneline contains=vimSetEqual,vimOption,vimErrSetting,vimComment,vimSetString,vimSetMod
-syn region vimSetEqual  contained	start="="	skip="\\\\\|\\\s" end="[| \t]\|$"me=e-1 contains=vimCtrlChar,vimSetSep,vimNotation oneline
+syn region vimSetEqual  contained	start="[=:]\|[-+^]=" skip="\\\\\|\\\s" end="[| \t]\|$"me=e-1 contains=vimCtrlChar,vimSetSep,vimNotation oneline
 syn region vimSetString contained	start=+="+hs=s+1	skip=+\\\\\|\\"+  end=+"+	contains=vimCtrlChar
 syn match  vimSetSep    contained	"[,:]"
-syn match  vimSetMod	contained	"&vim\|[!&]\|all&"
+syn match  vimSetMod	contained	"&vim\=\|[!&?<]\|all&"
 
 " Let {{{2
 " ===
@@ -355,7 +355,7 @@ syn case match
 " ==========================
 syn match vimFunc		"\%(\%([gGsS]:\|<[sS][iI][dD]>\)\=\%([a-zA-Z0-9_.]\+\.\)*\I[a-zA-Z0-9_.]*\)\ze\s*("		contains=vimFuncName,vimUserFunc,vimExecute
 syn match vimUserFunc contained	"\%(\%([gGsS]:\|<[sS][iI][dD]>\)\=\%([a-zA-Z0-9_.]\+\.\)*\I[a-zA-Z0-9_.]*\)\|\<\u[a-zA-Z0-9.]*\>\|\<if\>"	contains=vimNotation
-syn match vimNotFunc	"\<if\>\|\<el\%[seif]\>"
+syn match vimNotFunc	"\<if\>\|\<el\%[seif]\>\|\<while\>"
 
 " Errors And Warnings: {{{2
 " ====================
@@ -551,6 +551,7 @@ if (g:vimsyn_embed =~ 'p' && has("perl")) && filereadable(expand("<sfile>:p:h").
   syn region vimPerlRegion matchgroup=vimScriptDelim start=+pe\%[rl]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimPerlScript
   syn region vimPerlRegion matchgroup=vimScriptDelim start=+pe\%[rl]\s*<<\s*$+ end=+\.$+ contains=@vimPerlScript
  endif
+ syn cluster vimFuncBodyList	add=vimPerlRegion
 else
  syn region vimEmbedError start=+pe\%[rl]\s*<<\s*\z(.*\)$+ end=+^\z1$+
  syn region vimEmbedError start=+pe\%[rl]\s*<<\s*$+ end=+\.$+
@@ -566,6 +567,7 @@ if (g:vimsyn_embed =~ 'r' && has("ruby")) && filereadable(expand("<sfile>:p:h").
   syn region vimRubyRegion matchgroup=vimScriptDelim start=+rub[y]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimRubyScript
  endif
  syn region vimRubyRegion matchgroup=vimScriptDelim start=+rub[y]\s*<<\s*$+ end=+\.$+ contains=@vimRubyScript
+ syn cluster vimFuncBodyList	add=vimRubyRegion
 else
  syn region vimEmbedError start=+rub[y]\s*<<\s*\z(.*\)$+ end=+^\z1$+
  syn region vimEmbedError start=+rub[y]\s*<<\s*$+ end=+\.$+
@@ -582,6 +584,7 @@ if (g:vimsyn_embed =~ 'P' && has("python")) && filereadable(expand("<sfile>:p:h"
   syn region vimPythonRegion matchgroup=vimScriptDelim start=+py\%[thon]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimPythonScript
   syn region vimPythonRegion matchgroup=vimScriptDelim start=+py\%[thon]\s*<<\s*$+ end=+\.$+ contains=@vimPythonScript
  endif
+ syn cluster vimFuncBodyList	add=vimPythonRegion
 else
  syn region vimEmbedError start=+py\%[thon]\s*<<\s*\z(.*\)$+ end=+^\z1$+
  syn region vimEmbedError start=+py\%[thon]\s*<<\s*$+ end=+\.$+
@@ -605,6 +608,10 @@ if trytcl
    syn region vimTclRegion matchgroup=vimScriptDelim start=+tc[l]\=\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimTclScript
    syn region vimTclRegion matchgroup=vimScriptDelim start=+tc[l]\=\s*<<\s*$+ end=+\.$+ contains=@vimTclScript
   endif
+  syn cluster vimFuncBodyList	add=vimTclScript
+ else
+  syn region vimEmbedError start=+tc[l]\=\s*<<\s*\z(.*\)$+ end=+^\z1$+
+  syn region vimEmbedError start=+tc[l]\=\s*<<\s*$+ end=+\.$+
  endif
 else
  syn region vimEmbedError start=+tc[l]\=\s*<<\s*\z(.*\)$+ end=+^\z1$+
@@ -625,6 +632,7 @@ if (g:vimsyn_embed =~ 'm' && has("mzscheme")) && filereadable(expand("<sfile>:p:
   syn region vimMzSchemeRegion matchgroup=vimScriptDelim start=+mz\%[scheme]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimMzSchemeScript
   syn region vimMzSchemeRegion matchgroup=vimScriptDelim start=+mz\%[scheme]\s*<<\s*$+ end=+\.$+ contains=@vimMzSchemeScript
  endif
+ syn cluster vimFuncBodyList	add=vimMzSchemeRegion
 else
  syn region vimEmbedError start=+mz\%[scheme]\s*<<\s*\z(.*\)$+ end=+^\z1$+
  syn region vimEmbedError start=+mz\%[scheme]\s*<<\s*$+ end=+\.$+
