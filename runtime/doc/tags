@@ -381,6 +381,7 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 'lz'	options.txt	/*'lz'*
 'ma'	options.txt	/*'ma'*
 'macatsui'	options.txt	/*'macatsui'*
+'macmeta'	options.txt	/*'macmeta'*
 'magic'	options.txt	/*'magic'*
 'makeef'	options.txt	/*'makeef'*
 'makeprg'	options.txt	/*'makeprg'*
@@ -407,6 +408,7 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 'mmd'	options.txt	/*'mmd'*
 'mmp'	options.txt	/*'mmp'*
 'mmt'	options.txt	/*'mmt'*
+'mmta'	options.txt	/*'mmta'*
 'mod'	options.txt	/*'mod'*
 'modeline'	options.txt	/*'modeline'*
 'modelines'	options.txt	/*'modelines'*
@@ -543,9 +545,11 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 'nolz'	options.txt	/*'nolz'*
 'noma'	options.txt	/*'noma'*
 'nomacatsui'	options.txt	/*'nomacatsui'*
+'nomacmeta'	options.txt	/*'nomacmeta'*
 'nomagic'	options.txt	/*'nomagic'*
 'nomh'	options.txt	/*'nomh'*
 'noml'	options.txt	/*'noml'*
+'nommta'	options.txt	/*'nommta'*
 'nomod'	options.txt	/*'nomod'*
 'nomodeline'	options.txt	/*'nomodeline'*
 'nomodifiable'	options.txt	/*'nomodifiable'*
