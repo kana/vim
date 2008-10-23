@@ -36,6 +36,10 @@ Auto setting 'paste'					*hacks-autopaste*
 	Autocommand event for typeing a key which is not mapped to any Normal
 	mode command.
 
+|v:motion_force|				   *hacks-vimvar-motion_force*
+	New predefined variable to contains the information about |o_v| and
+	others to force a motion.
+
 
 
 
