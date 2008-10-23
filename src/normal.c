@@ -143,6 +143,7 @@ static void	nv_tilde __ARGS((cmdarg_T *cap));
 static void	nv_operator __ARGS((cmdarg_T *cap));
 #ifdef FEAT_EVAL
 static void	set_op_var __ARGS((int optype));
+static void	set_wise_var __ARGS((int wisetype));
 #endif
 static void	nv_lineop __ARGS((cmdarg_T *cap));
 static void	nv_home __ARGS((cmdarg_T *cap));
@@ -7443,6 +7444,9 @@ nv_visual(cap)
     {
 	cap->oap->motion_force = cap->cmdchar;
 	finish_op = FALSE;	/* operator doesn't finish now but later */
+#ifdef FEAT_EVAL
+	set_wise_var(cap->cmdchar);
+#endif
 	return;
     }
 
@@ -8325,6 +8329,7 @@ nv_operator(cap)
 	cap->oap->op_type = op_type;
 #ifdef FEAT_EVAL
 	set_op_var(op_type);
+	set_wise_var(NUL);
 #endif
     }
 }
@@ -8347,6 +8352,25 @@ set_op_var(optype)
 	opchars[1] = get_extra_op_char(optype);
 	opchars[2] = NUL;
 	set_vim_var_string(VV_OP, opchars, -1);
+    }
+}
+
+/*
+ * Set v:motion_force to the characters for "wisetype".
+ */
+    static void
+set_wise_var(wisetype)
+    int wisetype;
+{
+    char_u	wisechars[2];
+
+    if (wisetype == NUL)
+	set_vim_var_string(VV_MOTION_FORCE, NULL, 0);
+    else
+    {
+	wisechars[0] = wisetype;
+	wisechars[1] = NUL;
+	set_vim_var_string(VV_MOTION_FORCE, wisechars, -1);
     }
 }
 #endif
