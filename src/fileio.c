@@ -7354,6 +7354,8 @@ static struct event_name
     {"Syntax",		EVENT_SYNTAX},
     {"TabEnter",	EVENT_TABENTER},
     {"TabLeave",	EVENT_TABLEAVE},
+    {"TabCreate",	EVENT_TABCREATE},
+    {"TabDelete",	EVENT_TABDELETE},
     {"TermChanged",	EVENT_TERMCHANGED},
     {"TermResponse",	EVENT_TERMRESPONSE},
     {"User",		EVENT_USER},

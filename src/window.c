@@ -3466,6 +3466,7 @@ win_new_tabpage(after)
 
 	redraw_all_later(CLEAR);
 #ifdef FEAT_AUTOCMD
+	apply_autocmds(EVENT_TABCREATE, NULL, NULL, FALSE, curbuf);
 	apply_autocmds(EVENT_TABENTER, NULL, NULL, FALSE, curbuf);
 	apply_autocmds(EVENT_WINENTER, NULL, NULL, FALSE, curbuf);
 #endif

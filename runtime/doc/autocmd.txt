@@ -293,6 +293,8 @@ Name			triggered by ~
 |WinLeave|		before leaving a window
 |TabEnter|		after entering another tab page
 |TabLeave|		before leaving a tab page
+|TabCreate|		after creating a new tab page
+|TabDelete|		before deleting a tab page
 |CmdwinEnter|		after entering the command-line window
 |CmdwinLeave|		before leaving the command-line window
 
@@ -765,6 +767,14 @@ Syntax				When the 'syntax' option has been set.  The
 				where this option was set, and <amatch> for
 				the new value of 'syntax'.
 				See |:syn-on|.
+							*TabCreate*
+TabCreate			Just after creating a new tab page. |tab-page|
+				Before triggering the TabEnter event.
+							*TabDelete*
+TabDelete			Just before deleting a tab page. |tab-page|
+				After triggering the TabLeave event.
+				Note: TabLeave will not be triggered by
+				|:tabonly|, but TabDelete will be triggered.
 							*TabEnter*
 TabEnter			Just after entering a tab page. |tab-page|
 				After triggering the WinEnter and before

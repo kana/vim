@@ -7,6 +7,10 @@ All changes are licensed under the same terms of Vim.  See |license|.
 ==============================================================================
 INDEX OF HACKS						*hacks-index*
 
+New events: |TabCreate| and |TabDelete|		   *hacks-tabcreate-tabdelete*
+	Add new events |TabCreate| and |TabDelete| which are special versions
+	of |TabEnter| and |TabLeave|.
+
 
 
 
