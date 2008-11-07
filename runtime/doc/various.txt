@@ -1,4 +1,4 @@
-*various.txt*   For Vim version 7.2.  Last change: 2008 Aug 06
+*various.txt*   For Vim version 7.2.  Last change: 2008 Oct 29
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -179,8 +179,8 @@ g8			Print the hex values of the bytes used in the
 			(to start Insert mode, see |:startinsert|).  A ":"
 			command must be completed as well.  And you can't use
 			"Q" or "gQ" to start Ex mode.
-			{commands} cannot start with a space.  Put a 1 (one)
-			before it, 1 space is one space.
+			{commands} cannot start with a space.  Put a count of
+			1 (one) before it, "1 " is one space.
 			The 'insertmode' option is ignored for {commands}.
 			This command cannot be followed by another command,
 			since any '|' is considered part of the command.

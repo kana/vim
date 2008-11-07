@@ -1,4 +1,4 @@
-*eval.txt*	For Vim version 7.2.  Last change: 2008 Sep 14
+*eval.txt*	For Vim version 7.2.  Last change: 2008 Nov 02
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -4493,9 +4493,9 @@ remote_send({server}, {string} [, {idvar}])
 <
 remove({list}, {idx} [, {end}])				*remove()*
 		Without {end}: Remove the item at {idx} from |List| {list} and
-		return it.
+		return the item.
 		With {end}: Remove items from {idx} to {end} (inclusive) and
-		return a list with these items.  When {idx} points to the same
+		return a List with these items.  When {idx} points to the same
 		item as {end} a list with one item is returned.  When {end}
 		points to an item before {idx} this is an error.
 		See |list-index| for possible values of {idx} and {end}.
