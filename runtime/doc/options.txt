@@ -1,4 +1,4 @@
-*options.txt*	For Vim version 7.2.  Last change: 2008 Sep 04
+*options.txt*	For Vim version 7.2.  Last change: 2008 Nov 02
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -4423,10 +4423,17 @@ A jump table for the options with a short description can be found at |Q_op|.
 						*'list'* *'nolist'*
 'list'			boolean	(default off)
 			local to window
-	List mode: Show tabs as CTRL-I, show end of line with $.  Useful to
-	see the difference between tabs and spaces and for trailing blanks.
-	Note that this will also affect formatting (set with 'textwidth' or
-	'wrapmargin') when 'cpoptions' includes 'L'.  See 'listchars' for
+	List mode: Show tabs as CTRL-I is displayed, display $ after end of
+	line.  Useful to see the difference between tabs and spaces and for
+	trailing blanks.  Further changed by the 'listchars' option.
+
+	The cursor is displayed at the start of the space a Tab character
+	occupies, not at the end as usual in Normal mode.  To get this cursor
+	position while displaying Tabs with spaces, use: >
+		:set list lcs=tab\ \ 
+<
+	Note that list mode will also affect formatting (set with 'textwidth'
+	or 'wrapmargin') when 'cpoptions' includes 'L'.  See 'listchars' for
 	changing the way tabs are displayed.
 
 						*'listchars'* *'lcs'*

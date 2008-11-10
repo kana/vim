@@ -1,4 +1,4 @@
-*gui.txt*       For Vim version 7.2.  Last change: 2008 Aug 11
+*gui.txt*       For Vim version 7.2.  Last change: 2008 Sep 20
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -35,7 +35,7 @@ GUI version of Vim with:
 The X11 version of Vim can run both in GUI and in non-GUI mode.  See
 |gui-x11-start|.
 
-					*gui-init* *gvimrc* *.gvimrc* *_gvimrc*
+			*gui-init* *gvimrc* *.gvimrc* *_gvimrc* *$MYGVIMRC*
 The gvimrc file is where GUI-specific startup commands should be placed.  It
 is always sourced after the |vimrc| file.  If you have one then the $MYGVIMRC
 environment variable has its name.

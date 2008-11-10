@@ -1,4 +1,4 @@
-*syntax.txt*	For Vim version 7.2.  Last change: 2008 Jul 22
+*syntax.txt*	For Vim version 7.2.  Last change: 2008 Nov 06
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -112,6 +112,9 @@ this works, look in the file:
     :syntax manual	$VIMRUNTIME/syntax/manual.vim
     :syntax off		$VIMRUNTIME/syntax/nosyntax.vim
 Also see |syntax-loading|.
+
+NOTE: If displaying long lines is slow and switching off syntax highlighting
+makes it fast, consider setting the 'synmaxcol' option to a lower value.
 
 ==============================================================================
 2. Syntax files						*:syn-files*

@@ -2,7 +2,7 @@
 " Language:     Java
 " Maintainer:   Claudio Fleiner <claudio@fleiner.com>
 " URL:		http://www.fleiner.com/vim/syntax/java.vim
-" Last Change:  2007 Dec 21
+" Last Change:  2008 Nov 06
 
 " Please check :help java.vim for comments on some of the options available.
 
@@ -179,7 +179,7 @@ syn match   javaComment		 "/\*\*/"
 " Strings and constants
 syn match   javaSpecialError     contained "\\."
 syn match   javaSpecialCharError contained "[^']"
-syn match   javaSpecialChar      contained "\\\([4-9]\d\|[0-3]\d\d\|[\"\\'ntbrf]\|u\x\{4\}\)"
+syn match   javaSpecialChar      contained "\\\([4-9]\d\|[0-3]\d\d\|[\"\\'ntbrf]\|u\+\x\{4\}\)"
 syn region  javaString		start=+"+ end=+"+ end=+$+ contains=javaSpecialChar,javaSpecialError,@Spell
 " next line disabled, it can cause a crash for a long line
 "syn match   javaStringError	  +"\([^"\\]\|\\.\)*$+
@@ -192,7 +192,7 @@ syn match   javaNumber		 "\<\d\+[eE][-+]\=\d\+[fFdD]\=\>"
 syn match   javaNumber		 "\<\d\+\([eE][-+]\=\d\+\)\=[fFdD]\>"
 
 " unicode characters
-syn match   javaSpecial "\\u\d\{4\}"
+syn match   javaSpecial "\\u\+\d\{4\}"
 
 syn cluster javaTop add=javaString,javaCharacter,javaNumber,javaSpecial,javaStringError
 

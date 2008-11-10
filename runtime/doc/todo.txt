@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.2.  Last change: 2008 Sep 16
+*todo.txt*      For Vim version 7.2.  Last change: 2008 Nov 06
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,24 +30,17 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
-Patch 7.2.007 broke test30 on MS-Windows. (Daniel Shahaf, 2008 Sep 5)
-
-:cscope is listed as OK in the sandbox, but it probably isn't.
-ex_cmds.h  SBOXOK
-
-":pedit %" with a BufReadPre autocommand causes the cursor to move to the
-first line. (Ingo Karkat, 2008 Jul 1)  Ian Kelling is working on this.
-
-List of recently used files: Use viminfo marks list?
-Read into list, to be used from Vim script: v:oldfiles
-List file names: :oldfiles
-Use a file name: :e #<N
-Completion after ":e #<" ?
+Patch for Python interface: avoid empty entry in sys.path. (James Vega, 2008
+Nov 2)
 
 Have a look at patch for utf-8 line breaking. (Yongwei Wu, 2008 Mar 1, Mar 23)
 
+Fix memory leak. (Dominique Pelle, 2008 Oct 22)
+
 diff mode: when using two tabs with each two diffed buffers, switching buffers
 causes the diff to fail. (Matt Mzyzik, 2008 Aug 31)
+
+Add MD5 and MD5SUMS to the ftp directories.
 
 netrw: dragging status line causes selection of entry.  Should check row
 number to be below last visible line.
@@ -65,6 +58,14 @@ in combination with autocommands that invoke a ":redraw" command.
 Another valgrind output Jun 30.
 
 Patch to make synIDattr() support "guisp". (Matt Wozniski, 2008 Aug 15)
+
+Patch for utf-16 on Windows. (Yanwei, 2008 Oct 22)
+
+":pedit %" with a BufReadPre autocommand causes the cursor to move to the
+first line. (Ingo Karkat, 2008 Jul 1)  Ian Kelling is working on this.
+
+Screen update bug when using "." on a Visual block and the last line doesn't
+change. (Moritz Orbach, 2008 Oct 25, with patch)
 
 Wildmenu not deleted: "gvim -u NONE", ":set nocp wildmenu cmdheight=3
 laststatus=2", CTRL-D CTRL-H CTRL-H CTRL-H. (A.Politz, 2008 April 1)
@@ -137,8 +138,13 @@ Problem with CTRL-F. (Charles Campbell, 2008 March 21)
 Only happens with "gvim -geometry "160x26+4+27" -u NONE -U NONE prop.c".
 'lines' is 54. (2008 March 27)
 
+Problem with pointer wrapping around in getvcol(). (Wolfgang Kroworsch, 2008
+Oct 19)  Check for "col" being "MAXCOL" separately?
+
 Unexpectedly inserting a double quote. (Anton Woellert, 2008 Mar 23)
 Works OK when 'cmdheight' is 2.
+
+Test54 should not use shell commands.  Make it portable.
 
 The utf class table is missing some entries:
 	0x2212, minus sign 
@@ -174,6 +180,9 @@ C't: On utf-8 system, editing file with umlaut through Gnome results in URL
 with %nn%nn, which is taken as two characters instead of one.
 Try to reproduce at work.
 
+Patch for default choice in file changed dialog. (Bjorn Winckler, 2008 Oct 19)
+Is there a way to list all the files first?
+
 Patch for redo register. (Ben Schmidt, 2007 Oct 19)
 Await response to question to make the register writable.
 
@@ -184,6 +193,8 @@ Problem with 'ts' set to 9 and 'showbreak' to ">>>". (Matthew Winn, 2007 Oct
 1)
 
 try/catch not working for argument of return. (Matt Wozniski, 2008 Sep 15)
+
+Tag stack not returning to right tag with ":tag". (Erik Falor, 2008 Nov 5)
 
 Including NFA regexp code:
 Use "\%#= to set the engine: 0 = automatic, 1 = backtracking, 2 = new.
@@ -259,6 +270,9 @@ that may fail (e.g., sizeof(int)). (Blaine, 2007 Aug 21)
 
 When opening quickfix window, disable spell checking?
 
+Problem with ".add" files when using two languages and restarting Vim. (Raul
+Coronado, 2008 Oct 30)
+
 Popup menu redraw: Instead of first redrawing the text and then drawing the
 popup menu over it, first draw the new popup menu, remember its position and
 size and then redraw the text, skipping the characters under the popup menu.
@@ -273,6 +287,9 @@ superscript numbers by default: 0x2070, 0xb9, 0xb2, 0xb3, 0x2074 - 0x2079.
 Windows 98: pasting from the clipboard with text from another application has
 a trailing NUL.  (Joachim Hofmann)  Perhaps the length specified for CF_TEXT
 isn't right?
+
+When a register contains illegal bytes, writing viminfo in utf-8 and reading
+it back doesn't result in utf-8. (Devin Bayer)
 
 Command line completion: Scanning for tags doesn't check for typed key now and
 then?  Hangs for about 5 seconds.  Appears to be caused by finding include
@@ -319,6 +336,7 @@ Changes for Win32 makefile. (Mike Williams, 2007 Jan 22, Alexei Alexandrov,
 Patch for Win32 clipboard under Cygwin. (Frodak Baksik, Feb 15)
     Sutcliffe says it works well.
     Update 2007 May 22 for Vim 7.1
+    Update 2008 Oct 2008 for Vim 7.2 (Sharonov)
 
 Win32: Patch for convert_filterW(). (Taro Muraoka, 2007 Mar 2)
 
@@ -360,9 +378,17 @@ pointer in long and seek offset in 64 bit var.
 
 Win32: patch for fullscreen mode. (Liushaolin, 2008 April 17)
 
+Win32: When 'shell' is cmd.exe this command fails:
+	echo system('"c:/path/echo.exe" "foo bar"')
+Should we set the default for 'shellxquote' to a double quote, when 'shell'
+contains "cmd" in the tail?  (Benjamin Fritz, 2008 Oct 13)
+
 Win32: When there is 4 Gbyte of memory mch_avail_mem() doesn't work properly.
 Unfished patch by Jelle Geerts, 2008 Aug 24.
 Let mch_avail_mem() return Kbyte instead?
+
+Win32: With two monitors, gvim partly on both, and adding/removing a scrollbar
+Vim resizes and moves to one of the monitors. (Chris Monkiewicz, 2008 Oct)
 
 When 'bomb' is changed the window title is updated to show/hide a "+", but the
 tab page label isn't. (Patrick Texier, 2008 Jun 24)
@@ -614,6 +640,9 @@ error and stop using the connection to the server.
 Problem with 'cdpath' on MS-Windows when a directory is equal to $HOME. (2006
 Jul 26, Gary Johnson)
 
+Using UTF-8 character with ":command" does not work properly. (Matt Wosniski,
+2008 Sep 29)
+
 In the Netbeans interface add a "vimeval" function, so that the other side can
 check the result of has("patch13").
 
@@ -742,6 +771,7 @@ Vim 7.3:
 	You can already yank lines and use :@" to execute them.
 	Most of do_source() would not be used, need a new function.
 	It's easy when not doing breakpoints or profiling.
+- Patch for Lisp support with ECL (Mikael Jansson, 2008 Oct 25)
 
 
 More patches:
@@ -1343,6 +1373,13 @@ Macintosh:
     CTRL-Q.  Add an option for it?
 -   When using e_secure in do_one_cmd() mention the command being executed,
     otherwise it's not clear where it comes from.
+-   When the quickfix window is open and executing ":echo 'hello'" using the
+    Command-line window, the text is immediately removed by the redrawing.
+    (Michael Henry, 2008 Nov 1)
+    Generic solution: When redrawing while there is a message on the
+    cmdline, don't erase the display but draw over the existing text.
+    Other solution, redraw after closing the cmdline window, before executing
+    the command.
 9   For Turkish vim_tolower() and vim_toupper() also need to use utf_
     functions for characters below 0x80. (Sertacyildiz)
 9   When the last edited file is a help file, using '0 in a new Vim doesn't
@@ -3437,6 +3474,9 @@ Searching:
 8   Show the progress every second.  Could use the code that checks for CTRL-C
     to find out how much time has passed.  Or use SIGALRM.  Where to show the
     number?
+8   When using an expression for ":s", set the match position in a v:
+    variable.  So that you can do ":%s/^/\=v:lnum/" to put a line number
+    before each line.
 7   Support for approximate-regexps to find similar words (agrep
     http://www.tgries.de/agrep/ tre: http://laurikari.net/tre/index.html).
 8   Add an item for a big character range, so that one can search for a

@@ -1,4 +1,4 @@
-*starting.txt*  For Vim version 7.2.  Last change: 2008 Sep 14
+*starting.txt*  For Vim version 7.2.  Last change: 2008 Nov 09
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -360,6 +360,8 @@ a slash.  Thus "-R" means recovery and "-/R" readonly.
 		Can also be done with ":set updatecount=0".  You can switch it
 		on again by setting the 'updatecount' option to some value,
 		e.g., ":set uc=100".
+		NOTE: Don't combine -n with -b, making -nb, because that has a
+		different meaning: |-nb|.
 		'updatecount' is set to 0 AFTER executing commands from a
 		vimrc file, but before the GUI initializations.  Thus it
 		overrides a setting for 'updatecount' in a vimrc file, but not
@@ -776,7 +778,7 @@ accordingly.  Vim proceeds in this order:
 	For the Macintosh the $VIMRUNTIME/macmap.vim is read (not on
 	MacVim.app, this only applies to the older Carbon version).
 
-			  *VIMINIT* *.vimrc* *_vimrc* *EXINIT* *.exrc* *_exrc*
+	  *VIMINIT* *.vimrc* *_vimrc* *EXINIT* *.exrc* *_exrc* *$MYVIMRC*
      c. Four places are searched for initializations.  The first that exists
 	is used, the others are ignored.  The $MYVIMRC environment variable is
 	set to the file that was first found, unless $MYVIMRC was already set.
@@ -1492,8 +1494,18 @@ most of the information will be restored).
 
 						*:ol* *:oldfiles*
 :ol[dfiles]		List the files that have marks stored in the viminfo
-			file.  This list is read on startup and only change
+			file.  This list is read on startup and only changes
 			afterwards with ":rviminfo!".  Also see |v:oldfiles|.
+			The number can be used with |c_#<|.
 			{not in Vi, only when compiled with the +eval feature}
+
+:bro[wse] ol[dfiles][!]
+			List file names as with |:oldfiles|, and then prompt
+			for a number.  When the number is valid that file from
+			the list is edited.
+			If you get the |press-enter| prompt you can press "q"
+			and still get the prompt to enter a file number.
+			Use ! to abondon a modified buffer. |abandon|
+			{not when compiled with tiny or small features}
 
  vim:tw=78:ts=8:ft=help:norl:

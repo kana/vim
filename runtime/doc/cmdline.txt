@@ -1,4 +1,4 @@
-*cmdline.txt*   For Vim version 7.2.  Last change: 2008 Sep 14
+*cmdline.txt*   For Vim version 7.2.  Last change: 2008 Sep 18
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -742,8 +742,8 @@ function expand() |expand()|.
 	##	Is replaced with all names in the argument list	  *:_##* *c_##*
 		concatenated, separated by spaces.  Each space in a name
 		is preceded with a backslash.
-	#<n	(where n is a number) is replaced with old	  *:_#<* *c_#<*
-		file name n.  See |oldfiles| or |v:oldfiles| to get the
+	#<n	(where n is a number > 0) is replaced with old	  *:_#<* *c_#<*
+		file name n.  See |:oldfiles| or |v:oldfiles| to get the
 		number.							*E809*
 		{only when compiled with the +eval and +viminfo features}
 

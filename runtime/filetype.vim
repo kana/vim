@@ -1,7 +1,7 @@
 " Vim support file to detect file types
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2008 Sep 05
+" Last Change:	2008 Nov 01
 
 " Listen very carefully, I will say this only once
 if exists("did_load_filetypes")
@@ -353,10 +353,9 @@ au BufNewFile,BufRead *.cpp
 	\ if exists("cynlib_syntax_for_cpp")|setf cynlib|else|setf cpp|endif
 
 " C++
+au BufNewFile,BufRead *.cxx,*.c++,*.hh,*.hxx,*.hpp,*.ipp,*.moc,*.tcc,*.inl setf cpp
 if has("fname_case")
-  au BufNewFile,BufRead *.cxx,*.c++,*.C,*.H,*.hh,*.hxx,*.hpp,*.moc,*.tcc,*.inl setf cpp
-else
-  au BufNewFile,BufRead *.cxx,*.c++,*.hh,*.hxx,*.hpp,*.moc,*.tcc,*.inl setf cpp
+  au BufNewFile,BufRead *.C,*.H setf cpp
 endif
 
 " .h files can be C, Ch C++, ObjC or ObjC++.
@@ -1263,7 +1262,7 @@ if has("fname_case")
 else
   au BufNewFile,BufRead *.pl			call s:FTpl()
 endif
-au BufNewFile,BufRead *.plx			setf perl
+au BufNewFile,BufRead *.plx,*.al		setf perl
 
 func! s:FTpl()
   if exists("g:filetype_pl")
@@ -2082,8 +2081,13 @@ au BufNewFile,BufRead *.vim,*.vba,.exrc,_exrc	setf vim
 " Viminfo file
 au BufNewFile,BufRead .viminfo,_viminfo		setf viminfo
 
-" Virata Config Script File
-au BufRead,BufNewFile *.hw,*.module,*.pkg	setf virata
+" Virata Config Script File or Drupal module
+au BufRead,BufNewFile *.hw,*.module,*.pkg
+	\ if getline(1) =~ '<?php' |
+	\   setf php |
+	\ else |
+	\   setf virata |
+	\ endif
 
 " Visual Basic (also uses *.bas) or FORM
 au BufNewFile,BufRead *.frm			call s:FTVB("form")

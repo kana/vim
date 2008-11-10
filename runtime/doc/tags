@@ -4,6 +4,8 @@
 $	motion.txt	/*$*
 $HOME	options.txt	/*$HOME*
 $HOME-use	version5.txt	/*$HOME-use*
+$MYGVIMRC	gui.txt	/*$MYGVIMRC*
+$MYVIMRC	starting.txt	/*$MYVIMRC*
 $VIM	starting.txt	/*$VIM*
 $VIM-use	version5.txt	/*$VIM-use*
 $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
@@ -1785,7 +1787,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 :Print	various.txt	/*:Print*
 :Rexplore	pi_netrw.txt	/*:Rexplore*
 :RmVimball	pi_vimball.txt	/*:RmVimball*
-:Sexplore	pi_netrw.txt	/*:Sexplore*
 :TOhtml	syntax.txt	/*:TOhtml*
 :Texplore	pi_netrw.txt	/*:Texplore*
 :UseVimball	pi_vimball.txt	/*:UseVimball*
@@ -5664,7 +5665,9 @@ g:netrw_ftp_timelist_cmd	pi_netrw.txt	/*g:netrw_ftp_timelist_cmd*
 g:netrw_ftpmode	pi_netrw.txt	/*g:netrw_ftpmode*
 g:netrw_glob_escape	pi_netrw.txt	/*g:netrw_glob_escape*
 g:netrw_hide	pi_netrw.txt	/*g:netrw_hide*
+g:netrw_home	pi_netrw.txt	/*g:netrw_home*
 g:netrw_http_cmd	pi_netrw.txt	/*g:netrw_http_cmd*
+g:netrw_http_xcmd	pi_netrw.txt	/*g:netrw_http_xcmd*
 g:netrw_ignorenetrc	pi_netrw.txt	/*g:netrw_ignorenetrc*
 g:netrw_keepdir	pi_netrw.txt	/*g:netrw_keepdir*
 g:netrw_list_cmd	pi_netrw.txt	/*g:netrw_list_cmd*
@@ -6635,6 +6638,7 @@ netrw-list	pi_netrw.txt	/*netrw-list*
 netrw-listbookmark	pi_netrw.txt	/*netrw-listbookmark*
 netrw-listhack	pi_netrw.txt	/*netrw-listhack*
 netrw-login	pi_netrw.txt	/*netrw-login*
+netrw-mB	pi_netrw.txt	/*netrw-mB*
 netrw-mT	pi_netrw.txt	/*netrw-mT*
 netrw-mb	pi_netrw.txt	/*netrw-mb*
 netrw-mc	pi_netrw.txt	/*netrw-mc*
