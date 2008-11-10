@@ -1,4 +1,4 @@
-*starting.txt*  For Vim version 7.2.  Last change: 2008 Nov 06
+*starting.txt*  For Vim version 7.2.  Last change: 2008 Nov 09
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -1499,8 +1499,11 @@ most of the information will be restored).
 			{not in Vi, only when compiled with the +eval feature}
 
 :bro[wse] ol[dfiles][!]
-			Like |:oldfiles|, and prompt for a file number.  When
-			the number is valid that file from the list is edited.
+			List file names as with |:oldfiles|, and then prompt
+			for a number.  When the number is valid that file from
+			the list is edited.
+			If you get the |press-enter| prompt you can press "q"
+			and still get the prompt to enter a file number.
 			Use ! to abondon a modified buffer. |abandon|
 			{not when compiled with tiny or small features}
 
