@@ -2,7 +2,7 @@
  *
  * if_sniff.c Interface between Vim and SNiFF+
  *
- * $Id: if_sniff.c,v 1.9 2008/08/09 17:41:16 vimboss Exp $
+ * $Id: if_sniff.c,v 1.10 2008/11/15 13:11:10 vimboss Exp $
  *
  * See README.txt for an overview of the Vim source code.
  */
