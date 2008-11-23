@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.2.  Last change: 2008 Nov 06
+*todo.txt*      For Vim version 7.2.  Last change: 2008 Nov 15
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,46 +30,56 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
-Patch for Python interface: avoid empty entry in sys.path. (James Vega, 2008
-Nov 2)
+winrestview() doesn't restore properly.  Reproducible example from Matt Zyzik,
+2008 Nov 12.
 
-Have a look at patch for utf-8 line breaking. (Yongwei Wu, 2008 Mar 1, Mar 23)
+Using -nb with a Vim that doesn't support netbeans causes a hang.  Make Vim
+exit. (patch by Xavier de Gaye, 2008 Nov 8)
 
-Fix memory leak. (Dominique Pelle, 2008 Oct 22)
+Patch to set v:prevcount properly. (Ben Schmidt, 2008 Aug 20)
 
-diff mode: when using two tabs with each two diffed buffers, switching buffers
-causes the diff to fail. (Matt Mzyzik, 2008 Aug 31)
+Patch for utf-16 on Windows. (Yanwei, 2008 Oct 22)
+
+Patch to add extra argument to glob() and globpath() to ignore 'wildignore'.
+(Ingo Karkat, 2008 Jun 25)
+
+Patch to make synIDattr() support "guisp". (Matt Wozniski, 2008 Aug 15)
+
+Screen update bug when using "." on a Visual block and the last line doesn't
+change. (Moritz Orbach, 2008 Oct 25, with patch)
+
+Patch for 2html.vim to avoid "&amp;nbsp;". (Markus Heidelberg, 2008 Jul 19)
 
 Add MD5 and MD5SUMS to the ftp directories.
 
 netrw: dragging status line causes selection of entry.  Should check row
 number to be below last visible line.
 
+Have a look at patch for utf-8 line breaking. (Yongwei Wu, 2008 Mar 1, Mar 23)
+
 Update src/testdir/main.aap.
 
-Runtime files for Clojure. (Toralf Wittner, 2008 Jun 25)
+Tag stack not returning to right tag with ":tag". (Erik Falor, 2008 Nov 5)
+Patch 2008 Nov 12.
 
-Patch to add extra argument to glob() and globpath() to ignore 'wildignore'.
-(Ingo Karkat, 2008 Jun 25)
+Runtime files for Clojure. (Toralf Wittner, 2008 Jun 25)
 
 Crash with dragn-n-drop of file combined with netrw (Marius Gedminas, 2008 Jun
 11)  I can't reproduce it.  It's probably caused by a handle_drop() call
 in combination with autocommands that invoke a ":redraw" command.
 Another valgrind output Jun 30.
 
-Patch to make synIDattr() support "guisp". (Matt Wozniski, 2008 Aug 15)
-
-Patch for utf-16 on Windows. (Yanwei, 2008 Oct 22)
-
 ":pedit %" with a BufReadPre autocommand causes the cursor to move to the
 first line. (Ingo Karkat, 2008 Jul 1)  Ian Kelling is working on this.
-
-Screen update bug when using "." on a Visual block and the last line doesn't
-change. (Moritz Orbach, 2008 Oct 25, with patch)
 
 Wildmenu not deleted: "gvim -u NONE", ":set nocp wildmenu cmdheight=3
 laststatus=2", CTRL-D CTRL-H CTRL-H CTRL-H. (A.Politz, 2008 April 1)
 Works OK with Vim in an xterm.
+
+On Unix "glob('does not exist~')" returns the string.  Without the "~" it
+doesn't. (John Little, 2008 Nov 9)
+Shell expansion returns unexpanded string?
+Don't use shell when "~" is not at the start?
 
 When using ":e ++enc=foo file" and the file is already loaded with
 'fileencoding' set to "bar", then do_ecmd() uses that buffer, even though the
@@ -77,6 +87,9 @@ fileencoding differs.  Reload the buffer in this situation?  Need to check for
 the buffer to be unmodified.
 Unfinished patch by Ian Kelling, 2008 Jul 11.  Followup Jul 14, need to have
 another look at it.
+
+Win32:  ":dis +" shows nothing, but "+p does insert text.  Problem with "* and
+"+ being the same thing?
 
 You can type ":w ++bad=x fname", but the ++bad argument is ignored.  Give an
 error message?  Or is this easy to implement?  (Nathan Stratton Treadway, 2008
@@ -90,8 +103,6 @@ argument is processed for <f-args>. (Ivan Tishchenko, 2008 Aug 19)
 
 Win32: associating a type with Vim doesn't take care of space after a
 backslash? (Robert Vibrant, 2008 Jun 5)
-
-Patch to set v:prevcount properly. (Ben Schmidt, 2008 Aug 20)
 
 After using <Tab> for command line completion after ":ta blah" and getting E33
 (no tags file), further editing the command to e.g., ":echo 'blah'", the
@@ -115,8 +126,6 @@ Backreference not cleared when retrying after \@<= fails?
 (Brett Stahlman, 2008 March 8)
 
 Problem with remote_send(). (Charles Campbell, 2008 Aug 12)
-
-Patch for 2html.vim to avoid "&amp;nbsp;". (Markus Heidelberg, 2008 Jul 19)
 
 Win32: remote editing fails when the current directory name contains "[".
 (Ivan Tishchenko, Liu Yubao)  Suggested patch by Chris Lubinski: Avoid
@@ -193,8 +202,6 @@ Problem with 'ts' set to 9 and 'showbreak' to ">>>". (Matthew Winn, 2007 Oct
 1)
 
 try/catch not working for argument of return. (Matt Wozniski, 2008 Sep 15)
-
-Tag stack not returning to right tag with ":tag". (Erik Falor, 2008 Nov 5)
 
 Including NFA regexp code:
 Use "\%#= to set the engine: 0 = automatic, 1 = backtracking, 2 = new.
@@ -330,6 +337,12 @@ moves the cursor instead of deleting. (Chris Kaiser, 2007 Sep 25)
 Redraw problem when appending digraph causes line to wrap. (James Vega, 2007
 Sep 18)  Patch by Ian Kelling, 2008 Aug 8.
 
+When 'bomb' is changed the window title is updated to show/hide a "+", but the
+tab page label isn't. (Patrick Texier, 2008 Jun 24)
+
+When using ":saveas bar.c" the tab label isn't updated right away.
+(Francois Ingelrest, 2008 Nov 12)
+
 Changes for Win32 makefile. (Mike Williams, 2007 Jan 22, Alexei Alexandrov,
 2007 Feb 8)
 
@@ -382,6 +395,7 @@ Win32: When 'shell' is cmd.exe this command fails:
 	echo system('"c:/path/echo.exe" "foo bar"')
 Should we set the default for 'shellxquote' to a double quote, when 'shell'
 contains "cmd" in the tail?  (Benjamin Fritz, 2008 Oct 13)
+Also set 'shellcmdflag' to include /s.
 
 Win32: When there is 4 Gbyte of memory mch_avail_mem() doesn't work properly.
 Unfished patch by Jelle Geerts, 2008 Aug 24.
@@ -389,9 +403,6 @@ Let mch_avail_mem() return Kbyte instead?
 
 Win32: With two monitors, gvim partly on both, and adding/removing a scrollbar
 Vim resizes and moves to one of the monitors. (Chris Monkiewicz, 2008 Oct)
-
-When 'bomb' is changed the window title is updated to show/hide a "+", but the
-tab page label isn't. (Patrick Texier, 2008 Jun 24)
 
 When file b is a link to file a and editing b twice you get the correct
 warning for existing swap file, but when trying to recover it doesn't find the
@@ -485,6 +496,10 @@ When 'backupskip' is set from $TEMP special characters need to be escaped.
 Another problem is that file_pat_to_reg_pat() doesn't recognize "\\", so "\\(" 
 will be seen as a path separator plus "\(".
 
+When doing ":quit" the Netbeans "killed" event isn't sent.  (Xavier de Gaye,
+2008 Nov 10)  call netbeans_file_closed() at the end of buf_freeall(), or in
+all places where buf_freeall() is called?
+
 ":python os.chdir('/tmp')" makes short buffer names invalid. (Xavier de Gaye)
 Check directory and call shorten_fnames()?
 
@@ -508,6 +523,10 @@ GUI: When combining fg en bg make sure they are not equal.
 
 Use different pt_br dictionary for spell checking. (Jackson A. Aquino, 2006
 Jun 5)
+
+Use different romanian dictionary for spell checking. (Andrei Popescu, Nov
+2008)  Use http://downloads.sourceforge.net/rospell/ro_RO.3.2.zip
+Or the hunspell-ro.3.2.tar.gz file, it also has a iso-8859-2 list.
 
 Mac: Using gvim: netrw window disappears. (Nick Lo, 2006 Jun 21)
 
@@ -588,6 +607,10 @@ connection to the X server.  Can Vim simply quit using the X server instead of
 dying?  Also relevant when running in a console.
 
 Accessing file#var in a function should not need the g: prepended.
+
+When exiting detects a modified buffer, instead of opening the buffer in the
+current tab, use an existing tab, if possible.  Like finding a window where
+the buffer is displayed. (Antonios Tsakiridis)
 
 When ":cn" moves to an error in the same line the message isn't shortened.
 Only skip shortening for ":cc"?
@@ -1961,8 +1984,6 @@ Spell checking:
     - PSEUDOROOT == NEEDAFFIX
     - COMPOUNDROOT -> COMPOUNDED?  For a word that already is a compound word
 	    Or use COMPOUNDED2, COMPOUNDED3, etc.
-8   Alternate Dutch word list at www.nederlandsewoorden.nl (use script to
-    obtain).  But new Myspell wordlist will come (Hagen)
 -   CIRCUMFIX: when a word uses a prefix marked with the CIRCUMFIX flag, then
     the word must also have a suffix marked with the CIRCUMFIX flag.  It's a
     bit primitive, since only one flag is used, which doesn't allow matching

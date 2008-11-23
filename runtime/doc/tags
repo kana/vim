@@ -4783,6 +4783,7 @@ cc	change.txt	/*cc*
 ceil()	eval.txt	/*ceil()*
 ch.vim	syntax.txt	/*ch.vim*
 change-list-jumps	motion.txt	/*change-list-jumps*
+change-name	tips.txt	/*change-name*
 change-tabs	change.txt	/*change-tabs*
 change.txt	change.txt	/*change.txt*
 changed-5.1	version5.txt	/*changed-5.1*

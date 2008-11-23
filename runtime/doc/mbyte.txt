@@ -1,4 +1,4 @@
-*mbyte.txt*     For Vim version 7.2.  Last change: 2008 Sep 17
+*mbyte.txt*     For Vim version 7.2.  Last change: 2008 Nov 15
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar et al.
@@ -1246,9 +1246,10 @@ character sets.  Therefore it is possible to write text in any language using
 Unicode (with a few rarely used languages excluded).  And it's mostly possible
 to mix these languages in one file, which is impossible with other encodings.
 
-Unicode can be encoded in several ways.  The two most popular ones are UCS-2,
-which uses 16-bit words and UTF-8, which uses one or more bytes for each
-character.  Vim can support all of these encodings, but always uses UTF-8
+Unicode can be encoded in several ways.  The most popular one is UTF-8, which
+uses one or more bytes for each character and is backwards compatible with
+ASCII.   On MS-Windows UTF-16 is also used (previously UCS-2), which uses
+16-bit words.  Vim can support all of these encodings, but always uses UTF-8
 internally.
 
 Vim has comprehensive UTF-8 support.  It appears to work in:
