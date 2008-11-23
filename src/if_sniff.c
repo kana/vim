@@ -2,7 +2,7 @@
  *
  * if_sniff.c Interface between Vim and SNiFF+
  *
- * $Id: if_sniff.c,v 1.9 2008/08/09 17:41:16 vimboss Exp $
+ * $Id: if_sniff.c,v 1.10 2008/11/15 13:11:10 vimboss Exp $
  *
  * See README.txt for an overview of the Vim source code.
  */
@@ -1114,7 +1114,8 @@ vi_open_file(fname)
     char *fname;
 {
     ++no_wait_return;
-    do_ecmd(0, (char_u *)fname, NULL, NULL, ECMD_ONE, ECMD_HIDE+ECMD_OLDBUF);
+    do_ecmd(0, (char_u *)fname, NULL, NULL, ECMD_ONE, ECMD_HIDE+ECMD_OLDBUF,
+	    curwin);
     curbuf->b_sniff = TRUE;
     --no_wait_return;					/* [ex_docmd.c] */
 }

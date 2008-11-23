@@ -594,17 +594,6 @@ a slash.  Thus "-R" means recovery and "-/R" readonly.
 		from.  The third form specifies the hostname, address and
 		password for connecting to Netbeans. |netbeans-run|
 
-Example for using a script file to change a name in several files:
-	Create a file "subs.vi" containing substitute commands and a :wq
-	command: >
-		:%s/Jones/Smith/g
-		:%s/Allen/Peter/g
-		:wq
-<
-	Execute Vim on all files you want to change: >
-
-		foreach i ( *.let ) vim -s subs.vi $i
-
 If the executable is called "view", Vim will start in Readonly mode.  This is
 useful if you can make a hard or symbolic link from "view" to "vim".
 Starting in Readonly mode can also be done with "vim -R".

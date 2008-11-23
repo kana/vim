@@ -17,9 +17,9 @@
      pour les apprendre correctement.  Si vous vous contentez de lire le
      texte, vous oublierez les commandes !
 
-     Maintenant, vérifiez que votre clavier n'est PAS verouillé en majuscules,
-     et appuyez la touche  j  le nombre de fois suffisant pour que la leçon
-     1.1 remplisse complètement l'écran.
+     Maintenant, vérifiez que votre clavier n'est PAS verrouillé en
+     majuscules, et appuyez la touche  j  le nombre de fois suffisant pour
+     que la leçon 1.1 remplisse complètement l'écran.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		      Leçon 1.1 : DÉPLACEMENT DU CURSEUR
 
@@ -198,7 +198,7 @@ NOTE: Les lettres  dw  apparaîtront sur la dernière ligne de l'écran lors de
     e - du curseur jusqu'à la fin du mot, SANS l'espace qui suit.
     $ - du curseur jusqu'à la fin de la ligne.
 
-NOTE: Pour les aventureux, le seul appui d' objet  en mode Normal, sans
+NOTE: Pour les aventureux, le seul appui d'objet  en mode Normal, sans
       commande, déplace le curseur comme indiqué dans la liste des objets.
 
 
@@ -466,16 +466,16 @@ Note: Cette fonctionnalité est très utile lors du débogage d'un programme qui
   1. Déplacez le curseur sur la ligne marquée ---> ci-dessous.
 
   2. Tapez  :s/lee/le <Entrée> . Notez que cette commande change seulement la
-     première occurence sur la ligne.
+     première occurrence sur la ligne.
 
   3. Puis tapez  :s/lee/le/g  qui ordonne de faire une substitution globale
-     sur la ligne. Cela change toutes les occurences sur la ligne
+     sur la ligne. Cela change toutes les occurrences sur la ligne
 
 ---> lee meilleur moment pour regarder lees fleurs est pendant lee Printemps.
 
-  4. Pour changer toutes les occurences d'un texte, entre deux lignes,
+  4. Pour changer toutes les occurrences d'un texte, entre deux lignes,
      tapez  :#,#s/ancien/nouveau/g  où #,# sont les numéros des deux lignes.
-     Tapez  :%s/ancien/nouveau/g    pour changer chaque occurence dans tout
+     Tapez  :%s/ancien/nouveau/g    pour changer chaque occurrence dans tout
 				    le fichier.
 
 
@@ -490,7 +490,7 @@ Note: Cette fonctionnalité est très utile lors du débogage d'un programme qui
 
   2. Taper  /  suivi d'un texte recherche ce texte vers l'AVANT.
      Taper  ?  suivi d'un texte recherche ce texte vers l'ARRIÈRE.
-     Après une recherche tapez	n  pour trouver l'occurence suivante dans la
+     Après une recherche tapez	n  pour trouver l'occurrence suivante dans la
      même direction ou	Maj-N  pour rechercher dans la direction opposée.
 
   3. Taper  %  lorsque le curseur est sur  (, ), [, ], { ou }  déplace
@@ -499,7 +499,7 @@ Note: Cette fonctionnalité est très utile lors du débogage d'un programme qui
   4. Pour remplacer le premier aa par bb sur une ligne tapez	 :s/aa/bb
      Pour remplacer tous les aa par bb sur une ligne tapez	 :s/aa/bb/g
      Pour remplacer du texte entre deux numéros de ligne tapez	 :#,#s/aa/bb/g
-     Pour remplacer toutes les occurences dans le fichier tapez  :%s/aa/bb/g
+     Pour remplacer toutes les occurrences dans le fichier tapez :%s/aa/bb/g
      Pour demander une confirmation à chaque fois ajoutez 'c'	 :%s/aa/bb/gc
 
 
@@ -799,7 +799,7 @@ Note: Ceci évite de taper  i , le dernier caractère, le texte à insérer,
 
   Ce tutoriel a été écrit par Michael C. Pierce et Robert K. Ware de l'École
   des Mines du Colorado et reprend des idées fournies par Charles Smith,
-  Universté d'État du Colorado.  E-mail: bware@mines.colorado.edu.
+  Université d'État du Colorado.  E-mail: bware@mines.colorado.edu.
 
   Modifié pour Vim par Bram Moolenar.
 

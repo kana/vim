@@ -1,4 +1,4 @@
-*various.txt*   For Vim version 7.2.  Last change: 2008 Oct 29
+*various.txt*   For Vim version 7.2.  Last change: 2008 Nov 13
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -638,7 +638,7 @@ g CTRL-A		Only when Vim was compiled with MEM_PROFILING defined
 			Note that the longer the {subject} you give, the less
 			matches will be found.  You can get an idea how this
 			all works by using commandline completion (type CTRL-D
-			after ":help subject").
+			after ":help subject" |c_CTRL-D|).
 			If there are several matches, you can have them listed
 			by hitting CTRL-D.  Example: >
 				:help cont<Ctrl-D>
