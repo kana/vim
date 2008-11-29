@@ -7564,8 +7564,8 @@ static struct fst
     {"getwinposx",	0, 0, f_getwinposx},
     {"getwinposy",	0, 0, f_getwinposy},
     {"getwinvar",	2, 2, f_getwinvar},
-    {"glob",		1, 1, f_glob},
-    {"globpath",	2, 2, f_globpath},
+    {"glob",		1, 2, f_glob},
+    {"globpath",	2, 3, f_globpath},
     {"has",		1, 1, f_has},
     {"has_key",		2, 2, f_has_key},
     {"haslocaldir",	0, 0, f_haslocaldir},
@@ -9557,7 +9557,7 @@ f_expand(argvars, rettv)
     else
     {
 	/* When the optional second argument is non-zero, don't remove matches
-	 * for 'suffixes' and 'wildignore' */
+	 * for 'wildignore' and don't put matches for 'suffixes' at the end. */
 	if (argvars[1].v_type != VAR_UNKNOWN
 				    && get_tv_number_chk(&argvars[1], &error))
 	    flags |= WILD_KEEP_ALL;
@@ -10641,7 +10641,7 @@ f_getchar(argvars, rettv)
 # ifdef FEAT_WINDOWS
 	    win_T	*wp;
 # endif
-	    int		n = 1;
+	    int		winnr = 1;
 
 	    if (row >= 0 && col >= 0)
 	    {
@@ -10651,9 +10651,9 @@ f_getchar(argvars, rettv)
 		(void)mouse_comp_pos(win, &row, &col, &lnum);
 # ifdef FEAT_WINDOWS
 		for (wp = firstwin; wp != win; wp = wp->w_next)
-		    ++n;
+		    ++winnr;
 # endif
-		vimvars[VV_MOUSE_WIN].vv_nr = n;
+		vimvars[VV_MOUSE_WIN].vv_nr = winnr;
 		vimvars[VV_MOUSE_LNUM].vv_nr = lnum;
 		vimvars[VV_MOUSE_COL].vv_nr = col + 1;
 	    }
@@ -11323,13 +11323,25 @@ f_glob(argvars, rettv)
     typval_T	*argvars;
     typval_T	*rettv;
 {
+    int		flags = WILD_SILENT|WILD_USE_NL;
     expand_T	xpc;
+    int		error = FALSE;
 
-    ExpandInit(&xpc);
-    xpc.xp_context = EXPAND_FILES;
+    /* When the optional second argument is non-zero, don't remove matches
+    * for 'wildignore' and don't put matches for 'suffixes' at the end. */
+    if (argvars[1].v_type != VAR_UNKNOWN
+				&& get_tv_number_chk(&argvars[1], &error))
+	flags |= WILD_KEEP_ALL;
     rettv->v_type = VAR_STRING;
-    rettv->vval.v_string = ExpandOne(&xpc, get_tv_string(&argvars[0]),
-				     NULL, WILD_USE_NL|WILD_SILENT, WILD_ALL);
+    if (!error)
+    {
+	ExpandInit(&xpc);
+	xpc.xp_context = EXPAND_FILES;
+	rettv->vval.v_string = ExpandOne(&xpc, get_tv_string(&argvars[0]),
+						       NULL, flags, WILD_ALL);
+    }
+    else
+	rettv->vval.v_string = NULL;
 }
 
 /*
@@ -11340,14 +11352,22 @@ f_globpath(argvars, rettv)
     typval_T	*argvars;
     typval_T	*rettv;
 {
+    int		flags = 0;
     char_u	buf1[NUMBUFLEN];
     char_u	*file = get_tv_string_buf_chk(&argvars[1], buf1);
+    int		error = FALSE;
 
+    /* When the optional second argument is non-zero, don't remove matches
+    * for 'wildignore' and don't put matches for 'suffixes' at the end. */
+    if (argvars[2].v_type != VAR_UNKNOWN
+				&& get_tv_number_chk(&argvars[2], &error))
+	flags |= WILD_KEEP_ALL;
     rettv->v_type = VAR_STRING;
-    if (file == NULL)
+    if (file == NULL || error)
 	rettv->vval.v_string = NULL;
     else
-	rettv->vval.v_string = globpath(get_tv_string(&argvars[0]), file);
+	rettv->vval.v_string = globpath(get_tv_string(&argvars[0]), file,
+								       flags);
 }
 
 /*
@@ -16628,8 +16648,11 @@ f_synIDattr(argvars, rettv)
 		p = highlight_has_attr(id, HL_INVERSE, modec);
 		break;
 
-	case 's':					/* standout */
-		p = highlight_has_attr(id, HL_STANDOUT, modec);
+	case 's':
+		if (TOLOWER_ASC(what[1]) == 'p')	/* sp[#] */
+		    p = highlight_color(id, what, modec);
+		else					/* standout */
+		    p = highlight_has_attr(id, HL_STANDOUT, modec);
 		break;
 
 	case 'u':
