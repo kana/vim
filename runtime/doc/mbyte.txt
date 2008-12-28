@@ -1,4 +1,4 @@
-*mbyte.txt*     For Vim version 7.2.  Last change: 2008 Nov 15
+*mbyte.txt*     For Vim version 7.2.  Last change: 2008 Dec 03
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar et al.
@@ -555,7 +555,7 @@ Unfortunately, using fonts in X11 is complicated.  The name of a single-byte
 font is a long string.  For multi-byte fonts we need several of these...
 
 Note: Most of this is no longer relevant for GTK+ 2.  Selecting a font via
-its XLFD is not supported anymore; see 'guifont' for an example of how to
+its XLFD is not supported; see 'guifont' for an example of how to
 set the font.  Do yourself a favor and ignore the |XLFD| and |xfontset|
 sections below.
 

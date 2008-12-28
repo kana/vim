@@ -1,4 +1,4 @@
-*starting.txt*  For Vim version 7.2.  Last change: 2008 Nov 09
+*starting.txt*  For Vim version 7.2.  Last change: 2008 Nov 20
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -593,6 +593,8 @@ a slash.  Thus "-R" means recovery and "-/R" readonly.
 		it.  The second form specifies a file to read connection info
 		from.  The third form specifies the hostname, address and
 		password for connecting to Netbeans. |netbeans-run|
+		{only available when compiled with the |+netbeans_intg|
+		feature; if not then -nb will make Vim exit}
 
 If the executable is called "view", Vim will start in Readonly mode.  This is
 useful if you can make a hard or symbolic link from "view" to "vim".

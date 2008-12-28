@@ -1,6 +1,6 @@
 " Vim syntax support file
 " Maintainer: Bram Moolenaar <Bram@vim.org>
-" Last Change: 2008 Jul 17
+" Last Change: 2008 Dec 03
 "	       (modified by David Ne\v{c}as (Yeti) <yeti@physics.muni.cz>)
 "	       (XHTML support by Panagiotis Issaris <takis@lumumba.luc.ac.be>)
 "	       (made w3 compliant by Edd Barrett <vext01@gmail.com>)
@@ -303,12 +303,7 @@ while s:lnum <= s:end
   if s:filler > 0
     let s:n = s:filler
     while s:n > 0
-      if s:numblines
-	" Indent if line numbering is on
-	let s:new = repeat(s:LeadingSpace, strlen(s:end) + 1) . repeat(s:difffillchar, 3)
-      else
-	let s:new = repeat(s:difffillchar, 3)
-      endif
+      let s:new = repeat(s:difffillchar, 3)
 
       if s:n > 2 && s:n < s:filler && !exists("html_whole_filler")
 	let s:new = s:new . " " . s:filler . " inserted lines "
@@ -318,9 +313,15 @@ while s:lnum <= s:end
       if !exists("html_no_pre")
 	" HTML line wrapping is off--go ahead and fill to the margin
 	let s:new = s:new . repeat(s:difffillchar, &columns - strlen(s:new))
+      else
+	let s:new = s:new . repeat(s:difffillchar, 3)
       endif
 
       let s:new = s:HtmlFormat(s:new, "DiffDelete")
+      if s:numblines
+	" Indent if line numbering is on; must be after escaping.
+	let s:new = repeat(s:LeadingSpace, strlen(s:end) + 1) . s:new
+      endif
       exe s:newwin . "wincmd w"
       exe "normal! a" . s:new . s:HtmlEndline . "\n\e"
       exe s:orgwin . "wincmd w"

@@ -1,4 +1,4 @@
-*diff.txt*      For Vim version 7.2.  Last change: 2008 Jul 21
+*diff.txt*      For Vim version 7.2.  Last change: 2008 Nov 28
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -353,7 +353,7 @@ The "-a" argument is used to force comparing the files as text, comparing as
 binaries isn't useful.  The "--binary" argument makes the files read in binary
 mode, so that a CTRL-Z doesn't end the text on DOS.
 
-						*E97*
+						*E810* *E97*
 Vim will do a test if the diff output looks alright.  If it doesn't, you will
 get an error message.  Possible causes:
 -  The "diff" program cannot be executed.

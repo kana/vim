@@ -1,8 +1,13 @@
 " Vim syntax file
 " Language:	Matlab
-" Maintainer:	Preben 'Peppe' Guldberg <peppe-vim@wielders.org>
+" Maintainer:	Maurizio Tranchero - maurizio.tranchero@gmail.com
+" Credits:	Preben 'Peppe' Guldberg <peppe-vim@wielders.org>
 "		Original author: Mario Eusebio
-" Last Change:	30 May 2003
+" Last Change:	2008 Nov 20
+"		some small changes have been introduce to support 
+" 		- '...' comment (used to break lines), 
+" 		- '' escape (for writing ' inside a string)
+" 		- try... catch construct
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded
@@ -16,6 +21,8 @@ syn keyword matlabStatement		return
 syn keyword matlabLabel			case switch
 syn keyword matlabConditional		else elseif end if otherwise
 syn keyword matlabRepeat		do for while
+" MT_ADDON - added exception-specific keywords
+syn keyword matlabExceptions		try catch
 
 syn keyword matlabTodo			contained  TODO
 
@@ -31,7 +38,8 @@ syn match matlabLineContinuation	"\.\{3}"
 "syn match matlabIdentifier		"\<\a\w*\>"
 
 " String
-syn region matlabString			start=+'+ end=+'+	oneline
+" MT_ADDON - added 'skip' in order to deal with 'tic' escaping sequence 
+syn region matlabString			start=+'+ end=+'+	oneline skip=+''+
 
 " If you don't like tabs
 syn match matlabTab			"\t"
@@ -51,6 +59,8 @@ syn match matlabTransposeOperator	"[])a-zA-Z0-9.]'"lc=1
 syn match matlabSemicolon		";"
 
 syn match matlabComment			"%.*$"	contains=matlabTodo,matlabTab
+" MT_ADDON - correctly highlights words after '...' as comments
+syn match matlabComment			"\.\.\..*$"	contains=matlabTodo,matlabTab
 
 syn keyword matlabOperator		break zeros default margin round ones rand
 syn keyword matlabOperator		ceil floor size clear zeros eye mean std cov
@@ -79,6 +89,8 @@ if version >= 508 || !exists("did_matlab_syntax_inits")
   HiLink matlabLineContinuation	Special
   HiLink matlabLabel			Label
   HiLink matlabConditional		Conditional
+" MT_ADDON - added exception-specific keywords
+  HiLink matlabExceptions		Conditional
   HiLink matlabRepeat			Repeat
   HiLink matlabTodo			Todo
   HiLink matlabString			String

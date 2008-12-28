@@ -1,7 +1,7 @@
 " Vim support file to detect file types
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2008 Nov 01
+" Last Change:	2008 Dec 08
 
 " Listen very carefully, I will say this only once
 if exists("did_load_filetypes")
@@ -671,8 +671,9 @@ au BufNewFile,BufRead *.factor			setf factor
 " Fetchmail RC file
 au BufNewFile,BufRead .fetchmailrc		setf fetchmail
 
-" FlexWiki
-au BufNewFile,BufRead *.wiki			setf flexwiki
+" FlexWiki - disabled, because it has side effects when a .wiki file
+" is not actually FlexWiki
+"au BufNewFile,BufRead *.wiki			setf flexwiki
 
 " Focus Executable
 au BufNewFile,BufRead *.fex,*.focexec		setf focexec

@@ -1,8 +1,8 @@
 " Vim syntax file
 " Language:	Vim 7.2 script
 " Maintainer:	Dr. Charles E. Campbell, Jr. <NdrOchipS@PcampbellAfamily.Mbiz>
-" Last Change:	Sep 10, 2008
-" Version:	7.2-84
+" Last Change:	December 08, 2008
+" Version:	7.2-87
 " Automatically generated keyword lists: {{{1
 
 " Quit when a syntax file was already loaded {{{2
@@ -16,11 +16,11 @@ syn keyword vimTodo contained	COMBAK	FIXME	TODO	XXX
 syn cluster vimCommentGroup	contains=vimTodo,@Spell
 
 " regular vim commands {{{2
-syn keyword vimCommand contained	abc[lear] argdo argu[ment] bel[owright] bN[ext] breakd[el] b[uffer] caddb[uffer] cb[uffer] cex[pr] cg[etfile] checkt[ime] cnew[er] col[der] con[tinue] cq[uit] delc[ommand] diffoff diffu[pdate] dr[op] echom[sg] em[enu] endt[ry] exu[sage] fin[d] foldc[lose] fu[nction] ha[rdcopy] helpt[ags] if is[earch] ju[mps] kee[pmarks] lan[guage] lc[d] lefta[bove] lgetb[uffer] lgrepa[dd] lla[st] lmapc[lear] lnf[ile] loc[kmarks] lpf[ile] lt[ag] mak[e] menut[ranslate] mkvie[w] mzf[ile] n[ext] nu[mber] opt[ions] perld[o] pp[op] P[rint] promptr[epl] ptj[ump] ptp[revious] pw[d] q[uit] redi[r] reg[isters] rew[ind] rubyd[o] sal[l] sba[ll] sbn[ext] sb[uffer] setf[iletype] sfir[st] sim[alt] sm[ap] sn[ext] snor[emap] so[urce] spellr[epall] spr[evious] star[tinsert] stopi[nsert] sunmenu t tabe[dit] tabm[ove] tabo[nly] ta[g] tclf[ile] tj[ump] tn[ext] tr[ewind] tu[nmenu] undol[ist] verb[ose] vim[grep] vmapc[lear] wh[ile] win[size] wq wv[iminfo] xm[ap] XMLent xnoremenu
-syn keyword vimCommand contained	abo[veleft] arge[dit] as[cii] bf[irst] bo[tright] breakl[ist] buffers cad[dexpr] cc cf[ile] c[hange] cla[st] cn[ext] colo[rscheme] cope[n] cr[ewind] d[elete] diffpatch dig[raphs] ds[earch] echon emenu* endw[hile] f[ile] fini[sh] folddoc[losed] go[to] h[elp] hid[e] ij[ump] isp[lit] k laddb[uffer] la[st] lch[dir] lex[pr] lgete[xpr] lh[elpgrep] lli[st] lnew[er] lNf[ile] lockv[ar] lp[revious] lv[imgrep] ma[rk] mk[exrc] mkv[imrc] mz[scheme] N[ext] omapc[lear] pc[lose] po[p] pre[serve] profd[el] ps[earch] ptl[ast] ptr[ewind] pyf[ile] quita[ll] red[o] res[ize] ri[ght] rubyf[ile] san[dbox] sbf[irst] sbN[ext] scripte[ncoding] setg[lobal] sh[ell] sla[st] smapc[lear] sN[ext] snoreme spelld[ump] spellu[ndo] sre[wind] startr[eplace] sts[elect] sus[pend] tab tabf[ind] tabnew tabp[revious] tags te[aroff] tl[ast] tN[ext] try una[bbreviate] unh[ide] ve[rsion] vimgrepa[dd] vne[w] winc[md] wn[ext] wqa[ll] X xmapc[lear] XMLns xunme
-syn keyword vimCommand contained	al[l] argg[lobal] bad[d] bl[ast] bp[revious] br[ewind] bun[load] caddf[ile] ccl[ose] cfir[st] changes cl[ist] cN[ext] comc[lear] co[py] cuna[bbrev] delf[unction] diffpu[t] di[splay] dsp[lit] e[dit] endfo[r] ene[w] files fir[st] foldd[oopen] gr[ep] helpf[ind] his[tory] il[ist] iuna[bbrev] keepalt lad[dexpr] later lcl[ose] lf[ile] lg[etfile] l[ist] lmak[e] lne[xt] ln[oremap] lol[der] lr[ewind] lvimgrepa[dd] marks mks[ession] mod[e] nbkey nmapc[lear] on[ly] ped[it] popu prev[ious] prof[ile] pta[g] ptn[ext] pts[elect] py[thon] r[ead] redr[aw] ret[ab] rightb[elow] ru[ntime] sa[rgument] sbl[ast] sbp[revious] scrip[tnames] setl[ocal] sign sl[eep] sme sni[ff] snoremenu spe[llgood] spellw[rong] sta[g] stj[ump] sun[hide] sv[iew] tabc[lose] tabfir[st] tabn[ext] tabr[ewind] tc[l] tf[irst] tm to[pleft] ts[elect] u[ndo] unlo[ckvar] vert[ical] vi[sual] vs[plit] windo wN[ext] w[rite] xa[ll] xme xn[oremap] xunmenu
-syn keyword vimCommand contained	arga[dd] argl[ocal] ba[ll] bm[odified] brea[k] bro[wse] bw[ipeout] cal[l] cd cgetb[uffer] chd[ir] clo[se] cnf[ile] comp[iler] cpf[ile] cw[indow] delm[arks] diffsplit dj[ump] earlier el[se] endf[unction] ex filetype fix[del] foldo[pen] grepa[dd] helpg[rep] iabc[lear] imapc[lear] j[oin] keepj[umps] laddf[ile] lb[uffer] le[ft] lfir[st] lgr[ep] ll lm[ap] lN[ext] lo[adview] lop[en] ls lw[indow] mat[ch] maca[ction] macm[enu] mksp[ell] m[ove] new noh[lsearch] o[pen] pe[rl] popu[p] p[rint] promptf[ind] ptf[irst] ptN[ext] pu[t] qa[ll] rec[over] redraws[tatus] retu[rn] rub[y] rv[iminfo] sav[eas] sbm[odified] sbr[ewind] se[t] sf[ind] sil[ent] sm[agic] smenu sno[magic] sor[t] spelli[nfo] sp[lit] startg[replace] st[op] sunme syncbind tabd[o] tabl[ast] tabN[ext] tabs tcld[o] th[row] tm[enu] tp[revious] tu undoj[oin] up[date] vie[w] viu[sage] wa[ll] winp[os] wp[revious] ws[verb] x[it] xmenu xnoreme y[ank]
-syn keyword vimCommand contained	argd[elete] ar[gs] bd[elete] bn[ext] breaka[dd] bufdo cabc[lear] cat[ch] ce[nter] cgete[xpr] che[ckpath] cmapc[lear] cNf[ile] conf[irm] cp[revious] debugg[reedy] diffg[et] diffthis dl[ist] echoe[rr] elsei[f] en[dif] exi[t] fina[lly] fo[ld] for 
+syn keyword vimCommand contained	abc[lear] argdo argu[ment] bel[owright] bN[ext] breakd[el] b[uffer] caddb[uffer] cb[uffer] cex[pr] cg[etfile] checkt[ime] cnew[er] col[der] con[tinue] cq[uit] delc[ommand] diffoff diffu[pdate] dr[op] echom[sg] em[enu] endt[ry] exu[sage] fin[d] foldc[lose] fu[nction] h[elp] hid[e] ij[ump] isp[lit] k laddb[uffer] la[st] lch[dir] lex[pr] lgete[xpr] lh[elpgrep] lli[st] lnew[er] lNf[ile] lockv[ar] lp[revious] lv[imgrep] ma[rk] mk[exrc] mkv[imrc] mz[scheme] N[ext] ol[dfiles] opt[ions] perld[o] pp[op] P[rint] promptr[epl] ptj[ump] ptp[revious] pw[d] q[uit] redi[r] reg[isters] rew[ind] rubyd[o] sal[l] sba[ll] sbn[ext] sb[uffer] setf[iletype] sfir[st] sim[alt] sm[ap] sn[ext] snor[emap] so[urce] spellr[epall] spr[evious] star[tinsert] stopi[nsert] sunmenu t tabe[dit] tabm[ove] tabo[nly] ta[g] tclf[ile] tj[ump] tn[ext] tr[ewind] tu[nmenu] undol[ist] verb[ose] vim[grep] vmapc[lear] wh[ile] win[size] wq wv[iminfo] xm[ap] XMLent xnoremenu
+syn keyword vimCommand contained	abo[veleft] arge[dit] as[cii] bf[irst] bo[tright] breakl[ist] buffers cad[dexpr] cc cf[ile] c[hange] cla[st] cn[ext] colo[rscheme] cope[n] cr[ewind] d[elete] diffpatch dig[raphs] ds[earch] echon emenu* endw[hile] f[ile] fini[sh] folddoc[losed] go[to] helpf[ind] his[tory] il[ist] iuna[bbrev] keepalt lad[dexpr] later lcl[ose] lf[ile] lg[etfile] l[ist] lmak[e] lne[xt] ln[oremap] lol[der] lr[ewind] lvimgrepa[dd] marks mks[ession] mod[e] nbkey nmapc[lear] omapc[lear] pc[lose] po[p] pre[serve] profd[el] ps[earch] ptl[ast] ptr[ewind] pyf[ile] quita[ll] red[o] res[ize] ri[ght] rubyf[ile] san[dbox] sbf[irst] sbN[ext] scripte[ncoding] setg[lobal] sh[ell] sla[st] smapc[lear] sN[ext] snoreme spelld[ump] spellu[ndo] sre[wind] startr[eplace] sts[elect] sus[pend] tab tabf[ind] tabnew tabp[revious] tags te[aroff] tl[ast] tN[ext] try una[bbreviate] unh[ide] ve[rsion] vimgrepa[dd] vne[w] winc[md] wn[ext] wqa[ll] X xmapc[lear] XMLns xunme
+syn keyword vimCommand contained	al[l] argg[lobal] bad[d] bl[ast] bp[revious] br[ewind] bun[load] caddf[ile] ccl[ose] cfir[st] changes cl[ist] cN[ext] comc[lear] co[py] cuna[bbrev] delf[unction] diffpu[t] di[splay] dsp[lit] e[dit] endfo[r] ene[w] files fir[st] foldd[oopen] gr[ep] helpg[rep] iabc[lear] imapc[lear] j[oin] keepj[umps] laddf[ile] lb[uffer] le[ft] lfir[st] lgr[ep] ll lm[ap] lN[ext] lo[adview] lop[en] ls lw[indow] mat[ch] maca[ction] macm[enu] mksp[ell] m[ove] new noh[lsearch] on[ly] ped[it] popu prev[ious] prof[ile] pta[g] ptn[ext] pts[elect] py[thon] r[ead] redr[aw] ret[ab] rightb[elow] ru[ntime] sa[rgument] sbl[ast] sbp[revious] scrip[tnames] setl[ocal] sign sl[eep] sme sni[ff] snoremenu spe[llgood] spellw[rong] sta[g] stj[ump] sun[hide] sv[iew] tabc[lose] tabfir[st] tabn[ext] tabr[ewind] tc[l] tf[irst] tm to[pleft] ts[elect] u[ndo] unlo[ckvar] vert[ical] vi[sual] vs[plit] windo wN[ext] w[rite] xa[ll] xme xn[oremap] xunmenu
+syn keyword vimCommand contained	arga[dd] argl[ocal] ba[ll] bm[odified] brea[k] bro[wse] bw[ipeout] cal[l] cd cgetb[uffer] chd[ir] clo[se] cnf[ile] comp[iler] cpf[ile] cw[indow] delm[arks] diffsplit dj[ump] earlier el[se] endf[unction] ex filetype fix[del] foldo[pen] grepa[dd] helpt[ags] if is[earch] ju[mps] kee[pmarks] lan[guage] lc[d] lefta[bove] lgetb[uffer] lgrepa[dd] lla[st] lmapc[lear] lnf[ile] loc[kmarks] lpf[ile] lt[ag] mak[e] menut[ranslate] mkvie[w] mzf[ile] n[ext] nu[mber] o[pen] pe[rl] popu[p] p[rint] promptf[ind] ptf[irst] ptN[ext] pu[t] qa[ll] rec[over] redraws[tatus] retu[rn] rub[y] rv[iminfo] sav[eas] sbm[odified] sbr[ewind] se[t] sf[ind] sil[ent] sm[agic] smenu sno[magic] sor[t] spelli[nfo] sp[lit] startg[replace] st[op] sunme syncbind tabd[o] tabl[ast] tabN[ext] tabs tcld[o] th[row] tm[enu] tp[revious] tu undoj[oin] up[date] vie[w] viu[sage] wa[ll] winp[os] wp[revious] ws[verb] x[it] xmenu xnoreme y[ank]
+syn keyword vimCommand contained	argd[elete] ar[gs] bd[elete] bn[ext] breaka[dd] bufdo cabc[lear] cat[ch] ce[nter] cgete[xpr] che[ckpath] cmapc[lear] cNf[ile] conf[irm] cp[revious] debugg[reedy] diffg[et] diffthis dl[ist] echoe[rr] elsei[f] en[dif] exi[t] fina[lly] fo[ld] for ha[rdcopy] 
 syn match   vimCommand contained	"\<z[-+^.=]"
 
 " vimOptions are caught only when contained in a vimSet {{{2
@@ -153,7 +153,7 @@ endif
 " Functions : Tag is provided for those who wish to highlight tagged functions {{{2
 " =========
 syn cluster vimFuncList	contains=vimCommand,vimFuncKey,Tag,vimFuncSID
-syn cluster vimFuncBodyList	contains=vimAddress,vimAutoCmd,vimCmplxRepeat,vimComment,vimComment,vimContinue,vimCtrlChar,vimEcho,vimEchoHL,vimExecute,vimIf,vimFunc,vimFunction,vimFunctionError,vimFuncVar,vimIsCommand,vimLet,vimLineComment,vimMap,vimMark,vimNorm,vimNotation,vimNotFunc,vimNumber,vimOper,vimOperParen,vimRegion,vimRegister,vimSet,vimSpecFile,vimString,vimSubst,vimSynLine,vimUserCommand
+syn cluster vimFuncBodyList	contains=vimAbb,vimAddress,vimAugroupKey,vimAutoCmd,vimCmplxRepeat,vimComment,vimComment,vimContinue,vimCtrlChar,vimEcho,vimEchoHL,vimExecute,vimIf,vimFunc,vimFunction,vimFunctionError,vimFuncVar,vimHighlight,vimIsCommand,vimLet,vimLineComment,vimMap,vimMark,vimNorm,vimNotation,vimNotFunc,vimNumber,vimOper,vimOperParen,vimRegion,vimRegister,vimSet,vimSpecFile,vimString,vimSubst,vimSynLine,vimUserCommand
 if !exists("g:vimsyn_noerror")
  syn match   vimFunctionError	"\<fu\%[nction]!\=\s\+\zs\U\i\{-}\ze\s*("                	contains=vimFuncKey,vimFuncBlank nextgroup=vimFuncBody
 endif
@@ -541,9 +541,13 @@ if !exists("g:vimsyn_embed")
 endif
 
 " [-- perl --] {{{3
-if (g:vimsyn_embed =~ 'p' && has("perl")) && filereadable(expand("<sfile>:p:h")."/perl.vim")
+let perlpath= expand("<sfile>:p:h")."/perl.vim"
+if !filereadable(perlpath)
+ let perlpath= globpath(&rtp,"syntax/perl.vim")
+endif
+if (g:vimsyn_embed =~ 'p' && has("perl")) && filereadable(perlpath)
  unlet! b:current_syntax
- syn include @vimPerlScript <sfile>:p:h/perl.vim
+ exe "syn include @vimPerlScript ".perlpath
  if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 'p'
   syn region vimPerlRegion fold matchgroup=vimScriptDelim start=+pe\%[rl]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimPerlScript
   syn region vimPerlRegion fold matchgroup=vimScriptDelim start=+pe\%[rl]\s*<<\s*$+ end=+\.$+ contains=@vimPerlScript
@@ -556,11 +560,16 @@ else
  syn region vimEmbedError start=+pe\%[rl]\s*<<\s*\z(.*\)$+ end=+^\z1$+
  syn region vimEmbedError start=+pe\%[rl]\s*<<\s*$+ end=+\.$+
 endif
+unlet perlpath
 
 " [-- ruby --] {{{3
-if (g:vimsyn_embed =~ 'r' && has("ruby")) && filereadable(expand("<sfile>:p:h")."/ruby.vim")
+let rubypath= expand("<sfile>:p:h")."/ruby.vim"
+if !filereadable(rubypath)
+ let rubypath= globpath(&rtp,"syntax/ruby.vim")
+endif
+if (g:vimsyn_embed =~ 'r' && has("ruby")) && filereadable(rubypath)
  unlet! b:current_syntax
- syn include @vimRubyScript <sfile>:p:h/ruby.vim
+ exe "syn include @vimRubyScript ".rubypath
  if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 'r'
   syn region vimRubyRegion fold matchgroup=vimScriptDelim start=+rub[y]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimRubyScript
  else
@@ -572,11 +581,16 @@ else
  syn region vimEmbedError start=+rub[y]\s*<<\s*\z(.*\)$+ end=+^\z1$+
  syn region vimEmbedError start=+rub[y]\s*<<\s*$+ end=+\.$+
 endif
+unlet rubypath
 
 " [-- python --] {{{3
-if (g:vimsyn_embed =~ 'P' && has("python")) && filereadable(expand("<sfile>:p:h")."/python.vim")
+let pythonpath= expand("<sfile>:p:h")."/python.vim"
+if !filereadable(pythonpath)
+ let pythonpath= globpath(&rtp,"syntax/python.vim")
+endif
+if (g:vimsyn_embed =~ 'P' && has("python")) && filereadable(pythonpath)
  unlet! b:current_syntax
- syn include @vimPythonScript <sfile>:p:h/python.vim
+ exe "syn include @vimPythonScript ".pythonpath
  if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 'P'
   syn region vimPythonRegion fold matchgroup=vimScriptDelim start=+py\%[thon]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimPythonScript
   syn region vimPythonRegion fold matchgroup=vimScriptDelim start=+py\%[thon]\s*<<\s*$+ end=+\.$+ contains=@vimPythonScript
@@ -589,6 +603,7 @@ else
  syn region vimEmbedError start=+py\%[thon]\s*<<\s*\z(.*\)$+ end=+^\z1$+
  syn region vimEmbedError start=+py\%[thon]\s*<<\s*$+ end=+\.$+
 endif
+unlet pythonpath
 
 " [-- tcl --] {{{3
 if has("win32") || has("win95") || has("win64") || has("win16")
@@ -598,9 +613,13 @@ else
  let trytcl= 1
 endif
 if trytcl
- if (g:vimsyn_embed =~ 't' && has("tcl")) && filereadable(expand("<sfile>:p:h")."/tcl.vim")
+ let tclpath= expand("<sfile>:p:h")."/tcl.vim"
+ if !filereadable(tclpath)
+  let tclpath= globpath(&rtp,"syntax/tcl.vim")
+ endif
+ if (g:vimsyn_embed =~ 't' && has("tcl")) && filereadable(tclpath)
   unlet! b:current_syntax
-  syn include @vimTclScript <sfile>:p:h/tcl.vim
+  exe "syn include @vimTclScript ".tclpath
   if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 't'
    syn region vimTclRegion fold matchgroup=vimScriptDelim start=+tc[l]\=\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimTclScript
    syn region vimTclRegion fold matchgroup=vimScriptDelim start=+tc[l]\=\s*<<\s*$+ end=+\.$+ contains=@vimTclScript
@@ -613,6 +632,7 @@ if trytcl
   syn region vimEmbedError start=+tc[l]\=\s*<<\s*\z(.*\)$+ end=+^\z1$+
   syn region vimEmbedError start=+tc[l]\=\s*<<\s*$+ end=+\.$+
  endif
+ unlet tclpath
 else
  syn region vimEmbedError start=+tc[l]\=\s*<<\s*\z(.*\)$+ end=+^\z1$+
  syn region vimEmbedError start=+tc[l]\=\s*<<\s*$+ end=+\.$+

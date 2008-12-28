@@ -1,5 +1,5 @@
 ==============================================================================
-=   B o n v e n o n  al  la  I n s t r u i l o  de  V I M  -  Versio 1.0.eo  =
+=  B o n v e n o n  al  la  I n s t r u i l o  de  V I M  -  Versio 1.7.eo.1 =
 ==============================================================================
 
    Vim estas tre potenca redaktilo, kiu havas multajn komandojn, tro da ili
@@ -56,13 +56,13 @@ RIMARKO: La klavoj de la kursoro devus ankaŭ funkcii. Sed uzante hjkl,
   2. Tajpu:       :q! <Enenklavo>.
      Tio eliras el la rekdaktilo, SEN konservi la ŝanĝojn, kion vi faris.
 
-  3. Kiam vi vidas la ŝelinviton, tajpu la komandon kiun vi uzis por eniri 
+  3. Kiam vi vidas la ŝelinviton, tajpu la komandon kiun vi uzis por eniri
      en ĉi tiu instruilo. Tio estus:   vimtutor <Enenklavo>
 
   4. Se vi memoris tiujn paŝojn kaj sentas vin memfida, plenumu la paŝojn
      1 ĝis 3 por eliri kaj reeniri la redaktilon.
 
-RIMARKO: :q! <Enenklavo> eliras sen konservi la ŝanĝojn kion vi faris. 
+RIMARKO: :q! <Enenklavo> eliras sen konservi la ŝanĝojn kion vi faris.
          Post kelkaj lecionoj, vi lernos kiel konservi la ŝanĝojn al dosiero.
 
   5. Movu la kursoron suben ĝis la leciono 1.3.
@@ -79,7 +79,7 @@ RIMARKO: :q! <Enenklavo> eliras sen konservi la ŝanĝojn kion vi faris.
      forviŝenda signo.
 
   3. Premu la klavon  x  por forviŝi la nedeziratan signon.
- 
+
   4. Ripetu paŝojn 2 ĝis 4 ĝis kiam la frazo estas ĝusta.
 
 
@@ -129,7 +129,7 @@ RIMARKO: Trairante la instruilon, ne provu memori, lernu per la uzo.
   3. Post kiam la teksto estas aldonita, premu <ESK> por reiri al la normala
      reĝimo.
 
-  4. Movu la kursoron al la dua linio markita per ---> kaj ripetu la 
+  4. Movu la kursoron al la dua linio markita per ---> kaj ripetu la
      paŝojn 2 kaj 3 por korekti la frazon.
 
 ---> Mankas teksto el ti
@@ -166,6 +166,7 @@ RIMARKO: Trairante la instruilon, ne provu memori, lernu per la uzo.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                                 Leciono 1 RESUMO
+
 
   1. La kursoro moviĝas aŭ per la sagoklavoj, aŭ per la klavoj hjkl.
         h (liven)     j (suben)      k (supren)     l (dekstren)
@@ -216,6 +217,7 @@ Nun daŭrigu al la leciono 2.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                      Leciono 2.2: PLIAJ KOMANDOJ DE FORVIŜO
+
 
                ** Tajpu  d$  por forviŝi la finon de la linio. **
 
@@ -283,6 +285,7 @@ RIMARKO: Premo de nur la movo en Normala reĝimo sen operatoro movos
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                     Leciono 2.5: UZI NOMBRON POR FORVIŜI PLI
 
+
             ** Tajpo de nombro kun operatoro ripetas ĝin laŭfoje. **
 
   En la kombinaĵo de la operatoro de forviŝo, kaj movo kiel menciita
@@ -301,6 +304,7 @@ RIMARKO: Premo de nur la movo en Normala reĝimo sen operatoro movos
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                     Leciono 2.6: OPERACII SUR LINIOJ
+
 
                    ** Tajpu  dd  por forviŝi tutan linion. **
 
@@ -324,6 +328,7 @@ RIMARKO: Premo de nur la movo en Normala reĝimo sen operatoro movos
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                        Leciono 2.7: LA KOMANDO DE MALFARO
 
+
  ** Premu u por malfari la lastajn komandojn, U por ripari la tutan linion. **
 
   1. Movu la kursoron ĉe la suba linio markita per ---> kaj metu ĝin sur
@@ -343,6 +348,7 @@ RIMARKO: Premo de nur la movo en Normala reĝimo sen operatoro movos
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                                 Leciono 2 RESUMO
+
 
   1. Por forviŝi ekde la kursoro ĝis la sekvanta vorto, tajpu:    dw
   2. Por forviŝi ekde la kursoro ĝis la fino de la linio, tajpu:  d$
@@ -368,6 +374,7 @@ RIMARKO: Premo de nur la movo en Normala reĝimo sen operatoro movos
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                          Leciono 3.1 LA KOMANDO DE METO
 
+
     ** Tajpu  p  por meti tekston forviŝitan antaŭe post la kursoro. **
 
   1. Movu la kursoron ĉe la unua ---> suba linio.
@@ -389,6 +396,7 @@ RIMARKO: Premo de nur la movo en Normala reĝimo sen operatoro movos
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                      Leciono 3.2 LA KOMANDO DE ANSTATAŬIGO
 
+
        ** Tajpu  rx  por anstataŭigi la signon ĉe la kursoro per  x . **
 
 
@@ -402,7 +410,7 @@ RIMARKO: Premo de nur la movo en Normala reĝimo sen operatoro movos
 
 ---> Kiem tiu lanio estis tajpita, iu pramis la naĝuftajn klovojn!
 ---> Kiam tiu linio estis tajpita, iu premis la neĝustajn klavojn!
-  
+
   5. Nun moviĝu al la leciono 3.3.
 
 Rimarko: Memoru, ke vi devus lerni per uzo, kaj ne per memorado.
@@ -410,6 +418,7 @@ Rimarko: Memoru, ke vi devus lerni per uzo, kaj ne per memorado.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                        Leciono 3.3 LA OPERATORO DE ŜANĜO
+
 
               ** Por ŝanĝi ĝis la fino de la vorto, tajpu  ce . **
 
@@ -429,6 +438,7 @@ Rimarko: Memoru, ke vi devus lerni per uzo, kaj ne per memorado.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                          Leciono 3.4 PLIAJ ŜANĜOJ PER c
+
 
         ** La operatoro de ŝanĝo uzeblas kun la sama movo ol forviŝo. **
 
@@ -453,6 +463,7 @@ RIMARKO:  Vi povas uzi la klavon Retropaŝo por korekti erarojn dum vi tajpas.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                                 Leciono 3 RESUMO
 
+
   1. Por remeti tekston, kiun vi ĵus forviŝis, tajpu  p. Tio metas la
      forviŝitan tekston POST la kursoro (se linio estis forviŝita, ĝi
      iros en la linion sub la kursoro).
@@ -474,6 +485,7 @@ Nun daŭrigu al la sekvanta leciono.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
               Leciono 4.1: POZICIO DE KURSORO KAJ STATO DE DOSIERO
 
+
   ** Tajpu CTRL-G por montri vian pozicion en la dosiero kaj la dosierstaton.
      Tajpu  G  por moviĝi al linio en la dosiero. **
 
@@ -483,7 +495,7 @@ Nun daŭrigu al la sekvanta leciono.
      Mesaĝo aperos ĉe la suba parto de la paĝo kun la dosiernomo kaj la
      pozicio en la dosiero. Memoru la numeron de la linio por paŝo 3.
 
-  RIMARKO: Vi eble vidas la pozicion de la kursoro ĉe la suba dekstra 
+  RIMARKO: Vi eble vidas la pozicion de la kursoro ĉe la suba dekstra
            angulo de la ekrano. Tio okazas kiam la agordo 'ruler' estas
            ŝaltita (vidu  :help 'ruler')
 
@@ -498,6 +510,7 @@ Nun daŭrigu al la sekvanta leciono.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                         Leciono 4.2 LA KOMANDO DE SERĈO
+
 
              ** Tajpu  /  kaj poste frazon por serĉi la frazon. **
 
@@ -524,6 +537,7 @@ RIMARKO: Kiam la serĉo atingas la finon de la dosiero, ĝi daŭras ĉe la
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                      Leciono 4.3 SERĈO DE KONGRUAJ KRAMPOJ
 
+
                  ** Tajpu  %  por trovi kongruan ), [ aŭ  } **
 
   1. Poziciu la kursoron sur iun (, [ aŭ { en la linio markita per --->.
@@ -548,7 +562,7 @@ RIMARKO: Kiam la serĉo atingas la finon de la dosiero, ĝi daŭras ĉe la
 
   1. Movu la kursoron al la suba linio markita per --->.
 
-  2. Tajpu  :s/laa/la <Enenklavo> .  Rimarku, ke la komando ŝanĝas nur la 
+  2. Tajpu  :s/laa/la <Enenklavo> .  Rimarku, ke la komando ŝanĝas nur la
      unuan okazaĵon de "laa" en la linio.
 
   3. Nun tajpu  :s/laa/la/g .  Aldono de  g  opcio signifas mallokan
@@ -595,6 +609,7 @@ RIMARKO: Kiam la serĉo atingas la finon de la dosiero, ĝi daŭras ĉe la
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                    Leciono 5.1 KIEL PLENUMI EKSTERAN KOMANDON
 
+
      ** Tajpu  :!  sekvata de ekstera komando por plenumi la komandon. **
 
   1. Tajpu la konatan komandon  :  por pozicii la kursoron ĉe la suba parto
@@ -603,7 +618,7 @@ RIMARKO: Kiam la serĉo atingas la finon de la dosiero, ĝi daŭras ĉe la
   2. Nun tajpu la  !  (krisigno) signon. Tio ebligas al vi plenumi iun
      eksteran ŝelan komandon ajn.
 
-  3. Ekzemple, tajpu  ls  post ! kaj tajpu <Enenklavo>. Tio listigos la 
+  3. Ekzemple, tajpu  ls  post ! kaj tajpu <Enenklavo>. Tio listigos la
      enhavon de la dosierujo, same kiel se vi estis en ŝela invito.
      Aŭ uzu  :!dir  se ls ne funkcias.
 
@@ -616,6 +631,7 @@ RIMARKO: Ĉiuj  :  komandoj devas finiĝi per tajpo de <Enenklavo>
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                     Leciono 5.2 PLI PRI KONSERVO DE DOSIERO
+
 
    ** Por konservi la faritajn ŝanĝojn en la teksto, tajpu  :w DOSIERNOMO. **
 
@@ -641,11 +657,12 @@ RIMARKO: Se vi volus eliri el Vim kaj restartigi ĝin denove per  vim TESTO,
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                     Leciono 5.3 APARTIGI KONSERVENDAN TESTON
 
+
     ** Por konservi parton de la dosiero, tajpu   v  movo  :w DOSIERNOMO **
 
   1. Movu la kursoron al tiu linio.
-  
-  2. Premu  v  kaj movu la kursoron al la kvina suba ero.  Rimarku, ke la 
+
+  2. Premu  v  kaj movu la kursoron al la kvina suba ero.  Rimarku, ke la
      teksto emfaziĝas.
 
   3. Premu la  :  signon.  Ĉe la fino de la ekrano  :'<,'>  aperos.
@@ -682,7 +699,7 @@ RIMARKO: Post plenumo de paŝo 2, vi vidos tekston el la leciono 5.3.  Tiam
      ke estas nun du kopioj de la leciono 5.3, la originala kaj la versio mem
      de la dosiero.
 
-RIMARKO: Vi nun povas legi la eliron de ekstera komando. Ekzemple, 
+RIMARKO: Vi nun povas legi la eliron de ekstera komando. Ekzemple,
         :r !ls  legas la eliron de la komando ls kaj metas ĝin sub la
         kursoron.
 
@@ -748,7 +765,7 @@ RIMARKO: Vi nun povas legi la eliron de ekstera komando. Ekzemple,
   4. Kompletigu la vorton same kiel la linio sub ĝi.  Premu <ESK> por
      eliri la Enmetan reĝimon.
 
-  5. Uzu  e  por moviĝi al la sekvanta nekompleta vorto kaj ripetu   
+  5. Uzu  e  por moviĝi al la sekvanta nekompleta vorto kaj ripetu
      paŝojn 3 kaj 4.
 
 ---> Ĉi tiu lin ebligos vin ekz vin postal tekston al linio.
@@ -804,7 +821,7 @@ RIMARKO: Anstataŭiga reĝimo estas same kiel Enmeta reĝimo, sed ĉiu signo
      per  p .
 
 ---> a) tio estas la unua ero.
-     b) 
+     b)
 
 RIMARKO: vi povas ankaŭ uzi  y  kiel operatoro;  yw  kopias unu vorton.
 
@@ -812,7 +829,8 @@ RIMARKO: vi povas ankaŭ uzi  y  kiel operatoro;  yw  kopias unu vorton.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                            Leciono 6.5 AGORDI OPCION
 
-         ** Agordu opcion por ke serĉo aŭ anstataŭgo ignoru usklecon **
+
+         ** Agordu opcion por ke serĉo aŭ anstataŭigo ignoru usklecon **
 
   1. Serĉu 'ignori' per tajpo de /ignori <Enenklavo>
      Ripetu plurfoje premante  n .
@@ -857,8 +875,10 @@ RIMARKO: Se vi deziras ignori usklecon por nur unu serĉa komando, uzu  \c
 
   7. Antaŭaldonu "no" por malŝalti la opcion:  :set noic
 
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                             Leciono 7.1 AKIRI HELPON
+
 
                           ** Uzu la helpan sistemon **
 
@@ -884,6 +904,7 @@ RIMARKO: Se vi deziras ignori usklecon por nur unu serĉa komando, uzu  \c
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                        Leciono 7.2 KREI STARTAN SKRIPTON
 
+
                           ** Ebligu eblecojn de Vim **
 
   Vim havas multe pli da eblecoj ol Vi, sed la plej multaj estas defaŭlte
@@ -893,7 +914,7 @@ RIMARKO: Se vi deziras ignori usklecon por nur unu serĉa komando, uzu  \c
       :e ~/.vimrc          por Unikso
       :e $VIM/_vimrc       por MS-Vindozo
 
-  2. Nun legu la enhavon de la ekzempla "vimrc" 
+  2. Nun legu la enhavon de la ekzempla "vimrc"
       :r $VIMRUNTIME/vimrc_example.vim
 
   3. Konservu la dosieron per:
@@ -906,6 +927,7 @@ RIMARKO: Se vi deziras ignori usklecon por nur unu serĉa komando, uzu  \c
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                              Leciono 7.3 KOMPLETIGO
+
 
              ** Kompletigo de komanda linio per CTRL-D kaj <TAB> **
 
@@ -962,6 +984,6 @@ RIMARKO: Kompletigo funkcias por multaj komandoj. Nur provu premi CTRL-D kaj
 
   Tradukita en Esperanto de Dominique Pellé, 2008-04-01
   Retpoŝto: dominique.pelle@gmail.com
-  Lasta ŝanĝo: 2008-04-02
+  Lasta ŝanĝo: 2008-11-23
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.2.  Last change: 2008 Nov 15
+*todo.txt*      For Vim version 7.2.  Last change: 2008 Dec 08
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,39 +30,60 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
-winrestview() doesn't restore properly.  Reproducible example from Matt Zyzik,
-2008 Nov 12.
+Patch to improve use of "killed" event in Netbeans interface. (Xavier de Gaye,
+2008 Nov 23)
 
-Using -nb with a Vim that doesn't support netbeans causes a hang.  Make Vim
-exit. (patch by Xavier de Gaye, 2008 Nov 8)
+Cursor invisible in Visual block mode. (Matti Niemenmaa, 2008 Nov 26)
 
-Patch to set v:prevcount properly. (Ben Schmidt, 2008 Aug 20)
+When compiled as small version cursor is displayed after end-of-line for some
+values of 'tabstop'.  (James Vega, 22 Nov 2008)
 
-Patch for utf-16 on Windows. (Yanwei, 2008 Oct 22)
+ml_get errors after reloading a file that was overwritten with ":silent! w!
+/tmp/tt".
 
-Patch to add extra argument to glob() and globpath() to ignore 'wildignore'.
-(Ingo Karkat, 2008 Jun 25)
-
-Patch to make synIDattr() support "guisp". (Matt Wozniski, 2008 Aug 15)
-
-Screen update bug when using "." on a Visual block and the last line doesn't
-change. (Moritz Orbach, 2008 Oct 25, with patch)
-
-Patch for 2html.vim to avoid "&amp;nbsp;". (Markus Heidelberg, 2008 Jul 19)
-
-Add MD5 and MD5SUMS to the ftp directories.
+2html.vim doesn't take double-wide characters into account when expanding
+tabs.  Patch by Yukihiro Nakadaira, 2008 Nov 23.
+New version: 2008 Dec 4, Dec 5.
 
 netrw: dragging status line causes selection of entry.  Should check row
 number to be below last visible line.
 
+After doing "su" $HOME can be the old user's home, thus ~root/file is not
+correct.  Don't use it in the swap file.
+
+Allow patches to add something to version.c, like with an official patch, so
+that :version output shows which patches have been applied.
+
 Have a look at patch for utf-8 line breaking. (Yongwei Wu, 2008 Mar 1, Mar 23)
 
+Disable setting 'encoding' from a modeline?  It usually causes problems, can't
+do any good.
+
+When changing 'encoding' convert all the swap file names, so that we can
+still delete them.  Also convert all buffer file names?
+
 Update src/testdir/main.aap.
+
+"vim -c 'sniff connect'" hangs Vim. (Dominique Pelle, 2008 Dec 7)
+
+Something wrong with session that has "cd" commands and "badd", in such a way
+that Vim doesn't find the edited file in the buffer list, causing the
+ATTENTION message?  (Tony Mechelynck, 2008 Dec 1)
+Also: swap files are in ~/tmp/  One has relative file name ".mozilla/...".
 
 Tag stack not returning to right tag with ":tag". (Erik Falor, 2008 Nov 5)
 Patch 2008 Nov 12.
 
+Add v:motion_force. (Kana Natsuno, 2008 Dec 6)
+
+Redraw problem when appending digraph causes line to wrap. (James Vega, 2007
+Sep 18)  Patch by Ian Kelling, 2008 Aug 8.
+
 Runtime files for Clojure. (Toralf Wittner, 2008 Jun 25)
+
+MS-Windows: editing the first, empty buffer, 'ffs' set to "unix,dos", ":enew"
+doesn't set 'ff' to "unix".  (Ben Fritz, 2008 Dec 5) Reusing the old buffer
+probably causes this.
 
 Crash with dragn-n-drop of file combined with netrw (Marius Gedminas, 2008 Jun
 11)  I can't reproduce it.  It's probably caused by a handle_drop() call
@@ -87,6 +108,8 @@ fileencoding differs.  Reload the buffer in this situation?  Need to check for
 the buffer to be unmodified.
 Unfinished patch by Ian Kelling, 2008 Jul 11.  Followup Jul 14, need to have
 another look at it.
+
+Patch for c.vim and cpp.vim syntax files. (Chung-chieh Shan, 2008 Nov 26)
 
 Win32:  ":dis +" shows nothing, but "+p does insert text.  Problem with "* and
 "+ being the same thing?
@@ -169,6 +192,9 @@ Works like CTRL-Y in Command line mode.
 
 Patch for Ruby sockets. (todesking/Ariya Mizutani, 2008 Jul 1,24)
 
+Mac: Move Carbon todo items to os_mac.txt.  Note that this version is frozen,
+try the Cocoa version.
+
 Mac: Patch to disable antialias. (LC Mi, 2008 Aug 23)  Tested on 10.5 and
 10.4.
 
@@ -202,6 +228,8 @@ Problem with 'ts' set to 9 and 'showbreak' to ">>>". (Matthew Winn, 2007 Oct
 1)
 
 try/catch not working for argument of return. (Matt Wozniski, 2008 Sep 15)
+
+Add ":nofold".  Range will apply without expanding to closed fold.
 
 Including NFA regexp code:
 Use "\%#= to set the engine: 0 = automatic, 1 = backtracking, 2 = new.
@@ -288,9 +316,6 @@ This should avoid flicker.  Other solution by A.Politz, 2007 Aug 22.
 When the popup menu is close to the edge of the window it is truncated.  Patch
 to anchor the popup menu in a different way. (James Vega, 2008 Jul 30)
 
-Spell checking: Add a way to specify punctuation characters.  Add the
-superscript numbers by default: 0x2070, 0xb9, 0xb2, 0xb3, 0x2074 - 0x2079.
-
 Windows 98: pasting from the clipboard with text from another application has
 a trailing NUL.  (Joachim Hofmann)  Perhaps the length specified for CF_TEXT
 isn't right?
@@ -334,9 +359,6 @@ with "gvim -nb:localhost:55555:foo".  From nc do: '1:editFile!0 "foo"'.  Then
 go to Insert mode and add a few lines.  Then backspacing every other time
 moves the cursor instead of deleting. (Chris Kaiser, 2007 Sep 25)
 
-Redraw problem when appending digraph causes line to wrap. (James Vega, 2007
-Sep 18)  Patch by Ian Kelling, 2008 Aug 8.
-
 When 'bomb' is changed the window title is updated to show/hide a "+", but the
 tab page label isn't. (Patrick Texier, 2008 Jun 24)
 
@@ -350,6 +372,9 @@ Patch for Win32 clipboard under Cygwin. (Frodak Baksik, Feb 15)
     Sutcliffe says it works well.
     Update 2007 May 22 for Vim 7.1
     Update 2008 Oct 2008 for Vim 7.2 (Sharonov)
+
+Win32: Can't complete shell command names.  Why is setting xp_context in
+set_one_cmd_context() inside #ifndef BACKSLASH_IN_FILENAME?
 
 Win32: Patch for convert_filterW(). (Taro Muraoka, 2007 Mar 2)
 
@@ -454,9 +479,6 @@ if_ruby.c.
 
 Problem with cursorcolumn highlighting and folds. (John Mullin, 2008 Jul 18)
 
-Spell checking in popup menu: If the only problem is the case of the first
-character, don't offer "ignore" and "add to word list".
-
 ":helpgrep" should use the directory from 'helpfile'.
 
 The need_fileinfo flag is messy.  Instead make the message right away and put
@@ -521,12 +543,28 @@ Gvimext patch to support wide file names. (Szabolcs Horvat 2008 Sep 10)
 
 GUI: When combining fg en bg make sure they are not equal.
 
+Spell checking: Add a way to specify punctuation characters.  Add the
+superscript numbers by default: 0x2070, 0xb9, 0xb2, 0xb3, 0x2074 - 0x2079.
+
+Spell checking in popup menu: If the only problem is the case of the first
+character, don't offer "ignore" and "add to word list".
+
 Use different pt_br dictionary for spell checking. (Jackson A. Aquino, 2006
 Jun 5)
 
 Use different romanian dictionary for spell checking. (Andrei Popescu, Nov
 2008)  Use http://downloads.sourceforge.net/rospell/ro_RO.3.2.zip
 Or the hunspell-ro.3.2.tar.gz file, it also has a iso-8859-2 list.
+
+In a C file with spell checking, in "% integer" "nteger" is seen as an error,
+but "]s" doesn't find it.  "nteger" by itself is found. (Ralf Wildenhues, 2008
+Jul 22)
+
+There should be something about spell checking in the user manual.
+
+Spell menu: When using the Popup menu to select a replacement word,
+":spellrepeat" doesn't work.  SpellReplace() uses setline().  Can it use "z="
+somehow?  Or use a new function.
 
 Mac: Using gvim: netrw window disappears. (Nick Lo, 2006 Jun 21)
 
@@ -541,10 +579,6 @@ moved to the next line.  Default '>', set to a space to blank it out.  Check
 that char is single width when it's set (compare with 'listchars').
 
 The generated vim.bat can avoid the loop for NT. (Carl Zmola, 2006 Sep 3)
-
-In a C file with spell checking, in "% integer" "nteger" is seen as an error,
-but "]s" doesn't find it.  "nteger" by itself is found. (Ralf Wildenhues, 2008
-Jul 22)
 
 Session file creation: 'autochdir' causes trouble.  Keep it off until after
 loading all files.
@@ -561,10 +595,6 @@ shell supports it), catch errors in a file and update the error list on the
 fly.  A bit like "!make > file&" and repeating ":cf file".  ":bgmake",
 background make.  ":bgcancel" interrupts it.
 A.Politz may work on this.
-
-The spellfile plugin checks for a writable "spell" directory.  A user may have
-a writable runtime directory without a "spell" directory, it could be created
-then.
 
 These two abbreviations don't give the same result:
 	let asdfasdf = "xyz\<Left>"
@@ -653,8 +683,6 @@ the cursor line.  It works OK after some other commands.
 Win32: Is it possible to have both postscript and Win32 printing?
 Does multi-byte printing with ":hardcopy" work?  Add remark in documentation
 about this.
-
-There should be something about spell checking in the user manual.
 
 Check: Running Vim in a console and still having connect to the X server for
 copy/paste: is stopping the X server handled gracefully?  Should catch the X
@@ -746,10 +774,6 @@ Is it possible to use "foo#var" instead of "g:foo#var" inside a function?
 
 Syntax HL: When using "nextgroup" and the group has an empty match, there is
 no search at that position for another match. (Lukas Mai, 2008 April 11)
-
-Spell menu: When using the Popup menu to select a replacement word,
-":spellrepeat" doesn't work.  SpellReplace() uses setline().  Can it use "z="
-somehow?  Or use a new function.
 
 In gvim the backspace key produces a backspace character, but on Linux the
 VERASE key is Delete.  Set VERASE to Backspace? (patch by Stephane Chazelas,
@@ -1961,7 +1985,6 @@ Spell checking:
     implement CHECKCOMPOUNDTRIPLE
     Add CHECKCOMPOUNDCASE: when compounding make leading capital lower case.
     How is it supposed to work?
-8   implement using CHECKCOMPOUNDPATTERN: match words with sl_comppat[].
 -   Add a command the repeats ]s and z=, showing the misspelled word in its
     context.  Thus to spell-check a whole file.
 -   suggestion for "KG" to "kg" when it's keepcase.
