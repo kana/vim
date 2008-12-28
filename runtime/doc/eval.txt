@@ -1,4 +1,4 @@
-*eval.txt*	For Vim version 7.2.  Last change: 2008 Nov 27
+*eval.txt*	For Vim version 7.2.  Last change: 2008 Dec 03
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -853,7 +853,8 @@ expr8[expr1]		item of String or |List|	*expr-[]* *E111*
 
 If expr8 is a Number or String this results in a String that contains the
 expr1'th single byte from expr8.  expr8 is used as a String, expr1 as a
-Number.  Note that this doesn't recognize multi-byte encodings.
+Number.  This doesn't recognize multi-byte encodings, see |byteidx()| for
+an alternative.
 
 Index zero gives the first character.  This is like it works in C.  Careful:
 text column numbers start with one!  Example, to get the character under the
@@ -878,8 +879,8 @@ expr8[expr1a : expr1b]	substring or sublist		*expr-[:]*
 
 If expr8 is a Number or String this results in the substring with the bytes
 from expr1a to and including expr1b.  expr8 is used as a String, expr1a and
-expr1b are used as a Number.  Note that this doesn't recognize multi-byte
-encodings.
+expr1b are used as a Number.  This doesn't recognize multi-byte encodings, see
+|byteidx()| for computing the indexes.
 
 If expr1a is omitted zero is used.  If expr1b is omitted the length of the
 string minus one is used.
@@ -1317,6 +1318,8 @@ v:count		The count given for the last Normal mode command.  Can be used
 	:map _x :<C-U>echo "the count is " . v:count<CR>
 <		Note: The <C-U> is required to remove the line range that you
 		get when typing ':' after a count.
+		When there are two counts, as in "3d2w", they are multiplied,
+		just like what happens in the command, "d6w" for the example.
 		Also used for evaluating the 'formatexpr' option.
 		"count" also works, for backwards compatibility.
 
@@ -2476,7 +2479,7 @@ empty({expr})						*empty()*
 		Return the Number 1 if {expr} is empty, zero otherwise.
 		A |List| or |Dictionary| is empty when it does not have any
 		items.	A Number is empty when its value is zero.
-		For a long |List| this is much faster then comparing the
+		For a long |List| this is much faster than comparing the
 		length with zero.
 
 escape({string}, {chars})				*escape()*
@@ -3052,7 +3055,7 @@ getcharmod()						*getcharmod()*
 			128	Macintosh only: command
 		Only the modifiers that have not been included in the
 		character itself are obtained.	Thus Shift-a results in "A"
-		with no modifier.
+		without a modifier.
 
 getcmdline()						*getcmdline()*
 		Return the current command-line.  Only works when the command
@@ -5849,7 +5852,7 @@ mouse_netterm		Compiled with support for netterm mouse.
 mouse_pterm		Compiled with support for qnx pterm mouse.
 mouse_sysmouse		Compiled with support for sysmouse (*BSD console mouse)
 mouse_xterm		Compiled with support for xterm mouse.
-multi_byte		Compiled with support for 'encoding'
+multi_byte		Compiled with support for editing Korean et al.
 multi_byte_encoding	'encoding' is set to a multi-byte encoding.
 multi_byte_ime		Compiled with support for IME input method.
 multi_lang		Compiled with support for multiple languages.
@@ -6829,7 +6832,7 @@ This would call the function "my_func_whizz(parameter)".
 		:execute 'while i < 5 | echo i | let i = i + 1 | endwhile'
 <
 
-							*:comment*
+							*:exe-comment*
 			":execute", ":echo" and ":echon" cannot be followed by
 			a comment directly, because they see the '"' as the
 			start of a string.  But, you can use '|' followed by a

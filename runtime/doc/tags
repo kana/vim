@@ -1973,7 +1973,7 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 :command-range	map.txt	/*:command-range*
 :command-register	map.txt	/*:command-register*
 :command-verbose	map.txt	/*:command-verbose*
-:comment	eval.txt	/*:comment*
+:comment	cmdline.txt	/*:comment*
 :comp	quickfix.txt	/*:comp*
 :compiler	quickfix.txt	/*:compiler*
 :con	eval.txt	/*:con*
@@ -2089,6 +2089,7 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 :enew!	editing.txt	/*:enew!*
 :ex	editing.txt	/*:ex*
 :exe	eval.txt	/*:exe*
+:exe-comment	eval.txt	/*:exe-comment*
 :execute	eval.txt	/*:execute*
 :exi	editing.txt	/*:exi*
 :exit	editing.txt	/*:exit*
@@ -4108,6 +4109,7 @@ E807	eval.txt	/*E807*
 E808	eval.txt	/*E808*
 E809	cmdline.txt	/*E809*
 E81	map.txt	/*E81*
+E810	diff.txt	/*E810*
 E82	message.txt	/*E82*
 E83	message.txt	/*E83*
 E84	windows.txt	/*E84*
@@ -7212,6 +7214,7 @@ spell	spell.txt	/*spell*
 spell-ACCENT	spell.txt	/*spell-ACCENT*
 spell-AUTHOR	spell.txt	/*spell-AUTHOR*
 spell-BAD	spell.txt	/*spell-BAD*
+spell-BREAK	spell.txt	/*spell-BREAK*
 spell-CHECKCOMPOUNDCASE	spell.txt	/*spell-CHECKCOMPOUNDCASE*
 spell-CHECKCOMPOUNDDUP	spell.txt	/*spell-CHECKCOMPOUNDDUP*
 spell-CHECKCOMPOUNDPATTERN	spell.txt	/*spell-CHECKCOMPOUNDPATTERN*
@@ -7231,6 +7234,7 @@ spell-COMPOUNDMIN	spell.txt	/*spell-COMPOUNDMIN*
 spell-COMPOUNDPERMITFLAG	spell.txt	/*spell-COMPOUNDPERMITFLAG*
 spell-COMPOUNDROOT	spell.txt	/*spell-COMPOUNDROOT*
 spell-COMPOUNDRULE	spell.txt	/*spell-COMPOUNDRULE*
+spell-COMPOUNDRULES	spell.txt	/*spell-COMPOUNDRULES*
 spell-COMPOUNDSYLLABLE	spell.txt	/*spell-COMPOUNDSYLLABLE*
 spell-COMPOUNDSYLMAX	spell.txt	/*spell-COMPOUNDSYLMAX*
 spell-COMPOUNDWORDMAX	spell.txt	/*spell-COMPOUNDWORDMAX*
@@ -7241,6 +7245,7 @@ spell-FOL	spell.txt	/*spell-FOL*
 spell-FORBIDDENWORD	spell.txt	/*spell-FORBIDDENWORD*
 spell-HOME	spell.txt	/*spell-HOME*
 spell-KEEPCASE	spell.txt	/*spell-KEEPCASE*
+spell-KEY	spell.txt	/*spell-KEY*
 spell-LANG	spell.txt	/*spell-LANG*
 spell-LEMMA_PRESENT	spell.txt	/*spell-LEMMA_PRESENT*
 spell-LOW	spell.txt	/*spell-LOW*

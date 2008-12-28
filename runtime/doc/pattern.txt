@@ -1,4 +1,4 @@
-*pattern.txt*   For Vim version 7.2.  Last change: 2008 Sep 05
+*pattern.txt*   For Vim version 7.2.  Last change: 2008 Nov 18
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -883,10 +883,13 @@ $	At end of pattern or in front of "\|", "\)" or "\n" ('magic' on):
 	this will clearly show when the match is updated or not.
 	To match the text up to column 17: >
 		/.*\%17v
-<	Column 17 is not included, because that's where the "\%17v" matches,
-	and since this is a |/zero-width| match, column 17 isn't included in
-	the match.  This does the same: >
-		/.*\%<18v
+<	Column 17 is included, because that's where the "\%17v" matches,
+	even though this is a |/zero-width| match.  Adding a dot to match the
+	next character has the same result: >
+		/.*\%17v.
+<	This command does the same thing, but also matches when there is no
+	character in column 17: >
+		/.*\%<18v.
 <
 
 Character classes: {not in Vi}

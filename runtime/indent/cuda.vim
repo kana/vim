@@ -1,5 +1,5 @@
 " Vim indent file
-" Language:	C++
+" Language:	CUDA
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
 " Last Change:	2008 Nov 29
 
@@ -9,7 +9,7 @@ if exists("b:did_indent")
 endif
 let b:did_indent = 1
 
-" C++ indenting is built-in, thus this is very simple
+" It's just like C indenting
 setlocal cindent
 
 let b:undo_indent = "setl cin<"
