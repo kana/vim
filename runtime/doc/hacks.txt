@@ -7,6 +7,30 @@ All changes are licensed under the same terms of Vim.  See |license|.
 ==============================================================================
 INDEX OF HACKS						*hacks-index*
 
+Universal |:end|					*hacks-universal-:end*
+	Vim has many :end-commands such as |:endif| and users must use right
+	:end-command in the right place.  For example:
+>
+		for i in ...
+		  while ...
+		    if ...
+		      ...
+		    endif
+		  endwhile
+		endfor
+<
+	It's not convenient to write, so that universal :end command is added.
+	With :end, you can end all types of clauses as follows:
+>
+		for i in ...
+		  while ...
+		    if ...
+		      ...
+		    end
+		  end
+		end
+<
+
 
 
 

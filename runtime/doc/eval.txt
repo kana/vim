@@ -6829,6 +6829,11 @@ This would call the function "my_func_whizz(parameter)".
 			start of a string.  But, you can use '|' followed by a
 			comment.  Example: >
 		:echo "foo" | "this is a comment
+<
+
+							*:end*
+:end		Same as |:endif|, |:endfor|, |:endwhile| and so forth,
+		according to the context.
 
 ==============================================================================
 8. Exception handling					*exception-handling*
