@@ -7,6 +7,23 @@ All changes are licensed under the same terms of Vim.  See |license|.
 ==============================================================================
 INDEX OF HACKS						*hacks-index*
 
+Insert mode completions as functions		*hacks-ins-completion-func*
+	Add built-in functions corresponding to various |ins-completion|.
+	These functions can be used for 'completefunc' and 'omnifunc'.
+
+	Function			Corresponding completion ~
+	|complete_definitions()|	|i_CTRL-X_CTRL-D|
+	|complete_dictionary()|		|i_CTRL-X_CTRL-K|
+	|complete_file_names()|		|i_CTRL-X_CTRL-F|
+	|complete_keywords()|		|i_CTRL-N|
+	|complete_keywords_c()|		|i_CTRL-X_CTRL-N|
+	|complete_keywords_i()|		|i_CTRL-X_CTRL-I|
+	|complete_lines()|		|i_CTRL-X_CTRL-L|
+	|complete_spell()|		|i_CTRL-X_s|
+	|complete_tags()|		|i_CTRL-X_CTRL-]|
+	|complete_thesaurus()|		|i_CTRL-X_CTRL-T|
+	|complete_vim_script()|		|i_CTRL-X_CTRL-V|
+
 
 
 
