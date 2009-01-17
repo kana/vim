@@ -1,4 +1,4 @@
-*cmdline.txt*   For Vim version 7.2.  Last change: 2008 Nov 24
+*cmdline.txt*   For Vim version 7.2.  Last change: 2008 Dec 17
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -1020,7 +1020,7 @@ VARIOUS
 
 The command-line window cannot be used:
 - when there already is a command-line window (no nesting)
-- for entering a encryption key or when using inputsecret()
+- for entering an encryption key or when using inputsecret()
 - when Vim was not compiled with the +vertsplit feature
 
 Some options are set when the command-line window is opened:

@@ -1,4 +1,4 @@
-*starting.txt*  For Vim version 7.2.  Last change: 2008 Nov 20
+*starting.txt*  For Vim version 7.2.  Last change: 2009 Jan 09
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -771,7 +771,8 @@ accordingly.  Vim proceeds in this order:
 	  *VIMINIT* *.vimrc* *_vimrc* *EXINIT* *.exrc* *_exrc* *$MYVIMRC*
      c. Four places are searched for initializations.  The first that exists
 	is used, the others are ignored.  The $MYVIMRC environment variable is
-	set to the file that was first found, unless $MYVIMRC was already set.
+	set to the file that was first found, unless $MYVIMRC was already set
+	and when using VIMINIT.
 	-  The environment variable VIMINIT (see also |compatible-default|) (*)
 	   The value of $VIMINIT is used as an Ex command line.
 	-  The user vimrc file(s):

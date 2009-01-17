@@ -1,4 +1,4 @@
-*eval.txt*	For Vim version 7.2.  Last change: 2008 Dec 03
+*eval.txt*	For Vim version 7.2.  Last change: 2009 Jan 10
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -896,7 +896,8 @@ Examples: >
 	:let c = name[-2:-2]		" last but one byte of a string
 	:let s = line(".")[4:]		" from the fifth byte to the end
 	:let s = s[:-3]			" remove last two bytes
-
+<
+							*sublist* *slice*
 If expr8 is a |List| this results in a new |List| with the items indicated by
 the indexes expr1a and expr1b.	This works like with a String, as explained
 just above, except that indexes out of range cause an error.  Examples: >
@@ -3586,7 +3587,7 @@ inputlist({textlist})					*inputlist()*
 		above the first item a negative number is returned.  When
 		clicking on the prompt one more than the length of {textlist}
 		is returned.
-		Make sure {textlist} has less then 'lines' entries, otherwise
+		Make sure {textlist} has less than 'lines' entries, otherwise
 		it won't work.	It's a good idea to put the entry number at
 		the start of the string.  And put a prompt in the first item.
 		Example: >
@@ -4522,6 +4523,7 @@ rename({from}, {to})					*rename()*
 		should also work to move files across file systems.  The
 		result is a Number, which is 0 if the file was renamed
 		successfully, and non-zero when the renaming failed.
+		NOTE: If {to} exists it is overwritten without warning.
 		This function is not available in the |sandbox|.
 
 repeat({expr}, {count})					*repeat()*
@@ -5852,7 +5854,7 @@ mouse_netterm		Compiled with support for netterm mouse.
 mouse_pterm		Compiled with support for qnx pterm mouse.
 mouse_sysmouse		Compiled with support for sysmouse (*BSD console mouse)
 mouse_xterm		Compiled with support for xterm mouse.
-multi_byte		Compiled with support for editing Korean et al.
+multi_byte		Compiled with support for 'encoding'
 multi_byte_encoding	'encoding' is set to a multi-byte encoding.
 multi_byte_ime		Compiled with support for IME input method.
 multi_lang		Compiled with support for multiple languages.
