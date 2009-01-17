@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.2.  Last change: 2008 Dec 08
+*todo.txt*      For Vim version 7.2.  Last change: 2009 Jan 14
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,10 +30,27 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
-Patch to improve use of "killed" event in Netbeans interface. (Xavier de Gaye,
-2008 Nov 23)
+Patch to make meta termcap keys work when 'encoding' is utf-8. (Matt Wozkiski,
+2008 Dec 13)
 
-Cursor invisible in Visual block mode. (Matti Niemenmaa, 2008 Nov 26)
+Patch for OpenClipboard() failing. Jianrong Yu, 2009 Jan 6.
+
+2html.vim doesn't take double-wide characters into account when expanding
+tabs.  Patch by Yukihiro Nakadaira, 2008 Nov 23.
+New version: 2008 Dec 4, Dec 5.
+
+Patch to fix multi-byte handling for inputdialog(), :promptfind and
+:promptrepl. (Yanwei Jia, 2008 Dec 12)
+
+Patch to add "focusonly" to 'scrollopt', so that scrollbind also applies in
+window that doesn't have focus. (Jonathon Mah, 2009 Jan 12)
+
+Cursor invisible in Visual block mode. (Matti Niemenmaa, 2008 Nov 26,
+also Renato Alves, 2009 Jan 13)
+
+Vim_rename(): when CASE_INSENSITIVE_FILENAME is defined and names do differ
+in case, use same mechanism as used for Unix when from and to are the same
+file.
 
 When compiled as small version cursor is displayed after end-of-line for some
 values of 'tabstop'.  (James Vega, 22 Nov 2008)
@@ -41,12 +58,21 @@ values of 'tabstop'.  (James Vega, 22 Nov 2008)
 ml_get errors after reloading a file that was overwritten with ":silent! w!
 /tmp/tt".
 
-2html.vim doesn't take double-wide characters into account when expanding
-tabs.  Patch by Yukihiro Nakadaira, 2008 Nov 23.
-New version: 2008 Dec 4, Dec 5.
+Win32: completion of file name ":e c:\!test" results in ":e c:\\!test", which
+does not work. (Nieko Maatjes, 2009 Jan 8)
+
+Should make 'ignorecase' global-local, so that it makes sense setting it from
+a modeline.
+
+Consider making YankRing or something else that keeps a list of yanked text
+part of standard Vim.  The "1 to "9 registers are not sufficient.
 
 netrw: dragging status line causes selection of entry.  Should check row
 number to be below last visible line.
+
+Make do_do_join() work faster.  Could at least do a binary search way of doing
+this.  Hint from Dominique Pelle, Dec 10; Lee Naish, Dec 11.
+Patch from Milan Vancura, 2008 Dec 22.  Update 2009 Jan 7 in two parts.
 
 After doing "su" $HOME can be the old user's home, thus ~root/file is not
 correct.  Don't use it in the swap file.
@@ -55,9 +81,10 @@ Allow patches to add something to version.c, like with an official patch, so
 that :version output shows which patches have been applied.
 
 Have a look at patch for utf-8 line breaking. (Yongwei Wu, 2008 Mar 1, Mar 23)
+Now at: http://vimgadgets.sourceforge.net/liblinebreak/
 
 Disable setting 'encoding' from a modeline?  It usually causes problems, can't
-do any good.
+do any good.  (Patch from Patrick Texier, 2008 Dec 9)
 
 When changing 'encoding' convert all the swap file names, so that we can
 still delete them.  Also convert all buffer file names?
@@ -70,9 +97,6 @@ Something wrong with session that has "cd" commands and "badd", in such a way
 that Vim doesn't find the edited file in the buffer list, causing the
 ATTENTION message?  (Tony Mechelynck, 2008 Dec 1)
 Also: swap files are in ~/tmp/  One has relative file name ".mozilla/...".
-
-Tag stack not returning to right tag with ":tag". (Erik Falor, 2008 Nov 5)
-Patch 2008 Nov 12.
 
 Add v:motion_force. (Kana Natsuno, 2008 Dec 6)
 
@@ -191,6 +215,7 @@ GUI: In Normal mode can't yank the modeless selection.  Make "gy" do this?
 Works like CTRL-Y in Command line mode.
 
 Patch for Ruby sockets. (todesking/Ariya Mizutani, 2008 Jul 1,24)
+Confirmed by Anton Sharonov, 2008 Dec 26.
 
 Mac: Move Carbon todo items to os_mac.txt.  Note that this version is frozen,
 try the Cocoa version.
@@ -371,7 +396,7 @@ Changes for Win32 makefile. (Mike Williams, 2007 Jan 22, Alexei Alexandrov,
 Patch for Win32 clipboard under Cygwin. (Frodak Baksik, Feb 15)
     Sutcliffe says it works well.
     Update 2007 May 22 for Vim 7.1
-    Update 2008 Oct 2008 for Vim 7.2 (Sharonov)
+    Update 2008 Dec 2008 for Vim 7.2.xx (Sharonov)
 
 Win32: Can't complete shell command names.  Why is setting xp_context in
 set_one_cmd_context() inside #ifndef BACKSLASH_IN_FILENAME?
@@ -571,9 +596,6 @@ Mac: Using gvim: netrw window disappears. (Nick Lo, 2006 Jun 21)
 Mac: OS/X 10.4 with Python 2.5 installed: configure finds an extra argument
 that breaks the build. (Brian Victor, 2008 Sep 1)
 
-When 'ff' is "mac" then "ga" on a ^J shows 0x0d instead of 0x0a.  Compare with
-using "ga" on a NUL when 'ff' is "unix". (Andy Wokula, 2008 Jul 16)
-
 Add an option to specify the character to use when a double-width character is
 moved to the next line.  Default '>', set to a space to blank it out.  Check
 that char is single width when it's set (compare with 'listchars').
@@ -705,6 +727,9 @@ put backslashes before special chars, only for white space.
 
 Syntax HL: open two windows on the same C code, delete a ")" in one window,
 resulting in highlighted "{" in that window, not in the other.
+
+In mswin.vim: Instead of mapping <C-V> for Insert mode in a complicated way,
+can it be done like ":imap <C-V> <MiddleMouse>" without negative side effects?
 
 Win32: When the GUI tab pages line is displayed Vim jumps from the secondary
 to the primary monitor. (Afton Lewis, 2007 Mar 9)  Old resizing problem?
@@ -2895,6 +2920,10 @@ GUI:
 
 Autocommands:
 -   Put autocommand event names in a hashtable for faster lookup?
+8   When the SwapExists event is triggered, provide information about the
+    swap file, e.g., whether the process is running, file was modified, etc.
+    Must be possible to check the situation that it's probably OK to delete
+    the swap file. (Marc Merlin)
 8   When all the patterns for an event are "*" there is no need to expand
     buffer names to a full path.  This can be slow for NFS.
 7   For autocommand events that trigger multiple times per buffer (e.g.,

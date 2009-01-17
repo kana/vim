@@ -1,4 +1,4 @@
-*diff.txt*      For Vim version 7.2.  Last change: 2008 Nov 28
+*diff.txt*      For Vim version 7.2.  Last change: 2009 Jan 14
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -237,7 +237,8 @@ that the buffers will be equal within the specified range.
 							*:diffg* *:diffget*
 :[range]diffg[et] [bufspec]
 		Modify the current buffer to undo difference with another
-		buffer.  If [bufspec] is given, that buffer is used.
+		buffer.  If [bufspec] is given, that buffer is used.  If
+		[bufspec] refers to the current buffer then nothing happens.
 		Otherwise this only works if there is one other buffer in diff
 		mode.
 		See below for [range].

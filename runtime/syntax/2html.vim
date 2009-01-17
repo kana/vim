@@ -1,6 +1,6 @@
 " Vim syntax support file
 " Maintainer: Bram Moolenaar <Bram@vim.org>
-" Last Change: 2008 Dec 03
+" Last Change: 2009 Jan 13
 "	       (modified by David Ne\v{c}as (Yeti) <yeti@physics.muni.cz>)
 "	       (XHTML support by Panagiotis Issaris <takis@lumumba.luc.ac.be>)
 "	       (made w3 compliant by Edd Barrett <vext01@gmail.com>)
@@ -223,13 +223,13 @@ else
   let s:tag_close = '>'
 endif
 
-" Cache html_no_pre incase we have to turn it on for non-css mode
+" Cache html_no_pre in case we have to turn it on for non-css mode
 if exists("html_no_pre")
   let s:old_html_no_pre = html_no_pre
 endif
 
 if !exists("html_use_css")
-  " Cant put font tags in <pre>
+  " Can't put font tags in <pre>
   let html_no_pre=1
 endif
 
@@ -283,6 +283,11 @@ if exists("html_end_line")
 else
   let s:end = line("$")
 endif
+if s:numblines
+  let s:margin = strlen(s:end) + 1
+else
+  let s:margin = 0
+endif
 
 if has('folding') && !exists('html_ignore_folding')
   let s:foldfillchar = &fillchars[matchend(&fillchars, 'fold:')]
@@ -312,7 +317,7 @@ while s:lnum <= s:end
 
       if !exists("html_no_pre")
 	" HTML line wrapping is off--go ahead and fill to the margin
-	let s:new = s:new . repeat(s:difffillchar, &columns - strlen(s:new))
+	let s:new = s:new . repeat(s:difffillchar, &columns - strlen(s:new) - s:margin)
       else
 	let s:new = s:new . repeat(s:difffillchar, 3)
       endif
@@ -320,7 +325,7 @@ while s:lnum <= s:end
       let s:new = s:HtmlFormat(s:new, "DiffDelete")
       if s:numblines
 	" Indent if line numbering is on; must be after escaping.
-	let s:new = repeat(s:LeadingSpace, strlen(s:end) + 1) . s:new
+	let s:new = repeat(s:LeadingSpace, s:margin) . s:new
       endif
       exe s:newwin . "wincmd w"
       exe "normal! a" . s:new . s:HtmlEndline . "\n\e"
@@ -334,7 +339,7 @@ while s:lnum <= s:end
 
   " Start the line with the line number.
   if s:numblines
-    let s:new = repeat(' ', strlen(s:end) - strlen(s:lnum)) . s:lnum . ' '
+    let s:new = repeat(' ', s:margin - 1 - strlen(s:lnum)) . s:lnum . ' '
   else
     let s:new = ""
   endif
@@ -359,7 +364,6 @@ while s:lnum <= s:end
     " A line that is not folded.
     "
     let s:line = getline(s:lnum)
-
     let s:len = strlen(s:line)
 
     if s:numblines
@@ -381,7 +385,7 @@ while s:lnum <= s:end
 	while s:col <= s:len && s:id == diff_hlID(s:lnum, s:col) | let s:col = s:col + 1 | endwhile
 	if s:len < &columns && !exists("html_no_pre")
 	  " Add spaces at the end to mark the changed line.
-	  let s:line = s:line . repeat(' ', &columns - s:len)
+	  let s:line = s:line . repeat(' ', &columns - virtcol([s:lnum, s:len]) - s:margin)
 	  let s:len = &columns
 	endif
       else
@@ -532,7 +536,7 @@ endif
 " Save a little bit of memory (worth doing?)
 unlet s:htmlfont
 unlet s:old_et s:old_paste s:old_icon s:old_report s:old_title s:old_search
-unlet s:whatterm s:idlist s:lnum s:end s:fgc s:bgc s:old_magic
+unlet s:whatterm s:idlist s:lnum s:end s:margin s:fgc s:bgc s:old_magic
 unlet! s:col s:id s:attr s:len s:line s:new s:expandedtab s:numblines
 unlet s:orgwin s:newwin s:orgbufnr
 if !v:profiling

@@ -1,7 +1,7 @@
 " Vim support file to detect file types
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2008 Dec 08
+" Last Change:	2008 Dec 14
 
 " Listen very carefully, I will say this only once
 if exists("did_load_filetypes")
@@ -707,7 +707,7 @@ au BufNewFile,BufRead .gdbinit			setf gdb
 au BufNewFile,BufRead *.mo,*.gdmo		setf gdmo
 
 " Gedcom
-au BufNewFile,BufRead *.ged			setf gedcom
+au BufNewFile,BufRead *.ged,lltxxxxx.txt	setf gedcom
 
 " Git
 autocmd BufNewFile,BufRead *.git/COMMIT_EDITMSG    setf gitcommit
@@ -1046,7 +1046,7 @@ func! s:FTm()
   let n = 1
   while n < 10
     let line = getline(n)
-    if line =~ '^\s*\(#\s*\(include\|import\)\>\|/\*\)'
+    if line =~ '^\s*\(#\s*\(include\|import\)\>\|/\*\|//\)'
       setf objc
       return
     endif
@@ -1072,6 +1072,9 @@ au BufNewFile,BufRead *.nb			setf mma
 
 " Maya Extension Language
 au BufNewFile,BufRead *.mel			setf mel
+
+" Mercurial config (looks like generic config file)
+au BufNewFile,BufRead *.hgrc,*hgrc		setf cfg
 
 " Messages
 au BufNewFile,BufRead /var/log/messages,/var/log/messages.*[0-9]  setf messages
@@ -2332,6 +2335,9 @@ au BufNewFile,BufRead *fvwm2rc*
 	\|else
 	\|  let b:fvwm_version = 2 | call s:StarSetf('fvwm')
 	\|endif
+
+" Gedcom
+au BufNewFile,BufRead /tmp/lltmp*		call s:StarSetf('gedcom')
 
 " GTK RC
 au BufNewFile,BufRead .gtkrc*,gtkrc*		call s:StarSetf('gtkrc')

@@ -2,7 +2,7 @@
 " Language:	Vim 7.2 script
 " Maintainer:	Dr. Charles E. Campbell, Jr. <NdrOchipS@PcampbellAfamily.Mbiz>
 " Last Change:	December 08, 2008
-" Version:	7.2-87
+" Version:	7.2-88
 " Automatically generated keyword lists: {{{1
 
 " Quit when a syntax file was already loaded {{{2
@@ -541,13 +541,13 @@ if !exists("g:vimsyn_embed")
 endif
 
 " [-- perl --] {{{3
-let perlpath= expand("<sfile>:p:h")."/perl.vim"
-if !filereadable(perlpath)
- let perlpath= globpath(&rtp,"syntax/perl.vim")
+let s:perlpath= expand("<sfile>:p:h")."/perl.vim"
+if !filereadable(s:perlpath)
+ let s:perlpath= globpath(&rtp,"syntax/perl.vim")
 endif
-if (g:vimsyn_embed =~ 'p' && has("perl")) && filereadable(perlpath)
+if (g:vimsyn_embed =~ 'p' && has("perl")) && filereadable(s:perlpath)
  unlet! b:current_syntax
- exe "syn include @vimPerlScript ".perlpath
+ exe "syn include @vimPerlScript ".s:perlpath
  if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 'p'
   syn region vimPerlRegion fold matchgroup=vimScriptDelim start=+pe\%[rl]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimPerlScript
   syn region vimPerlRegion fold matchgroup=vimScriptDelim start=+pe\%[rl]\s*<<\s*$+ end=+\.$+ contains=@vimPerlScript
@@ -560,16 +560,16 @@ else
  syn region vimEmbedError start=+pe\%[rl]\s*<<\s*\z(.*\)$+ end=+^\z1$+
  syn region vimEmbedError start=+pe\%[rl]\s*<<\s*$+ end=+\.$+
 endif
-unlet perlpath
+unlet s:perlpath
 
 " [-- ruby --] {{{3
-let rubypath= expand("<sfile>:p:h")."/ruby.vim"
-if !filereadable(rubypath)
- let rubypath= globpath(&rtp,"syntax/ruby.vim")
+let s:rubypath= expand("<sfile>:p:h")."/ruby.vim"
+if !filereadable(s:rubypath)
+ let s:rubypath= globpath(&rtp,"syntax/ruby.vim")
 endif
-if (g:vimsyn_embed =~ 'r' && has("ruby")) && filereadable(rubypath)
+if (g:vimsyn_embed =~ 'r' && has("ruby")) && filereadable(s:rubypath)
  unlet! b:current_syntax
- exe "syn include @vimRubyScript ".rubypath
+ exe "syn include @vimRubyScript ".s:rubypath
  if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 'r'
   syn region vimRubyRegion fold matchgroup=vimScriptDelim start=+rub[y]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimRubyScript
  else
@@ -581,16 +581,16 @@ else
  syn region vimEmbedError start=+rub[y]\s*<<\s*\z(.*\)$+ end=+^\z1$+
  syn region vimEmbedError start=+rub[y]\s*<<\s*$+ end=+\.$+
 endif
-unlet rubypath
+unlet s:rubypath
 
 " [-- python --] {{{3
-let pythonpath= expand("<sfile>:p:h")."/python.vim"
-if !filereadable(pythonpath)
- let pythonpath= globpath(&rtp,"syntax/python.vim")
+let s:pythonpath= expand("<sfile>:p:h")."/python.vim"
+if !filereadable(s:pythonpath)
+ let s:pythonpath= globpath(&rtp,"syntax/python.vim")
 endif
-if (g:vimsyn_embed =~ 'P' && has("python")) && filereadable(pythonpath)
+if (g:vimsyn_embed =~ 'P' && has("python")) && filereadable(s:pythonpath)
  unlet! b:current_syntax
- exe "syn include @vimPythonScript ".pythonpath
+ exe "syn include @vimPythonScript ".s:pythonpath
  if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 'P'
   syn region vimPythonRegion fold matchgroup=vimScriptDelim start=+py\%[thon]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimPythonScript
   syn region vimPythonRegion fold matchgroup=vimScriptDelim start=+py\%[thon]\s*<<\s*$+ end=+\.$+ contains=@vimPythonScript
@@ -603,23 +603,23 @@ else
  syn region vimEmbedError start=+py\%[thon]\s*<<\s*\z(.*\)$+ end=+^\z1$+
  syn region vimEmbedError start=+py\%[thon]\s*<<\s*$+ end=+\.$+
 endif
-unlet pythonpath
+unlet s:pythonpath
 
 " [-- tcl --] {{{3
 if has("win32") || has("win95") || has("win64") || has("win16")
  " apparently has("tcl") has been hanging vim on some windows systems with cygwin
- let trytcl= (&shell !~ '\<\%(bash\>\|4[nN][tT]\|\<zsh\)\>\%(\.exe\)\=$')
+ let s:trytcl= (&shell !~ '\<\%(bash\>\|4[nN][tT]\|\<zsh\)\>\%(\.exe\)\=$')
 else
- let trytcl= 1
+ let s:trytcl= 1
 endif
-if trytcl
- let tclpath= expand("<sfile>:p:h")."/tcl.vim"
- if !filereadable(tclpath)
-  let tclpath= globpath(&rtp,"syntax/tcl.vim")
+if s:trytcl
+ let s:tclpath= expand("<sfile>:p:h")."/tcl.vim"
+ if !filereadable(s:tclpath)
+  let s:tclpath= globpath(&rtp,"syntax/tcl.vim")
  endif
- if (g:vimsyn_embed =~ 't' && has("tcl")) && filereadable(tclpath)
+ if (g:vimsyn_embed =~ 't' && has("tcl")) && filereadable(s:tclpath)
   unlet! b:current_syntax
-  exe "syn include @vimTclScript ".tclpath
+  exe "syn include @vimTclScript ".s:tclpath
   if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 't'
    syn region vimTclRegion fold matchgroup=vimScriptDelim start=+tc[l]\=\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimTclScript
    syn region vimTclRegion fold matchgroup=vimScriptDelim start=+tc[l]\=\s*<<\s*$+ end=+\.$+ contains=@vimTclScript
@@ -632,18 +632,22 @@ if trytcl
   syn region vimEmbedError start=+tc[l]\=\s*<<\s*\z(.*\)$+ end=+^\z1$+
   syn region vimEmbedError start=+tc[l]\=\s*<<\s*$+ end=+\.$+
  endif
- unlet tclpath
+ unlet s:tclpath
 else
  syn region vimEmbedError start=+tc[l]\=\s*<<\s*\z(.*\)$+ end=+^\z1$+
  syn region vimEmbedError start=+tc[l]\=\s*<<\s*$+ end=+\.$+
 endif
-unlet trytcl
+unlet s:trytcl
 
 " [-- mzscheme --] {{{3
-if (g:vimsyn_embed =~ 'm' && has("mzscheme")) && filereadable(expand("<sfile>:p:h")."/scheme.vim")
+let s:mzschemepath= expand("<sfile>:p:h")."/scheme.vim"
+if !filereadable(s:mzschemepath)
+ let s:mzschemepath= globpath(&rtp,"syntax/scheme.vim")
+endif
+if (g:vimsyn_embed =~ 'm' && has("mzscheme")) && filereadable(s:mzschemepath)
  unlet! b:current_syntax
  let iskKeep= &isk
- syn include @vimMzSchemeScript <sfile>:p:h/scheme.vim
+ exe "syn include @vimMzSchemeScript ".s:mzschemepath
  let &isk= iskKeep
  if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 'm'
   syn region vimMzSchemeRegion fold matchgroup=vimScriptDelim start=+mz\%[scheme]\s*<<\s*\z(.*\)$+ end=+^\z1$+ contains=@vimMzSchemeScript
@@ -657,6 +661,7 @@ else
  syn region vimEmbedError start=+mz\%[scheme]\s*<<\s*\z(.*\)$+ end=+^\z1$+
  syn region vimEmbedError start=+mz\%[scheme]\s*<<\s*$+ end=+\.$+
 endif
+unlet s:mzschemepath
 
 " Synchronize (speed) {{{2
 "============
@@ -671,6 +676,7 @@ endif
 syn sync linecont	"^\s\+\\"
 syn sync match vimAugroupSyncA	groupthere NONE	"\<aug\%[roup]\>\s\+[eE][nN][dD]"
 
+" ====================
 " Highlighting Settings {{{2
 " ====================
 

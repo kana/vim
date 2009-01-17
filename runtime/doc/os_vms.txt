@@ -1,4 +1,4 @@
-*os_vms.txt*    For Vim version 7.2.  Last change: 2008 Sep 03
+*os_vms.txt*    For Vim version 7.2.  Last change: 2008 Dec 17
 
 
 		  VIM REFERENCE MANUAL
@@ -418,7 +418,7 @@ and run the command procedure below: >
 	$ end:
 
 Note: Never use it in a clustered environment (you do not need it), loading
-could be very-very slow, but even faster then a local Emacs. :-)
+could be very-very slow, but even faster than a local Emacs. :-)
 
 (Zoltan Arpadffy, Vim 5.6)
 

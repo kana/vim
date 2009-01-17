@@ -1,4 +1,4 @@
-*version7.txt*  For Vim version 7.2.  Last change: 2008 Sep 01
+*version7.txt*  For Vim version 7.2.  Last change: 2008 Dec 17
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -1870,7 +1870,7 @@ message for the next buffer.  Temporarily clear 'shortmess' to avoid that.
 Win32: Cannot edit a file starting with # with --remote.  Do escape % and #
 when building the ":drop" command.
 
-A comment or | just after a expression-backtick argument was not recognized.
+A comment or | just after an expression-backtick argument was not recognized.
 E.g. in :e `="foo"`"comment.
 
 "(" does not stop at an empty sentence (single dot and white space) while ")"

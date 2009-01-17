@@ -1,9 +1,7 @@
 " Vim syntax file
-" This is a GENERATED FILE. Please always refer to source file at the URI below.
-" Language: OpenSSH server configuration file (ssh_config)
-" Maintainer: David Ne\v{c}as (Yeti) <yeti@physics.muni.cz>
-" Last Change: 2006-03-05
-" URL: http://trific.ath.cx/Ftp/vim/syntax/sshconfig.vim
+" Language: OpenSSH client configuration file (ssh_config)
+" Maintainer: David Necas (Yeti) <yeti@physics.muni.cz>
+" Last Change: 2009-01-08
 
 " Setup
 if version >= 600
@@ -28,12 +26,14 @@ syn keyword sshconfigTodo TODO FIXME NOT contained
 
 " Constants
 syn keyword sshconfigYesNo yes no ask
+syn keyword sshconfigYesNo any auto
 syn keyword sshconfigCipher blowfish des 3des
 syn keyword sshconfigCipher aes128-cbc 3des-cbc blowfish-cbc cast128-cbc
 syn keyword sshconfigCipher aes192-cbc aes256-cbc aes128-ctr aes256-ctr
 syn keyword sshconfigCipher arcfour arcfour128 arcfour256 cast128-cbc
 syn keyword sshconfigMAC hmac-md5 hmac-sha1 hmac-ripemd160 hmac-sha1-96
 syn keyword sshconfigMAC hmac-md5-96
+syn match sshconfigMAC "\<umac-64@openssh\.com\>"
 syn keyword sshconfigHostKeyAlg ssh-rsa ssh-dss
 syn keyword sshconfigPreferredAuth hostbased publickey password
 syn keyword sshconfigPreferredAuth keyboard-interactive
@@ -41,6 +41,7 @@ syn keyword sshconfigLogLevel QUIET FATAL ERROR INFO VERBOSE
 syn keyword sshconfigLogLevel DEBUG DEBUG1 DEBUG2 DEBUG3
 syn keyword sshconfigSysLogFacility DAEMON USER AUTH LOCAL0 LOCAL1 LOCAL2
 syn keyword sshconfigSysLogFacility LOCAL3 LOCAL4 LOCAL5 LOCAL6 LOCAL7
+syn match sshconfigVar "%[rhpldun]\>"
 syn match sshconfigSpecial "[*?]"
 syn match sshconfigNumber "\d\+"
 syn match sshconfigHostPort "\<\(\d\{1,3}\.\)\{3}\d\{1,3}\(:\d\+\)\?\>"
@@ -49,29 +50,40 @@ syn match sshconfigHostPort "\<\(\x\{,4}:\)\+\x\{,4}[:/]\d\+\>"
 
 " Keywords
 syn keyword sshconfigHostSect Host
-syn keyword sshconfigKeyword AddressFamily BatchMode BindAddress
+syn keyword sshconfigKeyword AddressFamily
+syn keyword sshconfigKeyword BatchMode BindAddress
 syn keyword sshconfigKeyword ChallengeResponseAuthentication CheckHostIP
 syn keyword sshconfigKeyword Cipher Ciphers ClearAllForwardings
 syn keyword sshconfigKeyword Compression CompressionLevel ConnectTimeout
 syn keyword sshconfigKeyword ConnectionAttempts ControlMaster
-syn keyword sshconfigKeyword ControlPath DynamicForward EnableSSHKeysign
-syn keyword sshconfigKeyword EscapeChar ForwardAgent ForwardX11
-syn keyword sshconfigKeyword ForwardX11Trusted GSSAPIAuthentication
+syn keyword sshconfigKeyword ControlPath DynamicForward
+syn keyword sshconfigKeyword EnableSSHKeysign EscapeChar ExitOnForwardFailure
+syn keyword sshconfigKeyword ForwardAgent ForwardX11
+syn keyword sshconfigKeyword ForwardX11Trusted
+syn keyword sshconfigKeyword GSSAPIAuthentication
 syn keyword sshconfigKeyword GSSAPIDelegateCredentials GatewayPorts
-syn keyword sshconfigKeyword GlobalKnownHostsFile HostKeyAlgorithms
+syn keyword sshconfigKeyword GlobalKnownHostsFile
+syn keyword sshconfigKeyword HostKeyAlgorithms KbdInteractiveAuthentication
 syn keyword sshconfigKeyword HashKnownHosts KbdInteractiveDevices
 syn keyword sshconfigKeyword HostKeyAlias HostName HostbasedAuthentication
-syn keyword sshconfigKeyword IdentitiesOnly IdentityFile LocalForward
-syn keyword sshconfigKeyword LogLevel MACs NoHostAuthenticationForLocalhost
-syn keyword sshconfigKeyword NumberOfPasswordPrompts PasswordAuthentication
+syn keyword sshconfigKeyword IdentitiesOnly IdentityFile
+syn keyword sshconfigKeyword LocalForward LogLevel
+syn keyword sshconfigKeyword MACs
+syn keyword sshconfigKeyword NoHostAuthenticationForLocalhost
+syn keyword sshconfigKeyword NumberOfPasswordPrompts
+syn keyword sshconfigKeyword PasswordAuthentication
 syn keyword sshconfigKeyword Port PreferredAuthentications Protocol
 syn keyword sshconfigKeyword ProxyCommand PubkeyAuthentication
-syn keyword sshconfigKeyword RSAAuthentication RemoteForward
+syn keyword sshconfigKeyword PermitLocalCommand
+syn keyword sshconfigKeyword RSAAuthentication RemoteForward RekeyLimit
 syn keyword sshconfigKeyword RhostsAuthentication RhostsRSAAuthentication
 syn keyword sshconfigKeyword SendEnv ServerAliveCountMax ServerAliveInterval
 syn keyword sshconfigKeyword SmartcardDevice StrictHostKeyChecking
+syn keyword sshconfigKeyword Tunnel TunnelDevice
 syn keyword sshconfigKeyword TCPKeepAlive UsePrivilegedPort User
-syn keyword sshconfigKeyword UserKnownHostsFile VerifyHostKeyDNS XAuthLocation
+syn keyword sshconfigKeyword UserKnownHostsFile
+syn keyword sshconfigKeyword VerifyHostKeyDNS VisualHostKey
+syn keyword sshconfigKeyword XAuthLocation
 
 " Define the default highlighting
 if version >= 508 || !exists("did_sshconfig_syntax_inits")
@@ -94,7 +106,8 @@ if version >= 508 || !exists("did_sshconfig_syntax_inits")
 	HiLink sshconfigLogLevel sshconfigEnum
 	HiLink sshconfigSysLogFacility sshconfigEnum
 	HiLink sshconfigPreferredAuth sshconfigEnum
-	HiLink sshconfigEnum Function
+	HiLink sshconfigVar sshconfigEnum
+	HiLink sshconfigEnum Identifier
 	HiLink sshconfigSpecial Special
 	HiLink sshconfigKeyword Keyword
 	HiLink sshconfigHostSect Type
