@@ -1,4 +1,4 @@
-*pi_netrw.txt*  For Vim version 7.2.  Last change: 2009 Jan 14
+*pi_netrw.txt*  For Vim version 7.2.  Last change: 2009 Jan 15
 
 	    -----------------------------------------------------
 	    NETRW REFERENCE MANUAL    by Charles E. Campbell, Jr.
@@ -2562,6 +2562,11 @@ which is loaded automatically at startup (assuming :set nocp).
 ==============================================================================
 12. History						*netrw-history* {{{1
 
+	v136: Jan 14, 2009 * extended |g:Netrw_funcref| to also handle lists
+			     of function references
+	      Jan 14, 2009 * (reported by Marvin Renich) with spell check
+			     enabled, some filenamess will still being
+			     displayed as spelling errors.
 	v135: Oct 29, 2008 * using |simplify()| on directory names
 			     (supporting handling ".."s in directory names)
 	      Oct 31, 2008 * added special file highlighting for core dumps
@@ -2574,7 +2579,7 @@ which is loaded automatically at startup (assuming :set nocp).
 	      Nov 19, 2008 * sprinked some histdel("/",-1)s through the code
 			     in an attempt to prevent netrw from changing
 			     the search history.
-	      Jan 02, 2009 * |g:netrw_funcref| included
+	      Jan 02, 2009 * |g:Netrw_funcref| included
 	      Jan 05, 2009 * Explore */ **/ *// **// all clear explorer
 			     variables
 	      Jan 05, 2009 * (Panagiotis Louridas) extended s:WinPath()

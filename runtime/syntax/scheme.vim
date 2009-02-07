@@ -1,6 +1,6 @@
 " Vim syntax file
-" Language:	Scheme (R5RS)
-" Last Change:	2007 Jun 16
+" Language:	Scheme (R5RS, R6RS keywords by Stepan Zastupov)
+" Last Change:	2009 Jan 16
 " Maintainer:	Sergey Khorev <sergey.khorev@gmail.com>
 " Original author:	Dirk van Deun <dirk@igwe.vub.ac.be>
 
@@ -71,6 +71,7 @@ syn keyword schemeSyntax lambda and or if cond case define let let* letrec
 syn keyword schemeSyntax begin do delay set! else =>
 syn keyword schemeSyntax quote quasiquote unquote unquote-splicing
 syn keyword schemeSyntax define-syntax let-syntax letrec-syntax syntax-rules
+syn keyword schemeSyntax define-record-type fields protocol
 
 syn keyword schemeFunc not boolean? eq? eqv? equal? pair? cons car cdr set-car!
 syn keyword schemeFunc set-cdr! caar cadr cdar cddr caaar caadr cadar caddr
@@ -109,6 +110,14 @@ syn keyword schemeFunc char-ready? load transcript-on transcript-off eval
 syn keyword schemeFunc dynamic-wind port? values call-with-values
 syn keyword schemeFunc scheme-report-environment null-environment
 syn keyword schemeFunc interaction-environment
+syn keyword schemeFunc make-eq-hashtable make-eqv-hashtable make-hashtable
+syn keyword schemeFunc hashtable? hashtable-size hashtable-ref hashtable-set!
+syn keyword schemeFunc hashtable-delete! hashtable-contains? hashtable-update!
+syn keyword schemeFunc hashtable-copy hashtable-clear! hashtable-keys
+syn keyword schemeFunc hashtable-entries hashtable-equivalence-function hashtable-hash-function
+syn keyword schemeFunc hashtable-mutable? equal-hash string-hash string-ci-hash symbol-hash 
+syn keyword schemeFunc find for-all exists filter partition fold-left fold-right
+syn keyword schemeFunc remp remove remv remq memp assp cons*
 
 " ... so that a single + or -, inside a quoted context, would not be
 " interpreted as a number (outside such contexts, it's a schemeFunc)

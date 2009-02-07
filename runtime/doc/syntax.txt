@@ -1,4 +1,4 @@
-*syntax.txt*	For Vim version 7.2.  Last change: 2008 Dec 20
+*syntax.txt*	For Vim version 7.2.  Last change: 2009 Jan 27
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -3417,8 +3417,9 @@ Notes:
 - The highlighted area will never be outside of the matched text.
 - A negative offset for an end pattern may not always work, because the end
   pattern may be detected when the highlighting should already have stopped.
-- Until Vim 7.2 the offsets were counted in bytes instead of characters.  This
-  didn't work well for multi-byte characters.
+- Before Vim 7.2 the offsets were counted in bytes instead of characters.
+  This didn't work well for multi-byte characters, so it was changed with the
+  Vim 7.2 release.
 - The start of a match cannot be in a line other than where the pattern
   matched.  This doesn't work: "a\nb"ms=e.  You can make the highlighting
   start in another line, this does work: "a\nb"hs=e.

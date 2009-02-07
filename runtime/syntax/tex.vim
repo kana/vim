@@ -1,8 +1,8 @@
 " Vim syntax file
 " Language:	TeX
 " Maintainer:	Dr. Charles E. Campbell, Jr. <NdrchipO@ScampbellPfamily.AbizM>
-" Last Change:	Nov 01, 2008
-" Version:	43
+" Last Change:	Jan 22, 2009
+" Version:	44
 " URL:		http://mysite.verizon.net/astronaut/vim/index.html#vimlinks_syntax
 "
 " Notes: {{{1
@@ -310,7 +310,7 @@ if !exists("tex_no_math")
    exe 'syn region '.grpname.' start='."'".'\\begin\s*{\s*'.a:mathzone.'\s*}'."'".' end='."'".'\\end\s*{\s*'.a:mathzone.'\s*}'."'".' keepend contains=@texMathZoneGroup'.foldcmd
    exe 'syn sync match '.syncname.' grouphere '.grpname.' "\\begin\s*{\s*'.a:mathzone.'\*\s*}"'
    exe 'syn sync match '.syncname.' grouphere '.grpname.' "\\begin\s*{\s*'.a:mathzone.'\*\s*}"'
-   exe 'HiLink '.grpname.' texMath'
+   exe 'hi def link '.grpname.' texMath'
    if a:starform
     let grpname  = "texMathZone".a:sfx.'S'
     let syncname = "texSyncMathZone".a:sfx.'S'
@@ -318,7 +318,7 @@ if !exists("tex_no_math")
     exe 'syn region '.grpname.' start='."'".'\\begin\s*{\s*'.a:mathzone.'\*\s*}'."'".' end='."'".'\\end\s*{\s*'.a:mathzone.'\*\s*}'."'".' keepend contains=@texMathZoneGroup'.foldcmd
     exe 'syn sync match '.syncname.' grouphere '.grpname.' "\\begin\s*{\s*'.a:mathzone.'\*\s*}"'
     exe 'syn sync match '.syncname.' grouphere '.grpname.' "\\begin\s*{\s*'.a:mathzone.'\*\s*}"'
-    exe 'HiLink '.grpname.' texMath'
+    exe 'hi def link '.grpname.' texMath'
    endif
  endfun
 

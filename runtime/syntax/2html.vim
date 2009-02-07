@@ -1,6 +1,6 @@
 " Vim syntax support file
 " Maintainer: Bram Moolenaar <Bram@vim.org>
-" Last Change: 2009 Jan 13
+" Last Change: 2009 Jan 28
 "	       (modified by David Ne\v{c}as (Yeti) <yeti@physics.muni.cz>)
 "	       (XHTML support by Panagiotis Issaris <takis@lumumba.luc.ac.be>)
 "	       (made w3 compliant by Edd Barrett <vext01@gmail.com>)
@@ -398,11 +398,27 @@ while s:lnum <= s:end
 
       " Expand tabs
       let s:expandedtab = strpart(s:line, s:startcol - 1, s:col - s:startcol)
-      let idx = stridx(s:expandedtab, "\t")
-      while idx >= 0
-	let i = &ts - ((idx + s:startcol - 1) % &ts)
-	let s:expandedtab = substitute(s:expandedtab, '\t', repeat(' ', i), '')
-	let idx = stridx(s:expandedtab, "\t")
+      let s:offset = 0
+      let s:idx = stridx(s:expandedtab, "\t")
+      while s:idx >= 0
+	if has("multi_byte_encoding")
+	  if s:startcol + s:idx == 1
+	    let s:i = &ts
+	  else
+	    if s:idx == 0
+	      let s:prevc = matchstr(s:line, '.\%' . (s:startcol + s:idx + s:offset) . 'c')
+	    else
+	      let s:prevc = matchstr(s:expandedtab, '.\%' . (s:idx + 1) . 'c')
+	    endif
+	    let s:vcol = virtcol([s:lnum, s:startcol + s:idx + s:offset - len(s:prevc)])
+	    let s:i = &ts - (s:vcol % &ts)
+	  endif
+	  let s:offset -= s:i - 1
+	else
+	  let s:i = &ts - ((s:idx + s:startcol - 1) % &ts)
+	endif
+	let s:expandedtab = substitute(s:expandedtab, '\t', repeat(' ', s:i), '')
+	let s:idx = stridx(s:expandedtab, "\t")
       endwhile
 
       " Output the text with the same synID, with class set to {s:id_name}
@@ -538,7 +554,7 @@ unlet s:htmlfont
 unlet s:old_et s:old_paste s:old_icon s:old_report s:old_title s:old_search
 unlet s:whatterm s:idlist s:lnum s:end s:margin s:fgc s:bgc s:old_magic
 unlet! s:col s:id s:attr s:len s:line s:new s:expandedtab s:numblines
-unlet s:orgwin s:newwin s:orgbufnr
+unlet! s:orgwin s:newwin s:orgbufnr s:idx s:i s:offset
 if !v:profiling
   delfunc s:HtmlColor
   delfunc s:HtmlFormat

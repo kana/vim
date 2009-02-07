@@ -1,13 +1,16 @@
 " Vim syntax file
-" Language:	TCL/TK
-" Maintainer:	Brett Cannon <brett@python.org>
+" Language:	Tcl/Tk
+" Maintainer:	Taylor Venable <taylor@metasyntax.net>
+" 		(previously Brett Cannon <brett@python.org>)
 " 		(previously Dean Copsey <copsey@cs.ucdavis.edu>)
 "		(previously Matt Neumann <mattneu@purpleturtle.com>)
 "		(previously Allan Kelly <allan@fruitloaf.co.uk>)
 " Original:	Robin Becker <robin@jessikat.demon.co.uk>
-" Last Change:	2006 Nov 17
+" Last Change:	2009/01/25 18:10:04
+" Version:	1.6
+" URL:		http://real.metasyntax.net:2357/cvs/cvsweb.cgi/Config/vim/syntax/tcl.vim
 "
-" Keywords TODO: format clock click anchor
+" Keywords TODO: click anchor
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded
@@ -17,17 +20,23 @@ elseif exists("b:current_syntax")
   finish
 endif
 
-" A bunch of useful keywords
-syn keyword tclStatement  tell socket subst open eof pwd glob list exec pid
-syn keyword tclStatement  auto_load_index time unknown eval lrange fblocked
-syn keyword tclStatement  lsearch auto_import gets lappend proc variable llength
-syn keyword tclStatement  auto_execok return linsert error catch clock info
-syn keyword tclStatement  split array fconfigure concat join lreplace source
-syn keyword tclStatement  fcopy global auto_qualify update close cd auto_load
-syn keyword tclStatement  file append format read package set binary namespace
-syn keyword tclStatement  scan trace seek flush after vwait uplevel lset rename
-syn keyword tclStatement  fileevent regexp upvar unset encoding expr load regsub
-syn keyword tclStatement interp exit puts incr lindex lsort tclLog string
+" Basic Tcl commands: http://www.tcl.tk/man/tcl8.5/TclCmd/contents.htm
+syn keyword tclCommand		after append apply array bgerror binary catch cd chan clock
+syn keyword tclCommand		close concat dde dict encoding eof error eval exec exit
+syn keyword tclCommand		expr fblocked fconfigure fcopy file fileevent filename flush
+syn keyword tclCommand		format gets glob global history incr info interp join
+syn keyword tclCommand		lappend lassign lindex linsert list llength load lrange lrepeat
+syn keyword tclCommand		lreplace lreverse lsearch lset lsort memory namespace open package
+syn keyword tclCommand		pid proc puts pwd read refchan regexp registry regsub rename return
+syn keyword tclCommand		scan seek set socket source split string subst tell time
+syn keyword tclCommand		trace unknown unload unset update uplevel upvar variable vwait
+
+" The 'Tcl Standard Library' commands: http://www.tcl.tk/man/tcl8.5/TclCmd/library.htm
+syn keyword tclCommand		auto_execok auto_import auto_load auto_mkindex auto_mkindex_old
+syn keyword tclCommand		auto_qualify auto_reset parray tcl_endOfWord tcl_findLibrary
+syn keyword tclCommand		tcl_startOfNextWord tcl_startOfPreviousWord tcl_wordBreakAfter
+syn keyword tclCommand		tcl_wordBreakBefore
+
 syn keyword tclLabel		case default
 syn keyword tclConditional	if then else elseif switch
 syn keyword tclRepeat		while for foreach break continue
@@ -130,11 +139,10 @@ syn region tcltkCommand matchgroup=tcltkCommandColor start="\<namespace\>" match
 
 " EXPR
 " commands associated with expr
-syn keyword tcltkMaths	contained	acos	cos	hypot	sinh
-syn keyword tcltkMaths	contained	asin	cosh	log	sqrt
-syn keyword tcltkMaths	contained	atan	exp	log10	tan
-syn keyword tcltkMaths	contained	atan2	floor	pow	tanh
-syn keyword tcltkMaths	contained	ceil	fmod	sin
+syn keyword tcltkMaths contained	abs acos asin atan atan2 bool ceil cos cosh double entier
+syn keyword tcltkMaths contained	exp floor fmod hypot int isqrt log log10 max min pow rand
+syn keyword tcltkMaths contained	round sin sinh sqrt srand tan tanh wide
+
 syn region tcltkCommand matchgroup=tcltkCommandColor start="\<expr\>" matchgroup=NONE skip="^\s*$" end="]\|[^\\]*\s*$"me=e-1  contains=tclLineContinue,tcltkMaths,tclNumber,tclVarRef,tclString,tcltlWidgetSwitch,tcltkCommand,tcltkPackConf
 
 " format
@@ -169,11 +177,14 @@ syn keyword tclTodo contained	TODO
 " String and Character contstants
 " Highlight special characters (those which have a backslash) differently
 syn match   tclSpecial contained "\\\d\d\d\=\|\\."
+
+" Command appearing inside another command or inside a string.
+syn region tclEmbeddedStatement	start='\[' end='\]' contained contains=tclCommand,tclNumber,tclLineContinue,tclString,tclVarRef,tclEmbeddedStatement
 " A string needs the skip argument as it may legitimately contain \".
 " Match at start of line
 syn region  tclString		  start=+^"+ end=+"+ contains=tclSpecial skip=+\\\\\|\\"+
 "Match all other legal strings.
-syn region  tclString		  start=+[^\\]"+ms=s+1  end=+"+ contains=tclSpecial skip=+\\\\\|\\"+
+syn region  tclString		  start=+[^\\]"+ms=s+1  end=+"+ contains=tclSpecial,tclVarRef,tclEmbeddedStatement skip=+\\\\\|\\"+
 
 syn match   tclLineContinue "\\\s*$"
 
@@ -213,8 +224,7 @@ if version >= 508 || !exists("did_tcl_syntax_inits")
   HiLink tclRepeat		Repeat
   HiLink tclNumber		Number
   HiLink tclError		Error
-  HiLink tclStatement		Statement
-  "HiLink tclStatementColor	Statement
+  HiLink tclCommand		Statement
   HiLink tclString		String
   HiLink tclComment		Comment
   HiLink tclSpecial		Special

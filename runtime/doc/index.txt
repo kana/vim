@@ -1,4 +1,4 @@
-*index.txt*     For Vim version 7.2.  Last change: 2008 Sep 13
+*index.txt*     For Vim version 7.2.  Last change: 2009 Jan 27
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -522,7 +522,7 @@ tag		command		   action in Normal mode	~
 |CTRL-W_+|	CTRL-W +	   increase current window height N lines
 |CTRL-W_-|	CTRL-W -	   decrease current window height N lines
 |CTRL-W_<|	CTRL-W <	   decrease current window width N columns
-|CTRL-W_=|	CTRL-W =	   make all windows the same height
+|CTRL-W_=|	CTRL-W =	   make all windows the same height & width
 |CTRL-W_>|	CTRL-W >	   increase current window width N columns
 |CTRL-W_H|	CTRL-W H	   move current window to the far left
 |CTRL-W_J|	CTRL-W J	   move current window to the very bottom
