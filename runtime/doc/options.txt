@@ -1,4 +1,4 @@
-*options.txt*	For Vim version 7.2.  Last change: 2008 Dec 03
+*options.txt*	For Vim version 7.2.  Last change: 2009 Jan 20
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -5919,7 +5919,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	In Visual mode the size of the selected area is shown:
 	- When selecting characters within a line, the number of characters.
 	- When selecting more than one line, the number of lines.
-	- When selecting a block, the size in screen characters: linesxcolumns.
+	- When selecting a block, the size in screen characters:
+	  {lines}x{columns}.
 	NOTE: This option is set to the Vi default value when 'compatible' is
 	set and to the Vim default value when 'compatible' is reset.
 

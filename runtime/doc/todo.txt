@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.2.  Last change: 2009 Jan 14
+*todo.txt*      For Vim version 7.2.  Last change: 2009 Jan 28
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,20 +30,17 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
-Patch to make meta termcap keys work when 'encoding' is utf-8. (Matt Wozkiski,
-2008 Dec 13)
-
-Patch for OpenClipboard() failing. Jianrong Yu, 2009 Jan 6.
-
-2html.vim doesn't take double-wide characters into account when expanding
-tabs.  Patch by Yukihiro Nakadaira, 2008 Nov 23.
-New version: 2008 Dec 4, Dec 5.
-
 Patch to fix multi-byte handling for inputdialog(), :promptfind and
 :promptrepl. (Yanwei Jia, 2008 Dec 12)
 
 Patch to add "focusonly" to 'scrollopt', so that scrollbind also applies in
 window that doesn't have focus. (Jonathon Mah, 2009 Jan 12)
+
+Patch not to drop first 3 bytes for ":source" from FIFO. (James Vega, 2009 Jan
+20)
+
+Endless loop when using "]s" in HTML when there are no misspellings. (Ingo
+Karkat, 2009 Jan 25)  Patch by Dominique Pelle, 2009 Jan 25.
 
 Cursor invisible in Visual block mode. (Matti Niemenmaa, 2008 Nov 26,
 also Renato Alves, 2009 Jan 13)
@@ -52,6 +49,8 @@ Vim_rename(): when CASE_INSENSITIVE_FILENAME is defined and names do differ
 in case, use same mechanism as used for Unix when from and to are the same
 file.
 
+Have a look at the remote-raise patch. (Paul Egan, 2009 Jan 21)
+
 When compiled as small version cursor is displayed after end-of-line for some
 values of 'tabstop'.  (James Vega, 22 Nov 2008)
 
@@ -59,7 +58,12 @@ ml_get errors after reloading a file that was overwritten with ":silent! w!
 /tmp/tt".
 
 Win32: completion of file name ":e c:\!test" results in ":e c:\\!test", which
-does not work. (Nieko Maatjes, 2009 Jan 8)
+does not work. (Nieko Maatjes, 2009 Jan 8, Ingo Karkat, 2009 Jan 22)
+
+Inconsistent: starting with $LANG set to es_ES.utf-8 gives Spanish
+messages, even though locale is not supported.  But ":lang messages
+es_ES.utf-8" gives an error and doesn't switch messages. (Dominique Pelle,
+2009 Jan 26)
 
 Should make 'ignorecase' global-local, so that it makes sense setting it from
 a modeline.
@@ -108,6 +112,9 @@ Runtime files for Clojure. (Toralf Wittner, 2008 Jun 25)
 MS-Windows: editing the first, empty buffer, 'ffs' set to "unix,dos", ":enew"
 doesn't set 'ff' to "unix".  (Ben Fritz, 2008 Dec 5) Reusing the old buffer
 probably causes this.
+
+'scrollbind' is not respected when deleting lines or undo. (Milan Vancura,
+1009 Jan 16)
 
 Crash with dragn-n-drop of file combined with netrw (Marius Gedminas, 2008 Jun
 11)  I can't reproduce it.  It's probably caused by a handle_drop() call
@@ -275,6 +282,9 @@ Jul 31)
 
 C syntax: {} inside () causes following {} to be highlighted as error.
 (Michalis Giannakidis, 2006 Jun 1)
+
+Can't easily close the help window, like ":pc" closes the preview window and
+":ccl" closes the quickfix window.  Add ":hclose". (Chris Gaal)
 
 When 'diffopt' has "context:0" a single deleted line causes two folds to merge
 and mess up syncing. (Austin Jennings, 2008 Jan 31)

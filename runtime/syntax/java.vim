@@ -2,7 +2,7 @@
 " Language:     Java
 " Maintainer:   Claudio Fleiner <claudio@fleiner.com>
 " URL:		http://www.fleiner.com/vim/syntax/java.vim
-" Last Change:  2008 Nov 06
+" Last Change:  2009 Jan 22
 
 " Please check :help java.vim for comments on some of the options available.
 
@@ -15,6 +15,7 @@ if !exists("main_syntax")
   endif
   " we define it here so that included files can test for it
   let main_syntax='java'
+  syn region javaFold start="{" end="}" transparent fold
 endif
 
 " don't use standard HiLink, it will not work with included syntax files
@@ -121,11 +122,6 @@ syn match   javaUserLabel       "^\s*[_$a-zA-Z][_$a-zA-Z0-9_]*\s*:"he=e-1 contai
 syn keyword javaLabel		default
 
 if !exists("java_allow_cpp_keywords")
-  " The default used to be to highlight C++ keywords.  But several people
-  " don't like that, so default to not highlighting these.
-  let java_allow_cpp_keywords = 1
-endif
-if !java_allow_cpp_keywords
   syn keyword javaError auto delete extern friend inline redeclared
   syn keyword javaError register signed sizeof struct template typedef union
   syn keyword javaError unsigned operator
@@ -161,6 +157,11 @@ if !exists("java_ignore_javadoc") && main_syntax != 'jsp'
   " syntax coloring for javadoc comments (HTML)
   syntax include @javaHtml <sfile>:p:h/html.vim
   unlet b:current_syntax
+  " HTML enables spell checking for all text that is not in a syntax item. This
+  " is wrong for Java (all identifiers would be spell-checked), so it's undone
+  " here.
+  syntax spell default
+
   syn region  javaDocComment    start="/\*\*"  end="\*/" keepend contains=javaCommentTitle,@javaHtml,javaDocTags,javaDocSeeTag,javaTodo,@Spell
   syn region  javaCommentTitle  contained matchgroup=javaDocComment start="/\*\*"   matchgroup=javaCommentTitle keepend end="\.$" end="\.[ \t\r<&]"me=e-1 end="[^{]@"me=s-2,he=s-1 end="\*/"me=s-1,he=s-1 contains=@javaHtml,javaCommentStar,javaTodo,@Spell,javaDocTags,javaDocSeeTag
 

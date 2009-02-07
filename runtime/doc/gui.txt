@@ -1,4 +1,4 @@
-*gui.txt*       For Vim version 7.2.  Last change: 2008 Sep 20
+*gui.txt*       For Vim version 7.2.  Last change: 2009 Jan 22
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -473,9 +473,11 @@ this line to your .vimrc file (NOT your .gvimrc file!): >
 	:let did_install_default_menus = 1
 If you also want to avoid the Syntax menu: >
 	:let did_install_syntax_menu = 1
-If you do want the Syntax menu but not all the entries for each available
-syntax file (which take quite a bit of time to load): >
-	:let skip_syntax_sel_menu = 1
+The first item in the Syntax menu can be used to show all available filetypes
+in the menu (which can take a bit of time to load).  If you want to have all
+filetypes already present at startup, add: >
+	:let do_syntax_sel_menu = 1
+
 <
 							*console-menus*
 Although this documentation is in the GUI section, you can actually use menus

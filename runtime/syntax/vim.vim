@@ -2,7 +2,7 @@
 " Language:	Vim 7.2 script
 " Maintainer:	Dr. Charles E. Campbell, Jr. <NdrOchipS@PcampbellAfamily.Mbiz>
 " Last Change:	December 08, 2008
-" Version:	7.2-88
+" Version:	7.2-89
 " Automatically generated keyword lists: {{{1
 
 " Quit when a syntax file was already loaded {{{2
@@ -265,7 +265,7 @@ syn match  vimMark	"\<norm\%[al]\s\zs'[a-zA-Z0-9]"	nextgroup=vimOper,vimMarkNumb
 syn match  vimMarkNumber	"[-+]\d\+"		nextgroup=vimSubst contained contains=vimOper
 syn match  vimPlainMark contained	"'[a-zA-Z0-9]"
 
-syn match  vimRegister	'[^,;]\zs"[a-zA-Z0-9.%#:_\-/]\ze[^a-zA-Z_":]'
+syn match  vimRegister	'[^,;[{]\zs"[a-zA-Z0-9.%#:_\-/]\ze[^a-zA-Z_":]'
 syn match  vimRegister	'\<norm\s\+\zs"[a-zA-Z0-9]'
 syn match  vimRegister	'\<normal\s\+\zs"[a-zA-Z0-9]'
 syn match  vimRegister	'@"'
