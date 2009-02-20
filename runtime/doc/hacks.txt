@@ -7,6 +7,10 @@ All changes are licensed under the same terms of Vim.  See |license|.
 ==============================================================================
 INDEX OF HACKS						*hacks-index*
 
+New autocommand event |Signaled|		      *hacks-autocmd-signaled*
+	Add a new autocommand event |Signaled|.
+	It is triggered after receiving SIGUSR1 or SIGUSR2.
+
 
 
 

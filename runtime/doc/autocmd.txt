@@ -288,6 +288,7 @@ Name			triggered by ~
 |CursorHoldI|		the user doesn't press a key for a while in Insert mode
 |CursorMoved|		the cursor was moved in Normal mode
 |CursorMovedI|		the cursor was moved in Insert mode
+|Signaled|		after receiving SIGUSR1 or SIGUSR2
 
 |WinEnter|		after entering another window
 |WinLeave|		before leaving a window
@@ -711,6 +712,9 @@ ShellCmdPost			After executing a shell command with |:!cmd|,
 ShellFilterPost			After executing a shell command with
 				":{range}!cmd", ":w !cmd" or ":r !cmd".
 				Can be used to check for any changed files.
+							*Signaled*
+Signaled			After receiving SIGUSR1 or SIGUSR2.  Can be
+				used to interact with external applications.
 							*SourcePre*
 SourcePre			Before sourcing a Vim script. |:source|
 				<afile> is the name of the file being sourced.
