@@ -1124,6 +1124,9 @@ doESCkey:
 	    apply_autocmds(EVENT_CURSORHOLDI, NULL, NULL, FALSE, curbuf);
 	    did_cursorhold = TRUE;
 	    break;
+	case K_SIGNALED:	/* Received SIGUSR1 or SIGUSR2. */
+	    apply_autocmds(EVENT_SIGNALED, NULL, NULL, FALSE, curbuf);
+	    break;
 #endif
 
 #ifdef FEAT_GUI_W32

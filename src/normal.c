@@ -181,6 +181,7 @@ static void	nv_drop __ARGS((cmdarg_T *cap));
 #endif
 #ifdef FEAT_AUTOCMD
 static void	nv_cursorhold __ARGS((cmdarg_T *cap));
+static void	nv_signaled __ARGS((cmdarg_T *cap));
 #endif
 
 static char *e_noident = N_("E349: No identifier under cursor");
@@ -447,6 +448,7 @@ static const struct nv_cmd
 #endif
 #ifdef FEAT_AUTOCMD
     {K_CURSORHOLD, nv_cursorhold, NV_KEEPREG,		0},
+    {K_SIGNALED, nv_signaled, NV_KEEPREG,		0},
 #endif
 };
 
@@ -9282,5 +9284,13 @@ nv_cursorhold(cap)
     apply_autocmds(EVENT_CURSORHOLD, NULL, NULL, FALSE, curbuf);
     did_cursorhold = TRUE;
     cap->retval |= CA_COMMAND_BUSY;	/* don't call edit() now */
+}
+
+/*ARGSUSED*/
+    static void
+nv_signaled(cap)
+    cmdarg_T	*cap;
+{
+    apply_autocmds(EVENT_SIGNALED, NULL, NULL, FALSE, curbuf);
 }
 #endif
