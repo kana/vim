@@ -229,7 +229,7 @@ all fetch:
   @if get_md5(file) != "30fddcef61384e1653ffdab1af7a2b96":
     :fetch {fetch = $fetcha} $file
   file = doc/options.txt
-  @if get_md5(file) != "5cd43d42d1fc5f089268321c3ec35e1a":
+  @if get_md5(file) != "97a2bef36956cc9a8afcab0c915b13a2":
     :fetch {fetch = $fetcha} $file
   file = doc/spell.txt
   @if get_md5(file) != "3b20e550d6d484a16293ddc1382fbaa6":
@@ -292,7 +292,7 @@ all fetch:
   @if get_md5(file) != "eb2f7caf74ececc8c42d4deabcec839e":
     :fetch {fetch = $fetcha} $file
   file = doc/diff.txt
-  @if get_md5(file) != "3ac250294fc36e581a28fb9e8244c5b7":
+  @if get_md5(file) != "6448d8fab3a3abc6029d8f90b9316434":
     :fetch {fetch = $fetcha} $file
   file = doc/if_ruby.txt
   @if get_md5(file) != "7650ab7e0aaf2f1804d15492f06aa641":
@@ -379,7 +379,7 @@ all fetch:
   @if get_md5(file) != "8953ad9b94f5a10cc61e28f7145c513b":
     :fetch {fetch = $fetcha} $file
   file = doc/todo.txt
-  @if get_md5(file) != "384a7c572396653507c6c814b98159c5":
+  @if get_md5(file) != "021d94862d7259a07917e6d595f7c9d0":
     :fetch {fetch = $fetcha} $file
   file = doc/usr_03.txt
   @if get_md5(file) != "9b32ceafa7c9b2d74e094be37674b48b":
@@ -2248,7 +2248,7 @@ all fetch:
   @if get_md5(file) != "0f553ea6c8c2b5438662ca471a2c58b3":
     :fetch {fetch = $fetcha} $file
   file = syntax/fstab.vim
-  @if get_md5(file) != "556f3c645bd64662b53489c3f7c132b7":
+  @if get_md5(file) != "4444a017ea144653722821a162efa511":
     :fetch {fetch = $fetcha} $file
   file = syntax/fvwm.vim
   @if get_md5(file) != "3840046e7b0d9308f978eb8e530c33c2":
@@ -2806,7 +2806,7 @@ all fetch:
   @if get_md5(file) != "e596e3877b4e91330c02c5c508652646":
     :fetch {fetch = $fetcha} $file
   file = syntax/python.vim
-  @if get_md5(file) != "5ab59e28200b2cc53a29b96fccb77efe":
+  @if get_md5(file) != "3931022f7abc6ebd77e74aa2263579d6":
     :fetch {fetch = $fetcha} $file
   file = syntax/qf.vim
   @if get_md5(file) != "63f360888de043bbef9c81b876e11ff6":
@@ -4131,7 +4131,7 @@ all fetch:
   @if get_md5(file) != "caf5766cd91512191f851831c8fee625":
     :fetch {fetch = $fetcha} $file
   file = tutor/tutor.eo.utf-8
-  @if get_md5(file) != "5acfb2b2c39d637d3c13d47e595bf6f7":
+  @if get_md5(file) != "7dce0120329f754946b2b8453c23c8b1":
     :fetch {fetch = $fetcha} $file
   file = tutor/tutor.cs.utf-8
   @if get_md5(file) != "a3f279aff5a7480f46025f852904230a":

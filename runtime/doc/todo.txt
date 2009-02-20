@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.2.  Last change: 2009 Jan 28
+*todo.txt*      For Vim version 7.2.  Last change: 2009 Feb 12
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,32 +30,50 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
-Patch to fix multi-byte handling for inputdialog(), :promptfind and
-:promptrepl. (Yanwei Jia, 2008 Dec 12)
-
-Patch to add "focusonly" to 'scrollopt', so that scrollbind also applies in
-window that doesn't have focus. (Jonathon Mah, 2009 Jan 12)
-
-Patch not to drop first 3 bytes for ":source" from FIFO. (James Vega, 2009 Jan
-20)
-
-Endless loop when using "]s" in HTML when there are no misspellings. (Ingo
-Karkat, 2009 Jan 25)  Patch by Dominique Pelle, 2009 Jan 25.
-
 Cursor invisible in Visual block mode. (Matti Niemenmaa, 2008 Nov 26,
 also Renato Alves, 2009 Jan 13)
+
+Several small patches. (Dominique Pelle, 2009 Feb 7)
+
+Patch to make opening quickfix window faster. (Lech Lorens, 2009 Feb 6)
+
+Patch for when 'switchbuf' is "usetab". (Lech Lorens, 2009 Feb 12)
 
 Vim_rename(): when CASE_INSENSITIVE_FILENAME is defined and names do differ
 in case, use same mechanism as used for Unix when from and to are the same
 file.
+
+In gvim "!grep a *.c" spews out a lot of text, can't be stopped with CTRL-C.
+No check for CTRL-C when listing a lot of text? (Bjorn Winckler)
+
+Patch to add "focusonly" to 'scrollopt', so that scrollbind also applies in
+window that doesn't have focus. (Jonathon Mah, 2009 Jan 12)
+Needs more work.
+
+Patch to have the Visual highlighting overrule CursorColumn highlighting.
+(Dominique Pelle, 2009 Feb 7)
+
+Patch for silly autocommands accessing freed memory. (Dominique Pelle, 2009
+Feb 11)
 
 Have a look at the remote-raise patch. (Paul Egan, 2009 Jan 21)
 
 When compiled as small version cursor is displayed after end-of-line for some
 values of 'tabstop'.  (James Vega, 22 Nov 2008)
 
+Patch for tab page support in VisVim. (Adam Slater, 2009 Feb 6)
+
 ml_get errors after reloading a file that was overwritten with ":silent! w!
 /tmp/tt".
+
+":cscope find f  filename" doesn't work because of the extra space. (Ethan
+Mallove) patch by Michal Kiedrowicz, 2009 Feb 11.  Although it might be called
+a feature.
+
+Wrong Visual Block selection size reported when 'wrap' is on and 'showbreak'
+is not empty. (Eduardo Daudt Flach, 2009 Feb 12)
+
+Win32: use different args for SearchPath()? (Yasuhiro Matsumoto, 2009 Jan 30)
 
 Win32: completion of file name ":e c:\!test" results in ":e c:\\!test", which
 does not work. (Nieko Maatjes, 2009 Jan 8, Ingo Karkat, 2009 Jan 22)
@@ -80,6 +98,9 @@ Patch from Milan Vancura, 2008 Dec 22.  Update 2009 Jan 7 in two parts.
 
 After doing "su" $HOME can be the old user's home, thus ~root/file is not
 correct.  Don't use it in the swap file.
+
+Completion for ":buf" doesn't work properly on Win32 when 'shellslash' is off.
+(Henrik Ohman, 2009, Jan 29)
 
 Allow patches to add something to version.c, like with an official patch, so
 that :version output shows which patches have been applied.
@@ -326,9 +347,6 @@ Suggestion by Ben Schmidt, 2008 Aug 6.
 Problem with compound words?  (Bert, 2008 May 6)
 No warning for when flags are defined after they are used in an affix.
 
-With Visual selection, "r" and then CTRL-C  Visual mode is stopped but the
-highlighting is not removed.
-
 Screen redrawing when continuously updating the buffer and resizing the
 terminal. (Yakov Lerner, 2006 Sept 7)
 
@@ -394,12 +412,6 @@ with "gvim -nb:localhost:55555:foo".  From nc do: '1:editFile!0 "foo"'.  Then
 go to Insert mode and add a few lines.  Then backspacing every other time
 moves the cursor instead of deleting. (Chris Kaiser, 2007 Sep 25)
 
-When 'bomb' is changed the window title is updated to show/hide a "+", but the
-tab page label isn't. (Patrick Texier, 2008 Jun 24)
-
-When using ":saveas bar.c" the tab label isn't updated right away.
-(Francois Ingelrest, 2008 Nov 12)
-
 Changes for Win32 makefile. (Mike Williams, 2007 Jan 22, Alexei Alexandrov,
 2007 Feb 8)
 
@@ -414,9 +426,6 @@ set_one_cmd_context() inside #ifndef BACKSLASH_IN_FILENAME?
 Win32: Patch for convert_filterW(). (Taro Muraoka, 2007 Mar 2)
 
 Win32: Patch for cscope external command. (Mike Williams, 2007 Aug 7)
-
-":cscope find f  filename" doesn't work because of the extra space. (Ethan
-Mallove)
 
 Win32: XPM support only works with path without spaces.  Patch by Mathias
 Michaelis, 2006 Jun 9.  Another patch for more path names, 2006 May 31.
@@ -525,8 +534,6 @@ name literally, and esp. if there is only one name.
 
 Test 61 fails sometimes.  This is a timing problem: "sleep 2" sometimes takes
 longer than 2 seconds.
-
-Changing 'guifont' in the console causes an unnecessary redraw.
 
 Using ":au CursorMoved * cmd" invokes mch_FullName(), which can be slow.
 Can this be avoided? (Thomas Waba, 2008 Aug 24)
@@ -2211,14 +2218,10 @@ Multi-byte characters:
     Support CTRL-K _{mnemonic}_
 7   In "-- INSERT (lang) --" show the name of the keymap used instead of
     "lang". (Ilya Dogolazky)
--   Make 'langmap' accept multi-byte characters.
-	Patch from Konstantin Korikov, 2006 Oct 15.
 -   Make 'breakat' accept multi-byte characters.  Problem: can't use a lookup
     table anymore (breakat_flags[]).
     Simplistic solution: when 'formatoptions' contains "m" also break a line
     at a multi-byte character >= 0x100.
--   Do we need the reverse of 'keymap', like 'langmap' but with files and
-    multi-byte characters?  E.g., when using a Russian keyboard.
 -   Add the possibility to enter mappings which are used whenever normal text
     could be entered.  E.g., for "f" command.  But not in Normal mode.  Sort
     of opposite of 'langmap'.  Use ":tmap" command?
@@ -3168,6 +3171,7 @@ Command line completion:
 -   When using <Up> in wildmenu mode for a submenu, should go back to the
     current menu, not the first one.  E.g., ":emenu File.Save<Up>".
 8   For ":find" and ":sfind" expand files found in 'path'.
+    Patch by Nazri Ramliy, 2009 Feb 1.
 8   When using backtick expansion, the external command may write a greeting
     message.  Add an option or commands to remove lines that match a regexp?
 7   When listing matches of files, display the common path separately from the

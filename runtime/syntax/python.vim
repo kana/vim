@@ -54,7 +54,8 @@ syn match   pythonComment	"#.*$" contains=pythonTodo,@Spell
 syn keyword pythonTodo		TODO FIXME XXX contained
 
 " Decorators (new in Python 2.4)
-syn match   pythonDecorator	"@" display nextgroup=pythonFunction skipwhite
+syn match   pythonDecoratorName	"[[:alpha:]_][[:alnum:]_]*\%(\.[[:alpha:]_][[:alnum:]_]*\)*"
+syn match   pythonDecorator	"@" display nextgroup=pythonDecoratorName skipwhite
 
 " strings
 syn region pythonString		matchgroup=Normal start=+[uU]\='+ end=+'+ skip=+\\\\\|\\'+ contains=pythonEscape,@Spell
@@ -150,6 +151,7 @@ if version >= 508 || !exists("did_python_syn_inits")
   " The default methods for highlighting.  Can be overridden later
   HiLink pythonStatement	Statement
   HiLink pythonFunction		Function
+  HiLink pythonDecoratorName	Function
   HiLink pythonConditional	Conditional
   HiLink pythonRepeat		Repeat
   HiLink pythonString		String
