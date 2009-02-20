@@ -7345,6 +7345,7 @@ static struct event_name
     {"SessionLoadPost",	EVENT_SESSIONLOADPOST},
     {"ShellCmdPost",	EVENT_SHELLCMDPOST},
     {"ShellFilterPost",	EVENT_SHELLFILTERPOST},
+    {"Signaled",	EVENT_SIGNALED},
     {"SourcePre",	EVENT_SOURCEPRE},
     {"SourceCmd",	EVENT_SOURCECMD},
     {"SpellFileMissing",EVENT_SPELLFILEMISSING},

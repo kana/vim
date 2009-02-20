@@ -1202,6 +1202,7 @@ enum auto_event
     EVENT_TABENTER,		/* after entering a tab page */
     EVENT_SHELLCMDPOST,		/* after ":!cmd" */
     EVENT_SHELLFILTERPOST,	/* after ":1,2!cmd", ":w !cmd", ":r !cmd". */
+    EVENT_SIGNALED,		/* after receiving SIGUSR1 or SIGUSR2 */
     NUM_EVENTS			/* MUST be the last one */
 };
 
