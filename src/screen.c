@@ -2596,6 +2596,7 @@ win_line(wp, lnum, startrow, endrow, nochange)
     int		noinvcur = FALSE;	/* don't invert the cursor */
 #ifdef FEAT_VISUAL
     pos_T	*top, *bot;
+    int		lnum_in_visual_area = FALSE;
 #endif
     pos_T	pos;
     long	v;
@@ -2792,9 +2793,10 @@ win_line(wp, lnum, startrow, endrow, nochange)
 	    top = &VIsual;
 	    bot = &curwin->w_cursor;
 	}
+	lnum_in_visual_area = (lnum >= top->lnum && lnum <= bot->lnum);
 	if (VIsual_mode == Ctrl_V)	/* block mode */
 	{
-	    if (lnum >= top->lnum && lnum <= bot->lnum)
+	    if (lnum_in_visual_area)
 	    {
 		fromcol = wp->w_old_cursor_fcol;
 		tocol = wp->w_old_cursor_lcol;
@@ -3420,6 +3422,7 @@ win_line(wp, lnum, startrow, endrow, nochange)
 			&& (*mb_ptr2cells)(ptr) > 1)
 #endif
 		    || ((int)vcol_prev == fromcol_prev
+			&& vcol_prev < vcol	/* not at margin */
 			&& vcol < tocol))
 		area_attr = attr;		/* start highlighting */
 	    else if (area_attr != 0
@@ -4557,7 +4560,8 @@ win_line(wp, lnum, startrow, endrow, nochange)
 	 * highlight the cursor position itself. */
 	if (wp->w_p_cuc && vcol == (long)wp->w_virtcol
 		&& lnum != wp->w_cursor.lnum
-		&& draw_state == WL_LINE)
+		&& draw_state == WL_LINE
+		&& !lnum_in_visual_area)
 	{
 	    vcol_save_attr = char_attr;
 	    char_attr = hl_combine_attr(char_attr, hl_attr(HLF_CUC));
@@ -6358,7 +6362,7 @@ screen_puts_len(text, len, row, col, attr)
 		    && c == 0x8e
 		    && ScreenLines2[off] != ptr[1])
 		|| (enc_utf8
-		    && (ScreenLinesUC[off] != (u8char_T)u8c
+		    && (ScreenLinesUC[off] != (u8char_T)(c >= 0x80 ? u8c : 0)
 			|| screen_comp_differs(off, u8cc)))
 #endif
 		|| ScreenAttrs[off] != attr
@@ -7364,7 +7368,11 @@ screenalloc(clear)
 #endif
     static int	    entered = FALSE;		/* avoid recursiveness */
     static int	    done_outofmem_msg = FALSE;	/* did outofmem message */
+#ifdef FEAT_AUTOCMD
+    int		    retry_count = 0;
 
+retry:
+#endif
     /*
      * Allocation of the screen buffers is done only when the size changes and
      * when Rows and Columns have been set and we have started doing full
@@ -7448,10 +7456,13 @@ screenalloc(clear)
 	{
 	    outofmem = TRUE;
 #ifdef FEAT_WINDOWS
-	    break;
+	    goto give_up;
 #endif
 	}
     }
+#ifdef FEAT_WINDOWS
+give_up:
+#endif
 
 #ifdef FEAT_MBYTE
     for (i = 0; i < p_mco; ++i)
@@ -7636,8 +7647,17 @@ screenalloc(clear)
     --RedrawingDisabled;
 
 #ifdef FEAT_AUTOCMD
-    if (starting == 0)
+    /*
+     * Do not apply autocommands more than 3 times to avoid an endless loop
+     * in case applying autocommands always changes Rows or Columns.
+     */
+    if (starting == 0 && ++retry_count <= 3)
+    {
 	apply_autocmds(EVENT_VIMRESIZED, NULL, NULL, FALSE, curbuf);
+	/* In rare cases, autocommands may have altered Rows or Columns,
+	 * jump back to check if we need to allocate the screen again. */
+	goto retry;
+    }
 #endif
 }
 
