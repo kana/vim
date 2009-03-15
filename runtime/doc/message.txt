@@ -1,4 +1,4 @@
-*message.txt*   For Vim version 7.2.  Last change: 2008 Nov 03
+*message.txt*   For Vim version 7.2.  Last change: 2009 Feb 20
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -795,7 +795,7 @@ group.
 Type					effect ~
      <CR> or <NL> or j or <Down>	one more line
      d					down a page (half a screen)
-     <Space> or <PageDown>		down a screen
+     <Space> or f or <PageDown>		down a screen
      G					down all the way, until the hit-enter
 					prompt
 
