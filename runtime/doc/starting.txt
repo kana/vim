@@ -1,4 +1,4 @@
-*starting.txt*  For Vim version 7.2.  Last change: 2009 Jan 09
+*starting.txt*  For Vim version 7.2.  Last change: 2009 Feb 15
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -983,7 +983,7 @@ there is not enough room, you will see only part of it).
 
 							*info-message*
 The |--help| and |--version| arguments cause Vim to print a message and then
-exit.  Normally the message is send to stdout, thus can be redirected to a
+exit.  Normally the message is sent to stdout, thus can be redirected to a
 file with: >
 
 	vim --help >file

@@ -1,6 +1,7 @@
 " Vim syntax file
 " Maintainer:       Nikolai Weibull <now@bitwi.se>
 " Latest Revision:  2006-04-14
+" Extra change:     2009 Feb 22
 
 if exists("b:current_syntax")
   finish
@@ -666,9 +667,9 @@ syn keyword kconfigTodo               contained TODO FIXME XXX NOTE
 
 syn match   kconfigComment            display '#.*$' contains=kconfigTodo
 
-syn keyword kconfigKeyword            config menuconfig comment menu mainmenu
+syn keyword kconfigKeyword            config menuconfig comment mainmenu
 
-syn keyword kconfigConditional        choice endchoice if endif
+syn keyword kconfigConditional        menu endmenu choice endchoice if endif
 
 syn keyword kconfigPreProc            source
                                       \ nextgroup=kconfigPath

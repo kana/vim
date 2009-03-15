@@ -1,4 +1,4 @@
-*tips.txt*      For Vim version 7.2.  Last change: 2008 Nov 08
+*tips.txt*      For Vim version 7.2.  Last change: 2009 Feb 18
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -26,8 +26,8 @@ Change a name in multiple files			|change-name|
 Speeding up external commands			|speed-up|
 Useful mappings					|useful-mappings|
 Compressing the help files			|gzip-helpfile|
-Hex editing					|hex-editing|
 Executing shell commands in a window		|shell-window|
+Hex editing					|hex-editing|
 Using <> notation in autocommands		|autocmd-<>|
 Highlighting matching parens			|match-parens|
 

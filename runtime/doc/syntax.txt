@@ -1,4 +1,4 @@
-*syntax.txt*	For Vim version 7.2.  Last change: 2009 Jan 27
+*syntax.txt*	For Vim version 7.2.  Last change: 2009 Feb 18
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -528,9 +528,10 @@ files are included:
 	pic		PIC assembly (currently for PIC16F84)
 
 The most flexible is to add a line in your assembly file containing: >
-	:asmsyntax=nasm
+	asmsyntax=nasm
 Replace "nasm" with the name of the real assembly syntax.  This line must be
-one of the first five lines in the file.
+one of the first five lines in the file.  No non-white text must be
+immediately before or after this text.
 
 The syntax type can always be overruled for a specific buffer by setting the
 b:asmsyntax variable: >

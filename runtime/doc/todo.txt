@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.2.  Last change: 2009 Feb 12
+*todo.txt*      For Vim version 7.2.  Last change: 2009 Feb 22
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,41 +30,37 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
-Cursor invisible in Visual block mode. (Matti Niemenmaa, 2008 Nov 26,
-also Renato Alves, 2009 Jan 13)
+Patch for silly autocommands accessing freed memory. (Dominique Pelle, 2009
+Feb 11, more Feb 13)
 
-Several small patches. (Dominique Pelle, 2009 Feb 7)
-
-Patch to make opening quickfix window faster. (Lech Lorens, 2009 Feb 6)
-
-Patch for when 'switchbuf' is "usetab". (Lech Lorens, 2009 Feb 12)
+Have a look at the remote-raise patch. (Paul Egan, 2009 Jan 21)
 
 Vim_rename(): when CASE_INSENSITIVE_FILENAME is defined and names do differ
 in case, use same mechanism as used for Unix when from and to are the same
 file.
-
-In gvim "!grep a *.c" spews out a lot of text, can't be stopped with CTRL-C.
-No check for CTRL-C when listing a lot of text? (Bjorn Winckler)
-
-Patch to add "focusonly" to 'scrollopt', so that scrollbind also applies in
-window that doesn't have focus. (Jonathon Mah, 2009 Jan 12)
-Needs more work.
-
-Patch to have the Visual highlighting overrule CursorColumn highlighting.
-(Dominique Pelle, 2009 Feb 7)
-
-Patch for silly autocommands accessing freed memory. (Dominique Pelle, 2009
-Feb 11)
-
-Have a look at the remote-raise patch. (Paul Egan, 2009 Jan 21)
 
 When compiled as small version cursor is displayed after end-of-line for some
 values of 'tabstop'.  (James Vega, 22 Nov 2008)
 
 Patch for tab page support in VisVim. (Adam Slater, 2009 Feb 6)
 
+Patch for using cmdwin from input() using the search history. (James Vega,
+2009 Feb 17)
+
 ml_get errors after reloading a file that was overwritten with ":silent! w!
 /tmp/tt".
+
+Patch to avoid pause(), it may make Vim hang (Dominique Pelle, 2009 Feb 22)
+Requires configure check for volatile (already in configure.in)
+
+Patch to add "focusonly" to 'scrollopt', so that scrollbind also applies in
+window that doesn't have focus. (Jonathon Mah, 2009 Jan 12)
+Needs more work.
+
+Patch for completion of ":find" arguments. (Nazri Ramliy, 2009 Feb 22)
+
+Patch for not redrawing too much after bold character. (Yukihiro Nakadaira,
+2009 Feb 23)
 
 ":cscope find f  filename" doesn't work because of the extra space. (Ethan
 Mallove) patch by Michal Kiedrowicz, 2009 Feb 11.  Although it might be called
@@ -72,6 +68,8 @@ a feature.
 
 Wrong Visual Block selection size reported when 'wrap' is on and 'showbreak'
 is not empty. (Eduardo Daudt Flach, 2009 Feb 12)
+
+Dynamic Folding support for 2html.vim. (Benjamin Fritz, 2009 Feb 12)
 
 Win32: use different args for SearchPath()? (Yasuhiro Matsumoto, 2009 Jan 30)
 
@@ -281,6 +279,12 @@ Problem with 'ts' set to 9 and 'showbreak' to ">>>". (Matthew Winn, 2007 Oct
 1)
 
 try/catch not working for argument of return. (Matt Wozniski, 2008 Sep 15)
+
+":tab help" always opens a new tab, while ":help" re-uses an existing window.
+Would be more consistent when an existing tab is re-used. (Tony Mechelynck)
+
+":tab drop filename" doesn't work nicely when "filename" is open in a window
+in another tab. (Tony Mechelynck, 2009 Feb 13)
 
 Add ":nofold".  Range will apply without expanding to closed fold.
 
@@ -524,6 +528,9 @@ if_ruby.c.
 Problem with cursorcolumn highlighting and folds. (John Mullin, 2008 Jul 18)
 
 ":helpgrep" should use the directory from 'helpfile'.
+
+Patch to dynamically load Python on Solaris. (Danek Duvall, 2009 Feb 16)
+Needs more work.
 
 The need_fileinfo flag is messy.  Instead make the message right away and put
 it in keep_msg?
@@ -3687,7 +3694,9 @@ Undo:
     storing the differences.
 8   Search for pattern in undo tree, showing when it happened and the text
     state, so that you can jump to it.
--   Persistent undo: store undo in a file.
+-   Persistent undo: store undo in a file.  Patch by Jordan Lewis, 2009 Feb
+    20.
+    Older ideas:
     Use timestamps, so that a version a certain time ago can be found and info
     before some time/date can be flushed. 'undopersist' gives maximum time to
     keep undo: "3h", "1d", "2w", "1y", etc.  For the file use dot and
