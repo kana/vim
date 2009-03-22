@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.2.  Last change: 2009 Feb 22
+*todo.txt*      For Vim version 7.2.  Last change: 2009 Mar 21
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,51 +30,49 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
-Patch for silly autocommands accessing freed memory. (Dominique Pelle, 2009
-Feb 11, more Feb 13)
+In Visual block mode, "O" changes end of block in first comment of screen.c,
+only two lines selected.
 
-Have a look at the remote-raise patch. (Paul Egan, 2009 Jan 21)
-
-Vim_rename(): when CASE_INSENSITIVE_FILENAME is defined and names do differ
-in case, use same mechanism as used for Unix when from and to are the same
-file.
-
-When compiled as small version cursor is displayed after end-of-line for some
-values of 'tabstop'.  (James Vega, 22 Nov 2008)
-
-Patch for tab page support in VisVim. (Adam Slater, 2009 Feb 6)
-
-Patch for using cmdwin from input() using the search history. (James Vega,
-2009 Feb 17)
-
-ml_get errors after reloading a file that was overwritten with ":silent! w!
-/tmp/tt".
-
-Patch to avoid pause(), it may make Vim hang (Dominique Pelle, 2009 Feb 22)
-Requires configure check for volatile (already in configure.in)
-
-Patch to add "focusonly" to 'scrollopt', so that scrollbind also applies in
-window that doesn't have focus. (Jonathon Mah, 2009 Jan 12)
-Needs more work.
-
-Patch for completion of ":find" arguments. (Nazri Ramliy, 2009 Feb 22)
-
-Patch for not redrawing too much after bold character. (Yukihiro Nakadaira,
-2009 Feb 23)
-
-":cscope find f  filename" doesn't work because of the extra space. (Ethan
-Mallove) patch by Michal Kiedrowicz, 2009 Feb 11.  Although it might be called
-a feature.
+Patch for :scscope and :lcscope completion. (Dominique Pelle, 2009 Mar 21)
 
 Wrong Visual Block selection size reported when 'wrap' is on and 'showbreak'
 is not empty. (Eduardo Daudt Flach, 2009 Feb 12)
 
 Dynamic Folding support for 2html.vim. (Benjamin Fritz, 2009 Feb 12)
 
+Patch to add "focusonly" to 'scrollopt', so that scrollbind also applies in
+window that doesn't have focus. (Jonathon Mah, 2009 Jan 12)
+Needs more work.
+
+Patch for completion of ":find" arguments. (Nazri Ramliy, 2009 Feb 22, 26)
+8   For ":find" and ":sfind" expand files found in 'path'.
+Needs more work.
+
+Problem with <script> mappings (Andy Wokula, 2009 Mar 8)
+
+Cursorline highlighting combines with Search ('hlsearch') but not with
+SpellBad. (Jim Karsten, 2009 Mar 18)
+
+Folds messed up in other tab page. (Vlad Irnov, 2009 Mar 17)
+
+":he ctrl_u" can be auto-corrected to ":he ctrl-u".
+
+Win32: patch for cross compile xxd and GvimExt. (Markus Heidelberg, 2009 Mar
+18)  Also update INSTALLpc.txt?
+
+Win32 GUI: last message from startup doesn't show up when there is an echoerr
+command. (Cyril Slobin, 2009 Mar 13)
+
 Win32: use different args for SearchPath()? (Yasuhiro Matsumoto, 2009 Jan 30)
 
 Win32: completion of file name ":e c:\!test" results in ":e c:\\!test", which
 does not work. (Nieko Maatjes, 2009 Jan 8, Ingo Karkat, 2009 Jan 22)
+
+Directory wrong in session file, caused by ":lcd" in BufEnter autocommand.
+(Felix Kater, 2009 Mar 3)
+
+Using ~ works OK on 'a' with composing char, but not on 0x0418  with composing
+char 0x0301. (Tony Mechelynck, 2009 Mar 4)
 
 Inconsistent: starting with $LANG set to es_ES.utf-8 gives Spanish
 messages, even though locale is not supported.  But ":lang messages
@@ -187,6 +185,9 @@ Chase)  Fix by Ian Kelling, 2008 Jul 14.
 ":colorscheme" without arguments should echo the current color scheme name.
 
 Patch for colorscheme submenu. (Juergen Kraemer, 2008 Aug 20)
+
+8   Some file systems are case-sensitive, some are not.  Turn
+    CASE_INSENSITIVE_FILENAME into an option, at least for completion.
 
 9   Make it possible to drag a tab page label to another position with the
     mouse.
@@ -1451,8 +1452,6 @@ Macintosh:
 8   ":gui" doesn't fork.  Enabling the code in gui.c to fork causes a SEGV.
 8   Define vim_mkdir() for Macintosh.
 8   Define mch_writable() for Macintosh.
-8   Some file systems are case-sensitive, some are not.  Turn
-    CASE_INSENSITIVE_FILENAME into an option, at least for completion.
 9   When DiskLock is running, using a swap file causes a crash.  Appears to be
     a problem with writing a file that starts with a dot. (Giacalone)
 9   On G3 Mac, OS version 8, control strip causes characters messed up when
@@ -1621,8 +1620,6 @@ Macintosh:
 8   With 'virtualedit' set and 'selection' "exclusive", a Visual selection
     that ends in or after a tab, "d" doesn't delete (part of) the tab.
     (Helmut Stiegler)
-8   With 'virtualedit' set, a blockwise Visual selection that starts and ends
-    in a tab, "<" shifts too much. (Helmut Stiegler)
 9   When jumping to a tag, the search pattern is put in the history.  When
     'magic' is on, the pattern may not work.  Translate the pattern depending
     on p_magic when putting it in the history?  Alternative: Store value of
@@ -3177,8 +3174,6 @@ Command line completion:
 -   For 'wildmenu': Simplify "../bar" when possible.
 -   When using <Up> in wildmenu mode for a submenu, should go back to the
     current menu, not the first one.  E.g., ":emenu File.Save<Up>".
-8   For ":find" and ":sfind" expand files found in 'path'.
-    Patch by Nazri Ramliy, 2009 Feb 1.
 8   When using backtick expansion, the external command may write a greeting
     message.  Add an option or commands to remove lines that match a regexp?
 7   When listing matches of files, display the common path separately from the
@@ -4089,14 +4084,15 @@ Various improvements:
     first quickfix location.  ":cbefore"?
 6   In the quickfix window statusline add the command used to get the list of
     errors, e.g. ":make foo", ":grep something *.c".
+7   Allow a window not to have a statusline.  Makes it possible to use a
+    window as a buffer-tab selection.
+8   Allow non-active windows to have a different statusline. (Yakov Lerner)
 6   Python interface: add vim.message() function. (Michal Vitecek, 2002 Nov 5)
 7   Support using ":vert" with User commands.  Add expandable items <vert>.
     Do the same for ":browse" and ":confirm"?
     For ":silent" and ":debug" apply to the whole user command.
     More general: need a way to access command modifiers in a user command.
     Assign them to a v: variable?
-7   Allow a window not to have a statusline.  Makes it possible to use a
-    window as a buffer-tab selection.
 7   Add an invisible buffer which can be edited.  For use in scripts that want
     to manipulate text without changing the window layout.
 8   Add a command to revert to the saved version of file; undo or redo until

@@ -1,4 +1,4 @@
-*motion.txt*    For Vim version 7.2.  Last change: 2008 Oct 31
+*motion.txt*    For Vim version 7.2.  Last change: 2009 Mar 18
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -637,7 +637,8 @@ a`							*v_a`* *a`*
 			When the cursor starts on a quote, Vim will figure out
 			which quote pairs form a string by searching from the
 			start of the line.
-			Any trailing or leading white space is included.
+			Any trailing white space is included, unless there is
+			none, then leading white space is included.
 			When used in Visual mode it is made characterwise.
 			Repeating this object in Visual mode another string is
 			included.  A count is currently not used.

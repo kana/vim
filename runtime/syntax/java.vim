@@ -2,7 +2,7 @@
 " Language:     Java
 " Maintainer:   Claudio Fleiner <claudio@fleiner.com>
 " URL:		http://www.fleiner.com/vim/syntax/java.vim
-" Last Change:  2009 Jan 22
+" Last Change:  2009 Mar 14
 
 " Please check :help java.vim for comments on some of the options available.
 
@@ -59,7 +59,7 @@ syn match   javaTypedef		"\.\s*\<class\>"ms=s+1
 syn keyword javaClassDecl	enum
 syn match   javaClassDecl	"^class\>"
 syn match   javaClassDecl	"[^.]\s*\<class\>"ms=s+1
-syn match   javaAnnotation      "@[_$a-zA-Z][_$a-zA-Z0-9_]*\>"
+syn match   javaAnnotation      "@\([_$a-zA-Z][_$a-zA-Z0-9]*\.\)*[_$a-zA-Z][_$a-zA-Z0-9]*\>"
 syn match   javaClassDecl       "@interface\>"
 syn keyword javaBranch		break continue nextgroup=javaUserLabelRef skipwhite
 syn match   javaUserLabelRef	"\k\+" contained

@@ -1,8 +1,8 @@
 " Vim syntax file
 " Language:	TeX
 " Maintainer:	Dr. Charles E. Campbell, Jr. <NdrchipO@ScampbellPfamily.AbizM>
-" Last Change:	Jan 22, 2009
-" Version:	44
+" Last Change:	Feb 05, 2009
+" Version:	45
 " URL:		http://mysite.verizon.net/astronaut/vim/index.html#vimlinks_syntax
 "
 " Notes: {{{1
@@ -400,7 +400,7 @@ endif
 " Separate lines used for verb` and verb# so that the end conditions {{{1
 " will appropriately terminate.  Ideally vim would let me save a
 " character from the start pattern and re-use it in the end-pattern.
-syn region texZone		start="\\begin{verbatim}"		end="\\end{verbatim}\|%stopzone\>"	contains=@Spell
+syn region texZone		start="\\begin{[vV]erbatim}"		end="\\end{[vV]erbatim}\|%stopzone\>"	contains=@Spell
 " listings package:
 syn region texZone		start="\\begin{lstlisting}"		end="\\end{lstlisting}\|%stopzone\>"	contains=@Spell
 " moreverb package:

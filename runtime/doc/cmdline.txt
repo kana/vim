@@ -1,4 +1,4 @@
-*cmdline.txt*   For Vim version 7.2.  Last change: 2008 Dec 17
+*cmdline.txt*   For Vim version 7.2.  Last change: 2009 Feb 25
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -118,8 +118,6 @@ CTRL-U		Remove all characters between the cursor position and
 		preferred behavior, add the following to your .vimrc: >
 			:cnoremap <C-U> <C-E><C-U>
 <
-		Note: if the command-line becomes empty with one of the
-		delete commands, Command-line mode is quit.
 							*c_<Insert>*
 <Insert>	Toggle between insert and overstrike.  {not in Vi}
 

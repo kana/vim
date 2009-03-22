@@ -1,4 +1,4 @@
-*mbyte.txt*     For Vim version 7.2.  Last change: 2008 Dec 03
+*mbyte.txt*     For Vim version 7.2.  Last change: 2009 Feb 28
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar et al.
@@ -1030,7 +1030,7 @@ For Command-line mode the flag is NOT remembered.  You are expected to type an
 Ex command first, which is ASCII.
 For typing search patterns the 'imsearch' option is used.  It can be set to
 use the same value as for 'iminsert'.
-
+								*lCursor*
 It is possible to give the GUI cursor another color when the language mappings
 are being used.  This is disabled by default, to avoid that the cursor becomes
 invisible when you use a non-standard background color.  Here is an example to

@@ -1,4 +1,4 @@
-*windows.txt*   For Vim version 7.2.  Last change: 2008 Aug 09
+*windows.txt*   For Vim version 7.2.  Last change: 2009 mar 02
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -1175,7 +1175,8 @@ scratch		Contains text that can be discarded at any time.  It is kept
 			:setlocal buftype=nofile
 			:setlocal bufhidden=hide
 			:setlocal noswapfile
-<		The buffer name can be used to identify the buffer.
+<		The buffer name can be used to identify the buffer, if you
+		give it a meaningful name.
 
 						*unlisted-buffer*
 unlisted	The buffer is not in the buffer list.  It is not used for
