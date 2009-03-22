@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language:	Python
 " Maintainer:	Neil Schemenauer <nas@python.ca>
-" Updated:	2006-10-15
+" Updated:	2009-02-24
 "		Added Python 2.4 features 2006 May 4 (Dmitry Vasiliev)
 "
 " Options to control Python syntax highlighting:
@@ -44,7 +44,7 @@ syn keyword pythonStatement	return try with
 syn keyword pythonStatement	global assert
 syn keyword pythonStatement	lambda yield
 syn keyword pythonStatement	def class nextgroup=pythonFunction skipwhite
-syn match   pythonFunction	"[a-zA-Z_][a-zA-Z0-9_]*" contained
+syn match   pythonFunction	"[[:alpha:]_][[:alnum:]_]*" contained
 syn keyword pythonRepeat	for while
 syn keyword pythonConditional	if elif else
 syn keyword pythonOperator	and in is not or
@@ -54,7 +54,7 @@ syn match   pythonComment	"#.*$" contains=pythonTodo,@Spell
 syn keyword pythonTodo		TODO FIXME XXX contained
 
 " Decorators (new in Python 2.4)
-syn match   pythonDecoratorName	"[[:alpha:]_][[:alnum:]_]*\%(\.[[:alpha:]_][[:alnum:]_]*\)*"
+syn match   pythonDecoratorName "[[:alpha:]_][[:alnum:]_]*\%(\.[[:alpha:]_][[:alnum:]_]*\)*" contained
 syn match   pythonDecorator	"@" display nextgroup=pythonDecoratorName skipwhite
 
 " strings

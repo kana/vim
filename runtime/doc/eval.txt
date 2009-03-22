@@ -1,4 +1,4 @@
-*eval.txt*	For Vim version 7.2.  Last change: 2009 Jan 10
+*eval.txt*	For Vim version 7.2.  Last change: 2009 Mar 22
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -1192,6 +1192,7 @@ They can be used in:
 Thus not in:
 - other scripts sourced from this one
 - mappings
+- menus
 - etc.
 
 Script variables can be used to avoid conflicts with global variable names.
@@ -1681,9 +1682,9 @@ ceil( {expr})			Float	round {expr} up
 changenr()			Number	current change number
 char2nr( {expr})		Number	ASCII value of first char in {expr}
 cindent( {lnum})		Number	C indent for line {lnum}
-clearmatches()			None	clear all matches
+clearmatches()			none	clear all matches
 col( {expr})			Number	column nr of cursor or mark
-complete({startcol}, {matches})	String	set Insert mode completion
+complete({startcol}, {matches})	none	set Insert mode completion
 complete_add( {expr})		Number	add completion match
 complete_check()		Number	check for key typed during completion
 confirm( {msg} [, {choices} [, {default} [, {type}]]])
@@ -1871,7 +1872,7 @@ setline( {lnum}, {line})	Number	set line {lnum} to {line}
 setloclist( {nr}, {list}[, {action}])
 				Number	modify location list using {list}
 setmatches( {list})		Number	restore a list of matches
-setpos( {expr}, {list})		none	set the {expr} position to {list}
+setpos( {expr}, {list})		Number	set the {expr} position to {list}
 setqflist( {list}[, {action}])	Number	modify quickfix list using {list}
 setreg( {n}, {v}[, {opt}])	Number	set register to value and type
 settabwinvar( {tabnr}, {winnr}, {varname}, {val})    set {varname} in window
@@ -1933,7 +1934,7 @@ winheight( {nr})		Number	height of window {nr}
 winline()			Number	window line of the cursor
 winnr( [{expr}])		Number	number of current window
 winrestcmd()			String	returns command to restore window sizes
-winrestview({dict})		None	restore view of current window
+winrestview({dict})		none	restore view of current window
 winsaveview()			Dict	save view of current window
 winwidth( {nr})			Number	width of window {nr}
 writefile({list}, {fname} [, {binary}])
@@ -2249,7 +2250,7 @@ complete({startcol}, {matches})			*complete()* *E785*
 		{matches} must be a |List|.  Each |List| item is one match.
 		See |complete-items| for the kind of items that are possible.
 		Note that the after calling this function you need to avoid
-		inserting anything that would completion to stop.
+		inserting anything that would cause completion to stop.
 		The match can be selected with CTRL-N and CTRL-P as usual with
 		Insert mode completion.  The popup menu will appear if
 		specified, see |ins-completion-menu|.
@@ -2418,6 +2419,7 @@ cursor({list})
 		When 'virtualedit' is used {off} specifies the offset in
 		screen columns from the start of the character.  E.g., a
 		position within a <Tab> or after the last character.
+		Returns 0 when the position could be set, -1 otherwise.
 
 
 deepcopy({expr}[, {noref}])				*deepcopy()* *E698*
@@ -3522,9 +3524,9 @@ index({list}, {expr} [, {start} [, {ic}]])			*index()*
 
 input({prompt} [, {text} [, {completion}]])		*input()*
 		The result is a String, which is whatever the user typed on
-		the command-line.  The parameter is either a prompt string, or
-		a blank string (for no prompt).  A '\n' can be used in the
-		prompt to start a new line.
+		the command-line.  The {prompt} argument is either a prompt
+		string, or a blank string (for no prompt).  A '\n' can be used
+		in the prompt to start a new line.
 		The highlighting set with |:echohl| is used for the prompt.
 		The input is entered just like a command-line, with the same
 		editing commands and mappings.	There is a separate history
@@ -3534,8 +3536,9 @@ input({prompt} [, {text} [, {completion}]])		*input()*
 			:  echo "Cheers!"
 			:endif
 <
-		If the optional {text} is present and not empty, this is used
-		for the default reply, as if the user typed this.  Example: >
+		If the optional {text} argument is present and not empty, this
+		is used for the default reply, as if the user typed this.
+		Example: >
 			:let color = input("Color? ", "white")
 
 <		The optional {completion} argument specifies the type of
@@ -6584,15 +6587,19 @@ This would call the function "my_func_whizz(parameter)".
 			removed without effect.  Removing any later item means
 			it will not be found.  Thus the following example
 			works (an inefficient way to make a list empty): >
-				:for item in mylist
-				   :call remove(mylist, 0)
-				:endfor
+				for item in mylist
+				   call remove(mylist, 0)
+				endfor
 <			Note that reordering the list (e.g., with sort() or
 			reverse()) may have unexpected effects.
 			Note that the type of each list item should be
 			identical to avoid errors for the type of {var}
 			changing.  Unlet the variable at the end of the loop
-			to allow multiple item types.
+			to allow multiple item types: >
+				for item in ["foo", ["bar"]]
+				   echo item
+				   unlet item  " E706 without this
+				endfor
 
 :for [{var1}, {var2}, ...] in {listlist}
 :endfo[r]

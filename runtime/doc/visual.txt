@@ -1,4 +1,4 @@
-*visual.txt*    For Vim version 7.2.  Last change: 2008 Aug 16
+*visual.txt*    For Vim version 7.2.  Last change: 2009 Mar 05
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -309,8 +309,6 @@ The block is shifted by 'shiftwidth'.  The RHS of the block is irrelevant.  The
 LHS of the block determines the point from which to apply a right shift, and
 padding includes TABs optimally according to 'ts' and 'et'.  The LHS of the
 block determines the point upto which to shift left.
-    Note: v_< padding is buggy if the Visual Block starts and ends in the same
-    TAB. (Vim 5.4c)
 See |v_b_>_example|.
 See |v_b_<_example|.
 

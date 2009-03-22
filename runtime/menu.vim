@@ -2,7 +2,7 @@
 " You can also use this as a start for your own set of menus.
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2008 Aug 22
+" Last Change:	2009 Feb 26
 
 " Note that ":an" (short for ":anoremenu") is often used to make a menu work
 " in all modes and avoid side effects from mappings defined by the user.
@@ -138,6 +138,7 @@ endfunc
 func! s:FnameEscape(fname)
   if exists('*fnameescape')
     return fnameescape(a:fname)
+  endif
   return escape(a:fname, " \t\n*?[{`$\\%#'\"|!<")
 endfunc
 

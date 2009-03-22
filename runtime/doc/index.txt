@@ -1,4 +1,4 @@
-*index.txt*     For Vim version 7.2.  Last change: 2009 Jan 27
+*index.txt*     For Vim version 7.2.  Last change: 2009 Mar 10
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -572,7 +572,7 @@ tag		command		   action in Normal mode	~
 				   window N lines high
 |CTRL-W_t|	CTRL-W t	   go to top window
 |CTRL-W_v|	CTRL-W v	   split current window vertically, new window
-				   N lines wide
+				   N columns wide
 |CTRL-W_w|	CTRL-W w	   go to N next window (wrap around)
 |CTRL-W_x|	CTRL-W x	   exchange current window with window N
 				   (default: next window)

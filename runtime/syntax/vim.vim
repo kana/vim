@@ -1,8 +1,8 @@
 " Vim syntax file
 " Language:	Vim 7.2 script
 " Maintainer:	Dr. Charles E. Campbell, Jr. <NdrOchipS@PcampbellAfamily.Mbiz>
-" Last Change:	December 08, 2008
-" Version:	7.2-89
+" Last Change:	Feb 18, 2009
+" Version:	7.2-90
 " Automatically generated keyword lists: {{{1
 
 " Quit when a syntax file was already loaded {{{2
@@ -141,11 +141,11 @@ syn keyword vimAugroupKey contained	aug[roup]
 
 " Operators: {{{2
 " =========
-syn cluster vimOperGroup	contains=vimOper,vimOperParen,vimNumber,vimString,vimRegister,vimContinue
+syn cluster vimOperGroup	contains=vimFunc,vimFuncVar,vimOper,vimOperParen,vimNumber,vimString,vimRegister,vimContinue
 syn match  vimOper	"\(==\|!=\|>=\|<=\|=\~\|!\~\|>\|<\|=\)[?#]\{0,2}"	skipwhite nextgroup=vimString,vimSpecFile
 syn match  vimOper	"||\|&&\|[-+.]"	skipwhite nextgroup=vimString,vimSpecFile
 syn region vimOperParen 	oneline matchgroup=vimOper start="(" end=")" contains=@vimOperGroup
-syn region vimOperParen	oneline matchgroup=vimSep  start="{" end="}" contains=@vimOperGroup nextgroup=vimVar
+syn region vimOperParen	oneline matchgroup=vimSep  start="{" end="}" contains=@vimOperGroup nextgroup=vimVar,vimFuncVar
 if !exists("g:vimsyn_noerror")
  syn match  vimOperError	")"
 endif
@@ -163,7 +163,7 @@ if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 'f'
 else                                                                                                          
  syn region  vimFuncBody  contained	start="\ze("	matchgroup=vimCommand end="\<\(endf\>\|endfu\%[nction]\>\)"		contains=@vimFuncBodyList
 endif
-syn match   vimFuncVar   contained	"a:\(\I\i*\|\d\+\)"
+syn match   vimFuncVar   contained	"a:\(\K\k*\|\d\+\)"
 syn match   vimFuncSID   contained	"\c<sid>\|\<s:"
 syn keyword vimFuncKey   contained	fu[nction]
 syn match   vimFuncBlank contained	"\s\+"
@@ -290,7 +290,7 @@ syn match  vimSetMod	contained	"&vim\=\|[!&?<]\|all&"
 
 " Let {{{2
 " ===
-syn keyword vimLet	let	unl[et]	skipwhite nextgroup=vimVar
+syn keyword vimLet	let	unl[et]	skipwhite nextgroup=vimVar,vimFuncVar
 
 " Abbreviations {{{2
 " =============
@@ -305,8 +305,8 @@ syn keyword vimAutoCmd	au[tocmd] do[autocmd] doautoa[ll]	skipwhite nextgroup=vim
 
 " Echo and Execute -- prefer strings! {{{2
 " ================
-syn region  vimEcho	oneline excludenl matchgroup=vimCommand start="\<ec\%[ho]\>" skip="\(\\\\\)*\\|" end="$\||" contains=vimFunc,vimString,varVar
-syn region  vimExecute	oneline excludenl matchgroup=vimCommand start="\<exe\%[cute]\>" skip="\(\\\\\)*\\|" end="$\||\|<[cC][rR]>" contains=vimIsCommand,vimString,vimOper,vimVar,vimNotation,vimOperParen
+syn region  vimEcho	oneline excludenl matchgroup=vimCommand start="\<ec\%[ho]\>" skip="\(\\\\\)*\\|" end="$\||" contains=vimFunc,vimFuncVar,vimString,vimVar
+syn region  vimExecute	oneline excludenl matchgroup=vimCommand start="\<exe\%[cute]\>" skip="\(\\\\\)*\\|" end="$\||\|<[cC][rR]>" contains=vimFuncVar,vimIsCommand,vimOper,vimNotation,vimOperParen,vimString,vimVar
 syn match   vimEchoHL	"echohl\="	skipwhite nextgroup=vimGroup,vimHLGroup,vimEchoHLNone
 syn case ignore
 syn keyword vimEchoHLNone	none

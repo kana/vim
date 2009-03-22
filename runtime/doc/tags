@@ -4110,6 +4110,7 @@ E808	eval.txt	/*E808*
 E809	cmdline.txt	/*E809*
 E81	map.txt	/*E81*
 E810	diff.txt	/*E810*
+E811	autocmd.txt	/*E811*
 E82	message.txt	/*E82*
 E83	message.txt	/*E83*
 E84	windows.txt	/*E84*
@@ -6248,6 +6249,7 @@ keys()	eval.txt	/*keys()*
 known-bugs	todo.txt	/*known-bugs*
 l	motion.txt	/*l*
 l:var	eval.txt	/*l:var*
+lCursor	mbyte.txt	/*lCursor*
 lace.vim	syntax.txt	/*lace.vim*
 lang-variable	eval.txt	/*lang-variable*
 language-mapping	map.txt	/*language-mapping*

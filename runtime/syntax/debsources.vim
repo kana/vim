@@ -2,7 +2,7 @@
 " Language:     Debian sources.list
 " Maintainer:   Debian Vim Maintainers <pkg-vim-maintainers@lists.alioth.debian.org>
 " Former Maintainer: Matthijs Mohlmann <matthijs@cacholong.nl>
-" Last Change: 2008-04-25
+" Last Change: 2009 Mar 09
 " URL: http://git.debian.org/?p=pkg-vim/vim.git;a=blob_plain;f=runtime/syntax/debsources.vim;hb=debian
 
 " Standard syntax initialization
@@ -23,7 +23,7 @@ syn match debsourcesComment        /#.*/
 
 " Match uri's
 syn match debsourcesUri            +\(http://\|ftp://\|[rs]sh://\|debtorrent://\|\(cdrom\|copy\|file\):\)[^' 	<>"]\++
-syn match debsourcesDistrKeyword   +\([[:alnum:]_./]*\)\(sarge\|etch\|lenny\|\(old\)\=stable\|testing\|unstable\|sid\|experimental\|dapper\|feisty\|gutsy\|hardy\|intrepid\)\([-[:alnum:]_./]*\)+
+syn match debsourcesDistrKeyword   +\([[:alnum:]_./]*\)\(etch\|lenny\|squeeze\|\(old\)\=stable\|testing\|unstable\|sid\|experimental\|dapper\|gutsy\|hardy\|intrepid\|jaunty\)\([-[:alnum:]_./]*\)+
 
 " Associate our matches and regions with pretty colours
 hi def link debsourcesLine            Error
