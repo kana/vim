@@ -1259,7 +1259,11 @@ im_set_position(int row, int col)
 
 
     void
+#if defined(FEAT_UIMFEP)
+gui_im_set_active(int active)
+#else // FEAT_UIMFEP
 im_set_active(int active)
+#endif // FEAT_UIMFEP
 {
     // Set roman or the system script if 'active' is TRUE or FALSE,
     // respectively.
@@ -1271,7 +1275,11 @@ im_set_active(int active)
 
 
     int
+#if defined(FEAT_UIMFEP)
+gui_im_get_status(void)
+#else // FEAT_UIMFEP
 im_get_status(void)
+#endif // FEAT_UIMFEP
 {
     // IM is active whenever the current script is the system script and the
     // system script isn't roman.  (Hence IM can only be active when using
