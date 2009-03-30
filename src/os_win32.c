@@ -245,6 +245,9 @@ get_exe_name(void)
 }
 
 #if defined(DYNAMIC_GETTEXT) || defined(PROTO)
+# ifndef GETTEXT_DLL_WITHENC
+#  define GETTEXT_DLL_WITHENC "libintl2.dll"
+# endif
 # ifndef GETTEXT_DLL
 #  define GETTEXT_DLL "libintl.dll"
 # endif
@@ -282,7 +285,24 @@ dyn_libintl_init(char *libname)
     if (hLibintlDLL)
 	return 1;
     /* Load gettext library (libintl.dll) */
-    hLibintlDLL = LoadLibrary(libname != NULL ? libname : GETTEXT_DLL);
+    /*
+     * Priority:
+     *	1. libname if it isn't NULL.
+     *	2. GETTEXT_DLL_WITHENC to convert encodings.
+     *	3. GETTEXT_DLL to use message in only native encoding.
+     */
+    if (libname != NULL)
+    {
+	hLibintlDLL = LoadLibrary(libname);
+	/* If failed to load libname, try to load default libraries. */
+    }
+    if (hLibintlDLL == NULL)
+    {
+	hLibintlDLL = LoadLibrary(GETTEXT_DLL_WITHENC);
+	if (hLibintlDLL == NULL)
+	    hLibintlDLL = LoadLibrary(GETTEXT_DLL);
+    }
+    /* Get functions of gettext library. */
     if (!hLibintlDLL)
     {
 	char_u	    dirname[_MAX_PATH];

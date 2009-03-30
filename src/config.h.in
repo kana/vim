@@ -151,6 +151,7 @@
 #undef HAVE_LSTAT
 #undef HAVE_MEMCMP
 #undef HAVE_MEMSET
+#undef HAVE_MIGEMO
 #undef HAVE_NANOSLEEP
 #undef HAVE_OPENDIR
 #undef HAVE_FLOAT_FUNCS
@@ -204,6 +205,7 @@
 #undef HAVE_LIBGEN_H
 #undef HAVE_LIBINTL_H
 #undef HAVE_LOCALE_H
+#undef HAVE_MIGEMO_H
 #undef HAVE_MATH_H
 #undef HAVE_NDIR_H
 #undef HAVE_POLL_H
@@ -327,6 +329,9 @@
 
 /* Define if you want to include XIM support. */
 #undef FEAT_XIM
+
+/* Define if you want to include UIMFEP support. */
+#undef FEAT_UIMFEP
 
 /* Define if you want to include Hangul input support. */
 #undef FEAT_HANGULIN

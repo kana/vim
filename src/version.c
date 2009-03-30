@@ -250,6 +250,7 @@ static char *(features[]) =
 #else
 	"-gettext",
 #endif
+	"+guess_encode",
 #ifdef FEAT_HANGULIN
 	"+hangul_input",
 #else
@@ -279,6 +280,7 @@ static char *(features[]) =
 #else
 	"-keymap",
 #endif
+	"+kaoriya",
 #ifdef FEAT_LANGMAP
 	"+langmap",
 #else
@@ -313,6 +315,15 @@ static char *(features[]) =
 	"+menu",
 #else
 	"-menu",
+#endif
+#ifdef USE_MIGEMO
+# ifdef DYNAMIC_MIGEMO
+	"+migemo/dyn",
+# else
+	"+migemo",
+# endif
+#else
+	"-migemo",
 #endif
 #ifdef FEAT_SESSION
 	"+mksession",

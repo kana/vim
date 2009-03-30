@@ -135,6 +135,9 @@
 # define PV_LISP	OPT_BUF(BV_LISP)
 #endif
 #define PV_MA		OPT_BUF(BV_MA)
+#ifdef USE_MIGEMO
+# define PV_MIG		OPT_BUF(BV_MIG)
+#endif
 #define PV_ML		OPT_BUF(BV_ML)
 #define PV_MOD		OPT_BUF(BV_MOD)
 #define PV_MPS		OPT_BUF(BV_MPS)
@@ -704,6 +707,14 @@ static struct vimoption
 			    (char_u *)NULL, PV_NONE,
 			    {(char_u *)0L, (char_u *)0L}
 #endif
+			    },
+    {"charspace",   "csp",  P_NUM|P_NODEFAULT|P_VIM|P_RCLR,
+#ifdef FEAT_GUI
+			    (char_u *)&p_charspace, PV_NONE,
+#else
+			    (char_u *)NULL, PV_NONE,
+#endif
+			    {(char_u *)0L, (char_u *)0L}
 			    },
     {"cindent",	    "cin",  P_BOOL|P_VI_DEF|P_VIM,
 #ifdef FEAT_CINDENT
@@ -1738,6 +1749,14 @@ static struct vimoption
     {"mesg",	    NULL,   P_BOOL|P_VI_DEF,
 			    (char_u *)NULL, PV_NONE,
 			    {(char_u *)FALSE, (char_u *)0L}},
+#ifdef USE_MIGEMO
+    {"migemo",	    "mgm",  P_BOOL|P_VI_DEF|P_VIM,
+			    (char_u *)&p_migemo, PV_MIG,
+			    {(char_u *)FALSE, (char_u *)0L}},
+    {"migemodict",  "mgd",  P_STRING|P_EXPAND|P_VI_DEF|P_VIM,
+			    (char_u *)&p_migdict, PV_NONE,
+			    {(char_u *)"", (char_u *)0L}},
+#endif /* USE_MIGEMO */
     {"mkspellmem",  "msm",  P_STRING|P_VI_DEF|P_EXPAND|P_SECURE,
 #ifdef FEAT_SPELL
 			    (char_u *)&p_msm, PV_NONE,
@@ -2859,7 +2878,11 @@ static struct vimoption
 #define PARAM_COUNT (sizeof(options) / sizeof(struct vimoption))
 
 #ifdef FEAT_MBYTE
-static char *(p_ambw_values[]) = {"single", "double", NULL};
+static char *(p_ambw_values[]) = {"single", "double",
+# ifdef USE_AMBIWIDTH_AUTO
+    "auto",
+# endif
+    NULL};
 #endif
 static char *(p_bg_values[]) = {"light", "dark", NULL};
 static char *(p_nf_values[]) = {"octal", "hex", "alpha", NULL};
@@ -5445,6 +5468,11 @@ set_string_option_global(opt_idx, varp)
 	free_string_option(*p);
 	*p = s;
     }
+
+#ifdef USE_MIGEMO
+    if (varp == &p_migdict)
+	reset_migemo(FALSE);
+#endif
 }
 
 /*
@@ -7891,7 +7919,7 @@ set_num_option(opt_idx, varp, value, errbuf, errbuflen, opt_flags)
 #endif
 
 #ifdef FEAT_GUI
-    else if (pp == &p_linespace)
+    else if (pp == &p_linespace || pp == &p_charspace)
     {
 	/* Recompute gui.char_height and resize the Vim window to keep the
 	 * same number of lines. */
@@ -9338,6 +9366,9 @@ get_varp(p)
 	case PV_MMTA:	return (char_u *)&(curbuf->b_p_mmta);
 #endif
 	case PV_MA:	return (char_u *)&(curbuf->b_p_ma);
+#ifdef USE_MIGEMO
+	case PV_MIG:	return (char_u *)&(curbuf->b_p_migemo);
+#endif
 	case PV_MOD:	return (char_u *)&(curbuf->b_changed);
 	case PV_NF:	return (char_u *)&(curbuf->b_p_nf);
 #ifdef FEAT_OSFILETYPE
@@ -9716,6 +9747,11 @@ buf_copy_options(buf, flags)
 	     * state from the current buffer is better than resetting it. */
 	    buf->b_p_iminsert = p_iminsert;
 	    buf->b_p_imsearch = p_imsearch;
+
+#ifdef USE_MIGEMO
+	    /* This is migemo extension */
+	    buf->b_p_migemo = p_migemo;
+#endif
 
 	    /* options that are normally global but also have a local value
 	     * are not copied, start using the global value */

@@ -144,9 +144,9 @@ TARGETOS = BOTH
 # interfaces.
 # If you change something else, do "make clean" first!
 !if "$(GUI)" == "yes"
-OBJDIR = .\ObjG
+OBJDIR = .\Obj\G
 !else
-OBJDIR = .\ObjC
+OBJDIR = .\Obj\C
 !endif
 !if "$(OLE)" == "yes"
 OBJDIR = $(OBJDIR)O
@@ -568,6 +568,14 @@ GETTEXT = yes
 !endif
 !if "$(GETTEXT)" == "yes"
 CFLAGS = $(CFLAGS) -DDYNAMIC_GETTEXT
+!endif
+
+#
+# Support Migemo
+#
+!ifdef MIGEMO
+!message Migemo supported - will be dynamic linked.
+CFLAGS = $(CFLAGS) -DDYNAMIC_MIGEMO
 !endif
 
 # TCL interface
