@@ -29,6 +29,10 @@
 # include <utime.h>		/* for struct utimbuf */
 #endif
 
+#if defined(MACOS_X)
+# undef check			/* for check(), /usr/include/AssertMacros.h */
+#endif
+
 #define BUFSIZE		8192	/* size of normal write buffer */
 #define SMBUFSIZE	256	/* size of emergency write buffer */
 
