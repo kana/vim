@@ -64,8 +64,6 @@ an <silent> 10.332 ファイル.閉じる              :conf q<CR>
 an <silent> 10.341 ファイル.すべてを保存        :browse conf wa<CR>
 an 10.350 ファイル.名前を付けてすべてを保存\.\.\.<Tab>:sav :browse confirm saveas<CR>
 
-menutrans File.Print	:hardcopy<CR>
-"an 10.510 ファイル.印刷 :hardcopy<CR>
 
 " Edit menu
 
@@ -229,8 +227,8 @@ macm ファイル.ウインドウを閉じる            key=<D-W>
 macm ファイル.閉じる                        key=<D-w> action=performClose:
 macm File.Save                              key=<D-s>
 macm ファイル.すべてを保存                  key=<D-M-s> alt=YES
-macm ファイル.名前を付けて保存\.\.\.        key=<D-S>
-macm ファイル.印刷                          key=<D-p>
+macm ファイル.名前を付けてすべてを保存\.\.\. key=<D-S>
+"macm ファイル.印刷                          key=<D-p>
 
 macm Edit.Undo                              key=<D-z> action=undo:
 macm Edit.Redo                              key=<D-Z> action=redo:
