@@ -3,7 +3,7 @@
 " An example for a Japanese version vimrc file.
 " 日本語版のデフォルト設定ファイル(vimrc) - Vim7用試作
 "
-" Last Change: 24-Jul-2007.
+" Last Change: 02-Apr-2009.
 " Maintainer:  MURAOKA Taro <koron@tka.att.ne.jp>
 "
 " 解説:
@@ -75,6 +75,8 @@ endif
 " MacOS Xメニューの日本語化 (メニュー表示前に行なう必要がある)
 if has('mac')
   set langmenu=japanese
+  set encoding=utf-8
+  set termencoding=utf-8
 endif
 " 日本語入力用のkeymapの設定例 (コメントアウト)
 if has('keymap')
