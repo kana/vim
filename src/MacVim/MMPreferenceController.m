@@ -156,22 +156,32 @@ NSString *kOdbEditorIdentifierWriteRoom = @"com.hogbaysoftware.WriteRoom";
 {
     loadSymbols();
 
+    NSString *generalLabel = NSLocalizedString(@"General", nil);
+    NSString *integrationLabel = NSLocalizedString(@"Integration", nil);
+    NSString *advancedLabel = NSLocalizedString(@"Advanced", nil);
+
     if (nsImageNamePreferencesGeneral != NULL) {
         [self addView:generalPreferences
-                label:@"General"
+                label:generalLabel
                 image:[NSImage imageNamed:nsImageNamePreferencesGeneral]];
     } else {
-        [self addView:generalPreferences label:@"General"];
+        [self addView:generalPreferences
+		label:generalLabel
+		image:[NSImage imageNamed:@"General"]];
     }
 
-    [self addView:integrationPreferences label:@"Integration"];
+    [self addView:integrationPreferences
+		label:integrationLabel
+		image:[NSImage imageNamed:@"Integration"]];
 
     if (nsImageNamePreferencesAdvanced != NULL) {
         [self addView:advancedPreferences
-                label:@"Advanced"
+                label:advancedLabel
                 image:[NSImage imageNamed:nsImageNamePreferencesAdvanced]];
     } else {
-        [self addView:advancedPreferences label:@"Advanced"];
+        [self addView:advancedPreferences
+		label:advancedLabel
+		image:[NSImage imageNamed:@"Advanced"]];
     }
 
 }

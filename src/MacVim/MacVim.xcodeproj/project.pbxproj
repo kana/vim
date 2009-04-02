@@ -75,6 +75,7 @@
 		1DFE25A50C527BC4003000F7 /* PSMTabBarControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D493DB90C52533B00AB718C /* PSMTabBarControl.framework */; };
 		523248FE0F80FFA70048E9A9 /* PlugInView.nib in Resources */ = {isa = PBXBuildFile; fileRef = 523248FD0F80FFA70048E9A9 /* PlugInView.nib */; };
 		523249010F80FFBF0048E9A9 /* FindAndReplace.nib in Resources */ = {isa = PBXBuildFile; fileRef = 523249000F80FFBF0048E9A9 /* FindAndReplace.nib */; };
+		523F4D770F84912F00741BAD /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 523F4D750F84912F00741BAD /* Localizable.strings */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -264,6 +265,8 @@
 		523248FC0F80FF9F0048E9A9 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/Preferences.nib; sourceTree = "<group>"; };
 		523248FF0F80FFB80048E9A9 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/PlugInView.nib; sourceTree = "<group>"; };
 		523249020F80FFD40048E9A9 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/FindAndReplace.nib; sourceTree = "<group>"; };
+		523F4D760F84912F00741BAD /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
+		523F4D780F84914000741BAD /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* MacVim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacVim.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD476E2B0DAAD74400F08A5C /* RBSplitSubview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBSplitSubview.h; sourceTree = "<group>"; };
@@ -482,6 +485,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				523F4D750F84912F00741BAD /* Localizable.strings */,
 				1D9C602E0EF79C0C0034AD44 /* MacVim.icns */,
 				523249000F80FFBF0048E9A9 /* FindAndReplace.nib */,
 				0395A8A90D72D88B00881434 /* General.png */,
@@ -634,6 +638,7 @@
 				1DCD00D30E50B2B700460166 /* Undo.png in Resources */,
 				523249010F80FFBF0048E9A9 /* FindAndReplace.nib in Resources */,
 				1D9C60520EF79C0C0034AD44 /* MacVim.icns in Resources */,
+				523F4D770F84912F00741BAD /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -748,6 +753,15 @@
 				523249020F80FFD40048E9A9 /* Japanese */,
 			);
 			name = FindAndReplace.nib;
+			sourceTree = "<group>";
+		};
+		523F4D750F84912F00741BAD /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				523F4D760F84912F00741BAD /* English */,
+				523F4D780F84914000741BAD /* Japanese */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
