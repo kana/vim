@@ -62,7 +62,7 @@ NSString *kOdbEditorNameCSSEdit = @"CSSEdit";
 NSString *kOdbEditorIdentifierCSSEdit = @"com.macrabbit.cssedit";
 
 NSString *kOdbEditorNameMacVim = @"MacVim";
-NSString *kOdbEditorIdentifierMacVim = @"org.vim.MacVim";
+NSString *kOdbEditorIdentifierMacVim = @"org.vim.MacVim.KaoriYa";
 
 NSString *kOdbEditorNameSmultron = @"Smultron";
 NSString *kOdbEditorIdentifierSmultron = @"org.smultron.Smultron";

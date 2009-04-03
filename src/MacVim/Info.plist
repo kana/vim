@@ -1128,7 +1128,7 @@
 	<key>CFBundleIconFile</key>
 	<string>MacVim</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.vim.MacVim</string>
+	<string>org.vim.MacVim.KaoriYa</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -1145,7 +1145,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>org.vim.MacVim</string>
+			<string>org.vim.MacVim.KaoriYa</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>mvim</string>
@@ -1153,7 +1153,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>44</string>
+	<string>20090402</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
@@ -1211,7 +1211,7 @@
 		</dict>
 	</array>
 	<key>SUFeedURL</key>
-	<string>http://bjorn.winckler.googlepages.com/macvim_latest.xml</string>
+	<string>http://macvim-kaoriya.googlecode.com/files/latest.xml</string>
 	<key>NSAppleScriptEnabled</key>
 	<true/>
 	<key>UTExportedTypeDeclarations</key>
