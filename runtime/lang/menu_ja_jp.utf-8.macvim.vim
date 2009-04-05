@@ -30,7 +30,7 @@ let g:menutrans_help_dialog = "ヘルプを検索したいコマンドもしく�
 menutrans &File				ファイル
 menutrans &Open\.\.\.<Tab>:e		開く\.\.\.<Tab>:e
 menutrans Sp&lit-Open\.\.\.<Tab>:sp	分割して開く\.\.\.<Tab>:sp
-menutrans Open\ Tab\.\.\.<Tab>:tabnew	タブページで開く<Tab>:tabnew
+menutrans Open\ Tab\.\.\.<Tab>:tabnew	タブで開く<Tab>:tabnew
 menutrans &New<Tab>:enew		新規作成<Tab>:enew
 menutrans &Close<Tab>:close		閉じる<Tab>:close
 menutrans &Save<Tab>:w			保存<Tab>:w
@@ -44,13 +44,13 @@ menutrans E&xit<Tab>:qa			終了<Tab>:qa
 " Edit menu
 menutrans &Edit				編集
 menutrans &Undo<Tab>u			取り消す<Tab>u
-menutrans &Redo<Tab>^R			もう一度やる<Tab>^R
+menutrans &Redo<Tab>^R			やり直す<Tab>^R
 menutrans Rep&eat<Tab>\.		繰り返す<Tab>\.
-menutrans Cu&t<Tab>"+x			切り取り<Tab>"+x
+menutrans Cu&t<Tab>"+x			カット<Tab>"+x
 menutrans &Copy<Tab>"+y			コピー<Tab>"+y
-menutrans &Paste<Tab>"+gP		貼り付け<Tab>"+gP
-menutrans Put\ &Before<Tab>[p		前に貼る<Tab>[p
-menutrans Put\ &After<Tab>]p		後に貼る<Tab>]p
+menutrans &Paste<Tab>"+gP		ペースト<Tab>"+gP
+menutrans Put\ &Before<Tab>[p		前にペースト<Tab>[p
+menutrans Put\ &After<Tab>]p		後にペースト<Tab>]p
 menutrans &Delete<Tab>x			消す<Tab>x
 menutrans &Select\ All<Tab>ggVG		全て選択<Tab>ggVG
 menutrans &Find\.\.\.			検索\.\.\.
@@ -228,15 +228,17 @@ menutrans Select\ Fo&nt\.\.\.		フォント設定\.\.\.
 
 " The popup menu
 menutrans &Undo			取り消す
-menutrans Cu&t			切り取り
+menutrans Cu&t			カット
 menutrans &Copy			コピー
-menutrans &Paste		貼り付け
+menutrans &Paste		ペースト
 menutrans &Delete		削除
 menutrans Select\ Blockwise	矩形ブロック選択
 menutrans Select\ &Word		単語選択
 menutrans Select\ &Line		行選択
 menutrans Select\ &Block	ブロック選択
 menutrans Select\ &All		すべて選択
+menutrans Select\ &Sentence	文選択
+menutrans Select\ Pa&ragraph	段落選択
 
 " The GUI toolbar (for Win32 or GTK)
 if has("toolbar")
