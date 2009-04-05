@@ -6,7 +6,7 @@ use Mac::Files qw( NewAliasMinimal );
 
 &writeDSDBEntries("DS_Store",
     &makeEntries(".",
-        BKGD_alias => NewAliasMinimal("/Volumes/MacVim-KaoriYa/background.png"),
+        BKGD_alias => NewAliasMinimal("background.png"),
         ICVO => 1,
         fwi0_flds => [ 57, 10, 557, 510, "icnv", 0, 0 ],
         fwsw => 184,
@@ -16,11 +16,11 @@ use Mac::Files qw( NewAliasMinimal );
         icvt => 13,
         vstl => "icnv"
     ),
-    &makeEntries("KaoriYa", Iloc_xy => [ 322, 404 ]),
+    &makeEntries("KaoriYa", Iloc_xy => [ 322, 384 ]),
     &makeEntries("MacVim.app", Iloc_xy => [ 116, 208 ]),
-    &makeEntries("README.txt", Iloc_xy => [ 178, 404 ]),
+    &makeEntries("README.txt", Iloc_xy => [ 178, 384 ]),
     &makeEntries("background.png", Iloc_xy => [ 0, 0 ]),
-    &makeEntries("\x{306f}\x{3057}\x{3099}\x{3081}\x{306b}\x{304a}\x{8aad}\x{307f}\x{304f}\x{305f}\x{3099}\x{3055}\x{3044}.rtfd", Iloc_xy => [ 240, 66 ]),
+    &makeEntries("\x{306f}\x{3057}\x{3099}\x{3081}\x{306b}\x{304a}\x{8aad}\x{307f}\x{304f}\x{305f}\x{3099}\x{3055}\x{3044}.rtfd", Iloc_xy => [ 240, 86 ]),
     &makeEntries("\x{30a2}\x{30d5}\x{309a}\x{30ea}\x{30b1}\x{30fc}\x{30b7}\x{30e7}\x{30f3}", Iloc_xy => [ 384, 208 ])
 );
 
