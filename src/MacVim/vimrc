@@ -74,7 +74,7 @@ if !(has('win32') || has('mac')) && has('multi_lang')
 endif
 " MacOS Xメニューの日本語化 (メニュー表示前に行なう必要がある)
 if has('mac')
-  set langmenu=japanese
+  set langmenu=ja_ja.utf-8.macvim
   set encoding=utf-8
   set termencoding=utf-8
 endif
