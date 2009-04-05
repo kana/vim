@@ -75,3 +75,6 @@
 
 /* No comment provided by engineer. */
 "You're up to date!" = "最新版を使用しています！";
+
+/* No comment provided by engineer. */
+"An error occurred in retrieving update information; are you connected to the internet? Please try again later." = "アップデート情報の取得中にエラーが発生しました。インターネットに接続していますか？後ほど改めてお試しください。";
