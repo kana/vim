@@ -1,5 +1,7 @@
-﻿// Preferences
+﻿// MMPreferenceController.m
 "Advanced" = "詳細";
 "General" = "一般";
 "Integration" = "連携";
 
+// MMAppController.m
+"Open Recent" = "最近開いたファイル";
