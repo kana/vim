@@ -255,6 +255,10 @@ ex_menu(eap)
     /*
      * Translate menu names as specified with ":menutrans" commands.
      */
+#if defined(FEAT_TOOLBAR) && defined(FEAT_GUI_MACVIM)
+    /* Skip to translate toolbar for MacVim toolbar icons */
+    if (!menu_is_toolbar(arg)) {
+#endif
     menu_path = arg;
     while (*menu_path)
     {
@@ -280,6 +284,9 @@ ex_menu(eap)
 	    break;
 	menu_path = p + 1;
     }
+#if defined(FEAT_TOOLBAR) && defined(FEAT_GUI_MACVIM)
+    }
+#endif
 #endif
 
     /*
