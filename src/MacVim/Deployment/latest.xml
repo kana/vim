@@ -41,15 +41,15 @@
     -->
 
     <item>
-      <title>macvim-kaoriya-20090405 released</title>
+      <title>macvim-kaoriya-20090406 released</title>
       <description><![CDATA[
-<h1>MacVim-KaoriYa 20090405 released</h1>
+<h1>MacVim-KaoriYa 20090406 released</h1>
       ]]></description>
-      <pubDate>Fri, 05 Apr 2009 23:00:00 +0900</pubDate>
+      <pubDate>Mon, 06 Apr 2009 21:21:00 +0900</pubDate>
       <enclosure type="application/octet-stream"
-        url="http://macvim-kaoriya.googlecode.com/files/macvim-kaoriya-20090405.dmg"
-        length="39238451"
-        sparkle:version="20090405"
+        url="http://macvim-kaoriya.googlecode.com/files/macvim-kaoriya-20090406.dmg"
+        length="38115811"
+        sparkle:version="20090406"
         sparkle:shortVersionString="7.2"
         />
     </item>
