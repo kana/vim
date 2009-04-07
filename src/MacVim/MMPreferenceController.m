@@ -244,7 +244,7 @@ NSString *kOdbEditorIdentifierWriteRoom = @"com.hogbaysoftware.WriteRoom";
         && [[NSWorkspace sharedWorkspace] isFilePackageAtPath:ODBEDITOR_PATH];
 
     // enable/disable buttons
-    [installOdbButton setTitle:@"Install"];
+    [installOdbButton setTitle:NSLocalizedString(@"Install", nil)];
     if (odbIsInstalled) {
         [uninstallOdbButton setEnabled:YES];
         [editors setEnabled:YES];
@@ -255,20 +255,21 @@ NSString *kOdbEditorIdentifierWriteRoom = @"com.hogbaysoftware.WriteRoom";
                                   options:NSNumericSearch]) {
         case NSOrderedAscending:
             versionString = [NSString stringWithFormat:
-                @"Latest version is %@, you have %@.",
+                NSLocalizedString(@"Latest version is %@, you have %@.", nil),
                 installVersion, installedVersion];
             [installOdbButton setTitle:@"Update"];
             [installOdbButton setEnabled:YES];
             break;
         case NSOrderedSame:
             versionString = [NSString stringWithFormat:
-                @"Latest version is %@. You have the latest version.",
+                NSLocalizedString(
+                    @"Latest version is %@. You have the latest version.", nil),
                 installVersion];
             [installOdbButton setEnabled:NO];
             break;
         case NSOrderedDescending:
             versionString = [NSString stringWithFormat:
-                @"Latest version is %@, you have %@.",
+		NSLocalizedString(@"Latest version is %@, you have %@.", nil),
                 installVersion, installedVersion];
             [installOdbButton setEnabled:NO];
             break;
@@ -279,7 +280,8 @@ NSString *kOdbEditorIdentifierWriteRoom = @"com.hogbaysoftware.WriteRoom";
         [editors setEnabled:NO];
 
         versionString = [NSString
-            stringWithFormat:@"Latest version is %@. It is not installed.",
+            stringWithFormat:NSLocalizedString(
+                @"Latest version is %@. It is not installed.", nil),
                       [self odbBundleInstallVersion]];
     }
 

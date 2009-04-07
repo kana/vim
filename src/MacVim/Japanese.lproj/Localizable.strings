@@ -5,3 +5,9 @@
 
 // MMAppController.m
 "Open Recent" = "最近開いたファイル";
+
+// MMPreferenceController.m
+"Install" = "インストール";
+"Latest version is %@, you have %@." = "最新版は%1$@ですが、%2$@がインストールされています。";
+"Latest version is %@. You have the latest version." = "最新版の%@がインストールされています。";
+"Latest version is %@. It is not installed." = "最新版は%@です。インストールされていません。";
