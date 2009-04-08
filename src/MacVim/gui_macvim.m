@@ -1270,7 +1270,8 @@ im_set_active(int active)
     SInt32 systemScript = GetScriptManagerVariable(smSysScript);
 
     if (!p_imdisable && smRoman != systemScript)
-        KeyScript(active ? smKeySysScript : smKeyRoman);
+        [[MMBackend sharedInstance] queueMessage:
+            (active ? ActivateKeyScriptID : DeactivateKeyScriptID) data:nil];
 }
 
 
