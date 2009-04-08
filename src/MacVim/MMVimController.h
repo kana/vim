@@ -20,14 +20,11 @@
 
 
 
-@interface MMVimController : NSObject <MMFrontendProtocol>
-{
+@interface MMVimController : NSObject {
+    unsigned            identifier;
     BOOL                isInitialized;
     MMWindowController  *windowController;
     id                  backendProxy;
-    BOOL                inProcessCommandQueue;
-    NSMutableArray      *sendQueue;
-    NSMutableArray      *receiveQueue;
     NSMenu              *mainMenu;
     NSMutableArray      *popupMenuItems;
     NSToolbar           *toolbar;
@@ -43,6 +40,7 @@
 }
 
 - (id)initWithBackend:(id)backend pid:(int)processIdentifier;
+- (unsigned)identifier;
 - (id)backendProxy;
 - (int)pid;
 - (void)setServerName:(NSString *)name;
@@ -65,7 +63,9 @@
                timeout:(NSTimeInterval)timeout;
 - (void)addVimInput:(NSString *)string;
 - (NSString *)evaluateVimExpression:(NSString *)expr;
-- (id)evaluateVimExpressionCocoa:(NSString *)expr errorString:(NSString **)errstr;
+- (id)evaluateVimExpressionCocoa:(NSString *)expr
+                     errorString:(NSString **)errstr;
+- (void)processInputQueue:(NSArray *)queue;
 #ifdef MM_ENABLE_PLUGINS
 - (MMPlugInInstanceMediator *)instanceMediator;
 #endif
