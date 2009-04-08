@@ -41,6 +41,20 @@
     -->
 
     <item>
+      <title>macvim-kaoriya-20090408 released</title>
+      <description><![CDATA[
+<h1>MacVim-KaoriYa 20090408 released</h1>
+      ]]></description>
+      <pubDate>Wed, 08 Apr 2009 21:20:00 +0900</pubDate>
+      <enclosure type="application/octet-stream"
+        url="http://macvim-kaoriya.googlecode.com/files/macvim-kaoriya-20090408.dmg"
+        length="38123890"
+        sparkle:version="20090408"
+        sparkle:shortVersionString="7.2"
+        />
+    </item>
+
+    <item>
       <title>macvim-kaoriya-20090406 released</title>
       <description><![CDATA[
 <h1>MacVim-KaoriYa 20090406 released</h1>
