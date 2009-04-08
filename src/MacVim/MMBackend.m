@@ -21,7 +21,7 @@
  *
  * It is very important to realize that all state is held by the backend, the
  * frontend must either ask for state [MMBackend evaluateExpression:] or wait
- * for the backend to update [MMVimController processCommandQueue:].
+ * for the backend to update [MMAppController processInput:forIdentifier:].
  *
  * The client/server functionality of Vim is handled by the backend.  It sets
  * up a named NSConnection to which other Vim processes can connect.
@@ -178,7 +178,6 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
     [inputQueue release];  inputQueue = nil;
     [outputQueue release];  outputQueue = nil;
     [drawData release];  drawData = nil;
-    [frontendProxy release];  frontendProxy = nil;
     [connection release];  connection = nil;
     [actionDict release];  actionDict = nil;
     [sysColorDict release];  sysColorDict = nil;
@@ -328,29 +327,29 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
         }
     }
 
-    BOOL ok = NO;
     @try {
         [[NSNotificationCenter defaultCenter] addObserver:self
                 selector:@selector(connectionDidDie:)
                     name:NSConnectionDidDieNotification object:connection];
 
-        id proxy = [connection rootProxy];
-        [proxy setProtocolForProxy:@protocol(MMAppProtocol)];
+        appProxy = [[connection rootProxy] retain];
+        [appProxy setProtocolForProxy:@protocol(MMAppProtocol)];
+
+        // NOTE: We do not set any new timeout values for the connection to the
+        // frontend.  This means that if the frontend is "stuck" (e.g. in a
+        // modal loop) then any calls to the frontend will block indefinitely
+        // (the default timeouts are huge).
 
         int pid = [[NSProcessInfo processInfo] processIdentifier];
 
-        frontendProxy = [proxy connectBackend:self pid:pid];
-        if (frontendProxy) {
-            [frontendProxy retain];
-            [frontendProxy setProtocolForProxy:@protocol(MMFrontendProtocol)];
-            ok = YES;
-        }
+        identifier = [appProxy connectBackend:self pid:pid];
+        return YES;
     }
     @catch (NSException *e) {
         NSLog(@"Exception caught when trying to connect backend: \"%@\"", e);
     }
 
-    return ok;
+    return NO;
 }
 
 - (BOOL)openGUIWindow
@@ -506,10 +505,11 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
         [self insertVimStateMessage];
 
         @try {
-            [frontendProxy processCommandQueue:outputQueue];
+            //NSLog(@"[%s] Flushing (count=%d)", _cmd, [outputQueue count]);
+            [appProxy processInput:outputQueue forIdentifier:identifier];
         }
         @catch (NSException *e) {
-            NSLog(@"Exception caught when processing command queue: \"%@\"", e);
+            NSLog(@"[%s] Exception caught: \"%@\"", _cmd, e);
             NSLog(@"outputQueue(len:%d)=%@", [outputQueue count]/2,
                     outputQueue);
             if (![connection isValid]) {
@@ -575,7 +575,7 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
             // Flush the entire queue in case a VimLeave autocommand added
             // something to the queue.
             [self queueMessage:CloseWindowMsgID data:nil];
-            [frontendProxy processCommandQueue:outputQueue];
+            [appProxy processInput:outputQueue forIdentifier:identifier];
         }
         @catch (NSException *e) {
             NSLog(@"Exception caught when sending CloseWindowMsgID: \"%@\"", e);
@@ -695,9 +695,10 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
 {
     char_u *s = NULL;
 
-    @try {
-        [frontendProxy showSavePanelWithAttributes:attr];
+    [self queueMessage:BrowseForFileMsgID properties:attr];
+    [self flushQueue:YES];
 
+    @try {
         [self waitForDialogReturn];
 
         if (dialogReturn && [dialogReturn isKindOfClass:[NSString class]])
@@ -706,7 +707,7 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
         [dialogReturn release];  dialogReturn = nil;
     }
     @catch (NSException *e) {
-        NSLog(@"Exception caught when showing save panel: \"%@\"", e);
+        NSLog(@"[%s] Exception caught: \"%@\"", _cmd, e);
     }
 
     return (char *)s;
@@ -734,9 +735,10 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
 {
     int retval = 0;
 
-    @try {
-        [frontendProxy presentDialogWithAttributes:attr];
+    [self queueMessage:ShowDialogMsgID properties:attr];
+    [self flushQueue:YES];
 
+    @try {
         [self waitForDialogReturn];
 
         if (dialogReturn && [dialogReturn isKindOfClass:[NSArray class]]
@@ -758,7 +760,7 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
         [dialogReturn release]; dialogReturn = nil;
     }
     @catch (NSException *e) {
-        NSLog(@"Exception caught while showing alert dialog: \"%@\"", e);
+        NSLog(@"[%s] Exception caught: \"%@\"", _cmd, e);
     }
 
     return retval;
@@ -1107,16 +1109,6 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
     [inputQueue addObject:(data ? (id)data : [NSNull null])];
 }
 
-- (oneway void)processInputAndData:(in bycopy NSArray *)messages
-{
-    // This is just a convenience method that allows the frontend to delay
-    // sending messages.
-    int i, count = [messages count];
-    for (i = 1; i < count; i+=2)
-        [self processInput:[[messages objectAtIndex:i-1] intValue]
-                      data:[messages objectAtIndex:i]];
-}
-
 - (id)evaluateExpressionCocoa:(in bycopy NSString *)expr
                   errorString:(out bycopy NSString **)errstr
 {
@@ -1453,7 +1445,7 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
     if (waitForAck) {
         // Never received a connection acknowledgement, so die.
         [[NSNotificationCenter defaultCenter] removeObserver:self];
-        [frontendProxy release];  frontendProxy = nil;
+        [appProxy release];  appProxy = nil;
 
         // NOTE: We intentionally do not call mch_exit() since this in turn
         // will lead to -[MMBackend exit] getting called which we want to
@@ -2488,9 +2480,9 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
     if ([args objectForKey:@"remoteID"]) {
         // NOTE: We have to delay processing any ODB related arguments since
         // the file(s) may not be opened until the input buffer is processed.
-        [self performSelectorOnMainThread:@selector(startOdbEditWithArguments:)
-                               withObject:args
-                            waitUntilDone:NO];
+        [self performSelector:@selector(startOdbEditWithArguments:)
+                   withObject:args
+                   afterDelay:0];
     }
 
     NSString *lineString = [args objectForKey:@"cursorLine"];

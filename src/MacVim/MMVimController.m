@@ -10,17 +10,20 @@
 /*
  * MMVimController
  *
- * Coordinates input/output to/from backend.  Each MMBackend communicates
- * directly with a MMVimController.
+ * Coordinates input/output to/from backend.  A MMVimController sends input
+ * directly to a MMBackend, but communication from MMBackend to MMVimController
+ * goes via MMAppController so that it can coordinate all incoming distributed
+ * object messages.
  *
  * MMVimController does not deal with visual presentation.  Essentially it
  * should be able to run with no window present.
  *
- * Output from the backend is received in processCommandQueue:.  Input is sent
- * to the backend via sendMessage:data: or addVimInput:.  The latter allows
- * execution of arbitrary strings in the Vim process, much like the Vim script
- * function remote_send() does.  The messages that may be passed between
- * frontend and backend are defined in an enum in MacVim.h.
+ * Output from the backend is received in processInputQueue: (this message is
+ * called from MMAppController so it is not a DO call).  Input is sent to the
+ * backend via sendMessage:data: or addVimInput:.  The latter allows execution
+ * of arbitrary strings in the Vim process, much like the Vim script function
+ * remote_send() does.  The messages that may be passed between frontend and
+ * backend are defined in an enum in MacVim.h.
  */
 
 #import "MMAppController.h"
@@ -49,9 +52,7 @@ static NSTimeInterval MMBackendProxyRequestTimeout = 0;
 // Timeout used for setDialogReturn:.
 static NSTimeInterval MMSetDialogReturnTimeout = 1.0;
 
-// Maximum number of items in the receiveQueue.  (It is hard to predict what
-// consequences changing this number will have.)
-static int MMReceiveQueueCap = 100;
+static unsigned identifierCounter = 1;
 
 static BOOL isUnsafeMessage(int msgid);
 
@@ -65,7 +66,7 @@ static BOOL isUnsafeMessage(int msgid);
 
 
 @interface MMVimController (Private)
-- (void)doProcessCommandQueue:(NSArray *)queue;
+- (void)doProcessInputQueue:(NSArray *)queue;
 - (void)handleMessage:(int)msgid data:(NSData *)data;
 - (void)savePanelDidEnd:(NSSavePanel *)panel code:(int)code
                 context:(void *)context;
@@ -95,6 +96,8 @@ static BOOL isUnsafeMessage(int msgid);
 - (void)popupMenuWithAttributes:(NSDictionary *)attrs;
 - (void)connectionDidDie:(NSNotification *)notification;
 - (void)scheduleClose;
+- (void)handleBrowseForFile:(NSDictionary *)attr;
+- (void)handleShowDialog:(NSDictionary *)attr;
 @end
 
 
@@ -107,11 +110,12 @@ static BOOL isUnsafeMessage(int msgid);
     if (!(self = [super init]))
         return nil;
 
+    // TODO: Come up with a better way of creating an identifier.
+    identifier = identifierCounter++;
+
     windowController =
         [[MMWindowController alloc] initWithVimController:self];
     backendProxy = [backend retain];
-    sendQueue = [NSMutableArray new];
-    receiveQueue = [NSMutableArray new];
     popupMenuItems = [[NSMutableArray alloc] init];
     toolbarItemDict = [[NSMutableDictionary alloc] init];
     pid = processIdentifier;
@@ -168,8 +172,6 @@ static BOOL isUnsafeMessage(int msgid);
 
     [serverName release];  serverName = nil;
     [backendProxy release];  backendProxy = nil;
-    [sendQueue release];  sendQueue = nil;
-    [receiveQueue release];  receiveQueue = nil;
 
     [toolbarItemDict release];  toolbarItemDict = nil;
     [toolbar release];  toolbar = nil;
@@ -181,6 +183,11 @@ static BOOL isUnsafeMessage(int msgid);
     [creationDate release];  creationDate = nil;
 
     [super dealloc];
+}
+
+- (unsigned)identifier
+{
+    return identifier;
 }
 
 - (MMWindowController *)windowController
@@ -321,20 +328,10 @@ static BOOL isUnsafeMessage(int msgid);
 
 - (void)sendMessage:(int)msgid data:(NSData *)data
 {
-    //NSLog(@"sendMessage:%s (isInitialized=%d inProcessCommandQueue=%d)",
-    //        MessageStrings[msgid], isInitialized, inProcessCommandQueue);
+    //NSLog(@"sendMessage:%s (isInitialized=%d)",
+    //        MessageStrings[msgid], isInitialized);
 
     if (!isInitialized) return;
-
-    if (inProcessCommandQueue) {
-        //NSLog(@"In process command queue; delaying message send.");
-        [sendQueue addObject:[NSNumber numberWithInt:msgid]];
-        if (data)
-            [sendQueue addObject:data];
-        else
-            [sendQueue addObject:[NSNull null]];
-        return;
-    }
 
     @try {
         [backendProxy processInput:msgid data:data];
@@ -353,7 +350,7 @@ static BOOL isUnsafeMessage(int msgid);
     // ball forever.  In almost all circumstances sendMessage:data: should be
     // used instead.
 
-    if (!isInitialized || inProcessCommandQueue)
+    if (!isInitialized)
         return NO;
 
     if (timeout < 0) timeout = 0;
@@ -400,7 +397,8 @@ static BOOL isUnsafeMessage(int msgid);
     return eval;
 }
 
-- (id)evaluateVimExpressionCocoa:(NSString *)expr errorString:(NSString **)errstr
+- (id)evaluateVimExpressionCocoa:(NSString *)expr
+                     errorString:(NSString **)errstr
 {
     id eval = nil;
 
@@ -423,6 +421,9 @@ static BOOL isUnsafeMessage(int msgid);
 {
     if (!isInitialized) return;
 
+    // Remove any delayed calls made on this object.
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+
     isInitialized = NO;
     [toolbar setDelegate:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -431,204 +432,12 @@ static BOOL isUnsafeMessage(int msgid);
     [windowController cleanup];
 }
 
-- (oneway void)showSavePanelWithAttributes:(in bycopy NSDictionary *)attr
+- (void)processInputQueue:(NSArray *)queue
 {
     if (!isInitialized) return;
 
-    BOOL inDefaultMode = [[[NSRunLoop currentRunLoop] currentMode]
-                                        isEqual:NSDefaultRunLoopMode];
-    if (!inDefaultMode) {
-        // Delay call until run loop is in default mode.
-        [self performSelectorOnMainThread:
-                                        @selector(showSavePanelWithAttributes:)
-                               withObject:attr
-			    waitUntilDone:NO
-			            modes:[NSArray arrayWithObject:
-                                           NSDefaultRunLoopMode]];
-        return;
-    }
-
-    NSString *dir = [attr objectForKey:@"dir"];
-    BOOL saving = [[attr objectForKey:@"saving"] boolValue];
-
-    if (!dir) {
-        // 'dir == nil' means: set dir to the pwd of the Vim process, or let
-        // open dialog decide (depending on the below user default).
-        BOOL trackPwd = [[NSUserDefaults standardUserDefaults]
-                boolForKey:MMDialogsTrackPwdKey];
-        if (trackPwd)
-            dir = [vimState objectForKey:@"pwd"];
-    }
-
-    if (saving) {
-        [[NSSavePanel savePanel] beginSheetForDirectory:dir file:nil
-                modalForWindow:[windowController window]
-                 modalDelegate:self
-                didEndSelector:@selector(savePanelDidEnd:code:context:)
-                   contextInfo:NULL];
-    } else {
-        NSOpenPanel *panel = [NSOpenPanel openPanel];
-        [panel setAllowsMultipleSelection:NO];
-        [panel setAccessoryView:openPanelAccessoryView()];
-
-        [panel beginSheetForDirectory:dir file:nil types:nil
-                modalForWindow:[windowController window]
-                 modalDelegate:self
-                didEndSelector:@selector(savePanelDidEnd:code:context:)
-                   contextInfo:NULL];
-    }
-}
-
-- (oneway void)presentDialogWithAttributes:(in bycopy NSDictionary *)attr
-{
-    if (!isInitialized) return;
-
-    BOOL inDefaultMode = [[[NSRunLoop currentRunLoop] currentMode]
-                                        isEqual:NSDefaultRunLoopMode];
-    if (!inDefaultMode) {
-        // Delay call until run loop is in default mode.
-        [self performSelectorOnMainThread:
-                                        @selector(presentDialogWithAttributes:)
-                               withObject:attr
-			    waitUntilDone:NO
-			            modes:[NSArray arrayWithObject:
-                                           NSDefaultRunLoopMode]];
-        return;
-    }
-
-    NSArray *buttonTitles = [attr objectForKey:@"buttonTitles"];
-    if (!(buttonTitles && [buttonTitles count])) return;
-
-    int style = [[attr objectForKey:@"alertStyle"] intValue];
-    NSString *message = [attr objectForKey:@"messageText"];
-    NSString *text = [attr objectForKey:@"informativeText"];
-    NSString *textFieldString = [attr objectForKey:@"textFieldString"];
-    MMAlert *alert = [[MMAlert alloc] init];
-
-    // NOTE! This has to be done before setting the informative text.
-    if (textFieldString)
-        [alert setTextFieldString:textFieldString];
-
-    [alert setAlertStyle:style];
-
-    if (message) {
-        [alert setMessageText:message];
-    } else {
-        // If no message text is specified 'Alert' is used, which we don't
-        // want, so set an empty string as message text.
-        [alert setMessageText:@""];
-    }
-
-    if (text) {
-        [alert setInformativeText:text];
-    } else if (textFieldString) {
-        // Make sure there is always room for the input text field.
-        [alert setInformativeText:@""];
-    }
-
-    unsigned i, count = [buttonTitles count];
-    for (i = 0; i < count; ++i) {
-        NSString *title = [buttonTitles objectAtIndex:i];
-        // NOTE: The title of the button may contain the character '&' to
-        // indicate that the following letter should be the key equivalent
-        // associated with the button.  Extract this letter and lowercase it.
-        NSString *keyEquivalent = nil;
-        NSRange hotkeyRange = [title rangeOfString:@"&"];
-        if (NSNotFound != hotkeyRange.location) {
-            if ([title length] > NSMaxRange(hotkeyRange)) {
-                NSRange keyEquivRange = NSMakeRange(hotkeyRange.location+1, 1);
-                keyEquivalent = [[title substringWithRange:keyEquivRange]
-                    lowercaseString];
-            }
-
-            NSMutableString *string = [NSMutableString stringWithString:title];
-            [string deleteCharactersInRange:hotkeyRange];
-            title = string;
-        }
-
-        [alert addButtonWithTitle:title];
-
-        // Set key equivalent for the button, but only if NSAlert hasn't
-        // already done so.  (Check the documentation for
-        // - [NSAlert addButtonWithTitle:] to see what key equivalents are
-        // automatically assigned.)
-        NSButton *btn = [[alert buttons] lastObject];
-        if ([[btn keyEquivalent] length] == 0 && keyEquivalent) {
-            [btn setKeyEquivalent:keyEquivalent];
-        }
-    }
-
-    [alert beginSheetModalForWindow:[windowController window]
-                      modalDelegate:self
-                     didEndSelector:@selector(alertDidEnd:code:context:)
-                        contextInfo:NULL];
-
-    [alert release];
-}
-
-- (oneway void)processCommandQueue:(in bycopy NSArray *)queue
-{
-    if (!isInitialized) return;
-
-    if (inProcessCommandQueue) {
-        // NOTE!  If a synchronous DO call is made during
-        // doProcessCommandQueue: below it may happen that this method is
-        // called a second time while the synchronous message is waiting for a
-        // reply (could also happen if doProcessCommandQueue: enters a modal
-        // loop, see comment below).  Since this method cannot be considered
-        // reentrant, we queue the input and return immediately.
-        //
-        // If doProcessCommandQueue: enters a modal loop (happens e.g. on
-        // ShowPopupMenuMsgID) then the receiveQueue could grow to become
-        // arbitrarily large because DO calls still get processed.  To avoid
-        // this we set a cap on the size of the queue and simply clear it if it
-        // becomes too large.  (That is messages will be dropped and hence Vim
-        // and MacVim will at least temporarily be out of sync.)
-        if ([receiveQueue count] >= MMReceiveQueueCap)
-            [receiveQueue removeAllObjects];
-
-        [receiveQueue addObject:queue];
-        return;
-    }
-
-    inProcessCommandQueue = YES;
-    [self doProcessCommandQueue:queue];
-
-    int i;
-    for (i = 0; i < [receiveQueue count]; ++i) {
-        // Note that doProcessCommandQueue: may cause the receiveQueue to grow
-        // or get cleared (due to cap being hit).  Make sure to retain the item
-        // to process or it may get released from under us.
-        NSArray *q = [[receiveQueue objectAtIndex:i] retain];
-        [self doProcessCommandQueue:q];
-        [q release];
-    }
-
-    // We assume that the remaining calls make no synchronous DO calls.  If
-    // that did happen anyway, the command queue could get processed out of
-    // order.
-
-    // See comment below why this is called here and not later.
-    [windowController processCommandQueueDidFinish];
-
-    // NOTE: Ensure that no calls are made after this "if" clause that may call
-    // sendMessage::.  If this happens anyway, such messages will be put on the
-    // send queue and then the queue will not be flushed until the next time
-    // this method is called.
-    if ([sendQueue count] > 0) {
-        @try {
-            [backendProxy processInputAndData:sendQueue];
-        }
-        @catch (NSException *e) {
-            // Connection timed out, just ignore this.
-            //NSLog(@"WARNING! Connection timed out in %s", _cmd);
-        }
-
-        [sendQueue removeAllObjects];
-    }
-
-    [receiveQueue removeAllObjects];
-    inProcessCommandQueue = NO;
+    [self doProcessInputQueue:queue];
+    [windowController processInputQueueDidFinish];
 }
 
 - (NSToolbarItem *)toolbar:(NSToolbar *)theToolbar
@@ -659,7 +468,7 @@ static BOOL isUnsafeMessage(int msgid);
 
 @implementation MMVimController (Private)
 
-- (void)doProcessCommandQueue:(NSArray *)queue
+- (void)doProcessInputQueue:(NSArray *)queue
 {
     NSMutableArray *delayQueue = nil;
 
@@ -715,11 +524,9 @@ static BOOL isUnsafeMessage(int msgid);
 
     if (delayQueue) {
         //NSLog(@"    Flushing delay queue (%d items)", [delayQueue count]/2);
-        [self performSelectorOnMainThread:@selector(processCommandQueue:)
-                               withObject:delayQueue
-			    waitUntilDone:NO
-			            modes:[NSArray arrayWithObject:
-                                           NSDefaultRunLoopMode]];
+        [self performSelector:@selector(processInputQueue:)
+                   withObject:delayQueue
+                   afterDelay:0];
     }
 }
 
@@ -915,12 +722,10 @@ static BOOL isUnsafeMessage(int msgid);
         NSDictionary *attrs = [NSDictionary dictionaryWithData:data];
 
         // The popup menu enters a modal loop so delay this call so that we
-        // don't block inside processCommandQueue:.
-        [self performSelectorOnMainThread:@selector(popupMenuWithAttributes:)
-                             withObject:attrs
-			  waitUntilDone:NO
-			          modes:[NSArray arrayWithObject:
-					 NSDefaultRunLoopMode]];
+        // don't block inside processInputQueue:.
+        [self performSelector:@selector(popupMenuWithAttributes:)
+                   withObject:attrs
+                   afterDelay:0];
     } else if (SetMouseShapeMsgID == msgid) {
         const void *bytes = [data bytes];
         int shape = *((int*)bytes);  bytes += sizeof(int);
@@ -981,6 +786,18 @@ static BOOL isUnsafeMessage(int msgid);
                 showWithText:[dict objectForKey:@"text"]
                        flags:[[dict objectForKey:@"flags"] intValue]];
         }
+    } else if (ActivateKeyScriptID == msgid) {
+        KeyScript(smKeySysScript);
+    } else if (DeactivateKeyScriptID == msgid) {
+        KeyScript(smKeyRoman);
+    } else if (BrowseForFileMsgID == msgid) {
+        NSDictionary *dict = [NSDictionary dictionaryWithData:data];
+        if (dict)
+            [self handleBrowseForFile:dict];
+    } else if (ShowDialogMsgID == msgid) {
+        NSDictionary *dict = [NSDictionary dictionaryWithData:data];
+        if (dict)
+            [self handleShowDialog:dict];
     // IMPORTANT: When adding a new message, make sure to update
     // isUnsafeMessage() if necessary!
     } else {
@@ -1428,12 +1245,120 @@ static BOOL isUnsafeMessage(int msgid);
     // following call ensures that the vim controller is not released until the
     // run loop is back in the 'default' mode.
     [[MMAppController sharedInstance]
-            performSelectorOnMainThread:@selector(removeVimController:)
-                             withObject:self
-			  waitUntilDone:NO
-			          modes:[NSArray arrayWithObject:
-					 NSDefaultRunLoopMode]];
+            performSelector:@selector(removeVimController:)
+                 withObject:self
+                 afterDelay:0];
 }
+
+- (void)handleBrowseForFile:(NSDictionary *)attr
+{
+    if (!isInitialized) return;
+
+    NSString *dir = [attr objectForKey:@"dir"];
+    BOOL saving = [[attr objectForKey:@"saving"] boolValue];
+
+    if (!dir) {
+        // 'dir == nil' means: set dir to the pwd of the Vim process, or let
+        // open dialog decide (depending on the below user default).
+        BOOL trackPwd = [[NSUserDefaults standardUserDefaults]
+                boolForKey:MMDialogsTrackPwdKey];
+        if (trackPwd)
+            dir = [vimState objectForKey:@"pwd"];
+    }
+
+    if (saving) {
+        [[NSSavePanel savePanel] beginSheetForDirectory:dir file:nil
+                modalForWindow:[windowController window]
+                 modalDelegate:self
+                didEndSelector:@selector(savePanelDidEnd:code:context:)
+                   contextInfo:NULL];
+    } else {
+        NSOpenPanel *panel = [NSOpenPanel openPanel];
+        [panel setAllowsMultipleSelection:NO];
+        [panel setAccessoryView:openPanelAccessoryView()];
+
+        [panel beginSheetForDirectory:dir file:nil types:nil
+                modalForWindow:[windowController window]
+                 modalDelegate:self
+                didEndSelector:@selector(savePanelDidEnd:code:context:)
+                   contextInfo:NULL];
+    }
+}
+
+- (void)handleShowDialog:(NSDictionary *)attr
+{
+    if (!isInitialized) return;
+
+    NSArray *buttonTitles = [attr objectForKey:@"buttonTitles"];
+    if (!(buttonTitles && [buttonTitles count])) return;
+
+    int style = [[attr objectForKey:@"alertStyle"] intValue];
+    NSString *message = [attr objectForKey:@"messageText"];
+    NSString *text = [attr objectForKey:@"informativeText"];
+    NSString *textFieldString = [attr objectForKey:@"textFieldString"];
+    MMAlert *alert = [[MMAlert alloc] init];
+
+    // NOTE! This has to be done before setting the informative text.
+    if (textFieldString)
+        [alert setTextFieldString:textFieldString];
+
+    [alert setAlertStyle:style];
+
+    if (message) {
+        [alert setMessageText:message];
+    } else {
+        // If no message text is specified 'Alert' is used, which we don't
+        // want, so set an empty string as message text.
+        [alert setMessageText:@""];
+    }
+
+    if (text) {
+        [alert setInformativeText:text];
+    } else if (textFieldString) {
+        // Make sure there is always room for the input text field.
+        [alert setInformativeText:@""];
+    }
+
+    unsigned i, count = [buttonTitles count];
+    for (i = 0; i < count; ++i) {
+        NSString *title = [buttonTitles objectAtIndex:i];
+        // NOTE: The title of the button may contain the character '&' to
+        // indicate that the following letter should be the key equivalent
+        // associated with the button.  Extract this letter and lowercase it.
+        NSString *keyEquivalent = nil;
+        NSRange hotkeyRange = [title rangeOfString:@"&"];
+        if (NSNotFound != hotkeyRange.location) {
+            if ([title length] > NSMaxRange(hotkeyRange)) {
+                NSRange keyEquivRange = NSMakeRange(hotkeyRange.location+1, 1);
+                keyEquivalent = [[title substringWithRange:keyEquivRange]
+                    lowercaseString];
+            }
+
+            NSMutableString *string = [NSMutableString stringWithString:title];
+            [string deleteCharactersInRange:hotkeyRange];
+            title = string;
+        }
+
+        [alert addButtonWithTitle:title];
+
+        // Set key equivalent for the button, but only if NSAlert hasn't
+        // already done so.  (Check the documentation for
+        // - [NSAlert addButtonWithTitle:] to see what key equivalents are
+        // automatically assigned.)
+        NSButton *btn = [[alert buttons] lastObject];
+        if ([[btn keyEquivalent] length] == 0 && keyEquivalent) {
+            [btn setKeyEquivalent:keyEquivalent];
+        }
+    }
+
+    [alert beginSheetModalForWindow:[windowController window]
+                      modalDelegate:self
+                     didEndSelector:@selector(alertDidEnd:code:context:)
+                        contextInfo:NULL];
+
+    [alert release];
+}
+
 
 @end // MMVimController (Private)
 
@@ -1525,6 +1450,8 @@ isUnsafeMessage(int msgid)
         EnterFullscreenMsgID,       // Modifies delegate of window controller
         LeaveFullscreenMsgID,       // Modifies delegate of window controller
         CloseWindowMsgID,           // See note below
+        BrowseForFileMsgID,         // Enters modal loop
+        ShowDialogMsgID,            // Enters modal loop
     };
 
     // NOTE about CloseWindowMsgID: If this arrives at the same time as say

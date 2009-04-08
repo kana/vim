@@ -33,7 +33,6 @@
 //
 @protocol MMBackendProtocol
 - (oneway void)processInput:(int)msgid data:(in bycopy NSData *)data;
-- (oneway void)processInputAndData:(in bycopy NSArray *)messages;
 - (oneway void)setDialogReturn:(in bycopy id)obj;
 - (NSString *)evaluateExpression:(in bycopy NSString *)expr;
 - (id)evaluateExpressionCocoa:(in bycopy NSString *)expr
@@ -42,30 +41,23 @@
 - (oneway void)acknowledgeConnection;
 @end
 
-//
-// This is the protocol MMVimController implements.
-//
-// Be very careful if you want to add methods to this protocol.  Since DO
-// messages may arrive while Cocoa is in the middle of processing some other
-// message be sure to consider reentrancy issues.  Look at processCommandQueue:
-// to see an example of how to deal with this.
-//
-@protocol MMFrontendProtocol
-- (oneway void)processCommandQueue:(in bycopy NSArray *)queue;
-- (oneway void)showSavePanelWithAttributes:(in bycopy NSDictionary *)attr;
-- (oneway void)presentDialogWithAttributes:(in bycopy NSDictionary *)attr;
-@end
-
 
 //
 // This is the protocol MMAppController implements.
 //
-// It handles connections between MacVim and Vim.
+// It handles connections between MacVim and Vim and communication from Vim to
+// MacVim.
+//
+// Do not add methods to this interface without a _very_ good reason (if
+// possible, instead add a new message to the *MsgID enum below and pass it via
+// processInput:forIdentifier).  Methods should not modify the state directly
+// but should instead delay any potential modifications (see
+// connectBackend:pid: and processInput:forIdentifier:).
 //
 @protocol MMAppProtocol
-- (byref id <MMFrontendProtocol>)
-    connectBackend:(byref in id <MMBackendProtocol>)backend
-               pid:(int)pid;
+- (unsigned)connectBackend:(byref in id <MMBackendProtocol>)proxy pid:(int)pid;
+- (oneway void)processInput:(in bycopy NSArray *)queue
+              forIdentifier:(unsigned)identifier;
 - (NSArray *)serverList;
 @end
 
@@ -177,6 +169,10 @@ enum {
     SetFullscreenColorMsgID,
     ShowFindReplaceDialogMsgID,
     FindReplaceMsgID,
+    ActivateKeyScriptID,
+    DeactivateKeyScriptID,
+    BrowseForFileMsgID,
+    ShowDialogMsgID,
 };
 
 
