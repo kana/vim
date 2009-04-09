@@ -257,7 +257,7 @@ NSString *kOdbEditorIdentifierWriteRoom = @"com.hogbaysoftware.WriteRoom";
             versionString = [NSString stringWithFormat:
                 NSLocalizedString(@"Latest version is %@, you have %@.", nil),
                 installVersion, installedVersion];
-            [installOdbButton setTitle:@"Update"];
+            [installOdbButton setTitle:NSLocalizedString(@"Update", nil)];
             [installOdbButton setEnabled:YES];
             break;
         case NSOrderedSame:
