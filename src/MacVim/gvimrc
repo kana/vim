@@ -93,10 +93,14 @@ an <silent> 9900.310 ウインドウ.拡大／縮小      <Nop>
 an <silent> 9900.311 ウインドウ.すべてを拡大    <Nop>
 an <silent> 9900.320 ウインドウ.フルスクリーンモード切り替え :set invfullscreen<CR>
 an 9900.330 ウインドウ.-SEP1-                   <Nop>
+" TODO! Grey out if no windows are visible.
+an <silent> 9900.331 ウインドウ.前のウインドウ  <Nop>
+an <silent> 9900.332 ウインドウ.次のウインドウ  <Nop>
+an 9900.333 ウインドウ.-SEP2-                   <Nop>
 " TODO! Grey out if no tabs are visible.
 an <silent> 9900.340 ウインドウ.前のタブ        :tabprevious<CR>
 an <silent> 9900.350 ウインドウ.次のタブ        :tabnext<CR>
-an 9900.360 ウインドウ.-SEP2-                   <Nop>
+an 9900.360 ウインドウ.-SEP3-                   <Nop>
 an <silent> 9900.370 ウインドウ.すべてを手前に移動 <Nop>
 
 
@@ -254,6 +258,8 @@ macm ウインドウ.すべてをしまう  key=<D-M-m>     action=miniaturizeAl
 macm ウインドウ.拡大／縮小      key=<D-C-z>     action=performZoom:
 macm ウインドウ.すべてを拡大    key=<D-M-C-z>   action=zoomAll:         alt=YES
 macm ウインドウ.フルスクリーンモード切り替え key=<D-F>
+macm ウインドウ.前のウインドウ  key=<D-[>       action=selectPreviousWindow:
+macm ウインドウ.次のウインドウ  key=<D-]>       action=selectNextWindow:
 macm ウインドウ.前のタブ        key=<D-{>
 macm ウインドウ.次のタブ        key=<D-}>
 
