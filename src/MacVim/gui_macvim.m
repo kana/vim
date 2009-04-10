@@ -64,6 +64,11 @@ gui_mch_prepare(int *argc, char **argv)
     path = [path stringByAppendingPathComponent:@"runtime"];
     vim_setenv((char_u*)"VIMRUNTIME", (char_u*)[path UTF8String]);
 
+    NSString *lang = [[[NSBundle mainBundle]
+        preferredLocalizations] objectAtIndex:0];
+    if ([lang isEqualToString:@"Japanese"])
+        vim_setenv((char_u*)"LANG", (char_u*)"ja_JP.UTF-8");
+
     int i;
     for (i = 0; i < *argc; ++i) {
         if (strncmp(argv[i], "--mmwaitforack", 14) == 0) {
@@ -1265,13 +1270,10 @@ gui_im_set_active(int active)
 im_set_active(int active)
 #endif // FEAT_UIMFEP
 {
-    // Set roman or the system script if 'active' is TRUE or FALSE,
-    // respectively.
-    SInt32 systemScript = GetScriptManagerVariable(smSysScript);
-
-    if (!p_imdisable && smRoman != systemScript)
-        [[MMBackend sharedInstance] queueMessage:
-            (active ? ActivateKeyScriptID : DeactivateKeyScriptID) data:nil];
+    if (!p_imdisable && !active) {
+        int msgid = DeactivateKeyScriptID;
+        [[MMBackend sharedInstance] queueMessage:msgid properties:nil];
+    }
 }
 
 
@@ -1282,13 +1284,7 @@ gui_im_get_status(void)
 im_get_status(void)
 #endif // FEAT_UIMFEP
 {
-    // IM is active whenever the current script is the system script and the
-    // system script isn't roman.  (Hence IM can only be active when using
-    // non-roman scripts.)
-    SInt32 currentScript = GetScriptManagerVariable(smKeyScript);
-    SInt32 systemScript = GetScriptManagerVariable(smSysScript);
-
-    return currentScript != smRoman && currentScript == systemScript;
+    return 0;
 }
 
 #endif // defined(USE_IM_CONTROL)
