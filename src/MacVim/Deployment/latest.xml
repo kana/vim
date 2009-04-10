@@ -41,6 +41,25 @@
     -->
 
     <item>
+      <title>macvim-kaoriya-20090410 released</title>
+      <description><![CDATA[
+<h1>MacVim-KaoriYa 20090410 released</h1>
+<ul>
+	<li>gettextによる日本語化を修正。
+	<li>IM自動ON機能のみ無効化(ESC押下時のIM自動OFFは有効)。
+	<li>言語環境に従うように変更。
+</ul>
+      ]]></description>
+      <pubDate>Fri, 10 Apr 2009 23:30:00 +0900</pubDate>
+      <enclosure type="application/octet-stream"
+        url="http://macvim-kaoriya.googlecode.com/files/macvim-kaoriya-20090410.dmg"
+        length="38160662"
+        sparkle:version="20090410"
+        sparkle:shortVersionString="7.2"
+        />
+    </item>
+
+    <item>
       <title>macvim-kaoriya-20090408 released</title>
       <description><![CDATA[
 <h1>MacVim-KaoriYa 20090408 released</h1>
