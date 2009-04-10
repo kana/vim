@@ -267,16 +267,6 @@ main
     TIME_MSG("NetBeans debug wait");
 #endif
 
-#if defined(HAVE_LOCALE_H) || defined(X_LOCALE)
-    /*
-     * Setup to use the current locale (for ctype() and many other things).
-     * NOTE: Translated messages with encodings other than latin1 will not
-     * work until set_init_1() has been called!
-     */
-    init_locale();
-    TIME_MSG("locale set");
-#endif
-
 #ifdef FEAT_GUI
     gui.dofork = TRUE;		    /* default is to use fork() */
 #endif
@@ -297,6 +287,16 @@ main
     /* Prepare for possibly starting GUI sometime */
     gui_prepare(&params.argc, params.argv);
     TIME_MSG("GUI prepared");
+#endif
+
+#if defined(HAVE_LOCALE_H) || defined(X_LOCALE)
+    /*
+     * Setup to use the current locale (for ctype() and many other things).
+     * NOTE: Translated messages with encodings other than latin1 will not
+     * work until set_init_1() has been called!
+     */
+    init_locale();
+    TIME_MSG("locale set");
 #endif
 
 #ifdef FEAT_CLIPBOARD
