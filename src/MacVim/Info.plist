@@ -1237,10 +1237,5 @@
 			</dict>
 		</dict>
 	</array>
-	<key>LSEnvironment</key>
-	<dict>
-		<key>LANG</key>
-		<string>ja_JP.UTF-8</string>
-	</dict>
 </dict>
 </plist>

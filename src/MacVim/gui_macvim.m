@@ -64,6 +64,11 @@ gui_mch_prepare(int *argc, char **argv)
     path = [path stringByAppendingPathComponent:@"runtime"];
     vim_setenv((char_u*)"VIMRUNTIME", (char_u*)[path UTF8String]);
 
+    NSString *lang = [[[NSBundle mainBundle]
+        preferredLocalizations] objectAtIndex:0];
+    if ([lang isEqualToString:@"Japanese"])
+        vim_setenv((char_u*)"LANG", (char_u*)"ja_JP.UTF-8");
+
     int i;
     for (i = 0; i < *argc; ++i) {
         if (strncmp(argv[i], "--mmwaitforack", 14) == 0) {
