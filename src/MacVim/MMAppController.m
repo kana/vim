@@ -1148,21 +1148,14 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
         return;
     }
 
+    //NSLog(@"[%s] QUEUE for identifier=%d: <<< %@>>>", _cmd, identifier,
+    //        debugStringForMessageQueue(queue));
+
     NSNumber *key = [NSNumber numberWithUnsignedInt:identifier];
     NSArray *q = [inputQueues objectForKey:key];
     if (q) {
         q = [q arrayByAddingObjectsFromArray:queue];
         [inputQueues setObject:q forKey:key];
-
-        //NSLog(@"[%s] Appending queue id=%d", _cmd, identifier);
-#if 0   // More debug logging info
-        unsigned i, count = [q count];
-        for (i = 0; i < count; i += 2) {
-            NSData *value = [q objectAtIndex:i];
-            int msgid = *((int*)[value bytes]);
-            NSLog(@"    %s", MessageStrings[msgid]);
-        }
-#endif
     } else {
         [inputQueues setObject:queue forKey:key];
     }
@@ -2140,6 +2133,10 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
         return;
     }
 
+    // NOTE: Be _very_ careful that no exceptions can be raised between here
+    // and the point at which 'processingFlag' is reset.  Otherwise the above
+    // test could end up always failing and no input queues would ever be
+    // processed!
     processingFlag = 1;
 
     // NOTE: New input may arrive while we're busy processing; we deal with
@@ -2148,7 +2145,8 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     NSDictionary *queues = inputQueues;
     inputQueues = [NSMutableDictionary new];
 
-    // Pass each input queue on to the vim controller with matching identifier.
+    // Pass each input queue on to the vim controller with matching
+    // identifier (and note that it could be cached).
     NSEnumerator *e = [queues keyEnumerator];
     NSNumber *key;
     while ((key = [e nextObject])) {
@@ -2157,10 +2155,25 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
         for (i = 0; i < count; ++i) {
             MMVimController *vc = [vimControllers objectAtIndex:i];
             if (ukey == [vc identifier]) {
-                [vc processInputQueue:[queues objectForKey:key]];
+                [vc processInputQueue:[queues objectForKey:key]]; // !exceptions
                 break;
             }
         }
+
+        if (i < count) continue;
+
+        count = [cachedVimControllers count];
+        for (i = 0; i < count; ++i) {
+            MMVimController *vc = [cachedVimControllers objectAtIndex:i];
+            if (ukey == [vc identifier]) {
+                [vc processInputQueue:[queues objectForKey:key]]; // !exceptions
+                break;
+            }
+        }
+
+        if (i == count)
+            NSLog(@"[%s] WARNING: No Vim controller for identifier=%d",
+                    _cmd, ukey);
     }
 
     [queues release];
