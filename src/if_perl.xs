@@ -189,6 +189,16 @@ typedef int XSINIT_t;
 typedef int XSUBADDR_t;
 #endif
 
+#if defined(DYNAMIC_PERL) && defined(MACOS_X_UNIX)
+typedef void * HANDLE;
+typedef void * FARPROC;
+# include <dlfcn.h>
+# define LoadLibraryEx(a0,a1,a2) dlopen(a0,RTLD_NOW|RTLD_LOCAL)
+# define FreeLibrary(a) dlclose(a)
+# define GetProcAddress dlsym
+# define DYNAMIC_PERL_DLL "/System/Library/Perl/lib/5.8/libperl.dylib"
+#endif
+
 /*
  * Declare HANDLE for perl.dll and function pointers.
  */
@@ -393,7 +403,9 @@ static struct {
     {"Perl_Idefgv_ptr", (PERL_PROC*)&Perl_Idefgv_ptr},
     {"Perl_Ierrgv_ptr", (PERL_PROC*)&Perl_Ierrgv_ptr},
     {"Perl_Isv_yes_ptr", (PERL_PROC*)&Perl_Isv_yes_ptr},
+#if !defined(MACOS_X_UNIX)
     {"boot_DynaLoader", (PERL_PROC*)&boot_DynaLoader},
+#endif
     {"", NULL},
 };
 
@@ -879,8 +891,10 @@ xs_init(pTHX)
 {
     char *file = __FILE__;
 
+#if !defined(MACOS_X_UNIX)
     /* DynaLoader is a special case */
     newXS("DynaLoader::boot_DynaLoader", boot_DynaLoader, file);
+#endif
     newXS("VIM::bootstrap", boot_VIM, file);
 }
 
