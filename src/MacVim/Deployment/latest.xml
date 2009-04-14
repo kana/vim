@@ -41,6 +41,33 @@
     -->
 
     <item>
+      <title>macvim-kaoriya-20090414 released</title>
+      <description><![CDATA[
+<h1>MacVim-KaoriYa 20090414 released</h1>
+<ul>
+	<li>MacVim snapshot-45
+<p> Changes since snapshot 44:
+  <ul>
+    <li> The toolbar is not hidden by default again (if you prefer having the toolbar hidden, then add the line "set go-=T" to your ~/.gvimrc file) </li>
+    <li> The ATSUI renderer honors the 'guisp' highlighting color </li>
+    <li> Fix the forever bouncing Dock icon bug (Kazuki Sakamoto) </li>
+    <li> Add the "Show Hidden Files" checkbox button to the Save dialog whenever the file browser is expanded </li>
+    <li> Frontend refactoring </li>
+  </ul>
+</p>
+	<li>全角記号幅用にデフォルトで set ambiwidth=double を設定
+</ul>
+      ]]></description>
+      <pubDate>Tue, 14 Apr 2009 21:30:00 +0900</pubDate>
+      <enclosure type="application/octet-stream"
+        url="http://macvim-kaoriya.googlecode.com/files/macvim-kaoriya-20090414.dmg"
+        length="38160662"
+        sparkle:version="20090414"
+        sparkle:shortVersionString="7.2"
+        />
+    </item>
+
+    <item>
       <title>macvim-kaoriya-20090410 released</title>
       <description><![CDATA[
 <h1>MacVim-KaoriYa 20090410 released</h1>
