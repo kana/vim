@@ -71,6 +71,20 @@
 # define EXTERN_C
 #endif
 
+#if defined(DYNAMIC_PERL) && !defined(_WIN32)
+typedef void *HANDLE;
+typedef void *FARPROC;
+# include <dlfcn.h>
+# define LoadLibraryEx(a0,a1,a2) dlopen(a0,RTLD_NOW|RTLD_LOCAL)
+# define FreeLibrary(a) dlclose(a)
+# define GetProcAddress dlsym
+# if defined(MACOS_X_UNIX)
+#  define DYNAMIC_PERL_DLL "/System/Library/Perl/5.8.8/darwin-thread-multi-2level/CORE/libperl.dylib"
+# else
+#  define DYNAMIC_PERL_DLL "libperl.so"
+# endif
+#endif
+
 /* Compatibility hacks over */
 
 static PerlInterpreter *perl_interp = NULL;
@@ -188,15 +202,6 @@ EXTERN_C void boot_DynaLoader __ARGS((pTHX_ CV*));
 typedef int HANDLE;
 typedef int XSINIT_t;
 typedef int XSUBADDR_t;
-#endif
-
-#if defined(DYNAMIC_PERL) && defined(MACOS_X_UNIX)
-typedef void * HANDLE;
-typedef void * FARPROC;
-# include <dlfcn.h>
-# define LoadLibraryEx(a0,a1,a2) dlopen(a0,RTLD_NOW|RTLD_LOCAL)
-# define FreeLibrary(a) dlclose(a)
-# define GetProcAddress dlsym
 #endif
 
 /*
@@ -457,23 +462,16 @@ perl_runtime_link_init(char *libname, int verbose)
 perl_enabled(verbose)
     int		verbose;
 {
-#if defined(MACOS_X_UNIX)
-    int ret;
+    int ret = FAIL;
     int mustfree = FALSE;
-    char_u *s = vim_getenv("PERL_DLL", &mustfree);
+    char *s = (char *)vim_getenv((char_u *)"PERL_DLL", &mustfree);
     if (s != NULL)
-        ret = perl_runtime_link_init(s, verbose) == OK;
+        ret = perl_runtime_link_init(s, verbose);
     if (mustfree)
         vim_free(s);
-    if (ret == FALSE) {
-        ret = perl_runtime_link_init(
-            "/System/Library/Perl/5.8.8/darwin-thread-multi-2level/CORE/libperl.dylib",
-                verbose) == OK;
-    }
-    return ret;
-#else
-    return perl_runtime_link_init(DYNAMIC_PERL_DLL, verbose) == OK;
-#endif
+    if (ret == FAIL)
+        ret = perl_runtime_link_init(DYNAMIC_PERL_DLL, verbose);
+    return (ret == OK);
 }
 #endif /* DYNAMIC_PERL */
 

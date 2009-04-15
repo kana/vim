@@ -26,6 +26,20 @@
 # define RUBYEXTERN extern
 #endif
 
+#if defined(DYNAMIC_RUBY) && !defined(_WIN32)
+typedef void *HINSTANCE;
+typedef void *FARPROC;
+# include <dlfcn.h>
+# define LoadLibrary(a) dlopen(a,RTLD_NOW|RTLD_LOCAL)
+# define FreeLibrary(a) dlclose(a)
+# define GetProcAddress dlsym
+# if defined(MACOS_X_UNIX)
+#  define DYNAMIC_RUBY_DLL "/System/Library/Frameworks/Ruby.framework/Versions/Current/Ruby"
+# else
+#  define DYNAMIC_RUBY_DLL "libruby.so"
+# endif
+#endif
+
 /*
  * This is tricky.  In ruby.h there is (inline) function rb_class_of()
  * definition.  This function use these variables.  But we want function to
@@ -87,15 +101,6 @@ static void ruby_vim_init(void);
 #ifdef PROTO
 # define HINSTANCE int		/* for generating prototypes */
 #endif
-
-# if defined(MACOS_X_UNIX)
-typedef void * HINSTANCE;
-typedef void * FARPROC;
-# include <dlfcn.h>
-# define LoadLibrary(a) dlopen(a,RTLD_NOW|RTLD_LOCAL)
-# define FreeLibrary(a) dlclose(a)
-# define GetProcAddress dlsym
-# endif
 
 /*
  * Wrapper defines
@@ -319,23 +324,16 @@ ruby_runtime_link_init(char *libname, int verbose)
 ruby_enabled(verbose)
     int		verbose;
 {
-#if defined(MACOS_X_UNIX)
-    int ret;
+    int ret = FAIL;
     int mustfree = FALSE;
-    char_u *s = vim_getenv("RUBY_DLL", &mustfree);
+    char *s = (char *)vim_getenv((char_u *)"RUBY_DLL", &mustfree);
     if (s != NULL)
-        ret = ruby_runtime_link_init(s, verbose) == OK;
+        ret = ruby_runtime_link_init(s, verbose);
     if (mustfree)
         vim_free(s);
-    if (ret == FALSE) {
-        ret = ruby_runtime_link_init(
-          "/System/Library/Frameworks/Ruby.framework/Versions/Current/Ruby",
-                verbose) == OK;
-    }
-    return ret;
-#else
-    return ruby_runtime_link_init(DYNAMIC_RUBY_DLL, verbose) == OK;
-#endif
+    if (ret == FAIL)
+        ret = ruby_runtime_link_init(DYNAMIC_RUBY_DLL, verbose);
+    return (ret == OK);
 }
 #endif /* defined(DYNAMIC_RUBY) || defined(PROTO) */
 

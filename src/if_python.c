@@ -30,6 +30,20 @@
 # undef HAVE_FCNTL_H
 #endif
 
+#if defined(DYNAMIC_PYTHON) && !defined(_WIN32)
+typedef void *HINSTANCE;
+typedef void *FARPROC;
+# include <dlfcn.h>
+# define LoadLibrary(a) dlopen(a,RTLD_NOW|RTLD_LOCAL)
+# define FreeLibrary(a) dlclose(a)
+# define GetProcAddress dlsym
+# if defined(MACOS_X_UNIX)
+#  define DYNAMIC_PYTHON_DLL "/System/Library/Frameworks/Python.framework/Versions/Current/Python"
+# else
+#  define DYNAMIC_PYTHON_DLL "libpython.so"
+# endif
+#endif
+
 #ifdef _DEBUG
 # undef _DEBUG
 #endif
@@ -88,15 +102,6 @@ struct PyMethodDef { Py_ssize_t a; };
 #if defined(DYNAMIC_PYTHON) || defined(PROTO)
 # ifndef DYNAMIC_PYTHON
 #  define HINSTANCE long_u		/* for generating prototypes */
-# endif
-
-# if defined(MACOS_X_UNIX)
-typedef void * HINSTANCE;
-typedef void * FARPROC;
-# include <dlfcn.h>
-# define LoadLibrary(a) dlopen(a,RTLD_NOW|RTLD_LOCAL)
-# define FreeLibrary(a) dlclose(a)
-# define GetProcAddress dlsym
 # endif
 
 /* This makes if_python.c compile without warnings against Python 2.5
@@ -365,23 +370,16 @@ python_runtime_link_init(char *libname, int verbose)
     int
 python_enabled(int verbose)
 {
-#if defined(MACOS_X_UNIX)
-    int ret;
+    int ret = FAIL;
     int mustfree = FALSE;
-    char_u *s = vim_getenv("PYTHON_DLL", &mustfree);
+    char *s = (char *)vim_getenv((char_u *)"PYTHON_DLL", &mustfree);
     if (s != NULL)
-        ret = python_runtime_link_init(s, verbose) == OK;
+        ret = python_runtime_link_init(s, verbose);
     if (mustfree)
         vim_free(s);
-    if (ret == FALSE) {
-        ret = python_runtime_link_init(
-          "/System/Library/Frameworks/Python.framework/Versions/Current/Python",
-                verbose) == OK;
-    }
-    return ret;
-#else
-    return python_runtime_link_init(DYNAMIC_PYTHON_DLL, verbose) == OK;
-#endif
+    if (ret == FAIL)
+        ret = python_runtime_link_init(DYNAMIC_PYTHON_DLL, verbose);
+    return (ret == OK);
 }
 
 /* Load the standard Python exceptions - don't import the symbols from the
