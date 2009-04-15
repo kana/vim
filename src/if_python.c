@@ -90,6 +90,16 @@ struct PyMethodDef { Py_ssize_t a; };
 #  define HINSTANCE long_u		/* for generating prototypes */
 # endif
 
+# if defined(MACOS_X_UNIX)
+typedef void * HINSTANCE;
+typedef void * FARPROC;
+# include <dlfcn.h>
+# define LoadLibrary(a) dlopen(a,RTLD_NOW|RTLD_LOCAL)
+# define FreeLibrary(a) dlclose(a)
+# define GetProcAddress dlsym
+# define DYNAMIC_PYTHON_DLL "/System/Library/Frameworks/Python.framework/Python"
+# endif
+
 /* This makes if_python.c compile without warnings against Python 2.5
  * on Win32 and Win64. */
 #undef PyRun_SimpleString
