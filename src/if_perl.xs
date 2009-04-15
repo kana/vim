@@ -182,6 +182,7 @@ EXTERN_C void boot_DynaLoader __ARGS((pTHX_ CV*));
 # define Perl_call_list dll_Perl_call_list
 # define Perl_Iscopestack_ix_ptr dll_Perl_Iscopestack_ix_ptr
 # define Perl_Iunitcheckav_ptr dll_Perl_Iunitcheckav_ptr
+# define Perl_Gthr_key_ptr dll_Perl_Gthr_key_ptr
 
 #ifndef DYNAMIC_PERL /* just generating prototypes */
 typedef int HANDLE;
@@ -279,6 +280,7 @@ static GV** (*Perl_Idefgv_ptr)(register PerlInterpreter*);
 static GV** (*Perl_Ierrgv_ptr)(register PerlInterpreter*);
 static SV* (*Perl_Isv_yes_ptr)(register PerlInterpreter*);
 static void (*boot_DynaLoader)_((pTHX_ CV*));
+static perl_key* (*Perl_Gthr_key_ptr)(void *);
 
 #if (PERL_REVISION == 5) && (PERL_VERSION >= 10)
 static void (*Perl_sv_free2)(pTHX_ SV*);
@@ -406,6 +408,7 @@ static struct {
 #if !defined(MACOS_X_UNIX)
     {"boot_DynaLoader", (PERL_PROC*)&boot_DynaLoader},
 #endif
+    {"Perl_Gthr_key_ptr", (PERL_PROC*)&Perl_Gthr_key_ptr},
     {"", NULL},
 };
 
