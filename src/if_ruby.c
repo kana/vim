@@ -26,6 +26,20 @@
 # define RUBYEXTERN extern
 #endif
 
+#if defined(DYNAMIC_RUBY) && !defined(_WIN32)
+typedef void *HINSTANCE;
+typedef void *FARPROC;
+# include <dlfcn.h>
+# define LoadLibrary(a) dlopen(a,RTLD_NOW|RTLD_LOCAL)
+# define FreeLibrary(a) dlclose(a)
+# define GetProcAddress dlsym
+# if defined(MACOS_X_UNIX)
+#  define DYNAMIC_RUBY_DLL "/System/Library/Frameworks/Ruby.framework/Versions/Current/Ruby"
+# else
+#  define DYNAMIC_RUBY_DLL "libruby.so"
+# endif
+#endif
+
 /*
  * This is tricky.  In ruby.h there is (inline) function rb_class_of()
  * definition.  This function use these variables.  But we want function to
@@ -140,12 +154,12 @@ static void ruby_vim_init(void);
  * Pointers for dynamic link
  */
 static VALUE (*dll_rb_assoc_new) (VALUE, VALUE);
-static VALUE *dll_rb_cFalseClass;
-static VALUE *dll_rb_cFixnum;
-static VALUE *dll_rb_cNilClass;
-static VALUE *dll_rb_cObject;
-static VALUE *dll_rb_cSymbol;
-static VALUE *dll_rb_cTrueClass;
+VALUE (*dll_rb_cFalseClass);
+VALUE (*dll_rb_cFixnum);
+VALUE (*dll_rb_cNilClass);
+static VALUE (*dll_rb_cObject);
+VALUE (*dll_rb_cSymbol);
+VALUE (*dll_rb_cTrueClass);
 static void (*dll_rb_check_type) (VALUE,int);
 static VALUE (*dll_rb_class_path) (VALUE);
 static VALUE (*dll_rb_data_object_alloc) (VALUE, void*, RUBY_DATA_FUNC, RUBY_DATA_FUNC);
@@ -310,7 +324,16 @@ ruby_runtime_link_init(char *libname, int verbose)
 ruby_enabled(verbose)
     int		verbose;
 {
-    return ruby_runtime_link_init(DYNAMIC_RUBY_DLL, verbose) == OK;
+    int ret = FAIL;
+    int mustfree = FALSE;
+    char *s = (char *)vim_getenv((char_u *)"RUBY_DLL", &mustfree);
+    if (s != NULL)
+        ret = ruby_runtime_link_init(s, verbose);
+    if (mustfree)
+        vim_free(s);
+    if (ret == FAIL)
+        ret = ruby_runtime_link_init(DYNAMIC_RUBY_DLL, verbose);
+    return (ret == OK);
 }
 #endif /* defined(DYNAMIC_RUBY) || defined(PROTO) */
 
