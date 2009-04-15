@@ -95,7 +95,6 @@ typedef void * FARPROC;
 # define LoadLibrary(a) dlopen(a,RTLD_NOW|RTLD_LOCAL)
 # define FreeLibrary(a) dlclose(a)
 # define GetProcAddress dlsym
-# define DYNAMIC_RUBY_DLL "/System/Library/Frameworks/Ruby.framework/Ruby"
 # endif
 
 /*
@@ -320,7 +319,23 @@ ruby_runtime_link_init(char *libname, int verbose)
 ruby_enabled(verbose)
     int		verbose;
 {
+#if defined(MACOS_X_UNIX)
+    int ret;
+    int mustfree = FALSE;
+    char_u *s = vim_getenv("RUBY_DLL", &mustfree);
+    if (s != NULL)
+        ret = ruby_runtime_link_init(s, verbose) == OK;
+    if (mustfree)
+        vim_free(s);
+    if (ret == FALSE) {
+        ret = ruby_runtime_link_init(
+          "/System/Library/Frameworks/Ruby.framework/Versions/Current/Ruby",
+                verbose) == OK;
+    }
+    return ret;
+#else
     return ruby_runtime_link_init(DYNAMIC_RUBY_DLL, verbose) == OK;
+#endif
 }
 #endif /* defined(DYNAMIC_RUBY) || defined(PROTO) */
 

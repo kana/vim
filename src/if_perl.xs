@@ -197,7 +197,6 @@ typedef void * FARPROC;
 # define LoadLibraryEx(a0,a1,a2) dlopen(a0,RTLD_NOW|RTLD_LOCAL)
 # define FreeLibrary(a) dlclose(a)
 # define GetProcAddress dlsym
-# define DYNAMIC_PERL_DLL "/System/Library/Perl/lib/5.8/libperl.dylib"
 #endif
 
 /*
@@ -458,7 +457,23 @@ perl_runtime_link_init(char *libname, int verbose)
 perl_enabled(verbose)
     int		verbose;
 {
+#if defined(MACOS_X_UNIX)
+    int ret;
+    int mustfree = FALSE;
+    char_u *s = vim_getenv("PERL_DLL", &mustfree);
+    if (s != NULL)
+        ret = perl_runtime_link_init(s, verbose) == OK;
+    if (mustfree)
+        vim_free(s);
+    if (ret == FALSE) {
+        ret = perl_runtime_link_init(
+            "/System/Library/Perl/5.8.8/darwin-thread-multi-2level/CORE/libperl.dylib",
+                verbose) == OK;
+    }
+    return ret;
+#else
     return perl_runtime_link_init(DYNAMIC_PERL_DLL, verbose) == OK;
+#endif
 }
 #endif /* DYNAMIC_PERL */
 
