@@ -1211,7 +1211,7 @@
 		</dict>
 	</array>
 	<key>SUFeedURL</key>
-	<string>http://macvim-kaoriya.googlecode.com/files/latest.xml</string>
+	<string>http://macvim-kaoriya.googlecode.com/svn/wiki/latest.xml</string>
 	<key>NSAppleScriptEnabled</key>
 	<true/>
 	<key>UTExportedTypeDeclarations</key>
