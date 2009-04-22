@@ -591,7 +591,6 @@ if has('win32')
 elseif has('mac') || has('gui_macvim')
   set guifont=Osaka-Mono:h14
   set guifontwide=Osaka-Mono:h14
-  set ambiwidth=double
 elseif has('xfontset')
   " UNIX用 (xfontsetを使用)
   set guifontset=a14,r14,k14
