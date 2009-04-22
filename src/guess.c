@@ -153,13 +153,13 @@ static const char *guess_bom(FILE *in)
     c = fgetc(in);
     if (c == 0xFE || c == 0xFF) {
         c2 = fgetc(in);
-        if (c == 0xFE && c2 == 0xFF) return "utf-16be";
-        if (c == 0xFF && c2 == 0xFE) return "utf-16le";
+        if (c == 0xFE && c2 == 0xFF) return "ucs-bom";
+        if (c == 0xFF && c2 == 0xFE) return "ucs-bom";
         ungetc(c2, in);
     } else if (c == 0xEF) {
         c2 = fgetc(in);
         c3 = fgetc(in);
-        if (c2 == 0xBB && c3 == 0xBF) return "utf-8";
+        if (c2 == 0xBB && c3 == 0xBF) return "ucs-bom";
         ungetc(c3, in);
         ungetc(c2, in);
     }
