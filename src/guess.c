@@ -35,6 +35,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "vim.h"
 
 typedef struct guess_arc_rec {
     unsigned int next;          /* next state */
@@ -75,11 +76,11 @@ static const char *guess_jp(FILE *in, const char *def)
 {
     int i, c, c2, alive;
     guess_dfa dfa[] = {
-        DFA_INIT("UTF-8",       guess_utf8_st, guess_utf8_ar),
-        DFA_INIT("Shift_JIS",   guess_sjis_st, guess_sjis_ar),
-        DFA_INIT("EUC-JP",      guess_eucj_st, guess_eucj_ar),
-        DFA_INIT("UTF-16BE",    guess_utf16be_st, guess_utf16be_ar),
-        DFA_INIT("UTF-16LE",    guess_utf16le_st, guess_utf16le_ar),
+        DFA_INIT("utf-8",       guess_utf8_st, guess_utf8_ar),
+        DFA_INIT("cp932",       guess_sjis_st, guess_sjis_ar),
+        DFA_INIT("euc-jp",      guess_eucj_st, guess_eucj_ar),
+        DFA_INIT("utf-16be",    guess_utf16be_st, guess_utf16be_ar),
+        DFA_INIT("utf-16le",    guess_utf16le_st, guess_utf16le_ar),
         DFA_INIT(NULL, NULL, NULL)
     };
     guess_dfa *utf16be = &dfa[3];
@@ -97,10 +98,10 @@ static const char *guess_jp(FILE *in, const char *def)
             if ((c2 = fgetc(in)) != EOF) {
                 if (utf16be->state == 0 &&
                         c == 0x00 && (c2 == 0x0A || c2 == 0x0D))
-                    return "UTF-16BE";
+                    return "utf-16be";
                 if (utf16le->state == 0 &&
                         (c == 0x0A || c == 0x0D) && c2 == 0x00)
-                    return "UTF-16LE";
+                    return "utf-16le";
                 ungetc(c2, in);
             }
         }
@@ -108,7 +109,7 @@ static const char *guess_jp(FILE *in, const char *def)
         /* special treatment of jis escape sequence */
         if (c == 0x1b) {
             if ((c2 = fgetc(in)) != EOF) {
-                if (c2 == '$' || c2 == '(') return "ISO-2022-JP";
+                if (c2 == '$' || c2 == '(') return "iso-2022-jp";
                 ungetc(c2, in);
             }
         }
@@ -152,13 +153,13 @@ static const char *guess_bom(FILE *in)
     c = fgetc(in);
     if (c == 0xFE || c == 0xFF) {
         c2 = fgetc(in);
-        if (c == 0xFE && c2 == 0xFF) return "UTF-16BE";
-        if (c == 0xFF && c2 == 0xFE) return "UTF-16LE";
+        if (c == 0xFE && c2 == 0xFF) return "utf-16be";
+        if (c == 0xFF && c2 == 0xFE) return "utf-16le";
         ungetc(c2, in);
     } else if (c == 0xEF) {
         c2 = fgetc(in);
         c3 = fgetc(in);
-        if (c2 == 0xBB && c3 == 0xBF) return "UTF-8";
+        if (c2 == 0xBB && c3 == 0xBF) return "utf-8";
         ungetc(c3, in);
         ungetc(c2, in);
     }
@@ -166,74 +167,43 @@ static const char *guess_bom(FILE *in)
     return NULL;
 }
 
-static int
-_guess(FILE *in, const char *def, char *res)
+int guess_encode(char_u** fenc, int* fenc_alloced, char_u* fname)
 {
+    FILE *in;
     const char *enc;
+
+    if (p_verbose >= 1)
+    {
+        verbose_enter();
+        smsg((char_u*)"guess_encode:");
+        smsg((char_u*)"    init: fenc=%s alloced=%d fname=%s\n",
+            *fenc, *fenc_alloced, fname);
+        verbose_leave();
+    }
+
+    if (!fname)
+        return 0;
+    in = mch_fopen((const char *)fname, "r");
+    if (!in)
+        return 0;
 
     enc = guess_bom(in);
     if (!enc)
-        enc = guess_jp(in, def);
-    if (!enc)
-        enc = "BINARY";
-    strcpy(res, enc);
+        enc = guess_jp(in, "utf-8");
+    fclose(in);
+
+    if (enc)
+    {
+        if (p_verbose >= 1)
+        {
+            verbose_enter();
+            smsg("    result: newenc=%s\n", enc);
+            verbose_leave();
+        }
+        if (*fenc_alloced)
+            vim_free(*fenc);
+        *fenc = vim_strsave((char_u*)enc);
+        *fenc_alloced = TRUE;
+    }
     return 1;
 }
-
-#ifdef MAKE_DLL
-/*
- * args = [default]:[path]
- * e.g. guess("UTF-8:/path/to/file");
- */
-const char *guess(char *args)
-{
-    static char res[64];
-    char *def;
-    char *path;
-    FILE *in;
-
-    if (strchr(args, ':') == NULL)
-        return "ERROR:args";
-
-    def = args;
-    path = strchr(args, ':');
-    *path++ = 0;
-
-    in = fopen(path, "rb");
-    if (!in)
-        return "ERROR:path";
-    _guess(in, def, res);
-    fclose(in);
-    return res;
-}
-#else
-int main(int argc, char **argv)
-{
-    char res[64];
-    FILE *in = stdin;
-    const char *def = "UTF-8";
-    int i;
-
-    for (i = 1; i < argc; ++i) {
-        if (strcmp(argv[i], "-d") == 0)
-            def = argv[++i];
-        else if (argv[i][0] == '-') {
-            printf("usage: %s [-d enc] [file]\n", argv[0]);
-            printf("  -d enc   default encoding\n");
-            return 0;
-        } else {
-            in = fopen(argv[i], "rb");
-            if (!in) {
-                fprintf(stderr, "cannot open file '%s'\n", argv[i]);
-                return 1;
-            }
-            break;
-        }
-    }
-
-    i = _guess(in, def, res);
-    printf("%s", res);
-    return i;
-}
-#endif
-
