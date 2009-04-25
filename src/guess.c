@@ -197,7 +197,7 @@ int guess_encode(char_u** fenc, int* fenc_alloced, char_u* fname)
         if (p_verbose >= 1)
         {
             verbose_enter();
-            smsg("    result: newenc=%s\n", enc);
+            smsg((char_u*)"    result: newenc=%s\n", enc);
             verbose_leave();
         }
         if (*fenc_alloced)
