@@ -623,7 +623,7 @@ if has('multi_byte_ime') || has('xim') || has('mac') || has('gui_macvim')
     "set imactivatekey=s-space
   endif
   " 挿入モードでのIME状態を記憶させない場合、次行のコメントを解除
-  inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
+  "inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
 endif
 
 "---------------------------------------------------------------------------

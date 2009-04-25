@@ -40,6 +40,7 @@ static float MMDragAreaSize = 73.0f;
 - (void)dispatchKeyEvent:(NSEvent *)event;
 - (void)sendKeyDown:(const char *)chars length:(int)len modifiers:(int)flags
           isARepeat:(BOOL)isARepeat;
+- (void)sendImState;
 - (void)hideMouseCursor;
 - (void)startDragTimerWithInterval:(NSTimeInterval)t;
 - (void)dragTimerFired:(NSTimer *)timer;
@@ -90,6 +91,9 @@ static float MMDragAreaSize = 73.0f;
     //
     // TODO: Figure out a way to disable Cocoa key bindings entirely, without
     // affecting input management.
+
+    if (imControl)
+        [self sendImState];
 
     // When the Input Method is activated, some special key inputs
     // should be treated as key inputs for Input Method.
@@ -151,6 +155,9 @@ static float MMDragAreaSize = 73.0f;
 
     NSEvent *event = [NSApp currentEvent];
 
+    if (imControl)
+        [self sendImState];
+
     // HACK!  In order to be able to bind to <S-Space>, <S-M-Tab>, etc. we have
     // to watch for them here.
     if ([event type] == NSKeyDown
@@ -202,6 +209,9 @@ static float MMDragAreaSize = 73.0f;
 
     NSEvent *event = [NSApp currentEvent];
 
+    if (imControl)
+        [self sendImState];
+
     if (selector == @selector(cancelOperation:)
             || selector == @selector(insertNewline:)) {
         // HACK! If there was marked text which got abandoned as a result of
@@ -237,6 +247,9 @@ static float MMDragAreaSize = 73.0f;
     // NOTE: This message cannot be ignored since Cmd+letter keys never are
     // passed to keyDown:.  It seems as if the main menu consumes Cmd-key
     // strokes, unless the key is a function key.
+
+    if (imControl)
+        [self sendImState];
 
     // NOTE: If the event that triggered this method represents a function key
     // down then we do nothing, otherwise the input method never gets the key
@@ -721,6 +734,23 @@ static float MMDragAreaSize = 73.0f;
     rect.origin = [[textView window] convertBaseToScreen:rect.origin];
 
     return rect;
+}
+
+- (void)setImControl:(BOOL)enable
+{
+    imControl = enable;
+}
+
+- (void)sendImState
+{
+    // IM is active whenever the current script is the system script and the
+    // system script isn't roman.  (Hence IM can only be active when using
+    // non-roman scripts.)
+    SInt32 currentScript = GetScriptManagerVariable(smKeyScript);
+    SInt32 systemScript = GetScriptManagerVariable(smSysScript);
+    BOOL state = currentScript != smRoman && currentScript == systemScript;
+    int msgid = state ? ActivatedImMsgID : DeactivatedImMsgID;
+    [[self vimController] sendMessage:msgid data:nil];
 }
 
 @end // MMTextViewHelper

@@ -1264,14 +1264,23 @@ im_set_position(int row, int col)
 
 
     void
+im_set_control(int enable)
+{
+    int msgid = enable ? EnableImControlMsgID : DisableImControlMsgID;
+    [[MMBackend sharedInstance] queueMessage:msgid properties:nil];
+}
+
+
+    void
 #if defined(FEAT_UIMFEP)
 gui_im_set_active(int active)
 #else // FEAT_UIMFEP
 im_set_active(int active)
 #endif // FEAT_UIMFEP
 {
-    if (!p_imdisable && !active) {
-        int msgid = DeactivateKeyScriptID;
+    if (!p_imdisable) {
+        int msgid = active ? ActivateKeyScriptMsgID : DeactivateKeyScriptMsgID;
+        [[MMBackend sharedInstance] setImState:active];
         [[MMBackend sharedInstance] queueMessage:msgid properties:nil];
     }
 }
@@ -1284,7 +1293,7 @@ gui_im_get_status(void)
 im_get_status(void)
 #endif // FEAT_UIMFEP
 {
-    return 0;
+    return [[MMBackend sharedInstance] imState];
 }
 
 #endif // defined(USE_IM_CONTROL)

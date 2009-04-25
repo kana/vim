@@ -86,6 +86,10 @@ char *MessageStrings[] =
     "FindReplaceMsgID",
     "ActivateKeyScriptID",
     "DeactivateKeyScriptID",
+    "EnableImControlMsgID",
+    "DisableImControlMsgID",
+    "ActivatedImMsgID",
+    "DeactivatedImMsgID",
     "BrowseForFileMsgID",
     "ShowDialogMsgID",
     "END OF MESSAGE IDs"     // NOTE: Must be last!
