@@ -6918,6 +6918,7 @@ profiling	repeat.txt	/*profiling*
 profiling-variable	eval.txt	/*profiling-variable*
 progname-variable	eval.txt	/*progname-variable*
 progress.vim	syntax.txt	/*progress.vim*
+pronounce	intro.txt	/*pronounce*
 psql	ft_sql.txt	/*psql*
 ptcap.vim	syntax.txt	/*ptcap.vim*
 pterm-mouse	options.txt	/*pterm-mouse*
@@ -7404,6 +7405,7 @@ substitute()	eval.txt	/*substitute()*
 substitute-CR	version6.txt	/*substitute-CR*
 suffixes	cmdline.txt	/*suffixes*
 suspend	starting.txt	/*suspend*
+swap-exists-choices	usr_11.txt	/*swap-exists-choices*
 swap-file	recover.txt	/*swap-file*
 swapchoice-variable	eval.txt	/*swapchoice-variable*
 swapcommand-variable	eval.txt	/*swapcommand-variable*
