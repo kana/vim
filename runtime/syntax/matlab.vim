@@ -3,11 +3,9 @@
 " Maintainer:	Maurizio Tranchero - maurizio.tranchero@gmail.com
 " Credits:	Preben 'Peppe' Guldberg <peppe-vim@wielders.org>
 "		Original author: Mario Eusebio
-" Last Change:	2008 Nov 20
-"		some small changes have been introduce to support 
-" 		- '...' comment (used to break lines), 
-" 		- '' escape (for writing ' inside a string)
-" 		- try... catch construct
+" Last Change:	Tue Apr 21 10:03:31 CEST 2009
+"		- added object oriented support
+"		- added multi-line comments %{ ...\n... %}
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded
@@ -23,6 +21,7 @@ syn keyword matlabConditional		else elseif end if otherwise
 syn keyword matlabRepeat		do for while
 " MT_ADDON - added exception-specific keywords
 syn keyword matlabExceptions		try catch
+syn keyword matlabOO			classdef properties events methods
 
 syn keyword matlabTodo			contained  TODO
 
@@ -61,6 +60,7 @@ syn match matlabSemicolon		";"
 syn match matlabComment			"%.*$"	contains=matlabTodo,matlabTab
 " MT_ADDON - correctly highlights words after '...' as comments
 syn match matlabComment			"\.\.\..*$"	contains=matlabTodo,matlabTab
+syn region matlabMultilineComment	start=+%{+ end=+%}+ contains=matlabTodo,matlabTab
 
 syn keyword matlabOperator		break zeros default margin round ones rand
 syn keyword matlabOperator		ceil floor size clear zeros eye mean std cov
@@ -85,11 +85,10 @@ if version >= 508 || !exists("did_matlab_syntax_inits")
   endif
 
   HiLink matlabTransposeOperator	matlabOperator
-  HiLink matlabOperator		Operator
-  HiLink matlabLineContinuation	Special
+  HiLink matlabOperator			Operator
+  HiLink matlabLineContinuation		Special
   HiLink matlabLabel			Label
   HiLink matlabConditional		Conditional
-" MT_ADDON - added exception-specific keywords
   HiLink matlabExceptions		Conditional
   HiLink matlabRepeat			Repeat
   HiLink matlabTodo			Todo
@@ -98,12 +97,14 @@ if version >= 508 || !exists("did_matlab_syntax_inits")
   HiLink matlabTransposeOther		Identifier
   HiLink matlabNumber			Number
   HiLink matlabFloat			Float
-  HiLink matlabFunction		Function
+  HiLink matlabFunction			Function
   HiLink matlabError			Error
-  HiLink matlabImplicit		matlabStatement
+  HiLink matlabImplicit			matlabStatement
   HiLink matlabStatement		Statement
+  HiLink matlabOO			Statement
   HiLink matlabSemicolon		SpecialChar
   HiLink matlabComment			Comment
+  HiLink matlabMultilineComment		Comment
 
   HiLink matlabArithmeticOperator	matlabOperator
   HiLink matlabRelationalOperator	matlabOperator
