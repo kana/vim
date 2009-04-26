@@ -2699,6 +2699,11 @@ doend:
 	/* Restore msg_scroll, it's set by file I/O commands, even when no
 	 * message is actually displayed. */
 	msg_scroll = save_msg_scroll;
+
+	/* "silent reg" or "silent echo x" inside "redir" leaves msg_col
+	 * somewhere in the line.  Put it back in the first column. */
+	if (redirecting())
+	    msg_col = 0;
     }
 
 #ifdef HAVE_SANDBOX
@@ -3685,7 +3690,9 @@ set_one_cmd_context(xp, buff)
 	    break;
 #ifdef FEAT_CSCOPE
 	case CMD_cscope:
-	    set_context_in_cscope_cmd(xp, arg);
+	case CMD_lcscope:
+	case CMD_scscope:
+	    set_context_in_cscope_cmd(xp, arg, ea.cmdidx);
 	    break;
 #endif
 #ifdef FEAT_LISTCMDS
