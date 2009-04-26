@@ -40,7 +40,7 @@ static float MMDragAreaSize = 73.0f;
 - (void)dispatchKeyEvent:(NSEvent *)event;
 - (void)sendKeyDown:(const char *)chars length:(int)len modifiers:(int)flags
           isARepeat:(BOOL)isARepeat;
-- (void)sendImState;
+- (void)performImState;
 - (void)hideMouseCursor;
 - (void)startDragTimerWithInterval:(NSTimeInterval)t;
 - (void)dragTimerFired:(NSTimer *)timer;
@@ -93,7 +93,7 @@ static float MMDragAreaSize = 73.0f;
     // affecting input management.
 
     if (imControl)
-        [self sendImState];
+        [self performImState];
 
     // When the Input Method is activated, some special key inputs
     // should be treated as key inputs for Input Method.
@@ -155,9 +155,6 @@ static float MMDragAreaSize = 73.0f;
 
     NSEvent *event = [NSApp currentEvent];
 
-    if (imControl)
-        [self sendImState];
-
     // HACK!  In order to be able to bind to <S-Space>, <S-M-Tab>, etc. we have
     // to watch for them here.
     if ([event type] == NSKeyDown
@@ -209,9 +206,6 @@ static float MMDragAreaSize = 73.0f;
 
     NSEvent *event = [NSApp currentEvent];
 
-    if (imControl)
-        [self sendImState];
-
     if (selector == @selector(cancelOperation:)
             || selector == @selector(insertNewline:)) {
         // HACK! If there was marked text which got abandoned as a result of
@@ -249,7 +243,7 @@ static float MMDragAreaSize = 73.0f;
     // strokes, unless the key is a function key.
 
     if (imControl)
-        [self sendImState];
+        [self performImState];
 
     // NOTE: If the event that triggered this method represents a function key
     // down then we do nothing, otherwise the input method never gets the key
@@ -741,7 +735,7 @@ static float MMDragAreaSize = 73.0f;
     imControl = enable;
 }
 
-- (void)sendImState
+- (void)performImState
 {
     // IM is active whenever the current script is the system script and the
     // system script isn't roman.  (Hence IM can only be active when using
@@ -749,8 +743,11 @@ static float MMDragAreaSize = 73.0f;
     SInt32 currentScript = GetScriptManagerVariable(smKeyScript);
     SInt32 systemScript = GetScriptManagerVariable(smSysScript);
     BOOL state = currentScript != smRoman && currentScript == systemScript;
-    int msgid = state ? ActivatedImMsgID : DeactivatedImMsgID;
-    [[self vimController] sendMessage:msgid data:nil];
+    if (imState != state) {
+        imState = state;
+        int msgid = state ? ActivatedImMsgID : DeactivatedImMsgID;
+        [[self vimController] sendMessage:msgid data:nil];
+    }
 }
 
 @end // MMTextViewHelper

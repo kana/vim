@@ -40,6 +40,7 @@ enum {
     int                 preEditRow;
     int                 preEditColumn;
     BOOL                imControl;
+    BOOL                imState;
 }
 
 - (void)setTextView:(id)view;
