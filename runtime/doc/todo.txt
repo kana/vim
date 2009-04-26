@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.2.  Last change: 2009 Mar 21
+*todo.txt*      For Vim version 7.2.  Last change: 2009 Apr 22
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,35 +30,75 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
-In Visual block mode, "O" changes end of block in first comment of screen.c,
-only two lines selected.
+Syntax file for Synopsys Design Constraints. (Maurizio Tranchero, 2009 March
+26)
 
-Patch for :scscope and :lcscope completion. (Dominique Pelle, 2009 Mar 21)
+Patch for ":sign" completion. (Dominique Pelle, 2009 Mar 28)
+Update 2009 Apr 22.
 
-Wrong Visual Block selection size reported when 'wrap' is on and 'showbreak'
-is not empty. (Eduardo Daudt Flach, 2009 Feb 12)
+Patch for vertical line at certain column position, 'guidecolumn' option.
+(Pankaj Garg, 2009 Apr 14, aka Lone, Apr 15)
+
+Patch for documentation of press-enter message. (Dominique Pelle, 2009 Apr 19)
+
+Have a look at /tmp/vimake-1.09.tar.gz (Mike Lear)
 
 Dynamic Folding support for 2html.vim. (Benjamin Fritz, 2009 Feb 12)
+
+Crash in syntax HL code with jquery syntax. (George Reilly, 2009 Mar 24)
+
+Increase number of cscope connectsions from 8 to 42? (Robert Bragg, 2009 Apr
+20)
+
+":help g" does not jump to index of commands starting with g.
+
+Patch for completion of ":find" arguments. (Nazri Ramliy, 2009 Feb 22, 26)
+8   For ":find" and ":sfind" expand files found in 'path'.
+Update 2009 Mar 28.
 
 Patch to add "focusonly" to 'scrollopt', so that scrollbind also applies in
 window that doesn't have focus. (Jonathon Mah, 2009 Jan 12)
 Needs more work.
 
-Patch for completion of ":find" arguments. (Nazri Ramliy, 2009 Feb 22, 26)
-8   For ":find" and ":sfind" expand files found in 'path'.
-Needs more work.
-
 Problem with <script> mappings (Andy Wokula, 2009 Mar 8)
+
+'cmdwinheight is only used in last window when 'winheight' is a large value.
+(Tony Mechelynck, 2009 Apr 15)
+
+Status line containing winnr() isn't updated when splitting the window (Clark
+J.  Wang, 2009 Mar 31)
+
+When 'ft' changes redraw custom status line.
+
+Space before comma in funtion defenition not allowed: "function x(a , b)"
+Give a more appropriate error message.  Add a remark to the docs.
+
+Unwanted file name escaping: ":echo input('file:' , '', 'file')"
+And use file name completion on a file with spaces. (Frederic Hardy, 2009 Mar
+23)
+
+Don't load macmap.vim on startup, turn it into a plugin. (Ron Aaron,
+2009 Apr 7)  Reminder Apr 14.
+
+Add "no_hlsearch" to winsaveview().
 
 Cursorline highlighting combines with Search ('hlsearch') but not with
 SpellBad. (Jim Karsten, 2009 Mar 18)
 
-Folds messed up in other tab page. (Vlad Irnov, 2009 Mar 17)
+Bug: When reloading a buffer changed outside of Vim, BufRead autocommands
+are applied to the wrong buffer. (Ben Fritz, 2009 Apr 2)
 
 ":he ctrl_u" can be auto-corrected to ":he ctrl-u".
 
+Patch to make synIDattr() work for GUI attributes in Vim without GUI feature.
+(Matt Wozniski, 2009 Apr 15)
+
+Win32 GUI: Changing manifest helps for dpi changes (Joe Castro, 2009 Mar 27)
+
 Win32: patch for cross compile xxd and GvimExt. (Markus Heidelberg, 2009 Mar
 18)  Also update INSTALLpc.txt?
+
+Win32: patch for better font scaling. (George Reilly, 2009 Mar 26)
 
 Win32 GUI: last message from startup doesn't show up when there is an echoerr
 command. (Cyril Slobin, 2009 Mar 13)
@@ -73,6 +113,14 @@ Directory wrong in session file, caused by ":lcd" in BufEnter autocommand.
 
 Using ~ works OK on 'a' with composing char, but not on 0x0418  with composing
 char 0x0301. (Tony Mechelynck, 2009 Mar 4)
+
+6   In the quickfix window statusline add the command used to get the list of
+    errors, e.g. ":make foo", ":grep something *.c".
+    Patch by Lech Lorens, 2009 Mar 23.
+    Comments from Andreas Bernauer 24th, Dominique Pelle 24th
+    Docs patch by Dominique Pelle, Mar 25
+    Update 2009 Mar 28.
+    Fix for invalid memory access. (Lech Lorens, 2009 Apr 17)
 
 Inconsistent: starting with $LANG set to es_ES.utf-8 gives Spanish
 messages, even though locale is not supported.  But ":lang messages
@@ -133,6 +181,11 @@ probably causes this.
 'scrollbind' is not respected when deleting lines or undo. (Milan Vancura,
 1009 Jan 16)
 
+Document that default font in Athena can be set with resources:
+   XtDefaultFont: "9x15"
+   XtDefaultFontSet: "9x15"
+(Richard Sherman, 2009 Apr 12)
+
 Crash with dragn-n-drop of file combined with netrw (Marius Gedminas, 2008 Jun
 11)  I can't reproduce it.  It's probably caused by a handle_drop() call
 in combination with autocommands that invoke a ":redraw" command.
@@ -144,6 +197,9 @@ first line. (Ingo Karkat, 2008 Jul 1)  Ian Kelling is working on this.
 Wildmenu not deleted: "gvim -u NONE", ":set nocp wildmenu cmdheight=3
 laststatus=2", CTRL-D CTRL-H CTRL-H CTRL-H. (A.Politz, 2008 April 1)
 Works OK with Vim in an xterm.
+
+Cursor line moves in other window when using CTRL-W J that doesn't change
+anything.  (Dasn, 2009 Apr 7)
 
 On Unix "glob('does not exist~')" returns the string.  Without the "~" it
 doesn't. (John Little, 2008 Nov 9)
@@ -184,6 +240,13 @@ Chase)  Fix by Ian Kelling, 2008 Jul 14.
 
 ":colorscheme" without arguments should echo the current color scheme name.
 
+Use "\U12345678" for 32 bit Unicode characters?  (Tony Mechelynck, 2009
+Apr 6)  Or use "\u(123456)", similar to Perl.
+
+When mapping : to ; and ; to :, @; doesn't work like @: and @: doesn't work
+either.  Matt Wozniski:  nv_at() calls do_execreg() which uses
+put_in_typebuf().  Char mapped twice?
+
 Patch for colorscheme submenu. (Juergen Kraemer, 2008 Aug 20)
 
 8   Some file systems are case-sensitive, some are not.  Turn
@@ -200,6 +263,8 @@ Backreference not cleared when retrying after \@<= fails?
 (Brett Stahlman, 2008 March 8)
 
 Problem with remote_send(). (Charles Campbell, 2008 Aug 12)
+
+ftplugin for help file should set 'isk' to help file value.
 
 Win32: remote editing fails when the current directory name contains "[".
 (Ivan Tishchenko, Liu Yubao)  Suggested patch by Chris Lubinski: Avoid
@@ -270,6 +335,10 @@ Try to reproduce at work.
 Patch for default choice in file changed dialog. (Bjorn Winckler, 2008 Oct 19)
 Is there a way to list all the files first?
 
+When 'smartcase' is set and using CTRL-L to add to the search pattern it may
+result in no matches.  Convert chars to lower case? (Erik Wognsen, 2009 Apr
+16)
+
 Patch for redo register. (Ben Schmidt, 2007 Oct 19)
 Await response to question to make the register writable.
 
@@ -278,6 +347,9 @@ remark why.
 
 Problem with 'ts' set to 9 and 'showbreak' to ">>>". (Matthew Winn, 2007 Oct
 1)
+
+In the swapfile dialog, add a H(elp) option that gives more info about what
+each choice does.  Similar to  ":help swap-exists-choices"
 
 try/catch not working for argument of return. (Matt Wozniski, 2008 Sep 15)
 
@@ -319,6 +391,9 @@ Gnome improvements: Edward Catmur, 2007 Jan 7
     Also use Save/Discard for other GUIs
 
 New PHP syntax file, use it? (Peter Hodge)
+
+Patch go make gui highlight settings work in Vim without +gui feature.
+(Matt Wozniski, 2009 Mar 27)
 
 'foldcolumn' in modeline applied to wrong window when using a session. (Teemu
 Likonen, March 19)
@@ -499,6 +574,9 @@ When $VAR contains a backslash expand('$VAR') removes it. (Teemu Likonen, 2008
 Jun 18)
 
 If the variable "g:x#y#z" exists completion after ":echo g:x#" doesn't work.
+
+Feature request: Command to go to previous tab, like what CTRL-W p does for
+windows. (Adam George)
 
 When using input() in a loop and then ":echo" the display column isn't right.
 (Benjamin Fritz, 2008 Aug 28)  Patch by Ben Schmidt, 2008 Sep 2.
@@ -854,6 +932,11 @@ clip_x11_request_selection_cb() is called with zero value and length.
 Also: Get an error message from free() in the process that owns the selection.
 Seems to happen when the selection is requested the second time, but before
 clip_x11_convert_selection_cb() is invoked, thus in X library code.
+
+Add 'lazysize' option: Above this size Vim doesn't load everything before
+starting to edit a file.  Things like 'fileencodings' only work up to this
+size, modelines only work at the top.  Useful for large log files where you
+only want to look at the first few pages.  Use zero to disable it.
 
 
 Vim 7.3:
@@ -2366,7 +2449,6 @@ Syntax highlighting:
     words.
 8   Add more command line completion for :syntax.
 8   Add more command line completion for :highlight.
-8   Add more command line completion for :sign.
 7   Should find a better way to parse the :syntax and :highlight commands.
     Use tables or lists that can be shared by parsing for execution and
     completion?
@@ -4082,8 +4164,6 @@ Various improvements:
     Govindachar)
 7   Add a command that goes back to the position from before jumping to the
     first quickfix location.  ":cbefore"?
-6   In the quickfix window statusline add the command used to get the list of
-    errors, e.g. ":make foo", ":grep something *.c".
 7   Allow a window not to have a statusline.  Makes it possible to use a
     window as a buffer-tab selection.
 8   Allow non-active windows to have a different statusline. (Yakov Lerner)

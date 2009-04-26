@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language:    PROLOG
 " Maintainers: Thomas Koehler <jean-luc@picard.franken.de>
-" Last Change: 2008 April 5
+" Last Change: 2009 Apr 22
 " URL:	       http://gott-gehabt/800_wer_wir_sind/thomas/Homepage/Computer/vim/syntax/prolog.vim
 
 " There are two sets of highlighting in here:
@@ -63,7 +63,7 @@ if !exists("prolog_highlighting_clean")
   syn match   prologOperator "=\\=\|=:=\|\\==\|=<\|==\|>=\|\\=\|\\+\|<\|>\|="
   syn match   prologAsIs     "===\|\\===\|<=\|=>"
 
-  syn match   prologNumber	      "\<[0123456789]*\>"
+  syn match   prologNumber	      "\<[0123456789]*\>'\@!"
   syn match   prologCommentError      "\*/"
   syn match   prologSpecialCharacter  ";"
   syn match   prologSpecialCharacter  "!"

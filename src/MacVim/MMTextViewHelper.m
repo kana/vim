@@ -40,7 +40,7 @@ static float MMDragAreaSize = 73.0f;
 - (void)dispatchKeyEvent:(NSEvent *)event;
 - (void)sendKeyDown:(const char *)chars length:(int)len modifiers:(int)flags
           isARepeat:(BOOL)isARepeat;
-- (void)performImState;
+- (void)checkImState;
 - (void)hideMouseCursor;
 - (void)startDragTimerWithInterval:(NSTimeInterval)t;
 - (void)dragTimerFired:(NSTimer *)timer;
@@ -93,7 +93,7 @@ static float MMDragAreaSize = 73.0f;
     // affecting input management.
 
     if (imControl)
-        [self performImState];
+        [self checkImState];
 
     // When the Input Method is activated, some special key inputs
     // should be treated as key inputs for Input Method.
@@ -243,7 +243,7 @@ static float MMDragAreaSize = 73.0f;
     // strokes, unless the key is a function key.
 
     if (imControl)
-        [self performImState];
+        [self checkImState];
 
     // NOTE: If the event that triggered this method represents a function key
     // down then we do nothing, otherwise the input method never gets the key
@@ -732,6 +732,9 @@ static float MMDragAreaSize = 73.0f;
 
 - (void)setImControl:(BOOL)enable
 {
+    // This flag corresponds to the (negation of the) 'imd' option.  When
+    // enabled changes to the input method are detected and forwarded to the
+    // backend.
     imControl = enable;
 }
 
@@ -835,6 +838,24 @@ static float MMDragAreaSize = 73.0f;
 
         //NSLog(@"%s len=%d chars=0x%x", _cmd, len, chars[0]);
         [[self vimController] sendMessage:KeyDownMsgID data:data];
+    }
+}
+
+- (void)checkImState
+{
+    // IM is active whenever the current script is the system script and the
+    // system script isn't roman.  (Hence IM can only be active when using
+    // non-roman scripts.)
+
+    // NOTE: The IM code is delegated to the frontend since calling it in the
+    // backend caused weird bugs (second dock icon appearing etc.).
+    SInt32 currentScript = GetScriptManagerVariable(smKeyScript);
+    SInt32 systemScript = GetScriptManagerVariable(smSysScript);
+    BOOL state = currentScript != smRoman && currentScript == systemScript;
+    if (imState != state) {
+        imState = state;
+        int msgid = state ? ActivatedImMsgID : DeactivatedImMsgID;
+        [[self vimController] sendMessage:msgid data:nil];
     }
 }
 

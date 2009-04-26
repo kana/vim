@@ -1266,6 +1266,8 @@ im_set_position(int row, int col)
     void
 im_set_control(int enable)
 {
+    // Tell frontend whether it should notify us when the input method changes
+    // or not (called when 'imd' is toggled).
     int msgid = enable ? EnableImControlMsgID : DisableImControlMsgID;
     [[MMBackend sharedInstance] queueMessage:msgid properties:nil];
 }
@@ -1278,6 +1280,7 @@ gui_im_set_active(int active)
 im_set_active(int active)
 #endif // FEAT_UIMFEP
 {
+    // Tell frontend to enable/disable IM (called e.g. when the mode changes).
     if (!p_imdisable) {
         int msgid = active ? ActivateKeyScriptMsgID : DeactivateKeyScriptMsgID;
         [[MMBackend sharedInstance] setImState:active];

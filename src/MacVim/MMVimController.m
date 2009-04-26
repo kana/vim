@@ -789,6 +789,8 @@ static BOOL isUnsafeMessage(int msgid);
                        flags:[[dict objectForKey:@"flags"] intValue]];
         }
     } else if (ActivateKeyScriptMsgID == msgid) {
+        // NOTE: The IM code is delegated to the frontend since calling it in
+        // the backend caused weird bugs (second dock icon appearing etc.).
         KeyScript(smKeySysScript);
     } else if (DeactivateKeyScriptMsgID == msgid) {
         KeyScript(smKeyRoman);

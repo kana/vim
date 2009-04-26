@@ -1,6 +1,6 @@
 " Vim syntax file
-" Language:	Scheme (R5RS, R6RS keywords by Stepan Zastupov)
-" Last Change:	2009 Jan 16
+" Language:	Scheme (R5RS + some R6RS extras)
+" Last Change:	2009 Apr 12
 " Maintainer:	Sergey Khorev <sergey.khorev@gmail.com>
 " Original author:	Dirk van Deun <dirk@igwe.vub.ac.be>
 
@@ -26,8 +26,8 @@ syn case ignore
 
 " Fascist highlighting: everything that doesn't fit the rules is an error...
 
-syn match	schemeError	oneline    ![^ \t()\[\]";]*!
-syn match	schemeError	oneline    ")"
+syn match	schemeError	![^ \t()\[\]";]*!
+syn match	schemeError	")"
 
 " Quoted and backquoted stuff
 
@@ -71,6 +71,7 @@ syn keyword schemeSyntax lambda and or if cond case define let let* letrec
 syn keyword schemeSyntax begin do delay set! else =>
 syn keyword schemeSyntax quote quasiquote unquote unquote-splicing
 syn keyword schemeSyntax define-syntax let-syntax letrec-syntax syntax-rules
+" R6RS
 syn keyword schemeSyntax define-record-type fields protocol
 
 syn keyword schemeFunc not boolean? eq? eqv? equal? pair? cons car cdr set-car!
@@ -110,6 +111,7 @@ syn keyword schemeFunc char-ready? load transcript-on transcript-off eval
 syn keyword schemeFunc dynamic-wind port? values call-with-values
 syn keyword schemeFunc scheme-report-environment null-environment
 syn keyword schemeFunc interaction-environment
+" R6RS
 syn keyword schemeFunc make-eq-hashtable make-eqv-hashtable make-hashtable
 syn keyword schemeFunc hashtable? hashtable-size hashtable-ref hashtable-set!
 syn keyword schemeFunc hashtable-delete! hashtable-contains? hashtable-update!
@@ -122,26 +124,26 @@ syn keyword schemeFunc remp remove remv remq memp assp cons*
 " ... so that a single + or -, inside a quoted context, would not be
 " interpreted as a number (outside such contexts, it's a schemeFunc)
 
-syn match	schemeDelimiter	oneline    !\.[ \t\[\]()";]!me=e-1
-syn match	schemeDelimiter	oneline    !\.$!
+syn match	schemeDelimiter	!\.[ \t\[\]()";]!me=e-1
+syn match	schemeDelimiter	!\.$!
 " ... and a single dot is not a number but a delimiter
 
 " This keeps all other stuff unhighlighted, except *stuff* and <stuff>:
 
-syn match	schemeOther	oneline    ,[a-z!$%&*/:<=>?^_~+@#%-][-a-z!$%&*/:<=>?^_~0-9+.@#%]*,
-syn match	schemeError	oneline    ,[a-z!$%&*/:<=>?^_~+@#%-][-a-z!$%&*/:<=>?^_~0-9+.@#%]*[^-a-z!$%&*/:<=>?^_~0-9+.@ \t\[\]()";]\+[^ \t\[\]()";]*,
+syn match	schemeOther	,[a-z!$%&*/:<=>?^_~+@#%-][-a-z!$%&*/:<=>?^_~0-9+.@#%]*,
+syn match	schemeError	,[a-z!$%&*/:<=>?^_~+@#%-][-a-z!$%&*/:<=>?^_~0-9+.@#%]*[^-a-z!$%&*/:<=>?^_~0-9+.@ \t\[\]()";]\+[^ \t\[\]()";]*,
 
-syn match	schemeOther	oneline    "\.\.\."
-syn match	schemeError	oneline    !\.\.\.[^ \t\[\]()";]\+!
+syn match	schemeOther	"\.\.\."
+syn match	schemeError	!\.\.\.[^ \t\[\]()";]\+!
 " ... a special identifier
 
-syn match	schemeConstant	oneline    ,\*[-a-z!$%&*/:<=>?^_~0-9+.@]*\*[ \t\[\]()";],me=e-1
-syn match	schemeConstant	oneline    ,\*[-a-z!$%&*/:<=>?^_~0-9+.@]*\*$,
-syn match	schemeError	oneline    ,\*[-a-z!$%&*/:<=>?^_~0-9+.@]*\*[^-a-z!$%&*/:<=>?^_~0-9+.@ \t\[\]()";]\+[^ \t\[\]()";]*,
+syn match	schemeConstant	,\*[-a-z!$%&*/:<=>?^_~0-9+.@]\+\*[ \t\[\]()";],me=e-1
+syn match	schemeConstant	,\*[-a-z!$%&*/:<=>?^_~0-9+.@]\+\*$,
+syn match	schemeError	,\*[-a-z!$%&*/:<=>?^_~0-9+.@]*\*[^-a-z!$%&*/:<=>?^_~0-9+.@ \t\[\]()";]\+[^ \t\[\]()";]*,
 
-syn match	schemeConstant	oneline    ,<[-a-z!$%&*/:<=>?^_~0-9+.@]*>[ \t\[\]()";],me=e-1
-syn match	schemeConstant	oneline    ,<[-a-z!$%&*/:<=>?^_~0-9+.@]*>$,
-syn match	schemeError	oneline    ,<[-a-z!$%&*/:<=>?^_~0-9+.@]*>[^-a-z!$%&*/:<=>?^_~0-9+.@ \t\[\]()";]\+[^ \t\[\]()";]*,
+syn match	schemeConstant	,<[-a-z!$%&*/:<=>?^_~0-9+.@]*>[ \t\[\]()";],me=e-1
+syn match	schemeConstant	,<[-a-z!$%&*/:<=>?^_~0-9+.@]*>$,
+syn match	schemeError	,<[-a-z!$%&*/:<=>?^_~0-9+.@]*>[^-a-z!$%&*/:<=>?^_~0-9+.@ \t\[\]()";]\+[^ \t\[\]()";]*,
 
 " Non-quoted lists, and strings:
 
@@ -162,23 +164,27 @@ syn match	schemeComment	";.*$"
 " Writing out the complete description of Scheme numerals without
 " using variables is a day's work for a trained secretary...
 
-syn match	schemeOther	oneline    ![+-][ \t\[\]()";]!me=e-1
-syn match	schemeOther	oneline    ![+-]$!
+syn match	schemeOther	![+-][ \t\[\]()";]!me=e-1
+syn match	schemeOther	![+-]$!
 "
 " This is a useful lax approximation:
-syn match	schemeNumber	oneline    "[-#+0-9.][-#+/0-9a-f@i.boxesfdl]*"
-syn match	schemeError	oneline    ![-#+0-9.][-#+/0-9a-f@i.boxesfdl]*[^-#+/0-9a-f@i.boxesfdl \t\[\]()";][^ \t\[\]()";]*!
+syn match	schemeNumber	"[-#+.]\=[0-9][-#+/0-9a-f@i.boxesfdl]*"
+syn match	schemeError	![-#+0-9.][-#+/0-9a-f@i.boxesfdl]*[^-#+/0-9a-f@i.boxesfdl \t\[\]()";][^ \t\[\]()";]*!
 
-syn match	schemeBoolean	oneline    "#[tf]"
-syn match	schemeError	oneline    !#[tf][^ \t\[\]()";]\+!
+syn match	schemeBoolean	"#[tf]"
+syn match	schemeError	!#[tf][^ \t\[\]()";]\+!
 
-syn match	schemeChar	oneline    "#\\"
-syn match	schemeChar	oneline    "#\\."
-syn match       schemeError	oneline    !#\\.[^ \t\[\]()";]\+!
-syn match	schemeChar	oneline    "#\\space"
-syn match	schemeError	oneline    !#\\space[^ \t\[\]()";]\+!
-syn match	schemeChar	oneline    "#\\newline"
-syn match	schemeError	oneline    !#\\newline[^ \t\[\]()";]\+!
+syn match	schemeChar	"#\\"
+syn match	schemeChar	"#\\."
+syn match       schemeError	!#\\.[^ \t\[\]()";]\+!
+syn match	schemeChar	"#\\space"
+syn match	schemeError	!#\\space[^ \t\[\]()";]\+!
+syn match	schemeChar	"#\\newline"
+syn match	schemeError	!#\\newline[^ \t\[\]()";]\+!
+
+" R6RS
+syn match schemeChar "#\\x[0-9a-fA-F]\+"
+
 
 if exists("b:is_mzscheme") || exists("is_mzscheme")
     " MzScheme extensions
@@ -186,11 +192,11 @@ if exists("b:is_mzscheme") || exists("is_mzscheme")
     syn region	schemeComment start="#|" end="|#"
 
     " #%xxx are the special MzScheme identifiers
-    syn match schemeOther oneline    "#%[-a-z!$%&*/:<=>?^_~0-9+.@#%]\+"
+    syn match schemeOther "#%[-a-z!$%&*/:<=>?^_~0-9+.@#%]\+"
     " anything limited by |'s is identifier
-    syn match schemeOther oneline    "|[^|]\+|"
+    syn match schemeOther "|[^|]\+|"
 
-    syn match	schemeChar	oneline    "#\\\%(return\|tab\)"
+    syn match	schemeChar	"#\\\%(return\|tab\)"
 
     " Modules require stmt
     syn keyword schemeExtSyntax module require dynamic-require lib prefix all-except prefix-all-except rename
@@ -243,8 +249,8 @@ if exists("b:is_chicken") || exists("is_chicken")
     " multiline comment
     syntax region schemeMultilineComment start=/#|/ end=/|#/ contains=schemeMultilineComment
 
-    syn match schemeOther oneline    "##[-a-z!$%&*/:<=>?^_~0-9+.@#%]\+"
-    syn match schemeExtSyntax oneline    "#:[-a-z!$%&*/:<=>?^_~0-9+.@#%]\+"
+    syn match schemeOther "##[-a-z!$%&*/:<=>?^_~0-9+.@#%]\+"
+    syn match schemeExtSyntax "#:[-a-z!$%&*/:<=>?^_~0-9+.@#%]\+"
 
     syn keyword schemeExtSyntax unit uses declare hide foreign-declare foreign-parse foreign-parse/spec
     syn keyword schemeExtSyntax foreign-lambda foreign-lambda* define-external define-macro load-library
@@ -275,7 +281,7 @@ if exists("b:is_chicken") || exists("is_chicken")
     endif
 
     " suggested by Alex Queiroz
-    syn match schemeExtSyntax oneline    "#![-a-z!$%&*/:<=>?^_~0-9+.@#%]\+"
+    syn match schemeExtSyntax "#![-a-z!$%&*/:<=>?^_~0-9+.@#%]\+"
     syn region schemeString start=+#<#\s*\z(.*\)+ end=+^\z1$+ 
 endif
 

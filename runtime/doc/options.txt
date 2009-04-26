@@ -1,4 +1,4 @@
-*options.txt*	For Vim version 7.2.  Last change: 2009 Mar 17
+*options.txt*	For Vim version 7.2.  Last change: 2009 Apr 12
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -4651,15 +4651,15 @@ A jump table for the options with a short description can be found at |Q_op|.
 			{not in Vi}
 	Maximum amount of memory (in Kbyte) to use for one buffer.  When this
 	limit is reached allocating extra memory for a buffer will cause
-	other memory to be freed.  Maximum value 2000000.  Use this to work
-	without a limit.  Also see 'maxmemtot'.
+	other memory to be freed.  Maximum usable value about 2000000.  Use
+	this to work without a limit.  Also see 'maxmemtot'.
 
 						*'maxmempattern'* *'mmp'*
 'maxmempattern' 'mmp'	number	(default 1000)
 			global
 			{not in Vi}
 	Maximum amount of memory (in Kbyte) to use for pattern matching.
-	Maximum value 2000000.  Use this to work without a limit.
+	Maximum value about 2000000.  Use this to work without a limit.
 							*E363*
 	When Vim runs into the limit it gives an error message and mostly
 	behaves like CTRL-C was typed.
@@ -4675,8 +4675,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global
 			{not in Vi}
 	Maximum amount of memory (in Kbyte) to use for all buffers together.
-	Maximum value 2000000.  Use this to work without a limit.  Also see
-	'maxmem'.
+	Maximum usable value 2000000.  Use this to work without a limit.  Also
+	see 'maxmem'.
 
 						*'menuitems'* *'mis'*
 'menuitems' 'mis'	number	(default 25)
