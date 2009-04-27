@@ -66,8 +66,9 @@ gui_mch_prepare(int *argc, char **argv)
 
     NSString *lang = [[[NSBundle mainBundle]
         preferredLocalizations] objectAtIndex:0];
-    if ([lang isEqualToString:@"Japanese"])
-        vim_setenv((char_u*)"LANG", (char_u*)"ja_JP.UTF-8");
+    const char *langenv =
+        [lang isEqualToString:@"Japanese"] ? "ja_JP.UTF-8" : "C";
+    vim_setenv((char_u*)"LANG", (char_u*)langenv);
 
     int i;
     for (i = 0; i < *argc; ++i) {
