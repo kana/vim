@@ -6846,10 +6846,11 @@ buf_reload(buf, orig_mode)
 #endif
 #ifdef FEAT_FOLDING
 	{
-	    win_T *wp;
+	    win_T	*wp;
+	    tabpage_T	*tp;
 
 	    /* Update folds unless they are defined manually. */
-	    FOR_ALL_WINDOWS(wp)
+	    FOR_ALL_TAB_WINDOWS(tp, wp)
 		if (wp->w_buffer == curwin->w_buffer
 			&& !foldmethodIsManual(wp))
 		    foldUpdateAll(wp);
@@ -8784,9 +8785,11 @@ apply_autocmds_group(event, fname, fname_io, force, group, buf, eap)
     else
     {
 	sfname = vim_strsave(fname);
-	/* Don't try expanding FileType, Syntax, WindowID or QuickFixCmd* */
+	/* Don't try expanding FileType, Syntax, FuncUndefined, WindowID or
+	 * QuickFixCmd* */
 	if (event == EVENT_FILETYPE
 		|| event == EVENT_SYNTAX
+		|| event == EVENT_FUNCUNDEFINED
 		|| event == EVENT_REMOTEREPLY
 		|| event == EVENT_SPELLFILEMISSING
 		|| event == EVENT_QUICKFIXCMDPRE

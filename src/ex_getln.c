@@ -325,7 +325,7 @@ getcmdline(firstc, count, indent)
 #endif
 
 #ifdef FEAT_DIGRAPHS
-    do_digraph(-1);		/* init digraph typahead */
+    do_digraph(-1);		/* init digraph typeahead */
 #endif
 
     /*
@@ -4521,6 +4521,9 @@ ExpandFromContext(xp, pat, num_file, file, options)
 #ifdef FEAT_CSCOPE
 	    {EXPAND_CSCOPE, get_cscope_name, TRUE},
 #endif
+#ifdef FEAT_SIGNS
+	    {EXPAND_SIGN, get_sign_name, TRUE},
+#endif
 #if (defined(HAVE_LOCALE_H) || defined(X_LOCALE)) \
 	&& (defined(FEAT_GETTEXT) || defined(FEAT_MBYTE))
 	    {EXPAND_LANGUAGE, get_lang_arg, TRUE},
@@ -6073,6 +6076,9 @@ ex_window()
     set_option_value((char_u *)"bt", 0L, (char_u *)"nofile", OPT_LOCAL);
     set_option_value((char_u *)"swf", 0L, NULL, OPT_LOCAL);
     curbuf->b_p_ma = TRUE;
+#ifdef FEAT_FOLDING
+    curwin->w_p_fen = FALSE;
+#endif
 # ifdef FEAT_RIGHTLEFT
     curwin->w_p_rl = cmdmsg_rl;
     cmdmsg_rl = FALSE;
