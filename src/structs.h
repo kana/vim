@@ -16,7 +16,7 @@
  */
 #if defined(SASC) && SASC < 658
 typedef long		linenr_T;
-typedef unsigned	colnr_T;
+typedef int		colnr_T;
 typedef unsigned short	short_u;
 #endif
 
@@ -33,9 +33,9 @@ typedef struct
 } pos_T;
 
 #ifdef FEAT_VIRTUALEDIT
-# define INIT_POS_T {0, 0, 0}
+# define INIT_POS_T(l, c, ca) {l, c, ca}
 #else
-# define INIT_POS_T {0, 0}
+# define INIT_POS_T(l, c, ca) {l, c}
 #endif
 
 /*
@@ -1166,7 +1166,8 @@ struct file_buffer
     char_u	*b_fname;	/* current file name */
 
 #ifdef UNIX
-    int		b_dev;		/* device number (-1 if not set) */
+    int		b_dev_valid;	/* TRUE when b_dev has a valid number */
+    dev_t	b_dev;		/* device number */
     ino_t	b_ino;		/* inode number */
 #endif
 #ifdef FEAT_CW_EDITOR
@@ -1645,7 +1646,11 @@ struct tabpage_S
 #endif
 #ifdef FEAT_DIFF
     diff_T	    *tp_first_diff;
+# ifdef S_SPLINT_S  /* splint doesn't understand the array of pointers */
+    buf_T	    **tp_diffbuf;
+# else
     buf_T	    *(tp_diffbuf[DB_COUNT]);
+# endif
     int		    tp_diff_invalid;	/* list of diffs is outdated */
 #endif
     frame_T	    *tp_snapshot;    /* window layout snapshot */
