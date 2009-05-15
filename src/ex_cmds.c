@@ -43,10 +43,9 @@ static int
 /*
  * ":ascii" and "ga".
  */
-/*ARGSUSED*/
     void
 do_ascii(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
     int		c;
     int		cval;
@@ -2373,10 +2372,9 @@ viminfo_writestring(fd, p)
  *   ^?		^H
  * not ^?	^?
  */
-/*ARGSUSED*/
     void
 do_fixdel(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
     char_u  *p;
 
@@ -4637,7 +4635,7 @@ do_sub(eap)
 
 		if (do_ask)
 		{
-		    int typed;
+		    int typed = 0;
 
 		    /* change State to CONFIRM, so that the mouse works
 		     * properly */
@@ -6127,10 +6125,9 @@ fix_help_buffer()
 /*
  * ":exusage"
  */
-/*ARGSUSED*/
     void
 ex_exusage(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
     do_cmdline_cmd((char_u *)"help ex-cmd-index");
 }
@@ -6138,10 +6135,9 @@ ex_exusage(eap)
 /*
  * ":viusage"
  */
-/*ARGSUSED*/
     void
 ex_viusage(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
     do_cmdline_cmd((char_u *)"help normal-index");
 }
@@ -6553,6 +6549,7 @@ struct sign
 static sign_T	*first_sign = NULL;
 static int	last_sign_typenr = MAX_TYPENR;	/* is decremented */
 
+static int sign_cmd_idx __ARGS((char_u *begin_cmd, char_u *end_cmd));
 static void sign_list_defined __ARGS((sign_T *sp));
 static void sign_undefine __ARGS((sign_T *sp, sign_T *sp_prev));
 
@@ -6579,8 +6576,8 @@ static char *cmds[] = {
  */
     static int
 sign_cmd_idx(begin_cmd, end_cmd)
-    char	*begin_cmd;	/* begin of sign subcmd */
-    char	*end_cmd;	/* just after sign subcmd */
+    char_u	*begin_cmd;	/* begin of sign subcmd */
+    char_u	*end_cmd;	/* just after sign subcmd */
 {
     int		idx;
     char	save = *end_cmd;
@@ -7153,10 +7150,9 @@ static enum
  * Function given to ExpandGeneric() to obtain the sign command
  * expansion.
  */
-/*ARGSUSED*/
     char_u *
 get_sign_name(xp, idx)
-    expand_T	*xp;
+    expand_T	*xp UNUSED;
     int		idx;
 {
     sign_T	*sp;
