@@ -2255,12 +2255,11 @@ viminfo_readline(virp)
  *
  * Return the string in allocated memory (NULL when out of memory).
  */
-/*ARGSUSED*/
     char_u *
 viminfo_readstring(virp, off, convert)
     vir_T	*virp;
     int		off;		    /* offset for virp->vir_line */
-    int		convert;	    /* convert the string */
+    int		convert UNUSED;	    /* convert the string */
 {
     char_u	*retval;
     char_u	*s, *d;
@@ -2736,7 +2735,6 @@ theend:
  * May set eap->forceit if a dialog says it's OK to overwrite.
  * Return OK if it's OK, FAIL if it is not.
  */
-/*ARGSUSED*/
     static int
 check_overwrite(eap, buf, fname, ffname, other)
     exarg_T	*eap;
@@ -5776,10 +5774,6 @@ find_help_tags(arg, num_matches, matches, keep_lang)
 {
     char_u	*s, *d;
     int		i;
-#ifdef S_SPLINT_S  /* splint doesn't understand array of pointers */
-    static char **mtable;
-    static char **rtable;
-#else
     static char *(mtable[]) = {"*", "g*", "[*", "]*", ":*",
 			       "/*", "/\\*", "\"*", "**",
 			       "/\\(\\)",
@@ -5794,7 +5788,6 @@ find_help_tags(arg, num_matches, matches, keep_lang)
 			       "/\\\\?", "/\\\\z(\\\\)", "\\\\=", ":s\\\\=",
 			       "\\[count]", "\\[quotex]", "\\[range]",
 			       "\\[pattern]", "\\\\bar", "/\\\\%\\$"};
-#endif
     int flags;
 
     d = IObuff;		    /* assume IObuff is long enough! */
