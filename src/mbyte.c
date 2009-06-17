@@ -127,7 +127,10 @@ static int enc_canon_search __ARGS((char_u *name));
 static int dbcs_char2len __ARGS((int c));
 static int dbcs_char2bytes __ARGS((int c, char_u *buf));
 static int dbcs_ptr2len __ARGS((char_u *p));
+static int dbcs_ptr2len_len __ARGS((char_u *p, int size));
+static int utf_ptr2cells_len __ARGS((char_u *p, int size));
 static int dbcs_char2cells __ARGS((int c));
+static int dbcs_ptr2cells_len __ARGS((char_u *p, int size));
 static int dbcs_ptr2char __ARGS((char_u *p));
 
 /* Lookup table to quickly get the length in bytes of a UTF-8 character from
@@ -606,9 +609,11 @@ codepage_invalid:
     if (enc_utf8)
     {
 	mb_ptr2len = utfc_ptr2len;
+	mb_ptr2len_len = utfc_ptr2len_len;
 	mb_char2len = utf_char2len;
 	mb_char2bytes = utf_char2bytes;
 	mb_ptr2cells = utf_ptr2cells;
+	mb_ptr2cells_len = utf_ptr2cells_len;
 	mb_char2cells = utf_char2cells;
 	mb_off2cells = utf_off2cells;
 	mb_ptr2char = utf_ptr2char;
@@ -617,9 +622,11 @@ codepage_invalid:
     else if (enc_dbcs != 0)
     {
 	mb_ptr2len = dbcs_ptr2len;
+	mb_ptr2len_len = dbcs_ptr2len_len;
 	mb_char2len = dbcs_char2len;
 	mb_char2bytes = dbcs_char2bytes;
 	mb_ptr2cells = dbcs_ptr2cells;
+	mb_ptr2cells_len = dbcs_ptr2cells_len;
 	mb_char2cells = dbcs_char2cells;
 	mb_off2cells = dbcs_off2cells;
 	mb_ptr2char = dbcs_ptr2char;
@@ -628,9 +635,11 @@ codepage_invalid:
     else
     {
 	mb_ptr2len = latin_ptr2len;
+	mb_ptr2len_len = latin_ptr2len_len;
 	mb_char2len = latin_char2len;
 	mb_char2bytes = latin_char2bytes;
 	mb_ptr2cells = latin_ptr2cells;
+	mb_ptr2cells_len = latin_ptr2cells_len;
 	mb_char2cells = latin_char2cells;
 	mb_off2cells = latin_off2cells;
 	mb_ptr2char = latin_ptr2char;
@@ -1069,7 +1078,6 @@ dbcs_char2bytes(c, buf)
  * Get byte length of character at "*p" but stop at a NUL.
  * For UTF-8 this includes following composing characters.
  * Returns 0 when *p is NUL.
- *
  */
     int
 latin_ptr2len(p)
@@ -1085,6 +1093,40 @@ dbcs_ptr2len(p)
     int		len;
 
     /* Check if second byte is not missing. */
+    len = MB_BYTE2LEN(*p);
+    if (len == 2 && p[1] == NUL)
+	len = 1;
+    return len;
+}
+
+/*
+ * mb_ptr2len_len() function pointer.
+ * Like mb_ptr2len(), but limit to read "size" bytes.
+ * Returns 0 for an empty string.
+ * Returns 1 for an illegal char or an incomplete byte sequence.
+ */
+    int
+latin_ptr2len_len(p, size)
+    char_u	*p;
+    int		size;
+{
+    if (size < 1 || *p == NUL)
+	return 0;
+    return 1;
+}
+
+    static int
+dbcs_ptr2len_len(p, size)
+    char_u	*p;
+    int		size;
+{
+    int		len;
+
+    if (size < 1 || *p == NUL)
+	return 0;
+    if (size == 1)
+	return 1;
+    /* Check that second byte is not missing. */
     len = MB_BYTE2LEN(*p);
     if (len == 2 && p[1] == NUL)
 	len = 1;
@@ -1282,6 +1324,55 @@ dbcs_ptr2cells(p)
     /* Number of cells is equal to number of bytes, except for euc-jp when
      * the first byte is 0x8e. */
     if (enc_dbcs == DBCS_JPNU && *p == 0x8e)
+	return 1;
+    return MB_BYTE2LEN(*p);
+}
+
+/*
+ * mb_ptr2cells_len() function pointer.
+ * Like mb_ptr2cells(), but limit string length to "size".
+ * For an empty string or truncated character returns 1.
+ */
+    int
+latin_ptr2cells_len(p, size)
+    char_u	*p UNUSED;
+    int		size UNUSED;
+{
+    return 1;
+}
+
+    static int
+utf_ptr2cells_len(p, size)
+    char_u	*p;
+    int		size;
+{
+    int		c;
+
+    /* Need to convert to a wide character. */
+    if (size > 0 && *p >= 0x80)
+    {
+	if (utf_ptr2len_len(p, size) < utf8len_tab[*p])
+	    return 1;
+	c = utf_ptr2char(p);
+	/* An illegal byte is displayed as <xx>. */
+	if (utf_ptr2len(p) == 1 || c == NUL)
+	    return 4;
+	/* If the char is ASCII it must be an overlong sequence. */
+	if (c < 0x80)
+	    return char2cells(c);
+	return utf_char2cells(c);
+    }
+    return 1;
+}
+
+    static int
+dbcs_ptr2cells_len(p, size)
+    char_u	*p;
+    int		size;
+{
+    /* Number of cells is equal to number of bytes, except for euc-jp when
+     * the first byte is 0x8e. */
+    if (size <= 1 || (enc_dbcs == DBCS_JPNU && *p == 0x8e))
 	return 1;
     return MB_BYTE2LEN(*p);
 }
@@ -1716,6 +1807,7 @@ utfc_ptr2len(p)
 /*
  * Return the number of bytes the UTF-8 encoding of the character at "p[size]"
  * takes.  This includes following composing characters.
+ * Returns 0 for an empty string.
  * Returns 1 for an illegal char or an incomplete byte sequence.
  */
     int
@@ -1728,7 +1820,7 @@ utfc_ptr2len_len(p, size)
     int		prevlen;
 #endif
 
-    if (*p == NUL)
+    if (size < 1 || *p == NUL)
 	return 0;
     if (p[0] < 0x80 && (size == 1 || p[1] < 0x80)) /* be quick for ASCII */
 	return 1;
@@ -3173,7 +3265,7 @@ encname2codepage(name)
 
 # if defined(USE_ICONV) || defined(PROTO)
 
-static char_u *iconv_string __ARGS((vimconv_T *vcp, char_u *str, int slen, int *unconvlenp));
+static char_u *iconv_string __ARGS((vimconv_T *vcp, char_u *str, int slen, int *unconvlenp, int *resultlenp));
 
 /*
  * Call iconv_open() with a check if iconv() works properly (there are broken
@@ -3234,13 +3326,15 @@ my_iconv_open(to, from)
  * If "unconvlenp" is not NULL handle the string ending in an incomplete
  * sequence and set "*unconvlenp" to the length of it.
  * Returns the converted string in allocated memory.  NULL for an error.
+ * If resultlenp is not NULL, sets it to the result length in bytes.
  */
     static char_u *
-iconv_string(vcp, str, slen, unconvlenp)
+iconv_string(vcp, str, slen, unconvlenp, resultlenp)
     vimconv_T	*vcp;
     char_u	*str;
     int		slen;
     int		*unconvlenp;
+    int		*resultlenp;
 {
     const char	*from;
     size_t	fromlen;
@@ -3326,6 +3420,9 @@ iconv_string(vcp, str, slen, unconvlenp)
 	/* Not enough room or skipping illegal sequence. */
 	done = to - (char *)result;
     }
+
+    if (resultlenp != NULL)
+	*resultlenp = (int)(to - (char *)result);
     return result;
 }
 
@@ -5745,8 +5842,25 @@ convert_setup(vcp, from, to)
     char_u	*from;
     char_u	*to;
 {
+    return convert_setup_ext(vcp, from, TRUE, to, TRUE);
+}
+
+/*
+ * As convert_setup(), but only when from_unicode_is_utf8 is TRUE will all
+ * "from" unicode charsets be considered utf-8.  Same for "to".
+ */
+    int
+convert_setup_ext(vcp, from, from_unicode_is_utf8, to, to_unicode_is_utf8)
+    vimconv_T	*vcp;
+    char_u	*from;
+    int		from_unicode_is_utf8;
+    char_u	*to;
+    int		to_unicode_is_utf8;
+{
     int		from_prop;
     int		to_prop;
+    int		from_is_utf8;
+    int		to_is_utf8;
 
     /* Reset to no conversion. */
 # ifdef USE_ICONV
@@ -5764,37 +5878,46 @@ convert_setup(vcp, from, to)
 
     from_prop = enc_canon_props(from);
     to_prop = enc_canon_props(to);
-    if ((from_prop & ENC_LATIN1) && (to_prop & ENC_UNICODE))
+    if (from_unicode_is_utf8)
+	from_is_utf8 = from_prop & ENC_UNICODE;
+    else
+	from_is_utf8 = from_prop == ENC_UNICODE;
+    if (to_unicode_is_utf8)
+	to_is_utf8 = to_prop & ENC_UNICODE;
+    else
+	to_is_utf8 = to_prop == ENC_UNICODE;
+
+    if ((from_prop & ENC_LATIN1) && to_is_utf8)
     {
 	/* Internal latin1 -> utf-8 conversion. */
 	vcp->vc_type = CONV_TO_UTF8;
 	vcp->vc_factor = 2;	/* up to twice as long */
     }
-    else if ((from_prop & ENC_LATIN9) && (to_prop & ENC_UNICODE))
+    else if ((from_prop & ENC_LATIN9) && to_is_utf8)
     {
 	/* Internal latin9 -> utf-8 conversion. */
 	vcp->vc_type = CONV_9_TO_UTF8;
 	vcp->vc_factor = 3;	/* up to three as long (euro sign) */
     }
-    else if ((from_prop & ENC_UNICODE) && (to_prop & ENC_LATIN1))
+    else if (from_is_utf8 && (to_prop & ENC_LATIN1))
     {
 	/* Internal utf-8 -> latin1 conversion. */
 	vcp->vc_type = CONV_TO_LATIN1;
     }
-    else if ((from_prop & ENC_UNICODE) && (to_prop & ENC_LATIN9))
+    else if (from_is_utf8 && (to_prop & ENC_LATIN9))
     {
 	/* Internal utf-8 -> latin9 conversion. */
 	vcp->vc_type = CONV_TO_LATIN9;
     }
 #ifdef WIN3264
     /* Win32-specific codepage <-> codepage conversion without iconv. */
-    else if (((from_prop & ENC_UNICODE) || encname2codepage(from) > 0)
-	    && ((to_prop & ENC_UNICODE) || encname2codepage(to) > 0))
+    else if ((from_is_utf8 || encname2codepage(from) > 0)
+	    && (to_is_utf8 || encname2codepage(to) > 0))
     {
 	vcp->vc_type = CONV_CODEPAGE;
 	vcp->vc_factor = 2;	/* up to twice as long */
-	vcp->vc_cpfrom = (from_prop & ENC_UNICODE) ? 0 : encname2codepage(from);
-	vcp->vc_cpto = (to_prop & ENC_UNICODE) ? 0 : encname2codepage(to);
+	vcp->vc_cpfrom = from_is_utf8 ? 0 : encname2codepage(from);
+	vcp->vc_cpto = to_is_utf8 ? 0 : encname2codepage(to);
     }
 #endif
 #ifdef MACOS_X
@@ -5802,7 +5925,7 @@ convert_setup(vcp, from, to)
     {
 	vcp->vc_type = CONV_MAC_LATIN1;
     }
-    else if ((from_prop & ENC_MACROMAN) && (to_prop & ENC_UNICODE))
+    else if ((from_prop & ENC_MACROMAN) && to_is_utf8)
     {
 	vcp->vc_type = CONV_MAC_UTF8;
 	vcp->vc_factor = 2;	/* up to twice as long */
@@ -5811,7 +5934,7 @@ convert_setup(vcp, from, to)
     {
 	vcp->vc_type = CONV_LATIN1_MAC;
     }
-    else if ((from_prop & ENC_UNICODE) && (to_prop & ENC_MACROMAN))
+    else if (from_is_utf8 && (to_prop & ENC_MACROMAN))
     {
 	vcp->vc_type = CONV_UTF8_MAC;
     }
@@ -5821,8 +5944,8 @@ convert_setup(vcp, from, to)
     {
 	/* Use iconv() for conversion. */
 	vcp->vc_fd = (iconv_t)my_iconv_open(
-		(to_prop & ENC_UNICODE) ? (char_u *)"utf-8" : to,
-		(from_prop & ENC_UNICODE) ? (char_u *)"utf-8" : from);
+		to_is_utf8 ? (char_u *)"utf-8" : to,
+		from_is_utf8 ? (char_u *)"utf-8" : from);
 	if (vcp->vc_fd != (iconv_t)-1)
 	{
 	    vcp->vc_type = CONV_ICONV;
@@ -6078,9 +6201,7 @@ string_convert_ext(vcp, ptr, lenp, unconvlenp)
 
 # ifdef USE_ICONV
 	case CONV_ICONV:	/* conversion with output_conv.vc_fd */
-	    retval = iconv_string(vcp, ptr, len, unconvlenp);
-	    if (retval != NULL && lenp != NULL)
-		*lenp = (int)STRLEN(retval);
+	    retval = iconv_string(vcp, ptr, len, unconvlenp, lenp);
 	    break;
 # endif
 # ifdef WIN3264
