@@ -4006,7 +4006,7 @@ do_set(arg, opt_flags)
 	else
 	{
 	    prefix = 1;
-	    if (STRNCMP(arg, "no", 2) == 0)
+	    if (STRNCMP(arg, "no", 2) == 0 && STRNCMP(arg, "novice", 6) != 0)
 	    {
 		prefix = 0;
 		arg += 2;
@@ -7024,6 +7024,7 @@ check_clipboard_option()
     int		new_unnamed = FALSE;
     int		new_autoselect = FALSE;
     int		new_autoselectml = FALSE;
+    int		new_html = FALSE;
     regprog_T	*new_exclude_prog = NULL;
     char_u	*errmsg = NULL;
     char_u	*p;
@@ -7047,6 +7048,11 @@ check_clipboard_option()
 	    new_autoselectml = TRUE;
 	    p += 12;
 	}
+	else if (STRNCMP(p, "html", 4) == 0 && (p[4] == ',' || p[4] == NUL))
+	{
+	    new_html = TRUE;
+	    p += 4;
+	}
 	else if (STRNCMP(p, "exclude:", 8) == 0 && new_exclude_prog == NULL)
 	{
 	    p += 8;
@@ -7068,6 +7074,7 @@ check_clipboard_option()
 	clip_unnamed = new_unnamed;
 	clip_autoselect = new_autoselect;
 	clip_autoselectml = new_autoselectml;
+	clip_html = new_html;
 	vim_free(clip_exclude_prog);
 	clip_exclude_prog = new_exclude_prog;
     }
@@ -9750,7 +9757,7 @@ set_context_in_set_cmd(xp, arg, opt_flags)
 	}
 	--p;
     }
-    if (STRNCMP(p, "no", 2) == 0)
+    if (STRNCMP(p, "no", 2) == 0 && STRNCMP(p, "novice", 6) != 0)
     {
 	xp->xp_context = EXPAND_BOOL_SETTINGS;
 	p += 2;
