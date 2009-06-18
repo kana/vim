@@ -1,4 +1,4 @@
-*editing.txt*   For Vim version 7.2.  Last change: 2008 Aug 22
+*editing.txt*   For Vim version 7.2.  Last change: 2009 Jun 10
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -270,7 +270,7 @@ If you want to keep the changed buffer without saving it, switch on the
 			Normal mode.  Otherwise same as |:edit|.
 
 							*:vie* *:view*
-:vie[w] [++opt] [+cmd] file
+:vie[w][!] [++opt] [+cmd] file
 			When used in Ex mode: Leave |Ex mode|, go back to
 			Normal mode.  Otherwise same as |:edit|, but set
 			'readonly' option for this buffer.  {not in Vi}
@@ -1458,6 +1458,17 @@ If you don't get warned often enough you can use the following command.
 			Check the timestamp of a specific buffer.  The buffer
 			may be specified by name, number or with a pattern.
 
+
+							*E813* *E814*
+Vim will reload the buffer if you chose to.  If a window is visible that
+contains this buffer, the reloading will happen in the context of this window.
+Otherwise a special window is used, so that most autocommands will work.  You
+can't close this window.  A few other restrictions apply.  Best is to make
+sure nothing happens outside of the current buffer.  E.g., setting
+window-local options may end up in the wrong window.  Splitting the window,
+doing something there and closing it should be OK (if there are no side
+effects from other autocommands).  Closing unrelated windows and buffers will
+get you into trouble.
 
 Before writing a file the timestamp is checked.  If it has changed, Vim will
 ask if you really want to overwrite the file:

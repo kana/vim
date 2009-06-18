@@ -1,4 +1,4 @@
-*syntax.txt*	For Vim version 7.2.  Last change: 2009 Feb 18
+*syntax.txt*	For Vim version 7.2.  Last change: 2009 May 22
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -201,8 +201,12 @@ that you write the syntax file in a directory that is early in 'runtimepath'.
 Vim will only load the first syntax file found.
 
 
-NAMING CONVENTIONS
-				    *group-name* *{group-name}* *E669* *W18*
+NAMING CONVENTIONS		    *group-name* *{group-name}* *E669* *W18*
+
+A syntax group name is to be used for syntax items that match the same kind of
+thing.  These are then linked to a highlight group that specifies the color.
+A syntax group name doesn't specify any color or attributes itself.
+
 The name for a highlight or syntax group must consist of ASCII letters, digits
 and the underscore.  As a regexp: "[a-zA-Z0-9_]*"
 

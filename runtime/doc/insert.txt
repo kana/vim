@@ -1,4 +1,4 @@
-*insert.txt*    For Vim version 7.2.  Last change: 2008 Sep 07
+*insert.txt*    For Vim version 7.2.  Last change: 2009 May 06
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -663,7 +663,8 @@ CTRL-X CTRL-L		Search backwards for a line that starts with the
 
 	CTRL-X CTRL-L	After expanding a line you can additionally get the
 			line next to it by typing CTRL-X CTRL-L again, unless
-			a double CTRL-X is used.
+			a double CTRL-X is used.  Only works for loaded
+			buffers.
 
 Completing keywords in current file			*compl-current*
 
