@@ -1578,11 +1578,10 @@ free_cmdlines(gap)
  * If "fgetline" is get_loop_line(), return TRUE if the getline it uses equals
  * "func".  * Otherwise return TRUE when "fgetline" equals "func".
  */
-/*ARGSUSED*/
     int
 getline_equal(fgetline, cookie, func)
     char_u	*(*fgetline) __ARGS((int, void *, int));
-    void	*cookie;		/* argument for fgetline() */
+    void	*cookie UNUSED;		/* argument for fgetline() */
     char_u	*(*func) __ARGS((int, void *, int));
 {
 #ifdef FEAT_EVAL
@@ -1610,10 +1609,9 @@ getline_equal(fgetline, cookie, func)
  * If "fgetline" is get_loop_line(), return the cookie used by the original
  * getline function.  Otherwise return "cookie".
  */
-/*ARGSUSED*/
     void *
 getline_cookie(fgetline, cookie)
-    char_u	*(*fgetline) __ARGS((int, void *, int));
+    char_u	*(*fgetline) __ARGS((int, void *, int)) UNUSED;
     void	*cookie;		/* argument for fgetline() */
 {
 # ifdef FEAT_EVAL
@@ -2737,7 +2735,7 @@ checkforcmd(pp, cmd, len)
     int		i;
 
     for (i = 0; cmd[i] != NUL; ++i)
-	if (cmd[i] != (*pp)[i])
+	if (((char_u *)cmd)[i] != (*pp)[i])
 	    break;
     if (i >= len && !isalpha((*pp)[i]))
     {
@@ -2754,11 +2752,10 @@ checkforcmd(pp, cmd, len)
  * "full" is set to TRUE if the whole command name matched.
  * Returns NULL for an ambiguous user command.
  */
-/*ARGSUSED*/
     static char_u *
 find_command(eap, full)
     exarg_T	*eap;
-    int		*full;
+    int		*full UNUSED;
 {
     int		len;
     char_u	*p;
@@ -2803,7 +2800,7 @@ find_command(eap, full)
 	    /* Check for ":dl", ":dell", etc. to ":deletel": that's
 	     * :delete with the 'l' flag.  Same for 'p'. */
 	    for (i = 0; i < len; ++i)
-		if (eap->cmd[i] != "delete"[i])
+		if (eap->cmd[i] != ((char_u *)"delete")[i])
 		    break;
 	    if (i == len - 1)
 	    {
@@ -3007,7 +3004,7 @@ modifier_len(cmd)
 
     if (VIM_ISDIGIT(*cmd))
 	p = skipwhite(skipdigits(cmd));
-    for (i = 0; i < sizeof(cmdmods) / sizeof(struct cmdmod); ++i)
+    for (i = 0; i < (int)(sizeof(cmdmods) / sizeof(struct cmdmod)); ++i)
     {
 	for (j = 0; p[j] != NUL; ++j)
 	    if (p[j] != cmdmods[i].name[j])
@@ -3035,7 +3032,7 @@ cmd_exists(name)
     char_u	*p;
 
     /* Check command modifiers. */
-    for (i = 0; i < sizeof(cmdmods) / sizeof(struct cmdmod); ++i)
+    for (i = 0; i < (int)(sizeof(cmdmods) / sizeof(struct cmdmod)); ++i)
     {
 	for (j = 0; name[j] != NUL; ++j)
 	    if (name[j] != cmdmods[i].name[j])
@@ -3695,6 +3692,11 @@ set_one_cmd_context(xp, buff)
 	    set_context_in_cscope_cmd(xp, arg, ea.cmdidx);
 	    break;
 #endif
+#ifdef FEAT_SIGNS
+	case CMD_sign:
+	    set_context_in_sign_cmd(xp, arg);
+	    break;
+#endif
 #ifdef FEAT_LISTCMDS
 	case CMD_bdelete:
 	case CMD_bwipeout:
@@ -3818,7 +3820,7 @@ skip_range(cmd, ctx)
     char_u	*cmd;
     int		*ctx;	/* pointer to xp_context or NULL */
 {
-    int		delim;
+    unsigned	delim;
 
     while (vim_strchr((char_u *)" \t0123456789.$%'/?-+,;", *cmd) != NULL)
     {
@@ -5048,10 +5050,9 @@ check_more(message, forceit)
 /*
  * Function given to ExpandGeneric() to obtain the list of command names.
  */
-/*ARGSUSED*/
     char_u *
 get_command_name(xp, idx)
-    expand_T	*xp;
+    expand_T	*xp UNUSED;
     int		idx;
 {
     if (idx >= (int)CMD_SIZE)
@@ -5218,6 +5219,9 @@ static struct
     {EXPAND_MENUS, "menu"},
     {EXPAND_SETTINGS, "option"},
     {EXPAND_SHELLCMD, "shellcmd"},
+#if defined(FEAT_SIGNS)
+    {EXPAND_SIGN, "sign"},
+#endif
     {EXPAND_TAGS, "tag"},
     {EXPAND_TAGS_LISTFILES, "tag_listfiles"},
     {EXPAND_USER_VARS, "var"},
@@ -5565,10 +5569,9 @@ ex_command(eap)
  * ":comclear"
  * Clear all user commands, global and for current buffer.
  */
-/*ARGSUSED*/
     void
 ex_comclear(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
     uc_clear(&ucmds);
     uc_clear(&curbuf->b_ucmds);
@@ -6064,10 +6067,9 @@ get_user_command_name(idx)
 /*
  * Function given to ExpandGeneric() to obtain the list of user command names.
  */
-/*ARGSUSED*/
     char_u *
 get_user_commands(xp, idx)
-    expand_T	*xp;
+    expand_T	*xp UNUSED;
     int		idx;
 {
     if (idx < curbuf->b_ucmds.ga_len)
@@ -6082,17 +6084,16 @@ get_user_commands(xp, idx)
  * Function given to ExpandGeneric() to obtain the list of user command
  * attributes.
  */
-/*ARGSUSED*/
     char_u *
 get_user_cmd_flags(xp, idx)
-    expand_T	*xp;
+    expand_T	*xp UNUSED;
     int		idx;
 {
     static char *user_cmd_flags[] =
 	{"bang", "bar", "buffer", "complete", "count",
 	    "nargs", "range", "register"};
 
-    if (idx >= sizeof(user_cmd_flags) / sizeof(user_cmd_flags[0]))
+    if (idx >= (int)(sizeof(user_cmd_flags) / sizeof(user_cmd_flags[0])))
 	return NULL;
     return (char_u *)user_cmd_flags[idx];
 }
@@ -6100,15 +6101,14 @@ get_user_cmd_flags(xp, idx)
 /*
  * Function given to ExpandGeneric() to obtain the list of values for -nargs.
  */
-/*ARGSUSED*/
     char_u *
 get_user_cmd_nargs(xp, idx)
-    expand_T	*xp;
+    expand_T	*xp UNUSED;
     int		idx;
 {
     static char *user_cmd_nargs[] = {"0", "1", "*", "?", "+"};
 
-    if (idx >= sizeof(user_cmd_nargs) / sizeof(user_cmd_nargs[0]))
+    if (idx >= (int)(sizeof(user_cmd_nargs) / sizeof(user_cmd_nargs[0])))
 	return NULL;
     return (char_u *)user_cmd_nargs[idx];
 }
@@ -6116,10 +6116,9 @@ get_user_cmd_nargs(xp, idx)
 /*
  * Function given to ExpandGeneric() to obtain the list of values for -complete.
  */
-/*ARGSUSED*/
     char_u *
 get_user_cmd_complete(xp, idx)
-    expand_T	*xp;
+    expand_T	*xp UNUSED;
     int		idx;
 {
     return (char_u *)command_complete[idx].name;
@@ -6297,10 +6296,9 @@ ex_quit(eap)
 /*
  * ":cquit".
  */
-/*ARGSUSED*/
     static void
 ex_cquit(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
     getout(1);	/* this does not always pass on the exit code to the Manx
 		   compiler. why? */
@@ -6742,10 +6740,9 @@ ex_goto(eap)
 /*
  * ":shell".
  */
-/*ARGSUSED*/
     static void
 ex_shell(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
     do_shell(NULL, 0);
 }
@@ -7049,10 +7046,9 @@ alist_slash_adjust()
 /*
  * ":preserve".
  */
-/*ARGSUSED*/
     static void
 ex_preserve(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
     curbuf->b_flags |= BF_PRESERVED;
     ml_preserve(curbuf, TRUE);
@@ -7284,10 +7280,9 @@ ex_tabmove(eap)
 /*
  * :tabs command: List tabs and their contents.
  */
-/*ARGSUSED*/
     static void
 ex_tabs(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
     tabpage_T	*tp;
     win_T	*wp;
@@ -7474,7 +7469,6 @@ ex_edit(eap)
 /*
  * ":edit <file>" command and alikes.
  */
-/*ARGSUSED*/
     void
 do_exedit(eap, old_curwin)
     exarg_T	*eap;
@@ -7686,10 +7680,9 @@ ex_popup(eap)
 }
 #endif
 
-/*ARGSUSED*/
     static void
 ex_swapname(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
     if (curbuf->b_ml.ml_mfp == NULL || curbuf->b_ml.ml_mfp->mf_fname == NULL)
 	MSG(_("No swap file"));
@@ -7702,10 +7695,9 @@ ex_swapname(eap)
  * offset.
  * (1998-11-02 16:21:01  R. Edward Ralston <eralston@computer.org>)
  */
-/*ARGSUSED*/
     static void
 ex_syncbind(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
 #ifdef FEAT_SCROLLBIND
     win_T	*wp;
@@ -7975,10 +7967,9 @@ ex_cd(eap)
 /*
  * ":pwd".
  */
-/*ARGSUSED*/
     static void
 ex_pwd(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
     if (mch_dirname(NameBuff, MAXPATHL) == OK)
     {
@@ -8409,10 +8400,9 @@ ex_bang(eap)
 /*
  * ":undo".
  */
-/*ARGSUSED*/
     static void
 ex_undo(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
     if (eap->addr_count == 1)	    /* :undo 123 */
 	undo_time(eap->line2, FALSE, TRUE);
@@ -8423,10 +8413,9 @@ ex_undo(eap)
 /*
  * ":redo".
  */
-/*ARGSUSED*/
     static void
 ex_redo(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
     u_redo(1);
 }
@@ -8434,7 +8423,6 @@ ex_redo(eap)
 /*
  * ":earlier" and ":later".
  */
-/*ARGSUSED*/
     static void
 ex_later(eap)
     exarg_T	*eap;
@@ -8619,10 +8607,9 @@ ex_redraw(eap)
 /*
  * ":redrawstatus": force redraw of status line(s)
  */
-/*ARGSUSED*/
     static void
 ex_redrawstatus(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
 #if defined(FEAT_WINDOWS)
     int		r = RedrawingDisabled;
@@ -8883,11 +8870,10 @@ theend:
 
 #if ((defined(FEAT_SESSION) || defined(FEAT_EVAL)) && defined(vim_mkdir)) \
 	|| defined(PROTO)
-/*ARGSUSED*/
     int
 vim_mkdir_emsg(name, prot)
     char_u	*name;
-    int		prot;
+    int		prot UNUSED;
 {
     if (vim_mkdir(name, prot) != 0)
     {
@@ -9158,10 +9144,9 @@ ex_startinsert(eap)
 /*
  * ":stopinsert"
  */
-/*ARGSUSED*/
     static void
 ex_stopinsert(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
     restart_edit = 0;
     stop_insert_mode = TRUE;
@@ -9435,9 +9420,8 @@ find_cmdline_var(src, usedlen)
 # define SPEC_CLIENT 9
 #endif
     };
-#define SPEC_COUNT  (sizeof(spec_str) / sizeof(char *))
 
-    for (i = 0; i < SPEC_COUNT; ++i)
+    for (i = 0; i < (int)(sizeof(spec_str) / sizeof(char *)); ++i)
     {
 	len = (int)STRLEN(spec_str[i]);
 	if (STRNCMP(src, spec_str[i], len) == 0)
@@ -9788,7 +9772,7 @@ arg_all()
 	}
 
 	/* allocate memory */
-	retval = alloc(len + 1);
+	retval = alloc((unsigned)len + 1);
 	if (retval == NULL)
 	    break;
     }
@@ -10955,10 +10939,9 @@ ex_setfiletype(eap)
 }
 #endif
 
-/*ARGSUSED*/
     static void
 ex_digraphs(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
 #ifdef FEAT_DIGRAPHS
     if (*eap->arg != NUL)
@@ -10992,10 +10975,9 @@ ex_set(eap)
 /*
  * ":nohlsearch"
  */
-/*ARGSUSED*/
     static void
 ex_nohlsearch(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
     no_hlsearch = TRUE;
     redraw_all_later(SOME_VALID);
@@ -11074,10 +11056,9 @@ ex_match(eap)
 /*
  * ":X": Get crypt key
  */
-/*ARGSUSED*/
     static void
 ex_X(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
     (void)get_crypt_key(TRUE, TRUE);
 }
