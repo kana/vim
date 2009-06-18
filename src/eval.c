@@ -129,8 +129,11 @@ static hashtab_T	compat_hashtab;
 /*
  * When recursively copying lists and dicts we need to remember which ones we
  * have done to avoid endless recursiveness.  This unique ID is used for that.
+ * The last bit is used for previous_funccal, ignored when comparing.
  */
 static int current_copyID = 0;
+#define COPYID_INC 2
+#define COPYID_MASK (~0x1)
 
 /*
  * Array to hold the hashtab with variables local to each sourced script.
@@ -283,7 +286,7 @@ typedef struct
 #define VV_RO		2	/* read-only */
 #define VV_RO_SBX	4	/* read-only in the sandbox */
 
-#define VV_NAME(s, t)	s, {{t}}, {0}
+#define VV_NAME(s, t)	s, {{t, 0, {0}}, 0, {0}}, {0}
 
 static struct vimvar
 {
@@ -439,6 +442,7 @@ static list_T *list_copy __ARGS((list_T *orig, int deep, int copyID));
 static void list_remove __ARGS((list_T *l, listitem_T *item, listitem_T *item2));
 static char_u *list2string __ARGS((typval_T *tv, int copyID));
 static int list_join __ARGS((garray_T *gap, list_T *l, char_u *sep, int echo, int copyID));
+static int free_unref_items __ARGS((int copyID));
 static void set_ref_in_ht __ARGS((hashtab_T *ht, int copyID));
 static void set_ref_in_list __ARGS((list_T *l, int copyID));
 static void set_ref_in_item __ARGS((typval_T *tv, int copyID));
@@ -3773,7 +3777,6 @@ cat_prefix_varname(prefix, name)
  * Function given to ExpandGeneric() to obtain the list of user defined
  * (global/buffer/window/built-in) variable names.
  */
-/*ARGSUSED*/
     char_u *
 get_user_var_name(xp, idx)
     expand_T	*xp;
@@ -5864,7 +5867,8 @@ list_equal(l1, l2, ic)
     return item1 == NULL && item2 == NULL;
 }
 
-#if defined(FEAT_PYTHON) || defined(PROTO) || defined(FEAT_GUI_MACVIM)
+#if defined(FEAT_PYTHON) || defined(FEAT_MZSCHEME) || defined(PROTO) \
+	|| defined(FEAT_GUI_MACVIM)
 /*
  * Return the dictitem that an entry in a hashtable points to.
  */
@@ -6496,14 +6500,13 @@ list_join(gap, l, sep, echo, copyID)
     int
 garbage_collect()
 {
-    dict_T	*dd;
-    list_T	*ll;
-    int		copyID = ++current_copyID;
+    int		copyID;
     buf_T	*buf;
     win_T	*wp;
     int		i;
     funccall_T	*fc, **pfc;
-    int		did_free = FALSE;
+    int		did_free;
+    int		did_free_funccal = FALSE;
 #ifdef FEAT_WINDOWS
     tabpage_T	*tp;
 #endif
@@ -6513,10 +6516,25 @@ garbage_collect()
     may_garbage_collect = FALSE;
     garbage_collect_at_exit = FALSE;
 
+    /* We advance by two because we add one for items referenced through
+     * previous_funccal. */
+    current_copyID += COPYID_INC;
+    copyID = current_copyID;
+
     /*
      * 1. Go through all accessible variables and mark all lists and dicts
      *    with copyID.
      */
+
+    /* Don't free variables in the previous_funccal list unless they are only
+     * referenced through previous_funccal.  This must be first, because if
+     * the item is referenced elsewhere the funccal must not be freed. */
+    for (fc = previous_funccal; fc != NULL; fc = fc->caller)
+    {
+	set_ref_in_ht(&fc->l_vars.dv_hashtab, copyID + 1);
+	set_ref_in_ht(&fc->l_avars.dv_hashtab, copyID + 1);
+    }
+
     /* script-local variables */
     for (i = 1; i <= ga_scripts.ga_len; ++i)
 	set_ref_in_ht(&SCRIPT_VARS(i), copyID);
@@ -6549,10 +6567,50 @@ garbage_collect()
     set_ref_in_ht(&vimvarht, copyID);
 
     /*
-     * 2. Go through the list of dicts and free items without the copyID.
+     * 2. Free lists and dictionaries that are not referenced.
+     */
+    did_free = free_unref_items(copyID);
+
+    /*
+     * 3. Check if any funccal can be freed now.
+     */
+    for (pfc = &previous_funccal; *pfc != NULL; )
+    {
+	if (can_free_funccal(*pfc, copyID))
+	{
+	    fc = *pfc;
+	    *pfc = fc->caller;
+	    free_funccal(fc, TRUE);
+	    did_free = TRUE;
+	    did_free_funccal = TRUE;
+	}
+	else
+	    pfc = &(*pfc)->caller;
+    }
+    if (did_free_funccal)
+	/* When a funccal was freed some more items might be garbage
+	 * collected, so run again. */
+	(void)garbage_collect();
+
+    return did_free;
+}
+
+/*
+ * Free lists and dictionaries that are no longer referenced.
+ */
+    static int
+free_unref_items(copyID)
+    int copyID;
+{
+    dict_T	*dd;
+    list_T	*ll;
+    int		did_free = FALSE;
+
+    /*
+     * Go through the list of dicts and free items without the copyID.
      */
     for (dd = first_dict; dd != NULL; )
-	if (dd->dv_copyID != copyID)
+	if ((dd->dv_copyID & COPYID_MASK) != (copyID & COPYID_MASK))
 	{
 	    /* Free the Dictionary and ordinary items it contains, but don't
 	     * recurse into Lists and Dictionaries, they will be in the list
@@ -6567,12 +6625,13 @@ garbage_collect()
 	    dd = dd->dv_used_next;
 
     /*
-     * 3. Go through the list of lists and free items without the copyID.
-     *    But don't free a list that has a watcher (used in a for loop), these
-     *    are not referenced anywhere.
+     * Go through the list of lists and free items without the copyID.
+     * But don't free a list that has a watcher (used in a for loop), these
+     * are not referenced anywhere.
      */
     for (ll = first_list; ll != NULL; )
-	if (ll->lv_copyID != copyID && ll->lv_watch == NULL)
+	if ((ll->lv_copyID & COPYID_MASK) != (copyID & COPYID_MASK)
+						      && ll->lv_watch == NULL)
 	{
 	    /* Free the List and ordinary items it contains, but don't recurse
 	     * into Lists and Dictionaries, they will be in the list of dicts
@@ -6585,20 +6644,6 @@ garbage_collect()
 	}
 	else
 	    ll = ll->lv_used_next;
-
-    /* check if any funccal can be freed now */
-    for (pfc = &previous_funccal; *pfc != NULL; )
-    {
-	if (can_free_funccal(*pfc, copyID))
-	{
-	    fc = *pfc;
-	    *pfc = fc->caller;
-	    free_funccal(fc, TRUE);
-	    did_free = TRUE;
-	}
-	else
-	    pfc = &(*pfc)->caller;
-    }
 
     return did_free;
 }
@@ -7789,7 +7834,6 @@ get_function_name(xp, idx)
  * Function given to ExpandGeneric() to obtain the list of internal or
  * user defined variable or function names.
  */
-/*ARGSUSED*/
     char_u *
 get_expr_name(xp, idx)
     expand_T	*xp;
@@ -8305,10 +8349,9 @@ f_append(argvars, rettv)
 /*
  * "argc()" function
  */
-/* ARGSUSED */
     static void
 f_argc(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     rettv->vval.v_number = ARGCOUNT;
@@ -8317,10 +8360,9 @@ f_argc(argvars, rettv)
 /*
  * "argidx()" function
  */
-/* ARGSUSED */
     static void
 f_argidx(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     rettv->vval.v_number = curwin->w_arg_idx;
@@ -8398,10 +8440,9 @@ f_atan(argvars, rettv)
 /*
  * "browse(save, title, initdir, default)" function
  */
-/* ARGSUSED */
     static void
 f_browse(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
 #ifdef FEAT_BROWSE
@@ -8433,10 +8474,9 @@ f_browse(argvars, rettv)
 /*
  * "browsedir(title, initdir)" function
  */
-/* ARGSUSED */
     static void
 f_browsedir(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
 #ifdef FEAT_BROWSE
@@ -8661,10 +8701,9 @@ f_bufwinnr(argvars, rettv)
 /*
  * "byte2line(byte)" function
  */
-/*ARGSUSED*/
     static void
 f_byte2line(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
 #ifndef FEAT_BYTEOFF
@@ -8684,7 +8723,6 @@ f_byte2line(argvars, rettv)
 /*
  * "byteidx()" function
  */
-/*ARGSUSED*/
     static void
 f_byteidx(argvars, rettv)
     typval_T	*argvars;
@@ -8803,10 +8841,9 @@ f_ceil(argvars, rettv)
 /*
  * "changenr()" function
  */
-/*ARGSUSED*/
     static void
 f_changenr(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     rettv->vval.v_number = curbuf->b_u_seq_cur;
@@ -8856,11 +8893,10 @@ f_cindent(argvars, rettv)
 /*
  * "clearmatches()" function
  */
-/*ARGSUSED*/
     static void
 f_clearmatches(argvars, rettv)
-    typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*argvars UNUSED;
+    typval_T	*rettv UNUSED;
 {
 #ifdef FEAT_SEARCH_EXTRA
     clear_matches(curwin);
@@ -8924,11 +8960,10 @@ f_col(argvars, rettv)
 /*
  * "complete()" function
  */
-/*ARGSUSED*/
     static void
 f_complete(argvars, rettv)
     typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*rettv UNUSED;
 {
     int	    startcol;
 
@@ -8959,7 +8994,6 @@ f_complete(argvars, rettv)
 /*
  * "complete_add()" function
  */
-/*ARGSUSED*/
     static void
 f_complete_add(argvars, rettv)
     typval_T	*argvars;
@@ -8971,10 +9005,9 @@ f_complete_add(argvars, rettv)
 /*
  * "complete_check()" function
  */
-/*ARGSUSED*/
     static void
 f_complete_check(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     int		saved = RedrawingDisabled;
@@ -8989,11 +9022,10 @@ f_complete_check(argvars, rettv)
 /*
  * "confirm(message, buttons[, default [, type]])" function
  */
-/*ARGSUSED*/
     static void
 f_confirm(argvars, rettv)
-    typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*argvars UNUSED;
+    typval_T	*rettv UNUSED;
 {
 #if defined(FEAT_GUI_DIALOG) || defined(FEAT_CON_DIALOG)
     char_u	*message;
@@ -9158,11 +9190,10 @@ f_count(argvars, rettv)
  *
  * Checks the existence of a cscope connection.
  */
-/*ARGSUSED*/
     static void
 f_cscope_connection(argvars, rettv)
-    typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*argvars UNUSED;
+    typval_T	*rettv UNUSED;
 {
 #ifdef FEAT_CSCOPE
     int		num = 0;
@@ -9189,7 +9220,6 @@ f_cscope_connection(argvars, rettv)
  * Moves the cursor to the specified line and column.
  * Returns 0 when the position could be set, -1 otherwise.
  */
-/*ARGSUSED*/
     static void
 f_cursor(argvars, rettv)
     typval_T	*argvars;
@@ -9263,7 +9293,10 @@ f_deepcopy(argvars, rettv)
     if (noref < 0 || noref > 1)
 	EMSG(_(e_invarg));
     else
-	item_copy(&argvars[0], rettv, TRUE, noref == 0 ? ++current_copyID : 0);
+    {
+	current_copyID += COPYID_INC;
+	item_copy(&argvars[0], rettv, TRUE, noref == 0 ? current_copyID : 0);
+    }
 }
 
 /*
@@ -9283,11 +9316,10 @@ f_delete(argvars, rettv)
 /*
  * "did_filetype()" function
  */
-/*ARGSUSED*/
     static void
 f_did_filetype(argvars, rettv)
-    typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*argvars UNUSED;
+    typval_T	*rettv UNUSED;
 {
 #ifdef FEAT_AUTOCMD
     rettv->vval.v_number = did_filetype;
@@ -9297,11 +9329,10 @@ f_did_filetype(argvars, rettv)
 /*
  * "diff_filler()" function
  */
-/*ARGSUSED*/
     static void
 f_diff_filler(argvars, rettv)
-    typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*argvars UNUSED;
+    typval_T	*rettv UNUSED;
 {
 #ifdef FEAT_DIFF
     rettv->vval.v_number = diff_check_fill(curwin, get_tv_lnum(argvars));
@@ -9311,11 +9342,10 @@ f_diff_filler(argvars, rettv)
 /*
  * "diff_hlID()" function
  */
-/*ARGSUSED*/
     static void
 f_diff_hlID(argvars, rettv)
-    typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*argvars UNUSED;
+    typval_T	*rettv UNUSED;
 {
 #ifdef FEAT_DIFF
     linenr_T		lnum = get_tv_lnum(argvars);
@@ -9428,7 +9458,6 @@ f_escape(argvars, rettv)
 /*
  * "eval()" function
  */
-/*ARGSUSED*/
     static void
 f_eval(argvars, rettv)
     typval_T	*argvars;
@@ -9452,10 +9481,9 @@ f_eval(argvars, rettv)
 /*
  * "eventhandler()" function
  */
-/*ARGSUSED*/
     static void
 f_eventhandler(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     rettv->vval.v_number = vgetc_busy;
@@ -9712,11 +9740,10 @@ f_extend(argvars, rettv)
 /*
  * "feedkeys()" function
  */
-/*ARGSUSED*/
     static void
 f_feedkeys(argvars, rettv)
     typval_T    *argvars;
-    typval_T    *rettv;
+    typval_T    *rettv UNUSED;
 {
     int		remap = TRUE;
     char_u	*keys, *flags;
@@ -10218,10 +10245,9 @@ f_foldlevel(argvars, rettv)
 /*
  * "foldtext()" function
  */
-/*ARGSUSED*/
     static void
 f_foldtext(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
 #ifdef FEAT_FOLDING
@@ -10286,10 +10312,9 @@ f_foldtext(argvars, rettv)
 /*
  * "foldtextresult(lnum)" function
  */
-/*ARGSUSED*/
     static void
 f_foldtextresult(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
 #ifdef FEAT_FOLDING
@@ -10322,11 +10347,10 @@ f_foldtextresult(argvars, rettv)
 /*
  * "foreground()" function
  */
-/*ARGSUSED*/
     static void
 f_foreground(argvars, rettv)
-    typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*argvars UNUSED;
+    typval_T	*rettv UNUSED;
 {
 #ifdef FEAT_GUI
     if (gui.in_use)
@@ -10341,7 +10365,6 @@ f_foreground(argvars, rettv)
 /*
  * "function()" function
  */
-/*ARGSUSED*/
     static void
 f_function(argvars, rettv)
     typval_T	*argvars;
@@ -10365,11 +10388,10 @@ f_function(argvars, rettv)
 /*
  * "garbagecollect()" function
  */
-/*ARGSUSED*/
     static void
 f_garbagecollect(argvars, rettv)
     typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*rettv UNUSED;
 {
     /* This is postponed until we are back at the toplevel, because we may be
      * using Lists and Dicts internally.  E.g.: ":echo [garbagecollect()]". */
@@ -10672,10 +10694,9 @@ f_getchar(argvars, rettv)
 /*
  * "getcharmod()" function
  */
-/*ARGSUSED*/
     static void
 f_getcharmod(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     rettv->vval.v_number = mod_mask;
@@ -10684,10 +10705,9 @@ f_getcharmod(argvars, rettv)
 /*
  * "getcmdline()" function
  */
-/*ARGSUSED*/
     static void
 f_getcmdline(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     rettv->v_type = VAR_STRING;
@@ -10697,10 +10717,9 @@ f_getcmdline(argvars, rettv)
 /*
  * "getcmdpos()" function
  */
-/*ARGSUSED*/
     static void
 f_getcmdpos(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     rettv->vval.v_number = get_cmdline_pos() + 1;
@@ -10709,10 +10728,9 @@ f_getcmdpos(argvars, rettv)
 /*
  * "getcmdtype()" function
  */
-/*ARGSUSED*/
     static void
 f_getcmdtype(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     rettv->v_type = VAR_STRING;
@@ -10727,10 +10745,9 @@ f_getcmdtype(argvars, rettv)
 /*
  * "getcwd()" function
  */
-/*ARGSUSED*/
     static void
 f_getcwd(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     char_u	cwd[MAXPATHL];
@@ -10751,10 +10768,9 @@ f_getcwd(argvars, rettv)
 /*
  * "getfontname()" function
  */
-/*ARGSUSED*/
     static void
 f_getfontname(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     rettv->v_type = VAR_STRING;
@@ -10981,10 +10997,9 @@ f_getline(argvars, rettv)
 /*
  * "getmatches()" function
  */
-/*ARGSUSED*/
     static void
 f_getmatches(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
 #ifdef FEAT_SEARCH_EXTRA
@@ -11012,10 +11027,9 @@ f_getmatches(argvars, rettv)
 /*
  * "getpid()" function
  */
-/*ARGSUSED*/
     static void
 f_getpid(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     rettv->vval.v_number = mch_get_pid();
@@ -11059,11 +11073,10 @@ f_getpos(argvars, rettv)
 /*
  * "getqflist()" and "getloclist()" functions
  */
-/*ARGSUSED*/
     static void
 f_getqflist(argvars, rettv)
-    typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*argvars UNUSED;
+    typval_T	*rettv UNUSED;
 {
 #ifdef FEAT_QUICKFIX
     win_T	*wp;
@@ -11178,10 +11191,9 @@ f_gettabwinvar(argvars, rettv)
 /*
  * "getwinposx()" function
  */
-/*ARGSUSED*/
     static void
 f_getwinposx(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     rettv->vval.v_number = -1;
@@ -11199,10 +11211,9 @@ f_getwinposx(argvars, rettv)
 /*
  * "getwinposy()" function
  */
-/*ARGSUSED*/
     static void
 f_getwinposy(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     rettv->vval.v_number = -1;
@@ -11952,10 +11963,9 @@ f_has_key(argvars, rettv)
 /*
  * "haslocaldir()" function
  */
-/*ARGSUSED*/
     static void
 f_haslocaldir(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     rettv->vval.v_number = (curwin->w_localdir != NULL);
@@ -11993,10 +12003,9 @@ f_hasmapto(argvars, rettv)
 /*
  * "histadd()" function
  */
-/*ARGSUSED*/
     static void
 f_histadd(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
 #ifdef FEAT_CMDHIST
@@ -12027,11 +12036,10 @@ f_histadd(argvars, rettv)
 /*
  * "histdel()" function
  */
-/*ARGSUSED*/
     static void
 f_histdel(argvars, rettv)
-    typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*argvars UNUSED;
+    typval_T	*rettv UNUSED;
 {
 #ifdef FEAT_CMDHIST
     int		n;
@@ -12059,10 +12067,9 @@ f_histdel(argvars, rettv)
 /*
  * "histget()" function
  */
-/*ARGSUSED*/
     static void
 f_histget(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
 #ifdef FEAT_CMDHIST
@@ -12092,10 +12099,9 @@ f_histget(argvars, rettv)
 /*
  * "histnr()" function
  */
-/*ARGSUSED*/
     static void
 f_histnr(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     int		i;
@@ -12137,10 +12143,9 @@ f_hlexists(argvars, rettv)
 /*
  * "hostname()" function
  */
-/*ARGSUSED*/
     static void
 f_hostname(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     char_u hostname[256];
@@ -12153,10 +12158,9 @@ f_hostname(argvars, rettv)
 /*
  * iconv() function
  */
-/*ARGSUSED*/
     static void
 f_iconv(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
 #ifdef FEAT_MBYTE
@@ -12451,10 +12455,9 @@ static garray_T	    ga_userinput = {0, 0, sizeof(tasave_T), 4, NULL};
 /*
  * "inputrestore()" function
  */
-/*ARGSUSED*/
     static void
 f_inputrestore(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     if (ga_userinput.ga_len > 0)
@@ -12474,10 +12477,9 @@ f_inputrestore(argvars, rettv)
 /*
  * "inputsave()" function
  */
-/*ARGSUSED*/
     static void
 f_inputsave(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     /* Add an entry to the stack of typeahead storage. */
@@ -12764,10 +12766,9 @@ f_keys(argvars, rettv)
 /*
  * "last_buffer_nr()" function.
  */
-/*ARGSUSED*/
     static void
 f_last_buffer_nr(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     int		n = 0;
@@ -12894,10 +12895,9 @@ f_line(argvars, rettv)
 /*
  * "line2byte(lnum)" function
  */
-/*ARGSUSED*/
     static void
 f_line2byte(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
 #ifndef FEAT_BYTEOFF
@@ -12943,10 +12943,9 @@ f_lispindent(argvars, rettv)
 /*
  * "localtime()" function
  */
-/*ARGSUSED*/
     static void
 f_localtime(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     rettv->vval.v_number = (varnumber_T)time(NULL);
@@ -13546,7 +13545,6 @@ f_mkdir(argvars, rettv)
 /*
  * "mode()" function
  */
-/*ARGSUSED*/
     static void
 f_mode(argvars, rettv)
     typval_T	*argvars;
@@ -13775,11 +13773,10 @@ f_printf(argvars, rettv)
 /*
  * "pumvisible()" function
  */
-/*ARGSUSED*/
     static void
 f_pumvisible(argvars, rettv)
-    typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*argvars UNUSED;
+    typval_T	*rettv UNUSED;
 {
 #ifdef FEAT_INS_EXPAND
     if (pum_visible())
@@ -14184,10 +14181,9 @@ remote_common(argvars, rettv, expr)
 /*
  * "remote_expr()" function
  */
-/*ARGSUSED*/
     static void
 f_remote_expr(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     rettv->v_type = VAR_STRING;
@@ -14200,11 +14196,10 @@ f_remote_expr(argvars, rettv)
 /*
  * "remote_foreground()" function
  */
-/*ARGSUSED*/
     static void
 f_remote_foreground(argvars, rettv)
-    typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*argvars UNUSED;
+    typval_T	*rettv UNUSED;
 {
 #ifdef FEAT_CLIENTSERVER
 # ifdef WIN32
@@ -14226,10 +14221,9 @@ f_remote_foreground(argvars, rettv)
 #endif
 }
 
-/*ARGSUSED*/
     static void
 f_remote_peek(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
 #ifdef FEAT_CLIENTSERVER
@@ -14286,10 +14280,9 @@ f_remote_peek(argvars, rettv)
 #endif
 }
 
-/*ARGSUSED*/
     static void
 f_remote_read(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     char_u	*r = NULL;
@@ -14323,10 +14316,9 @@ f_remote_read(argvars, rettv)
 /*
  * "remote_send()" function
  */
-/*ARGSUSED*/
     static void
 f_remote_send(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     rettv->v_type = VAR_STRING;
@@ -14455,7 +14447,6 @@ f_rename(argvars, rettv)
 /*
  * "repeat()" function
  */
-/*ARGSUSED*/
     static void
 f_repeat(argvars, rettv)
     typval_T	*argvars;
@@ -15264,10 +15255,9 @@ f_searchpos(argvars, rettv)
 }
 
 
-/*ARGSUSED*/
     static void
 f_server2client(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
 #ifdef FEAT_CLIENTSERVER
@@ -15296,10 +15286,9 @@ f_server2client(argvars, rettv)
 #endif
 }
 
-/*ARGSUSED*/
     static void
 f_serverlist(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     char_u	*r = NULL;
@@ -15320,11 +15309,10 @@ f_serverlist(argvars, rettv)
 /*
  * "setbufvar()" function
  */
-/*ARGSUSED*/
     static void
 f_setbufvar(argvars, rettv)
     typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*rettv UNUSED;
 {
     buf_T	*buf;
     aco_save_T	aco;
@@ -15459,12 +15447,11 @@ static void set_qf_ll_list __ARGS((win_T *wp, typval_T *list_arg, typval_T *acti
 /*
  * Used by "setqflist()" and "setloclist()" functions
  */
-/*ARGSUSED*/
     static void
 set_qf_ll_list(wp, list_arg, action_arg, rettv)
-    win_T	*wp;
-    typval_T	*list_arg;
-    typval_T	*action_arg;
+    win_T	*wp UNUSED;
+    typval_T	*list_arg UNUSED;
+    typval_T	*action_arg UNUSED;
     typval_T	*rettv;
 {
 #ifdef FEAT_QUICKFIX
@@ -15499,7 +15486,6 @@ set_qf_ll_list(wp, list_arg, action_arg, rettv)
 /*
  * "setloclist()" function
  */
-/*ARGSUSED*/
     static void
 f_setloclist(argvars, rettv)
     typval_T	*argvars;
@@ -15577,7 +15563,6 @@ f_setmatches(argvars, rettv)
 /*
  * "setpos()" function
  */
-/*ARGSUSED*/
     static void
 f_setpos(argvars, rettv)
     typval_T	*argvars;
@@ -15621,7 +15606,6 @@ f_setpos(argvars, rettv)
 /*
  * "setqflist()" function
  */
-/*ARGSUSED*/
     static void
 f_setqflist(argvars, rettv)
     typval_T	*argvars;
@@ -15724,11 +15708,10 @@ f_setwinvar(argvars, rettv)
 /*
  * "setwinvar()" and "settabwinvar()" functions
  */
-/*ARGSUSED*/
     static void
 setwinvar(argvars, rettv, off)
     typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*rettv UNUSED;
     int		off;
 {
     win_T	*win;
@@ -16044,10 +16027,9 @@ f_soundfold(argvars, rettv)
 /*
  * "spellbadword()" function
  */
-/* ARGSUSED */
     static void
 f_spellbadword(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     char_u	*word = (char_u *)"";
@@ -16099,10 +16081,9 @@ f_spellbadword(argvars, rettv)
 /*
  * "spellsuggest()" function
  */
-/*ARGSUSED*/
     static void
 f_spellsuggest(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
 #ifdef FEAT_SPELL
@@ -16585,10 +16566,9 @@ f_substitute(argvars, rettv)
 /*
  * "synID(lnum, col, trans)" function
  */
-/*ARGSUSED*/
     static void
 f_synID(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     int		id = 0;
@@ -16613,10 +16593,9 @@ f_synID(argvars, rettv)
 /*
  * "synIDattr(id, what [, mode])" function
  */
-/*ARGSUSED*/
     static void
 f_synIDattr(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     char_u	*p = NULL;
@@ -16709,10 +16688,9 @@ f_synIDattr(argvars, rettv)
 /*
  * "synIDtrans(id)" function
  */
-/*ARGSUSED*/
     static void
 f_synIDtrans(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     int		id;
@@ -16732,10 +16710,9 @@ f_synIDtrans(argvars, rettv)
 /*
  * "synstack(lnum, col)" function
  */
-/*ARGSUSED*/
     static void
 f_synstack(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
 #ifdef FEAT_SYN_HL
@@ -16869,11 +16846,10 @@ done:
 /*
  * "tabpagebuflist()" function
  */
-/* ARGSUSED */
     static void
 f_tabpagebuflist(argvars, rettv)
-    typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*argvars UNUSED;
+    typval_T	*rettv UNUSED;
 {
 #ifdef FEAT_WINDOWS
     tabpage_T	*tp;
@@ -16901,10 +16877,9 @@ f_tabpagebuflist(argvars, rettv)
 /*
  * "tabpagenr()" function
  */
-/* ARGSUSED */
     static void
 f_tabpagenr(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     int		nr = 1;
@@ -16986,10 +16961,9 @@ get_winnr(tp, argvar)
 /*
  * "tabpagewinnr()" function
  */
-/* ARGSUSED */
     static void
 f_tabpagewinnr(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     int		nr = 1;
@@ -17009,10 +16983,9 @@ f_tabpagewinnr(argvars, rettv)
 /*
  * "tagfiles()" function
  */
-/*ARGSUSED*/
     static void
 f_tagfiles(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     char_u	fname[MAXPATHL + 1];
@@ -17052,10 +17025,9 @@ f_taglist(argvars, rettv)
 /*
  * "tempname()" function
  */
-/*ARGSUSED*/
     static void
 f_tempname(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     static int	x = 'A';
@@ -17088,11 +17060,10 @@ f_tempname(argvars, rettv)
 /*
  * "test(list)" function: Just checking the walls...
  */
-/*ARGSUSED*/
     static void
 f_test(argvars, rettv)
-    typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*argvars UNUSED;
+    typval_T	*rettv UNUSED;
 {
     /* Used for unit testing.  Change the code below to your liking. */
 #if 0
@@ -17377,11 +17348,10 @@ f_virtcol(argvars, rettv)
 /*
  * "visualmode()" function
  */
-/*ARGSUSED*/
     static void
 f_visualmode(argvars, rettv)
-    typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*argvars UNUSED;
+    typval_T	*rettv UNUSED;
 {
 #ifdef FEAT_VISUAL
     char_u	str[2];
@@ -17417,10 +17387,9 @@ f_winbufnr(argvars, rettv)
 /*
  * "wincol()" function
  */
-/*ARGSUSED*/
     static void
 f_wincol(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     validate_cursor();
@@ -17447,10 +17416,9 @@ f_winheight(argvars, rettv)
 /*
  * "winline()" function
  */
-/*ARGSUSED*/
     static void
 f_winline(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     validate_cursor();
@@ -17460,10 +17428,9 @@ f_winline(argvars, rettv)
 /*
  * "winnr()" function
  */
-/* ARGSUSED */
     static void
 f_winnr(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     int		nr = 1;
@@ -17477,10 +17444,9 @@ f_winnr(argvars, rettv)
 /*
  * "winrestcmd()" function
  */
-/* ARGSUSED */
     static void
 f_winrestcmd(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
 #ifdef FEAT_WINDOWS
@@ -17512,11 +17478,10 @@ f_winrestcmd(argvars, rettv)
 /*
  * "winrestview()" function
  */
-/* ARGSUSED */
     static void
 f_winrestview(argvars, rettv)
     typval_T	*argvars;
-    typval_T	*rettv;
+    typval_T	*rettv UNUSED;
 {
     dict_T	*dict;
 
@@ -17558,10 +17523,9 @@ f_winrestview(argvars, rettv)
 /*
  * "winsaveview()" function
  */
-/* ARGSUSED */
     static void
 f_winsaveview(argvars, rettv)
-    typval_T	*argvars;
+    typval_T	*argvars UNUSED;
     typval_T	*rettv;
 {
     dict_T	*dict;
@@ -18978,6 +18942,7 @@ init_var_dict(dict, dict_var)
 {
     hash_init(&dict->dv_hashtab);
     dict->dv_refcount = DO_NOT_FREE_CNT;
+    dict->dv_copyID = 0;
     dict_var->di_tv.vval.v_dict = dict;
     dict_var->di_tv.v_type = VAR_DICT;
     dict_var->di_tv.v_lock = VAR_FIXED;
@@ -19060,7 +19025,8 @@ list_one_var(v, prefix, first)
     char_u	*s;
     char_u	numbuf[NUMBUFLEN];
 
-    s = echo_string(&v->di_tv, &tofree, numbuf, ++current_copyID);
+    current_copyID += COPYID_INC;
+    s = echo_string(&v->di_tv, &tofree, numbuf, current_copyID);
     list_one_var_a(prefix, v->di_key, v->di_tv.v_type,
 					 s == NULL ? (char_u *)"" : s, first);
     vim_free(tofree);
@@ -19495,7 +19461,8 @@ ex_echo(eap)
 	    }
 	    else if (eap->cmdidx == CMD_echo)
 		msg_puts_attr((char_u *)" ", echo_attr);
-	    p = echo_string(&rettv, &tofree, numbuf, ++current_copyID);
+	    current_copyID += COPYID_INC;
+	    p = echo_string(&rettv, &tofree, numbuf, current_copyID);
 	    if (p != NULL)
 		for ( ; *p != NUL && !got_int; ++p)
 		{
@@ -21430,8 +21397,8 @@ call_user_func(fp, argcount, argvars, rettv, firstline, lastline, selfdict)
     current_funccal = fc->caller;
     --depth;
 
-    /* if the a:000 list and the a: dict are not referenced we can free the
-     * funccall_T and what's in it. */
+    /* If the a:000 list and the l: and a: dicts are not referenced we can
+     * free the funccall_T and what's in it. */
     if (fc->l_varlist.lv_refcount == DO_NOT_FREE_CNT
 	    && fc->l_vars.dv_refcount == DO_NOT_FREE_CNT
 	    && fc->l_avars.dv_refcount == DO_NOT_FREE_CNT)
@@ -21470,7 +21437,7 @@ call_user_func(fp, argcount, argvars, rettv, firstline, lastline, selfdict)
 
 /*
  * Return TRUE if items in "fc" do not have "copyID".  That means they are not
- * referenced from anywhere.
+ * referenced from anywhere that is in use.
  */
     static int
 can_free_funccal(fc, copyID)
@@ -21703,12 +21670,11 @@ get_return_cmd(rettv)
  * Called by do_cmdline() to get the next line.
  * Returns allocated string, or NULL for end of function.
  */
-/* ARGSUSED */
     char_u *
 get_func_line(c, cookie, indent)
-    int	    c;		    /* not used */
+    int	    c UNUSED;
     void    *cookie;
-    int	    indent;	    /* not used */
+    int	    indent UNUSED;
 {
     funccall_T	*fcp = (funccall_T *)cookie;
     ufunc_T	*fp = fcp->func;
@@ -22080,10 +22046,9 @@ last_set_msg(scriptID)
 /*
  * List v:oldfiles in a nice way.
  */
-/*ARGSUSED*/
     void
 ex_oldfiles(eap)
-    exarg_T	*eap;
+    exarg_T	*eap UNUSED;
 {
     list_T	*l = vimvars[VV_OLDFILES].vv_list;
     listitem_T	*li;

@@ -1,4 +1,4 @@
-*options.txt*	For Vim version 7.2.  Last change: 2009 Apr 12
+*options.txt*	For Vim version 7.2.  Last change: 2009 Jun 12
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -1455,6 +1455,14 @@ A jump table for the options with a short description can be found at |Q_op|.
 	autoselectml	Like "autoselect", but for the modeless selection
 			only.  Compare to the 'A' flag in 'guioptions'.
 
+	html		When the clipboard contains HTML, use this when
+			pasting.  When putting text on the clipboard, mark it
+			as HTML.  This works to copy rendered HTML from
+			Firefox, paste it as raw HTML in Vim, select the HTML
+			in Vim and paste it in a rich edit box in Firefox.
+			Only supported for GTK version 2 and later.
+			Only available with the |+multi_byte| feature.
+
 	exclude:{pattern}
 			Defines a pattern that is matched against the name of
 			the terminal 'term'.  If there is a match, no
@@ -2461,7 +2469,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 			{not in Vi}
 	External program to use for "=" command.  When this option is empty
 	the internal formatting functions are used; either 'lisp', 'cindent'
-	or 'indentexpr'.
+	or 'indentexpr'.  When Vim was compiled without internal formatting,
+	the "indent" program is used.
 	Environment variables are expanded |:set_env|.  See |option-backslash|
 	about including spaces and backslashes.
 	This option cannot be set from a |modeline| or in the |sandbox|, for
@@ -4207,8 +4216,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	displayed as <xx>, with the hexadecimal value of the byte.
 	When 'display' contains "uhex" all unprintable characters are
 	displayed as <xx>.
-	The NonText highlighting will be used for unprintable characters.
-	|hl-NonText|
+	The SpecialKey highlighting will be used for unprintable characters.
+	|hl-SpecialKey|
 
 	Multi-byte characters 256 and above are always included, only the
 	characters up to 255 are specified with this option.  When a character

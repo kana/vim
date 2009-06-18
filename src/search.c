@@ -531,7 +531,6 @@ last_pat_prog(regmatch)
  * When FEAT_EVAL is defined, returns the index of the first matching
  * subpattern plus one; one if there was none.
  */
-/*ARGSUSED*/
     int
 searchit(win, buf, pos, dir, pat, count, options, pat_use, stop_lnum, tm)
     win_T	*win;		/* window to search in; can be NULL for a
@@ -544,7 +543,7 @@ searchit(win, buf, pos, dir, pat, count, options, pat_use, stop_lnum, tm)
     int		options;
     int		pat_use;	/* which pattern to use when "pat" is empty */
     linenr_T	stop_lnum;	/* stop after this line number when != 0 */
-    proftime_T	*tm;		/* timeout limit or NULL */
+    proftime_T	*tm UNUSED;	/* timeout limit or NULL */
 {
     int		found;
     linenr_T	lnum;		/* no init to shut up Apollo cc */
@@ -563,8 +562,6 @@ searchit(win, buf, pos, dir, pat, count, options, pat_use, stop_lnum, tm)
     int		save_called_emsg = called_emsg;
 #ifdef FEAT_SEARCH_EXTRA
     int		break_loop = FALSE;
-#else
-# define break_loop FALSE
 #endif
 
     if (search_regcomp(pat, RE_SEARCH, pat_use,
@@ -949,7 +946,10 @@ searchit(win, buf, pos, dir, pat, count, options, pat_use, stop_lnum, tm)
 	     * twice.
 	     */
 	    if (!p_ws || stop_lnum != 0 || got_int || called_emsg
-					       || break_loop || found || loop)
+#ifdef FEAT_SEARCH_EXTRA
+					       || break_loop
+#endif
+					       || found || loop)
 		break;
 
 	    /*
@@ -967,7 +967,11 @@ searchit(win, buf, pos, dir, pat, count, options, pat_use, stop_lnum, tm)
 		give_warning((char_u *)_(dir == BACKWARD
 					  ? top_bot_msg : bot_top_msg), TRUE);
 	}
-	if (got_int || called_emsg || break_loop)
+	if (got_int || called_emsg
+#ifdef FEAT_SEARCH_EXTRA
+		|| break_loop
+#endif
+		)
 	    break;
     }
     while (--count > 0 && found);   /* stop after count matches or no match */
@@ -4872,12 +4876,11 @@ linewhite(lnum)
  * Find identifiers or defines in included files.
  * if p_ic && (compl_cont_status & CONT_SOL) then ptr must be in lowercase.
  */
-/*ARGSUSED*/
     void
 find_pattern_in_path(ptr, dir, len, whole, skip_comments,
 				    type, count, action, start_lnum, end_lnum)
     char_u	*ptr;		/* pointer to search pattern */
-    int		dir;		/* direction of expansion */
+    int		dir UNUSED;	/* direction of expansion */
     int		len;		/* length of search pattern */
     int		whole;		/* match whole words only */
     int		skip_comments;	/* don't match inside comments */

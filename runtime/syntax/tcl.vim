@@ -6,8 +6,8 @@
 "		(previously Matt Neumann <mattneu@purpleturtle.com>)
 "		(previously Allan Kelly <allan@fruitloaf.co.uk>)
 " Original:	Robin Becker <robin@jessikat.demon.co.uk>
-" Last Change:	2009/01/25 18:10:04
-" Version:	1.6
+" Last Change:	2009/04/06 02:38:36
+" Version:	1.13
 " URL:		http://real.metasyntax.net:2357/cvs/cvsweb.cgi/Config/vim/syntax/tcl.vim
 "
 " Keywords TODO: click anchor
@@ -27,7 +27,7 @@ syn keyword tclCommand		expr fblocked fconfigure fcopy file fileevent filename f
 syn keyword tclCommand		format gets glob global history incr info interp join
 syn keyword tclCommand		lappend lassign lindex linsert list llength load lrange lrepeat
 syn keyword tclCommand		lreplace lreverse lsearch lset lsort memory namespace open package
-syn keyword tclCommand		pid proc puts pwd read refchan regexp registry regsub rename return
+syn keyword tclCommand		pid proc puts pwd read regexp registry regsub rename return
 syn keyword tclCommand		scan seek set socket source split string subst tell time
 syn keyword tclCommand		trace unknown unload unset update uplevel upvar variable vwait
 
@@ -37,8 +37,23 @@ syn keyword tclCommand		auto_qualify auto_reset parray tcl_endOfWord tcl_findLib
 syn keyword tclCommand		tcl_startOfNextWord tcl_startOfPreviousWord tcl_wordBreakAfter
 syn keyword tclCommand		tcl_wordBreakBefore
 
+" Commands that were added in Tcl 8.6
+
+syn keyword tclCommand		my oo::copy oo::define oo::objdefine self
+syn keyword tclCommand		coroutine tailcall throw yield
+
+" Global variables used by Tcl: http://www.tcl.tk/man/tcl8.5/TclCmd/tclvars.htm
+syn keyword tclVars		env errorCode errorInfo tcl_library tcl_patchLevel tcl_pkgPath
+syn keyword tclVars		tcl_platform tcl_precision tcl_rcFileName tcl_traceCompile
+syn keyword tclVars		tcl_traceExec tcl_wordchars tcl_nonwordchars tcl_version argc argv
+syn keyword tclVars		argv0 tcl_interactive geometry
+
+" Strings which expr accepts as boolean values, aside from zero / non-zero.
+syn keyword tclBoolean		true false on off yes no
+
 syn keyword tclLabel		case default
 syn keyword tclConditional	if then else elseif switch
+syn keyword tclConditional	try finally
 syn keyword tclRepeat		while for foreach break continue
 syn keyword tcltkSwitch	contained	insert create polygon fill outline tag
 
@@ -72,9 +87,14 @@ syn keyword tcltkWidgetSwitch contained activerelief elementborderwidth
 syn keyword tcltkWidgetSwitch contained delete names types create
 " variable reference
 	" ::optional::namespaces
-syn match tclVarRef "$\(\(::\)\?\([[:alnum:]_.]*::\)*\)\a[a-zA-Z0-9_.]*"
+syn match tclVarRef "$\(\(::\)\?\([[:alnum:]_]*::\)*\)\a[[:alnum:]_]*"
 	" ${...} may contain any character except '}'
 syn match tclVarRef "${[^}]*}"
+
+" The syntactic unquote-splicing replacement for [expand].
+syn match tclExpand '\s{\*}'
+syn match tclExpand '^{\*}'
+
 " menu, mane add
 syn keyword tcltkWidgetSwitch contained active end last none cascade checkbutton command radiobutton separator
 syn keyword tcltkWidgetSwitch contained activebackground actveforeground accelerator background bitmap columnbreak
@@ -173,10 +193,11 @@ syn region tcltkCommand matchgroup=tcltkCommandColor start="\<lsort\>" matchgrou
 
 syn keyword tclTodo contained	TODO
 
-
-" String and Character contstants
-" Highlight special characters (those which have a backslash) differently
-syn match   tclSpecial contained "\\\d\d\d\=\|\\."
+" Sequences which are backslash-escaped: http://www.tcl.tk/man/tcl8.5/TclCmd/Tcl.htm#M16
+" Octal, hexadecimal, unicode codepoints, and the classics.
+" Tcl takes as many valid characters in a row as it can, so \xAZ in a string is newline followed by 'Z'.
+syn match   tclSpecial contained '\\\([0-7]\{1,3}\|x\x\{1,2}\|u\x\{1,4}\|[abfnrtv]\)'
+syn match   tclSpecial contained '\\[\[\]\{\}\"\$]'
 
 " Command appearing inside another command or inside a string.
 syn region tclEmbeddedStatement	start='\[' end='\]' contained contains=tclCommand,tclNumber,tclLineContinue,tclString,tclVarRef,tclEmbeddedStatement
@@ -186,7 +207,12 @@ syn region  tclString		  start=+^"+ end=+"+ contains=tclSpecial skip=+\\\\\|\\"+
 "Match all other legal strings.
 syn region  tclString		  start=+[^\\]"+ms=s+1  end=+"+ contains=tclSpecial,tclVarRef,tclEmbeddedStatement skip=+\\\\\|\\"+
 
-syn match   tclLineContinue "\\\s*$"
+" Line continuation is backslash immediately followed by newline.
+syn match tclLineContinue '\\$'
+
+if exists('g:tcl_warn_continuation')
+    syn match tclNotLineContinue '\\\s\+$'
+endif
 
 "integer number, or floating point number without a dot and with "f".
 syn case ignore
@@ -219,6 +245,7 @@ if version >= 508 || !exists("did_tcl_syntax_inits")
   endif
 
   HiLink tcltkSwitch		Special
+  HiLink tclExpand		Special
   HiLink tclLabel		Label
   HiLink tclConditional		Conditional
   HiLink tclRepeat		Repeat
@@ -233,6 +260,9 @@ if version >= 508 || !exists("did_tcl_syntax_inits")
   HiLink tcltkCommandColor	Statement
   HiLink tcltkWidgetColor	Structure
   HiLink tclLineContinue	WarningMsg
+if exists('g:tcl_warn_continuation')
+  HiLink tclNotLineContinue	ErrorMsg
+endif
   HiLink tcltkStringSwitch	Special
   HiLink tcltkArraySwitch	Special
   HiLink tcltkLsortSwitch	Special
@@ -242,7 +272,6 @@ if version >= 508 || !exists("did_tcl_syntax_inits")
   HiLink tcltkNamespaceSwitch	Special
   HiLink tcltkWidgetSwitch	Special
   HiLink tcltkPackConfColor	Identifier
-  "HiLink tcltkLsort		Statement
   HiLink tclVarRef		Identifier
 
   delcommand HiLink
@@ -250,4 +279,4 @@ endif
 
 let b:current_syntax = "tcl"
 
-" vim: ts=8
+" vim: ts=8 noet

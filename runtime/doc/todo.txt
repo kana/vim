@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.2.  Last change: 2009 Apr 22
+*todo.txt*      For Vim version 7.2.  Last change: 2009 Jun 11
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,31 +30,75 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
-Syntax file for Synopsys Design Constraints. (Maurizio Tranchero, 2009 March
-26)
+Patch for high-dpi awareness. (George Reilly, 2009 May 22)
 
-Patch for ":sign" completion. (Dominique Pelle, 2009 Mar 28)
-Update 2009 Apr 22.
+2 patches for Visual Studio 2010. (George Reilly, 2009 May 22)
 
-Patch for vertical line at certain column position, 'guidecolumn' option.
-(Pankaj Garg, 2009 Apr 14, aka Lone, Apr 15)
+patch for using freed memory with ":redrawstatus". (Dominique Pelle, 2009 Jun
+1)
 
-Patch for documentation of press-enter message. (Dominique Pelle, 2009 Apr 19)
+Patch for ":set novice". (Patrick Texier, 2009 Jun 7)
 
-Have a look at /tmp/vimake-1.09.tar.gz (Mike Lear)
+Patch for "setmode()" undefined. (Dominique Pelle, 2009 Jun 8)
+
+Link failure with hangul input feature. (Dominique Pelle, 2009 May 9)
+Patch by SunHyun Nam, May 11.
+Mark "hangulin" for removal?
+
+Patch for photon. (Sean Boudreau, 2009 May 12)
+
+Patch for xz and lzma compression. (Richard Sherman, 2009 May 25)
+Use lzma for both.
+Add lzma support to gzip.vim.  *.lzma  "lzma -d", "lzma -z"
+Ook *.xz.  ".txz" -> ".tar.xz", ".tlz" -> ".tar.lzma"
+
+Patch to avoid effect of 'acd' for mksession. (Yakov Lerner, 2009 Apr 30)
+
+Should have ":unsilent cmd", for ":silent argdo ... echo 'hello' ..."
+
+Screen redrawn only after delay. (Raulnac, 2009 May 28)
+
+Use cppcheck to find unused functions?
 
 Dynamic Folding support for 2html.vim. (Benjamin Fritz, 2009 Feb 12)
 
 Crash in syntax HL code with jquery syntax. (George Reilly, 2009 Mar 24)
 
+Typo fixes for help files. (Dominique Pelle, 2009 May 7, 2nd one)
+
+Conversion problem: When 'encoding' is "utf-16" and 'fenc' is "utf-8" writing
+a file does conversion while none is to be done. (Yukihiro Nakadaira)
+Also: when 'fenc' is empty file is written as utf-8 instead of utf-16.
+Also updated docs for 'fileencoding' about not doing conversion.
+
 Increase number of cscope connectsions from 8 to 42? (Robert Bragg, 2009 Apr
-20)
+20)  Patch by Dominique Pelle, 2009 Apr 26.
 
 ":help g" does not jump to index of commands starting with g.
+
+Windows (Vista): download spell file doesn't work? (Chris Bogen, 2009 May 7)
+
+In command line window ":close" doesn't work properly. (Tony Mechelynck, 2009
+Jun 1)
+
+When a:base in 'completefunc' starts with a number it's passed as a number,
+not a string. (Sean Ma)  Need to add flag to call_func_retlist() to force a
+string value.
+
+Reproducable crash in syntax HL. (George Reilly, Dominique Pelle, 2009 May 9)
+
+Patch for displaying 0x200c and 0x200d. (Ali Gholami Rudi, 2009 May 6)
+Probably needs a bit of work.
 
 Patch for completion of ":find" arguments. (Nazri Ramliy, 2009 Feb 22, 26)
 8   For ":find" and ":sfind" expand files found in 'path'.
 Update 2009 Mar 28.
+
+":e dir<Tab>" with 'wildmode' set to "list" doesn't highlight directory names
+with a space. (Alexandre Provencio, 2009 Jun 9)
+
+Patch to add farsi handling to arabic.c (Ali Gholami Rudi, 2009 May 2)
+Added test, updates, June 11.
 
 Patch to add "focusonly" to 'scrollopt', so that scrollbind also applies in
 window that doesn't have focus. (Jonathon Mah, 2009 Jan 12)
@@ -62,16 +106,29 @@ Needs more work.
 
 Problem with <script> mappings (Andy Wokula, 2009 Mar 8)
 
+When starting Vim with "gvim -f -u non_existent_file > foo.txt" there are a
+few control characters in the output. (Dale Wiles, 2009 May 28)
+
 'cmdwinheight is only used in last window when 'winheight' is a large value.
 (Tony Mechelynck, 2009 Apr 15)
 
 Status line containing winnr() isn't updated when splitting the window (Clark
 J.  Wang, 2009 Mar 31)
 
+Patch for vertical line at certain column position, 'guidecolumn' option.
+(Pankaj Garg, 2009 Apr 14, aka Lone, Apr 15)
+Update 2009 May 2, 'margincolumn'
+
 When 'ft' changes redraw custom status line.
+
+":tab split fname" doesn't set the alternate file in the original window,
+because win_valid() always returns FALSE.  Below win_new_tabpage() in
+ex_docmd.c.
 
 Space before comma in funtion defenition not allowed: "function x(a , b)"
 Give a more appropriate error message.  Add a remark to the docs.
+
+Now that colnr_T is int instead of unsigned, more type casts can be removed.
 
 Unwanted file name escaping: ":echo input('file:' , '', 'file')"
 And use file name completion on a file with spaces. (Frederic Hardy, 2009 Mar
@@ -86,17 +143,29 @@ Cursorline highlighting combines with Search ('hlsearch') but not with
 SpellBad. (Jim Karsten, 2009 Mar 18)
 
 Bug: When reloading a buffer changed outside of Vim, BufRead autocommands
-are applied to the wrong buffer. (Ben Fritz, 2009 Apr 2)
+are applied to the wrong buffer/window. (Ben Fritz, 2009 Apr 2, May 11)
+Ignore window options when not in the right window?
+Perhaps we need to use a hidden window for applying autocommands to a buffer
+that doesn't have a window.
+
+getbufvar() to get a window-local option value for a buffer that's not
+displayed in a window should return the value that's stored for that buffer.
 
 ":he ctrl_u" can be auto-corrected to ":he ctrl-u".
 
 Patch to make synIDattr() work for GUI attributes in Vim without GUI feature.
 (Matt Wozniski, 2009 Apr 15)
 
+Win32: A --remote command that has a directory name starting with a ( doesn't
+work, the backslash is removed, assuming that it escapes the (. (Valery
+Kondakoff, 2009 May 13)
+
 Win32 GUI: Changing manifest helps for dpi changes (Joe Castro, 2009 Mar 27)
 
 Win32: patch for cross compile xxd and GvimExt. (Markus Heidelberg, 2009 Mar
 18)  Also update INSTALLpc.txt?
+Patch for xxd/Make_cyg.mak. (Chris Sutcliffe, 2009 Jun 10) Included in the
+above?
 
 Win32: patch for better font scaling. (George Reilly, 2009 Mar 26)
 
@@ -126,6 +195,10 @@ Inconsistent: starting with $LANG set to es_ES.utf-8 gives Spanish
 messages, even though locale is not supported.  But ":lang messages
 es_ES.utf-8" gives an error and doesn't switch messages. (Dominique Pelle,
 2009 Jan 26)
+
+When $HOME contains special characters, sich as a comma, escape them when used
+in an option. (Michael Hordijk, 2009 May 5)
+Turn "esc" argument of expand_env_esc() into string of chars to be escaped.
 
 Should make 'ignorecase' global-local, so that it makes sense setting it from
 a modeline.
@@ -186,6 +259,11 @@ Document that default font in Athena can be set with resources:
    XtDefaultFontSet: "9x15"
 (Richard Sherman, 2009 Apr 12)
 
+Having "Syntax" in 'eventignore' for :bufdo may cause problems, e.g. for
+":bufdo e" when buffers are open in windows.  ex_listdo(eap) could set the
+option only for when jumping to another buffer, not when the command argument
+is executed.
+
 Crash with dragn-n-drop of file combined with netrw (Marius Gedminas, 2008 Jun
 11)  I can't reproduce it.  It's probably caused by a handle_drop() call
 in combination with autocommands that invoke a ":redraw" command.
@@ -240,6 +318,10 @@ Chase)  Fix by Ian Kelling, 2008 Jul 14.
 
 ":colorscheme" without arguments should echo the current color scheme name.
 
+After using ":recover" or recovering a file in another way, ":x" doesn't save
+what you see.  Mark the buffer as modified?  Only when the text is actually
+different from the original file?
+
 Use "\U12345678" for 32 bit Unicode characters?  (Tony Mechelynck, 2009
 Apr 6)  Or use "\u(123456)", similar to Perl.
 
@@ -248,6 +330,9 @@ either.  Matt Wozniski:  nv_at() calls do_execreg() which uses
 put_in_typebuf().  Char mapped twice?
 
 Patch for colorscheme submenu. (Juergen Kraemer, 2008 Aug 20)
+
+Patch for Python 3 support. (Roland Puntaier, 2009 Jun 3)
+Needs to be tested.
 
 8   Some file systems are case-sensitive, some are not.  Turn
     CASE_INSENSITIVE_FILENAME into an option, at least for completion.
@@ -263,6 +348,8 @@ Backreference not cleared when retrying after \@<= fails?
 (Brett Stahlman, 2008 March 8)
 
 Problem with remote_send(). (Charles Campbell, 2008 Aug 12)
+
+Patch to support netbeans in Unix console Vim. (Xaview de Gaye, 2009 Apr 26)
 
 ftplugin for help file should set 'isk' to help file value.
 
@@ -353,6 +440,8 @@ each choice does.  Similar to  ":help swap-exists-choices"
 
 try/catch not working for argument of return. (Matt Wozniski, 2008 Sep 15)
 
+Recognize and ignore BOM in error file. (Aleksey Baibarin)
+
 ":tab help" always opens a new tab, while ":help" re-uses an existing window.
 Would be more consistent when an existing tab is re-used. (Tony Mechelynck)
 
@@ -368,6 +457,7 @@ Performance tests:
 - ~/vim/test/veryslow.js (file from Daniel Fetchinson)
 - ~/vim/test/slowsearch
 - ~/vim/test/rgb.vim
+- ~/vim/text/FeiqCfg.xml (file from Netjune)
 - search for  a.*e*exn  in the vim executable.  Go to last line to use
   'hlsearch'.
 
@@ -605,6 +695,7 @@ Check other interfaces for changing curbuf in a wrong way.  Patch like for
 if_ruby.c.
 
 Problem with cursorcolumn highlighting and folds. (John Mullin, 2008 Jul 18)
+Problem with cursorcolumn in wide characters. (Dominique Pelle, 2009 May 5)
 
 ":helpgrep" should use the directory from 'helpfile'.
 
