@@ -4111,6 +4111,9 @@ E809	cmdline.txt	/*E809*
 E81	map.txt	/*E81*
 E810	diff.txt	/*E810*
 E811	autocmd.txt	/*E811*
+E812	if_mzsch.txt	/*E812*
+E813	editing.txt	/*E813*
+E814	editing.txt	/*E814*
 E82	message.txt	/*E82*
 E83	message.txt	/*E83*
 E84	windows.txt	/*E84*
@@ -7179,6 +7182,7 @@ settabwinvar()	eval.txt	/*settabwinvar()*
 setting-guifont	gui.txt	/*setting-guifont*
 setting-guitablabel	tabpage.txt	/*setting-guitablabel*
 setting-tabline	tabpage.txt	/*setting-tabline*
+setuid	change.txt	/*setuid*
 setwinvar()	eval.txt	/*setwinvar()*
 sftp	pi_netrw.txt	/*sftp*
 sgml.vim	syntax.txt	/*sgml.vim*
@@ -7686,6 +7690,7 @@ tcsh.vim	syntax.txt	/*tcsh.vim*
 tear-off-menus	gui.txt	/*tear-off-menus*
 telnet-CTRL-]	tagsrch.txt	/*telnet-CTRL-]*
 temp-file-name	eval.txt	/*temp-file-name*
+tempfile	change.txt	/*tempfile*
 template	autocmd.txt	/*template*
 tempname()	eval.txt	/*tempname()*
 term-dependent-settings	term.txt	/*term-dependent-settings*

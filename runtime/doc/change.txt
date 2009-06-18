@@ -1,4 +1,4 @@
-*change.txt*    For Vim version 7.2.  Last change: 2009 Feb 25
+*change.txt*    For Vim version 7.2.  Last change: 2009 Jun 03
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -506,9 +506,9 @@ comment (starting with '"') after the ":!" command.
 			{filter}.  Vim replaces the optional bangs with the
 			latest given command and appends the optional [arg].
 			Vim saves the output of the filter command in a
-			temporary file and then reads the file into the
-			buffer.  Vim uses the 'shellredir' option to redirect
-			the filter output to the temporary file.
+			temporary file and then reads the file into the buffer
+			|tempfile|.  Vim uses the 'shellredir' option to
+			redirect the filter output to the temporary file.
 			However, if the 'shelltemp' option is off then pipes
 			are used when possible (on Unix).
 			When the 'R' flag is included in 'cpoptions' marks in
@@ -524,7 +524,9 @@ comment (starting with '"') after the ":!" command.
 			option is empty (this is the default), use the
 			internal formatting function |C-indenting|.  But when
 			'indentexpr' is not empty, it will be used instead
-			|indent-expression|.
+			|indent-expression|.  When Vim was compiled without
+			internal formatting then the "indent" program is used
+			as a last resort.
 
 							*==*
 ==			Filter [count] lines like with ={motion}.
@@ -532,6 +534,22 @@ comment (starting with '"') after the ":!" command.
 							*v_=*
 {Visual}=		Filter the highlighted lines like with ={motion}.
 			{not in Vi}
+
+
+						*tempfile* *setuid*
+Vim uses temporary files for filtering, generating diffs and also for
+tempname().  For Unix, the file will be in a private directory (only
+accessible by the current user) to avoid security problems (e.g., a symlink
+attack or other people reading your file).  When Vim exits the directory and
+all files in it are deleted.  When Vim has the setuid bit set this may cause
+problems, the temp file is owned by the setuid user but the filter command
+probably runs as the original user.
+On MS-DOS and OS/2 the first of these directories that works is used: $TMP,
+$TEMP, c:\TMP, c:\TEMP.
+For Unix the list of directories is: $TMPDIR, /tmp, current-dir, $HOME.
+For MS-Windows the GetTempFileName() system function is used.
+For other systems the tmpnam() library function is used.
+
 
 
 4.2 Substitute						*:substitute*

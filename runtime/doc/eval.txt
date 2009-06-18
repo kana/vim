@@ -1,4 +1,4 @@
-*eval.txt*	For Vim version 7.2.  Last change: 2009 Mar 22
+*eval.txt*	For Vim version 7.2.  Last change: 2009 May 17
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -1684,7 +1684,7 @@ char2nr( {expr})		Number	ASCII value of first char in {expr}
 cindent( {lnum})		Number	C indent for line {lnum}
 clearmatches()			none	clear all matches
 col( {expr})			Number	column nr of cursor or mark
-complete({startcol}, {matches})	none	set Insert mode completion
+complete( {startcol}, {matches}) none	set Insert mode completion
 complete_add( {expr})		Number	add completion match
 complete_check()		Number	check for key typed during completion
 confirm( {msg} [, {choices} [, {default} [, {type}]]])
@@ -1709,7 +1709,7 @@ eval( {string})			any	evaluate {string} into its value
 eventhandler( )			Number	TRUE if inside an event handler
 executable( {expr})		Number	1 if executable {expr} exists
 exists( {expr})			Number	TRUE if {expr} exists
-extend({expr1}, {expr2} [, {expr3}])
+extend( {expr1}, {expr2} [, {expr3}])
 				List/Dict insert items of {expr2} into {expr1}
 expand( {expr} [, {flag}])	String	expand special keywords in {expr}
 feedkeys( {string} [, {mode}])	Number	add key sequence to typeahead buffer
@@ -1751,7 +1751,7 @@ getftime( {fname})		Number	last modification time of file
 getftype( {fname})		String	description of type of file {fname}
 getline( {lnum})		String	line {lnum} of current buffer
 getline( {lnum}, {end})		List	lines {lnum} to {end} of current buffer
-getloclist({nr})		List	list of location list items
+getloclist( {nr})		List	list of location list items
 getmatches()			List	list of current matches
 getpid()			Number	process ID of Vim
 getpos( {expr})			List	position of cursor, mark, etc.
@@ -1820,9 +1820,9 @@ matchlist( {expr}, {pat}[, {start}[, {count}]])
 				List	match and submatches of {pat} in {expr}
 matchstr( {expr}, {pat}[, {start}[, {count}]])
 				String	{count}'th match of {pat} in {expr}
-max({list})			Number	maximum value of items in {list}
-min({list})			Number	minimum value of items in {list}
-mkdir({name} [, {path} [, {prot}]])
+max( {list})			Number	maximum value of items in {list}
+min( {list})			Number	minimum value of items in {list}
+mkdir( {name} [, {path} [, {prot}]])
 				Number	create directory {name}
 mode( [expr])			String	current editing mode
 nextnonblank( {lnum})		Number	line nr of non-blank line >= {lnum}
@@ -1834,7 +1834,7 @@ printf( {fmt}, {expr1}...)	String	format text
 pumvisible()			Number	whether popup menu is visible
 range( {expr} [, {max} [, {stride}]])
 				List	items from {expr} to {max}
-readfile({fname} [, {binary} [, {max}]])
+readfile( {fname} [, {binary} [, {max}]])
 				List	get list of lines from file {fname}
 reltime( [{start} [, {end}]])	List	get time value
 reltimestr( {time})		String	turn time value into a String
@@ -1855,7 +1855,7 @@ reverse( {list})		List	reverse {list} in-place
 round( {expr})			Float	round off {expr}
 search( {pattern} [, {flags} [, {stopline} [, {timeout}]]])
 				Number	search for {pattern}
-searchdecl({name} [, {global} [, {thisblock}]])
+searchdecl( {name} [, {global} [, {thisblock}]])
 				Number	search for variable declaration
 searchpair( {start}, {middle}, {end} [, {flags} [, {skip} [...]]])
 				Number	search for other end of start/end pair
@@ -1910,7 +1910,7 @@ synID( {lnum}, {col}, {trans})	Number	syntax ID at {lnum} and {col}
 synIDattr( {synID}, {what} [, {mode}])
 				String	attribute {what} of syntax ID {synID}
 synIDtrans( {synID})		Number	translated syntax ID of {synID}
-synstack({lnum}, {col})		List	stack of syntax IDs at {lnum} and {col}
+synstack( {lnum}, {col})	List	stack of syntax IDs at {lnum} and {col}
 system( {expr} [, {input}])	String	output of shell command/filter {expr}
 tabpagebuflist( [{arg}])	List	list of buffer numbers in tab page
 tabpagenr( [{arg}])		Number	number of current or last tab page
@@ -1934,10 +1934,10 @@ winheight( {nr})		Number	height of window {nr}
 winline()			Number	window line of the cursor
 winnr( [{expr}])		Number	number of current window
 winrestcmd()			String	returns command to restore window sizes
-winrestview({dict})		none	restore view of current window
+winrestview( {dict})		none	restore view of current window
 winsaveview()			Dict	save view of current window
 winwidth( {nr})			Number	width of window {nr}
-writefile({list}, {fname} [, {binary}])
+writefile( {list}, {fname} [, {binary}])
 				Number	write list of lines to file {fname}
 
 abs({expr})							*abs()*
@@ -3768,7 +3768,7 @@ line({expr})	The result is a Number, which is the line number of the file
 <							*last-position-jump*
 		This autocommand jumps to the last known position in a file
 		just after opening it, if the '" mark is set: >
-	:au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+	:au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 
 line2byte({lnum})					*line2byte()*
 		Return the byte count from the start of the buffer for line
@@ -5521,10 +5521,7 @@ tempname()					*tempname()* *temp-file-name*
 		is different for at least 26 consecutive calls.  Example: >
 			:let tmpfile = tempname()
 			:exe "redir > " . tmpfile
-<		For Unix, the file will be in a private directory (only
-		accessible by the current user) to avoid security problems
-		(e.g., a symlink attack or other people reading your file).
-		When Vim exits the directory and all files in it are deleted.
+<		For Unix, the file will be in a private directory |tempfile|.
 		For MS-Windows forward slashes are used when the 'shellslash'
 		option is set or when 'shellcmdflag' starts with '-'.
 

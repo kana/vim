@@ -1,7 +1,7 @@
 " Vim support file to detect file types
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2008 Dec 14
+" Last Change:	2009 Jun 13
 
 " Listen very carefully, I will say this only once
 if exists("did_load_filetypes")
@@ -110,8 +110,8 @@ au BufNewFile,BufRead build.xml			setf ant
 au BufNewFile,BufRead proftpd.conf*		call s:StarSetf('apachestyle')
 
 " Apache config file
-au BufNewFile,BufRead .htaccess			 setf apache
-au BufNewFile,BufRead httpd.conf*,srm.conf*,access.conf*,apache.conf*,apache2.conf*,/etc/apache2/*.conf* call s:StarSetf('apache')
+au BufNewFile,BufRead .htaccess,/etc/httpd/*.conf		 setf apache
+au BufNewFile,BufRead httpd.conf*,srm.conf*,access.conf*,apache.conf*,apache2.conf*,/etc/apache2/*.conf*,/etc/httpd/conf.d/*.conf* call s:StarSetf('apache')
 
 " XA65 MOS6510 cross assembler
 au BufNewFile,BufRead *.a65			setf a65
@@ -899,7 +899,7 @@ au BufNewFile,BufRead *.java,*.jav		setf java
 au BufNewFile,BufRead *.jj,*.jjt		setf javacc
 
 " JavaScript, ECMAScript
-au BufNewFile,BufRead *.js,*.javascript,*.es	setf javascript
+au BufNewFile,BufRead *.js,*.javascript,*.es,*.jsx	setf javascript
 
 " Java Server Pages
 au BufNewFile,BufRead *.jsp			setf jsp
@@ -1691,7 +1691,15 @@ func! SetFileTypeSH(name)
   if expand("<amatch>") =~ g:ft_ignore_pat
     return
   endif
-  if a:name =~ '\<ksh\>'
+  if a:name =~ '\<csh\>'
+    " Some .sh scripts contain #!/bin/csh.
+    call SetFileTypeShell("csh")
+    return
+  elseif a:name =~ '\<tcsh\>'
+    " Some .sh scripts contain #!/bin/tcsh.
+    call SetFileTypeShell("tcsh")
+    return
+  elseif a:name =~ '\<ksh\>'
     let b:is_kornshell = 1
     if exists("b:is_bash")
       unlet b:is_bash
@@ -1829,8 +1837,13 @@ au BufNewFile,BufRead *.rules			call s:FTRules()
 
 let s:ft_rules_udev_rules_pattern = '^\s*\cudev_rules\s*=\s*"\([^"]\{-1,}\)/*".*'
 func! s:FTRules()
-  if expand('<amatch>:p') =~ '^/etc/udev/\%(rules\.d/\)\=.*\.rules$'
+  let path = expand('<amatch>:p')
+  if path =~ '^/etc/udev/\%(rules\.d/\)\=.*\.rules$'
     setf udevrules
+    return
+  endif
+  if path =~ '^/etc/ufw/'
+    setf conf  " Better than hog
     return
   endif
   try
@@ -1914,6 +1927,9 @@ au BufNewFile,BufRead *.cm			setf voscm
 
 " Sysctl
 au BufNewFile,BufRead /etc/sysctl.conf		setf sysctl
+
+" Synopsys Design Constraints
+au BufNewFile,BufRead *.sdc			setf sdc
 
 " Sudoers
 au BufNewFile,BufRead /etc/sudoers,sudoers.tmp	setf sudoers
