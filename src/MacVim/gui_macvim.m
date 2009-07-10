@@ -42,12 +42,11 @@ vimmenu_T *menu_for_descriptor(NSArray *desc);
  * Parse the GUI related command-line arguments.  Any arguments used are
  * deleted from argv, and *argc is decremented accordingly.  This is called
  * when vim is started, whether or not the GUI has been started.
+ * NOTE: This function will be called twice if the Vim process forks.
  */
     void
 gui_mch_prepare(int *argc, char **argv)
 {
-    //NSLog(@"gui_mch_prepare(argc=%d)", *argc);
-
     // Set environment variables $VIM and $VIMRUNTIME
     // NOTE!  If vim_getenv is called with one of these as parameters before
     // they have been set here, they will most likely end up with the wrong
@@ -97,7 +96,6 @@ gui_mch_prepare(int *argc, char **argv)
     int
 gui_mch_init_check(void)
 {
-    //NSLog(@"gui_mch_init_check()");
     return OK;
 }
 
@@ -109,7 +107,8 @@ gui_mch_init_check(void)
     int
 gui_mch_init(void)
 {
-    //NSLog(@"gui_mch_init()");
+    ASLInit();
+    ASLogDebug(@"");
 
     if (![[MMBackend sharedInstance] checkin]) {
         // TODO: Kill the process if there is no terminal to fall back on,
@@ -151,7 +150,7 @@ gui_mch_init(void)
     void
 gui_mch_exit(int rc)
 {
-    //NSLog(@"gui_mch_exit(rc=%d)", rc);
+    ASLogDebug(@"rc=%d", rc);
 
     [[MMBackend sharedInstance] exit];
 }
@@ -466,8 +465,7 @@ gui_mch_new_colors(void)
     gui.def_back_pixel = gui.back_pixel;
     gui.def_norm_pixel = gui.norm_pixel;
 
-    //NSLog(@"gui_mch_new_colors(back=%x, norm=%x)", gui.def_back_pixel,
-    //        gui.def_norm_pixel);
+    ASLogDebug(@"back=%x norm=%x", gui.def_back_pixel, gui.def_norm_pixel);
 
     [[MMBackend sharedInstance]
         setDefaultColorsBackground:gui.def_back_pixel
@@ -934,7 +932,7 @@ gui_mch_free_font(font)
     GuiFont	font;
 {
     if (font != NOFONT) {
-        //NSLog(@"gui_mch_free_font(font=0x%x)", font);
+        ASLogDebug(@"font=0x%x", font);
         [(id)font release];
     }
 }
@@ -953,8 +951,7 @@ gui_mch_retain_font(GuiFont font)
     GuiFont
 gui_mch_get_font(char_u *name, int giveErrorIfMissing)
 {
-    //NSLog(@"gui_mch_get_font(name=%s, giveErrorIfMissing=%d)", name,
-    //        giveErrorIfMissing);
+    ASLogDebug(@"name='%s' giveErrorIfMissing=%d", name, giveErrorIfMissing);
 
     GuiFont font = gui_macvim_font_with_name(name);
     if (font != NOFONT)
@@ -987,7 +984,7 @@ gui_mch_get_fontname(GuiFont font, char_u *name)
     int
 gui_mch_init_font(char_u *font_name, int fontset)
 {
-    //NSLog(@"gui_mch_init_font(font_name=%s, fontset=%d)", font_name, fontset);
+    ASLogDebug(@"font_name='%s' fontset=%d", font_name, fontset);
 
     if (font_name && STRCMP(font_name, "*") == 0) {
         // :set gfn=* shows the font panel.
@@ -1239,14 +1236,14 @@ gui_mch_stop_blink(void)
     void
 gui_mch_getmouse(int *x, int *y)
 {
-    //NSLog(@"gui_mch_getmouse()");
+    ASLogInfo(@"Not implemented!");
 }
 
 
     void
 gui_mch_setmouse(int x, int y)
 {
-    //NSLog(@"gui_mch_setmouse(x=%d, y=%d)", x, y);
+    ASLogInfo(@"Not implemented!");
 }
 
 
@@ -1424,8 +1421,8 @@ gui_mch_browse(
     char_u *initdir,
     char_u *filter)
 {
-    //NSLog(@"gui_mch_browse(saving=%d, title=%s, dflt=%s, ext=%s, initdir=%s,"
-    //        " filter=%s", saving, title, dflt, ext, initdir, filter);
+    ASLogDebug(@"saving=%d title='%s' dflt='%s' ext='%s' initdir='%s' "
+               "filter='%s'", saving, title, dflt, ext, initdir, filter);
 
     // Ensure no data is on the output queue before presenting the dialog.
     gui_macvim_force_flush();
@@ -1454,9 +1451,9 @@ gui_mch_dialog(
     int		dfltbutton,
     char_u	*textfield)
 {
-    //NSLog(@"gui_mch_dialog(type=%d title=%s message=%s buttons=%s "
-    //        "dfltbutton=%d textfield=%s)", type, title, message, buttons,
-    //        dfltbutton, textfield);
+    ASLogDebug(@"type=%d title='%s' message='%s' buttons='%s' dfltbutton=%d "
+               "textfield='%s'", type, title, message, buttons, dfltbutton,
+               textfield);
 
     // Ensure no data is on the output queue before presenting the dialog.
     gui_macvim_force_flush();
@@ -1569,7 +1566,7 @@ gui_mch_get_rgb(guicolor_T pixel)
     void
 gui_mch_get_screen_dimensions(int *screen_w, int *screen_h)
 {
-    //NSLog(@"gui_mch_get_screen_dimensions()");
+    ASLogDebug(@"Columns=%d Rows=%d", Columns, Rows);
     *screen_w = Columns;
     *screen_h = Rows;
 }
@@ -1642,10 +1639,9 @@ gui_mch_set_shellsize(
     int		base_height,
     int		direction)
 {
-    //NSLog(@"gui_mch_set_shellsize(width=%d, height=%d, min_width=%d,"
-    //        " min_height=%d, base_width=%d, base_height=%d, direction=%d)",
-    //        width, height, min_width, min_height, base_width, base_height,
-    //        direction);
+    ASLogDebug(@"width=%d height=%d min_width=%d min_height=%d base_width=%d "
+               "base_height=%d direction=%d", width, height, min_width,
+               min_height, base_width, base_height, direction);
     [[MMBackend sharedInstance] setRows:height columns:width];
 }
 
@@ -1673,7 +1669,7 @@ gui_mch_set_winpos(int x, int y)
     void
 gui_mch_settitle(char_u *title, char_u *icon)
 {
-    //NSLog(@"gui_mch_settitle(title=%s, icon=%s)", title, icon);
+    ASLogDebug(@"title='%s' icon='%s'", title, icon);
 
 #ifdef FEAT_MBYTE
     title = CONVERT_TO_UTF8(title);

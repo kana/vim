@@ -241,6 +241,9 @@ if &filetype == 'changelog'
   let &cpo = s:cpo_save
   unlet s:cpo_save
 else
+  let s:cpo_save = &cpo
+  set cpo&vim
+
   " Add the Changelog opening mapping
   nnoremap <silent> <Leader>o :call <SID>open_changelog()<CR>
 
@@ -292,4 +295,7 @@ else
 
     call s:new_changelog_entry(prefix)
   endfunction
+
+  let &cpo = s:cpo_save
+  unlet s:cpo_save
 endif

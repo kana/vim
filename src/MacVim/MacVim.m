@@ -13,6 +13,7 @@
 
 #import "MacVim.h"
 
+
 char *MessageStrings[] = 
 {
     "INVALID MESSAGE ID",
@@ -99,12 +100,17 @@ char *MessageStrings[] =
 
 
 
+NSString *MMLogLevelKey     = @"MMLogLevel";
+NSString *MMLogToStdErrKey  = @"MMLogToStdErr";
+
 // Argument used to stop MacVim from opening an empty window on startup
 // (techincally this is a user default but should not be used as such).
 NSString *MMNoWindowKey = @"MMNoWindow";
 
 // Vim pasteboard type (holds motion type + string)
 NSString *VimPBoardType = @"VimPBoardType";
+
+int ASLogLevel = ASL_LEVEL_NOTICE;
 
 
 
@@ -116,7 +122,8 @@ debugStringForMessageQueue(NSArray *queue)
 {
     NSMutableString *s = [NSMutableString new];
     unsigned i, count = [queue count];
-    int item = 0, menu = 0, enable = 0;
+    int item = 0, menu = 0, enable = 0, remove = 0;
+    int sets = 0, sett = 0, shows = 0, cres = 0, dess = 0;
     for (i = 0; i < count; i += 2) {
         NSData *value = [queue objectAtIndex:i];
         int msgid = *((int*)[value bytes]);
@@ -125,11 +132,23 @@ debugStringForMessageQueue(NSArray *queue)
         if (msgid == AddMenuItemMsgID) ++item;
         else if (msgid == AddMenuMsgID) ++menu;
         else if (msgid == EnableMenuItemMsgID) ++enable;
+        else if (msgid == RemoveMenuItemMsgID) ++remove;
+        else if (msgid == SetScrollbarPositionMsgID) ++sets;
+        else if (msgid == SetScrollbarThumbMsgID) ++sett;
+        else if (msgid == ShowScrollbarMsgID) ++shows;
+        else if (msgid == CreateScrollbarMsgID) ++cres;
+        else if (msgid == DestroyScrollbarMsgID) ++dess;
         else [s appendFormat:@"%s ", MessageStrings[msgid]];
     }
     if (item > 0) [s appendFormat:@"AddMenuItemMsgID(%d) ", item];
     if (menu > 0) [s appendFormat:@"AddMenuMsgID(%d) ", menu];
     if (enable > 0) [s appendFormat:@"EnableMenuItemMsgID(%d) ", enable];
+    if (remove > 0) [s appendFormat:@"RemoveMenuItemMsgID(%d) ", remove];
+    if (sets > 0) [s appendFormat:@"SetScrollbarPositionMsgID(%d) ", sets];
+    if (sett > 0) [s appendFormat:@"SetScrollbarThumbMsgID(%d) ", sett];
+    if (shows > 0) [s appendFormat:@"ShowScrollbarMsgID(%d) ", shows];
+    if (cres > 0) [s appendFormat:@"CreateScrollbarMsgID(%d) ", cres];
+    if (dess > 0) [s appendFormat:@"DestroyScrollbarMsgID(%d) ", dess];
 
     return [s autorelease];
 }
@@ -244,3 +263,34 @@ debugStringForMessageQueue(NSArray *queue)
 }
 
 @end
+
+
+
+
+    void
+ASLInit()
+{
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+
+    // Allow for changing the log level via user defaults.  If no key is found
+    // the default log level will be used (which for ASL is to log everything
+    // up to ASL_LEVEL_NOTICE).  This key is an integer which corresponds to
+    // the ASL_LEVEL_* macros (0 is most severe, 7 is debug level).
+    id logLevelObj = [ud objectForKey:MMLogLevelKey];
+    if (logLevelObj) {
+        int logLevel = [logLevelObj intValue];
+        if (logLevel < 0) logLevel = 0;
+        if (logLevel > ASL_LEVEL_DEBUG) logLevel = ASL_LEVEL_DEBUG;
+
+        ASLogLevel = logLevel;
+        asl_set_filter(NULL, ASL_FILTER_MASK_UPTO(logLevel));
+    }
+
+    // Allow for changing whether a copy of each log should be sent to stderr
+    // (this defaults to NO if this key is missing in the user defaults
+    // database).  The above filter mask is applied to logs going to stderr,
+    // contrary to how "vanilla" ASL works.
+    BOOL logToStdErr = [ud boolForKey:MMLogToStdErrKey];
+    if (logToStdErr)
+        asl_add_log_file(NULL, 2);  // The file descriptor for stderr is 2
+}
