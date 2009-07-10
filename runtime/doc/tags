@@ -2867,6 +2867,8 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 :unme	gui.txt	/*:unme*
 :unmenu	gui.txt	/*:unmenu*
 :unmenu-all	gui.txt	/*:unmenu-all*
+:uns	various.txt	/*:uns*
+:unsilent	various.txt	/*:unsilent*
 :up	editing.txt	/*:up*
 :update	editing.txt	/*:update*
 :v	repeat.txt	/*:v*
@@ -4110,10 +4112,10 @@ E808	eval.txt	/*E808*
 E809	cmdline.txt	/*E809*
 E81	map.txt	/*E81*
 E810	diff.txt	/*E810*
-E811	autocmd.txt	/*E811*
-E812	if_mzsch.txt	/*E812*
+E812	autocmd.txt	/*E812*
 E813	editing.txt	/*E813*
 E814	editing.txt	/*E814*
+E815	if_mzsch.txt	/*E815*
 E82	message.txt	/*E82*
 E83	message.txt	/*E83*
 E84	windows.txt	/*E84*
