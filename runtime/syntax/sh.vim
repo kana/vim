@@ -2,8 +2,8 @@
 " Language:		shell (sh) Korn shell (ksh) bash (sh)
 " Maintainer:		Dr. Charles E. Campbell, Jr.  <NdrOchipS@PcampbellAfamily.Mbiz>
 " Previous Maintainer:	Lennart Schultz <Lennart.Schultz@ecmwf.int>
-" Last Change:		Sep 17, 2008
-" Version:		104
+" Last Change:		Jul 01, 2009
+" Version:		107
 " URL:		http://mysite.verizon.net/astronaut/vim/index.html#vimlinks_syntax
 " For options and settings, please use:      :help ft-sh-syntax
 " This file includes many ideas from Éric Brunet (eric.brunet@ens.fr)
@@ -67,13 +67,13 @@ syn case match
 
 " Clusters: contains=@... clusters {{{1
 "==================================
-syn cluster shErrorList	contains=shDoError,shIfError,shInError,shCaseError,shEsacError,shCurlyError,shParenError,shTestError
+syn cluster shErrorList	contains=shDoError,shIfError,shInError,shCaseError,shEsacError,shCurlyError,shParenError,shTestError,shOK
 if exists("b:is_kornshell")
  syn cluster ErrorList add=shDTestError
 endif
-syn cluster shArithParenList	contains=shArithmetic,shDeref,shDerefSimple,shEcho,shEscape,shNumber,shOperator,shPosnParm,shExSingleQuote,shRedir,shSingleQuote,shDoubleQuote,shStatement,shVariable,shAlias,shTest,shCtrlSeq,shSpecial,shParen
+syn cluster shArithParenList	contains=shArithmetic,shDeref,shDerefSimple,shEcho,shEscape,shNumber,shOperator,shPosnParm,shExSingleQuote,shRedir,shSingleQuote,shDoubleQuote,shStatement,shVariable,shAlias,shTest,shCtrlSeq,shSpecial,shParen,bashSpecialVariables,bashStatement
 syn cluster shArithList	contains=@shArithParenList,shParenError
-syn cluster shCaseEsacList	contains=shCaseStart,shCase,shCaseBar,shCaseIn,shComment,shDeref,shDerefSimple,shCaseCommandSub,shCaseExSingleQuote,shCaseSingleQuote,shCaseDoubleQuote,shCtrlSeq,@shErrorList,shStringSpecial
+syn cluster shCaseEsacList	contains=shCaseStart,shCase,shCaseBar,shCaseIn,shComment,shDeref,shDerefSimple,shCaseCommandSub,shCaseExSingleQuote,shCaseSingleQuote,shCaseDoubleQuote,shCtrlSeq,@shErrorList,shStringSpecial,shExpr
 syn cluster shCaseList	contains=@shCommandSubList,shCaseEsac,shColon,shCommandSub,shCommandSub,shComment,shDo,shEcho,shExpr,shFor,shHereDoc,shIf,shRedir,shSetList,shSource,shStatement,shVariable,shCtrlSeq
 syn cluster shColonList	contains=@shCaseList
 syn cluster shCommandSubList	contains=shArithmetic,shDeref,shDerefSimple,shEscape,shNumber,shOperator,shPosnParm,shExSingleQuote,shSingleQuote,shDoubleQuote,shStatement,shVariable,shSubSh,shAlias,shTest,shCtrlSeq,shSpecial
@@ -84,7 +84,7 @@ syn cluster shDerefVarList	contains=shDerefOp,shDerefVarArray,shDerefOpError
 syn cluster shEchoList	contains=shArithmetic,shCommandSub,shDeref,shDerefSimple,shExpr,shExSingleQuote,shSingleQuote,shDoubleQuote,shCtrlSeq,shEchoQuote
 syn cluster shExprList1	contains=shCharClass,shNumber,shOperator,shExSingleQuote,shSingleQuote,shDoubleQuote,shExpr,shDblBrace,shDeref,shDerefSimple,shCtrlSeq
 syn cluster shExprList2	contains=@shExprList1,@shCaseList,shTest
-syn cluster shFunctionList	contains=@shCommandSubList,shCaseEsac,shColon,shCommandSub,shCommandSub,shComment,shDo,shEcho,shExpr,shFor,shHereDoc,shIf,shRedir,shSetList,shSource,shStatement,shVariable,shOperator,shCtrlSeq
+syn cluster shFunctionList	contains=@shCommandSubList,shCaseEsac,shColon,shCommandSub,shCommandSub,shComment,shDo,shEcho,shExpr,shFor,shHereDoc,shIf,shOption,shRedir,shSetList,shSource,shStatement,shVariable,shOperator,shCtrlSeq
 if exists("b:is_kornshell") || exists("b:is_bash")
  syn cluster shFunctionList	add=shRepeat
  syn cluster shFunctionList	add=shDblBrace,shDblParen
@@ -94,7 +94,7 @@ syn cluster shHereList	contains=shBeginHere,shHerePayload
 syn cluster shHereListDQ	contains=shBeginHere,@shDblQuoteList,shHerePayload
 syn cluster shIdList	contains=shCommandSub,shWrapLineOperator,shSetOption,shDeref,shDerefSimple,shRedir,shExSingleQuote,shSingleQuote,shDoubleQuote,shExpr,shCtrlSeq,shStringSpecial
 syn cluster shLoopList	contains=@shCaseList,shTestOpr,shExpr,shDblBrace,shConditional,shCaseEsac,shTest,@shErrorList,shSet
-syn cluster shSubShList	contains=@shCaseList,shOperator
+syn cluster shSubShList	contains=@shCommandSubList,shCaseEsac,shColon,shCommandSub,shCommandSub,shComment,shDo,shEcho,shExpr,shFor,shIf,shRedir,shSetList,shSource,shStatement,shVariable,shCtrlSeq,shOperator
 syn cluster shTestList	contains=shCharClass,shComment,shCommandSub,shDeref,shDerefSimple,shDoubleQuote,shExpr,shExpr,shNumber,shOperator,shExSingleQuote,shSingleQuote,shTestOpr,shTest,shCtrlSeq
 
 
@@ -125,6 +125,7 @@ syn match   shCaseError ";;"
 syn match   shEsacError "\<esac\>"
 syn match   shCurlyError "}"
 syn match   shParenError ")"
+syn match   shOK	'\.\(done\|fi\|in\|esac\)'
 if exists("b:is_kornshell")
  syn match     shDTestError "]]"
 endif
@@ -203,10 +204,11 @@ syn match  shComma     contained	","
 " ====
 syn match   shCaseBar	contained skipwhite "\(^\|[^\\]\)\(\\\\\)*\zs|"		nextgroup=shCase,shCaseStart,shCaseBar,shComment,shCaseExSingleQuote,shCaseSingleQuote,shCaseDoubleQuote
 syn match   shCaseStart	contained skipwhite skipnl "("			nextgroup=shCase,shCaseBar
-syn region  shCase	contained skipwhite skipnl matchgroup=shSnglCase start="\%(\\.\|[^#$()'" \t]\)\{-}\zs)"  end=";;" end="esac"me=s-1 contains=@shCaseList nextgroup=shCaseStart,shCase,shComment
 if (g:sh_fold_enabled % (s:sh_fold_ifdofor * 2))/s:sh_fold_ifdofor
+ syn region  shCase	fold contained skipwhite skipnl matchgroup=shSnglCase start="\%(\\.\|[^#$()'" \t]\)\{-}\zs)"  end=";;" end="esac"me=s-1 contains=@shCaseList nextgroup=shCaseStart,shCase,shComment
  syn region  shCaseEsac	fold matchgroup=shConditional start="\<case\>" end="\<esac\>"	contains=@shCaseEsacList
 else
+ syn region  shCase	contained skipwhite skipnl matchgroup=shSnglCase start="\%(\\.\|[^#$()'" \t]\)\{-}\zs)"  end=";;" end="esac"me=s-1 contains=@shCaseList nextgroup=shCaseStart,shCase,shComment
  syn region  shCaseEsac	matchgroup=shConditional start="\<case\>" end="\<esac\>"	contains=@shCaseEsacList
 endif
 syn keyword shCaseIn	contained skipwhite skipnl in			nextgroup=shCase,shCaseStart,shCaseBar,shComment,shCaseExSingleQuote,shCaseSingleQuote,shCaseDoubleQuote

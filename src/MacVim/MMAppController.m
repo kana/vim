@@ -153,6 +153,12 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
 + (void)initialize
 {
+    static BOOL initDone = NO;
+    if (initDone) return;
+    initDone = YES;
+
+    ASLInit();
+
     NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
         [NSNumber numberWithBool:NO],   MMNoWindowKey,
         [NSNumber numberWithInt:64],    MMTabMinWidthKey,
@@ -237,10 +243,8 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     // updated in MMBackend.m.
     NSString *name = [NSString stringWithFormat:@"%@-connection",
              [[NSBundle mainBundle] bundlePath]];
-    //NSLog(@"Registering connection with name '%@'", name);
     if (![connection registerName:name]) {
-        NSLog(@"FATAL ERROR: Failed to register connection with name '%@'",
-                name);
+        ASLogCrit(@"Failed to register connection with name '%@'", name);
         [connection release];  connection = nil;
     }
 
@@ -249,7 +253,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
 - (void)dealloc
 {
-    //NSLog(@"MMAppController dealloc");
+    ASLogDebug(@"");
 
     [connection release];  connection = nil;
     [inputQueues release];  inputQueues = nil;
@@ -335,6 +339,8 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
         [self scheduleVimControllerPreloadAfterDelay:2];
         [self startWatchingVimDir];
     }
+
+    ASLogInfo(@"MacVim finished launching");
 }
 
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender
@@ -379,12 +385,15 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
 - (BOOL)applicationOpenUntitledFile:(NSApplication *)sender
 {
+    ASLogDebug(@"Opening untitled window...");
     [self newWindow:self];
     return YES;
 }
 
 - (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames
 {
+    ASLogInfo(@"Opening files %@", filenames);
+
     // Extract ODB/Xcode/Spotlight parameters from the current Apple event,
     // sort the filenames, and then let openFiles:withArguments: do the heavy
     // lifting.
@@ -518,20 +527,20 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
         e = [vimControllers objectEnumerator];
         id vc;
         while ((vc = [e nextObject])) {
-            //NSLog(@"Terminate pid=%d", [vc pid]);
+            ASLogDebug(@"Terminate pid=%d", [vc pid]);
             [vc sendMessage:TerminateNowMsgID data:nil];
         }
 
         e = [cachedVimControllers objectEnumerator];
         while ((vc = [e nextObject])) {
-            //NSLog(@"Terminate pid=%d (cached)", [vc pid]);
+            ASLogDebug(@"Terminate pid=%d (cached)", [vc pid]);
             [vc sendMessage:TerminateNowMsgID data:nil];
         }
 
         // If a Vim process is being preloaded as we quit we have to forcibly
         // kill it since we have not established a connection yet.
         if (preloadPid > 0) {
-            //NSLog(@"INCOMPLETE preloaded process: preloadPid=%d", preloadPid);
+            ASLogDebug(@"Kill incomplete preloaded process pid=%d", preloadPid);
             kill(preloadPid, SIGKILL);
         }
 
@@ -539,7 +548,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
         e = [[pidArguments allKeys] objectEnumerator];
         NSNumber *pidKey;
         while ((pidKey = [e nextObject])) {
-            //NSLog(@"INCOMPLETE process: pid=%d", [pidKey intValue]);
+            ASLogDebug(@"Kill incomplete process pid=%d", [pidKey intValue]);
             kill([pidKey intValue], SIGKILL);
         }
 
@@ -552,6 +561,8 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
 - (void)applicationWillTerminate:(NSNotification *)notification
 {
+    ASLogInfo(@"Terminating MacVim...");
+
     [self stopWatchingVimDir];
 
 #ifdef MM_ENABLE_PLUGINS
@@ -586,7 +597,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
         if (numChildProcesses <= 0)
             break;
 
-        //NSLog(@"%d processes still left, sleep a bit...", numChildProcesses);
+        ASLogDebug(@"%d processes still left, hold on...", numChildProcesses);
 
         // Run in NSConnectionReplyMode while waiting instead of calling e.g.
         // usleep().  Otherwise incoming messages may clog up the DO queues and
@@ -601,8 +612,9 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
             ;   // do nothing
     }
 
-    if (numChildProcesses > 0)
-        NSLog(@"%d ZOMBIES left behind", numChildProcesses);
+    if (numChildProcesses > 0) {
+        ASLogNotice(@"%d zombies left behind", numChildProcesses);
+    }
 }
 
 + (MMAppController *)sharedInstance
@@ -625,9 +637,14 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
 - (void)removeVimController:(id)controller
 {
+    ASLogDebug(@"Remove Vim controller pid=%d id=%d",
+               [controller pid], [controller identifier]);
+
     int idx = [vimControllers indexOfObject:controller];
-    if (NSNotFound == idx)
+    if (NSNotFound == idx) {
+        ASLogWarn(@"Controller at index=%d not found", idx);
         return;
+    }
 
     [controller cleanup];
 
@@ -700,7 +717,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
                 [win setFrameTopLeftPoint:topLeft];
             }
         } else {
-            NSLog(@"[%s] WINDOW NOT ON SCREEN, don't constrain position", _cmd);
+            ASLogNotice(@"Window not on screen, don't constrain position");
         }
     }
 
@@ -820,8 +837,6 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     NSMutableDictionary *arguments = (args ? [[args mutableCopy] autorelease]
                                            : [NSMutableDictionary dictionary]);
 
-    // Filenames on HFS+ are in NFD but Vim does not handle this form very well
-    // so normalize to NFKC first.
     filenames = normalizeFilenames(filenames);
 
     //
@@ -974,6 +989,8 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
 - (IBAction)newWindow:(id)sender
 {
+    ASLogDebug(@"Open new window");
+
     // A cached controller requires no loading times and results in the new
     // window popping up instantaneously.  If the cache is empty it may take
     // 1-2 seconds to start a new Vim process.
@@ -993,6 +1010,8 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
 - (IBAction)fileOpen:(id)sender
 {
+    ASLogDebug(@"Show file open panel");
+
     NSString *dir = nil;
     BOOL trackPwd = [[NSUserDefaults standardUserDefaults]
             boolForKey:MMDialogsTrackPwdKey];
@@ -1012,6 +1031,8 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
 - (IBAction)selectNextWindow:(id)sender
 {
+    ASLogDebug(@"Select next window");
+
     unsigned i, count = [vimControllers count];
     if (!count) return;
 
@@ -1032,6 +1053,8 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
 - (IBAction)selectPreviousWindow:(id)sender
 {
+    ASLogDebug(@"Select previous window");
+
     unsigned i, count = [vimControllers count];
     if (!count) return;
 
@@ -1055,17 +1078,20 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
 - (IBAction)orderFrontPreferencePanel:(id)sender
 {
+    ASLogDebug(@"Show preferences panel");
     [[MMPreferenceController sharedPrefsWindowController] showWindow:self];
 }
 
 - (IBAction)openWebsite:(id)sender
 {
+    ASLogDebug(@"Open MacVim website");
     [[NSWorkspace sharedWorkspace] openURL:
             [NSURL URLWithString:MMWebsiteString]];
 }
 
 - (IBAction)showVimHelp:(id)sender
 {
+    ASLogDebug(@"Open window with Vim help");
     // Open a new window with the help window maximized.
     [self launchVimProcessWithArguments:[NSArray arrayWithObjects:
             @"-c", @":h gui_mac", @"-c", @":res", nil]];
@@ -1073,11 +1099,13 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
 - (IBAction)zoomAll:(id)sender
 {
+    ASLogDebug(@"Zoom all windows");
     [NSApp makeWindowsPerform:@selector(performZoom:) inOrder:YES];
 }
 
 - (IBAction)atsuiButtonClicked:(id)sender
 {
+    ASLogDebug(@"Toggle ATSUI renderer");
     // This action is called when the user clicks the "use ATSUI renderer"
     // button in the advanced preferences pane.
     [self rebuildPreloadCache];
@@ -1085,6 +1113,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
 - (IBAction)loginShellButtonClicked:(id)sender
 {
+    ASLogDebug(@"Toggle login shell option");
     // This action is called when the user clicks the "use login shell" button
     // in the advanced preferences pane.
     [self rebuildPreloadCache];
@@ -1092,6 +1121,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
 - (IBAction)quickstartButtonClicked:(id)sender
 {
+    ASLogDebug(@"Toggle Quickstart option");
     if ([self maxPreloadCacheSize] > 0) {
         [self scheduleVimControllerPreloadAfterDelay:1.0];
         [self startWatchingVimDir];
@@ -1119,7 +1149,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
 - (unsigned)connectBackend:(byref in id <MMBackendProtocol>)proxy pid:(int)pid
 {
-    //NSLog(@"[%s] pid=%d", _cmd, pid);
+    ASLogDebug(@"pid=%d", pid);
 
     [(NSDistantObject*)proxy setProtocolForProxy:@protocol(MMBackendProtocol)];
 
@@ -1149,12 +1179,12 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     // queue the input and process it when the run loop is updated.
 
     if (!(queue && identifier)) {
-        NSLog(@"[%s] Bad input for identifier=%d", _cmd, identifier);
+        ASLogWarn(@"Bad input for identifier=%d", identifier);
         return;
     }
 
-    //NSLog(@"[%s] QUEUE for identifier=%d: <<< %@>>>", _cmd, identifier,
-    //        debugStringForMessageQueue(queue));
+    ASLogDebug(@"QUEUE for identifier=%d: <<< %@>>>", identifier,
+               debugStringForMessageQueue(queue));
 
     NSNumber *key = [NSNumber numberWithUnsignedInt:identifier];
     NSArray *q = [inputQueues objectForKey:key];
@@ -1200,10 +1230,11 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
                 error:(NSString **)error
 {
     if (![[pboard types] containsObject:NSStringPboardType]) {
-        NSLog(@"WARNING: Pasteboard contains no object of type "
-                "NSStringPboardType");
+        ASLogNotice(@"Pasteboard contains no NSStringPboardType");
         return;
     }
+
+    ASLogInfo(@"Open new window containing current selection");
 
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     BOOL openInCurrentWindow = [ud boolForKey:MMOpenInCurrentWindowKey];
@@ -1227,8 +1258,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
            error:(NSString **)error
 {
     if (![[pboard types] containsObject:NSStringPboardType]) {
-        NSLog(@"WARNING: Pasteboard contains no object of type "
-                "NSStringPboardType");
+        ASLogNotice(@"Pasteboard contains no NSStringPboardType");
         return;
     }
 
@@ -1237,6 +1267,8 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     string = [string stringByTrimmingCharactersInSet:
             [NSCharacterSet whitespaceAndNewlineCharacterSet]];
     string = [string stringByStandardizingPath];
+
+    ASLogInfo(@"Open new window with selected file: %@", string);
 
     NSArray *filenames = [self filterFilesAndNotify:
             [NSArray arrayWithObject:string]];
@@ -1258,8 +1290,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
               error:(NSString **)error
 {
     if (![[pboard types] containsObject:NSStringPboardType]) {
-        NSLog(@"WARNING: Pasteboard contains no object of type "
-              "NSStringPboardType");
+        ASLogNotice(@"Pasteboard contains no NSStringPboardType");
         return;
     }
 
@@ -1268,9 +1299,11 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     BOOL dirIndicator;
     if (![[NSFileManager defaultManager] fileExistsAtPath:path
                                               isDirectory:&dirIndicator]) {
-        NSLog(@"Invalid path. Cannot open new document at: %@", path);
+        ASLogNotice(@"Invalid path. Cannot open new document at: %@", path);
         return;
     }
+
+    ASLogInfo(@"Open new file at path=%@", path);
 
     if (!dirIndicator)
         path = [path stringByDeletingLastPathComponent];
@@ -1322,7 +1355,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     NSString *path = [[NSBundle mainBundle] pathForAuxiliaryExecutable:@"Vim"];
 
     if (!path) {
-        NSLog(@"ERROR: Vim executable could not be found inside app bundle!");
+        ASLogCrit(@"Vim executable could not be found inside app bundle!");
         return -1;
     }
 
@@ -1361,8 +1394,8 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
             [pidArguments setObject:[NSNull null]
                              forKey:[NSNumber numberWithInt:pid]];
     } else {
-        NSLog(@"WARNING: %s%@ failed (useLoginShell=%d)", _cmd, args,
-                useLoginShell);
+        ASLogWarn(@"Failed to launch Vim process: args=%@, useLoginShell=%d",
+                  args, useLoginShell);
     }
 
     return pid;
@@ -1470,8 +1503,8 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 #if 0
     // Xcode sends this event to query MacVim which open files have been
     // modified.
-    NSLog(@"reply:%@", reply);
-    NSLog(@"event:%@", event);
+    ASLogDebug(@"reply:%@", reply);
+    ASLogDebug(@"event:%@", event);
 
     NSEnumerator *e = [vimControllers objectEnumerator];
     id vc;
@@ -1582,10 +1615,8 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 - (int)findLaunchingProcessWithoutArguments
 {
     NSArray *keys = [pidArguments allKeysForObject:[NSNull null]];
-    if ([keys count] > 0) {
-        //NSLog(@"found launching process without arguments");
+    if ([keys count] > 0)
         return [[keys objectAtIndex:0] intValue];
-    }
 
     return -1;
 }
@@ -1900,12 +1931,12 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
 - (void)activateWhenNextWindowOpens
 {
+    ASLogDebug(@"Activate MacVim when next window opens");
     shouldActivateWhenNextWindowOpens = YES;
 }
 
 - (void)startWatchingVimDir
 {
-    //NSLog(@"%s", _cmd);
 #if (MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4)
     if (fsEventStream)
         return;
@@ -1924,13 +1955,12 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
             kCFRunLoopDefaultMode);
 
     FSEventStreamStart(fsEventStream);
-    //NSLog(@"Started FS event stream");
+    ASLogDebug(@"Started FS event stream");
 #endif
 }
 
 - (void)stopWatchingVimDir
 {
-    //NSLog(@"%s", _cmd);
 #if (MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4)
     if (NULL == FSEventStreamStop)
         return; // FSEvent functions are weakly linked
@@ -1940,7 +1970,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
         FSEventStreamInvalidate(fsEventStream);
         FSEventStreamRelease(fsEventStream);
         fsEventStream = NULL;
-        //NSLog(@"Stopped FS event stream");
+        ASLogDebug(@"Stopped FS event stream");
     }
 #endif
 
@@ -1948,7 +1978,6 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
 - (void)handleFSEvent
 {
-    //NSLog(@"%s", _cmd);
     [self clearPreloadCacheWithCount:-1];
 
     // Several FS events may arrive in quick succession so make sure to cancel
@@ -1962,8 +1991,12 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     // It is possible to set a user default to avoid loading the default font
     // (this cuts down on startup time).
     if (![[NSUserDefaults standardUserDefaults] boolForKey:MMLoadDefaultFontKey]
-            || fontContainerRef)
+            || fontContainerRef) {
+        ASLogInfo(@"Skip loading of the default font...");
         return;
+    }
+
+    ASLogInfo(@"Loading the default font...");
 
     // Load all fonts in the Resouces folder of the app bundle.
     NSString *fontsFolder = [[NSBundle mainBundle] resourcePath];
@@ -1998,9 +2031,10 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
         }
     }
 
-    if (!fontContainerRef)
-        NSLog(@"WARNING: Failed to activate the default font (the app bundle "
-                "may be incomplete)");
+    if (!fontContainerRef) {
+        ASLogNotice(@"Failed to activate the default font (the app bundle "
+                    "may be incomplete)");
+    }
 }
 
 - (int)executeInLoginShell:(NSString *)path arguments:(NSArray *)args
@@ -2022,8 +2056,6 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     if (!shell)
         shell = @"/bin/bash";
 
-    //NSLog(@"shell = %@", shell);
-
     // Bash needs the '-l' flag to launch a login shell.  The user may add
     // flags by setting a user default.
     NSString *shellArgument = [ud stringForKey:MMLoginShellArgumentKey];
@@ -2033,8 +2065,6 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
         else
             shellArgument = nil;
     }
-
-    //NSLog(@"shellArgument = %@", shellArgument);
 
     // Build input string to pipe to the login shell.
     NSMutableString *input = [NSMutableString stringWithFormat:
@@ -2100,7 +2130,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
         if (close(ds[1]) == -1) return -1;
 
         ++numChildProcesses;
-        //NSLog(@"new process pid=%d (count=%d)", pid, numChildProcesses);
+        ASLogDebug(@"new process pid=%d (count=%d)", pid, numChildProcesses);
     }
 
     return pid;
@@ -2119,7 +2149,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
         if (pid <= 0)
             break;
 
-        //NSLog(@"WAIT for pid=%d complete", pid);
+        ASLogDebug(@"Wait for pid=%d complete", pid);
         --numChildProcesses;
     }
 }
@@ -2134,7 +2164,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     // The processing flag is > 0 if this function is already on the call
     // stack; < 0 if this function was also re-entered.
     if (processingFlag != 0) {
-        NSLog(@"[%s] BUSY!", _cmd);
+        ASLogDebug(@"BUSY!");
         processingFlag = -1;
         return;
     }
@@ -2177,9 +2207,9 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
             }
         }
 
-        if (i == count)
-            NSLog(@"[%s] WARNING: No Vim controller for identifier=%d",
-                    _cmd, ukey);
+        if (i == count) {
+            ASLogWarn(@"No Vim controller for identifier=%d", ukey);
+        }
     }
 
     [queues release];
@@ -2198,6 +2228,8 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
 - (void)addVimController:(MMVimController *)vc
 {
+    ASLogDebug(@"Add Vim controller pid=%d id=%d", [vc pid], [vc identifier]);
+
     int pid = [vc pid];
     NSNumber *pidKey = [NSNumber numberWithInt:pid];
 

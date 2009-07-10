@@ -1,4 +1,4 @@
-*autocmd.txt*   For Vim version 7.2.  Last change: 2009 May 14
+*autocmd.txt*   For Vim version 7.2.  Last change: 2009 Jun 24
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -754,7 +754,7 @@ SwapExists			Detected an existing swap file when starting
 					'a'	abort, like hitting CTRL-C
 				When set to an empty string the user will be
 				asked, as if there was no SwapExists autocmd.
-							*E811*
+							*E812*
 				It is not allowed to change to another buffer,
 				change a buffer name or change directory
 				here.

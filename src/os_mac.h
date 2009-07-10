@@ -268,6 +268,15 @@
  */
 
 #ifdef MACOS_X_UNIX
+# ifndef SIGPROTOARG
+#  define SIGPROTOARG	(int)
+# endif
+# ifndef SIGDEFARG
+#  define SIGDEFARG(s)	(s) int s UNUSED;
+# endif
+# ifndef SIGDUMMYARG
+#  define SIGDUMMYARG	0
+# endif
 # undef  HAVE_AVAIL_MEM
 # ifndef HAVE_CONFIG_H
 #  define RETSIGTYPE void

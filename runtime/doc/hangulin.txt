@@ -1,7 +1,11 @@
-*hangulin.txt*  For Vim version 7.2.  Last change: 2008 Sep 17
+*hangulin.txt*  For Vim version 7.2.  Last change: 2009 Jun 24
 
 
 		  VIM REFERENCE MANUAL    by Chi-Deok Hwang and Sung-Hyun Nam
+
+NOTE: The |+hangul_input| feature is scheduled to be removed.  If you want to
+keep it, please send a message to the Vim user maillist.
+
 
 Introduction					*hangul*
 ------------

@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.2.  Last change: 2009 Jun 11
+*todo.txt*      For Vim version 7.2.  Last change: 2009 Jul 02
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,33 +30,15 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
-Patch for high-dpi awareness. (George Reilly, 2009 May 22)
+Still a problem with ":make" in the wrong directory.  Caused by ":bufdo".
+(Ajit Thakkar, 2009 Jul 1)
 
-2 patches for Visual Studio 2010. (George Reilly, 2009 May 22)
-
-patch for using freed memory with ":redrawstatus". (Dominique Pelle, 2009 Jun
-1)
-
-Patch for ":set novice". (Patrick Texier, 2009 Jun 7)
-
-Patch for "setmode()" undefined. (Dominique Pelle, 2009 Jun 8)
-
-Link failure with hangul input feature. (Dominique Pelle, 2009 May 9)
-Patch by SunHyun Nam, May 11.
-Mark "hangulin" for removal?
-
-Patch for photon. (Sean Boudreau, 2009 May 12)
-
-Patch for xz and lzma compression. (Richard Sherman, 2009 May 25)
-Use lzma for both.
-Add lzma support to gzip.vim.  *.lzma  "lzma -d", "lzma -z"
-Ook *.xz.  ".txz" -> ".tar.xz", ".tlz" -> ".tar.lzma"
-
-Patch to avoid effect of 'acd' for mksession. (Yakov Lerner, 2009 Apr 30)
-
-Should have ":unsilent cmd", for ":silent argdo ... echo 'hello' ..."
+Increase number of cscope connectsions from 8 to 42? (Robert Bragg, 2009 Apr
+20)  Patch by Dominique Pelle, 2009 Apr 26.
 
 Screen redrawn only after delay. (Raulnac, 2009 May 28)
+
+Patch for Ruby support on Mac. (Bjorn Winckler, 2009 June 19)
 
 Use cppcheck to find unused functions?
 
@@ -66,13 +48,13 @@ Crash in syntax HL code with jquery syntax. (George Reilly, 2009 Mar 24)
 
 Typo fixes for help files. (Dominique Pelle, 2009 May 7, 2nd one)
 
+Crash with completefunc(). (Ingo Karkat, 2009 Jun 13)
+Stack trace by Dominique Pelle.
+
 Conversion problem: When 'encoding' is "utf-16" and 'fenc' is "utf-8" writing
 a file does conversion while none is to be done. (Yukihiro Nakadaira)
 Also: when 'fenc' is empty file is written as utf-8 instead of utf-16.
 Also updated docs for 'fileencoding' about not doing conversion.
-
-Increase number of cscope connectsions from 8 to 42? (Robert Bragg, 2009 Apr
-20)  Patch by Dominique Pelle, 2009 Apr 26.
 
 ":help g" does not jump to index of commands starting with g.
 
@@ -98,13 +80,15 @@ Update 2009 Mar 28.
 with a space. (Alexandre Provencio, 2009 Jun 9)
 
 Patch to add farsi handling to arabic.c (Ali Gholami Rudi, 2009 May 2)
-Added test, updates, June 11.
+Added test, updates, June 23.
 
 Patch to add "focusonly" to 'scrollopt', so that scrollbind also applies in
 window that doesn't have focus. (Jonathon Mah, 2009 Jan 12)
 Needs more work.
 
 Problem with <script> mappings (Andy Wokula, 2009 Mar 8)
+
+Patch to support netbeans for Mac. (Kazuki Sakamoto, 2009 Jun 25)
 
 When starting Vim with "gvim -f -u non_existent_file > foo.txt" there are a
 few control characters in the output. (Dale Wiles, 2009 May 28)
@@ -127,6 +111,9 @@ ex_docmd.c.
 
 Space before comma in funtion defenition not allowed: "function x(a , b)"
 Give a more appropriate error message.  Add a remark to the docs.
+
+string_convert() should be able to convert between utf-8 and utf-16le.  Used
+for GTK clipboard.  Avoid requirement for iconv.
 
 Now that colnr_T is int instead of unsigned, more type casts can be removed.
 
@@ -202,6 +189,9 @@ Turn "esc" argument of expand_env_esc() into string of chars to be escaped.
 
 Should make 'ignorecase' global-local, so that it makes sense setting it from
 a modeline.
+
+Add cscope target to Makefile. (Tony Mechelynck, 2009 Jun 18, replies by
+Sergey Khorev)
 
 Consider making YankRing or something else that keeps a list of yanked text
 part of standard Vim.  The "1 to "9 registers are not sufficient.
@@ -643,6 +633,10 @@ Let mch_avail_mem() return Kbyte instead?
 Win32: With two monitors, gvim partly on both, and adding/removing a scrollbar
 Vim resizes and moves to one of the monitors. (Chris Monkiewicz, 2008 Oct)
 
+Win32: When 'shell' is bash shellescape() doesn't always do the right thing.
+Depends on 'shellslash', 'shellquote' and 'shellxquote', but shellescape()
+only takes 'shellslash' into account.
+
 When file b is a link to file a and editing b twice you get the correct
 warning for existing swap file, but when trying to recover it doesn't find the
 swapfile. (Matt Wozniski, 2008 Aug 5)  Patch by Ian Kelling, 2008 Aug 11.
@@ -714,6 +708,8 @@ longer than 2 seconds.
 
 Using ":au CursorMoved * cmd" invokes mch_FullName(), which can be slow.
 Can this be avoided? (Thomas Waba, 2008 Aug 24)
+Also for ":w" without a file name.
+The buffer has the full path in ffname, should pass this to the autocommand.
 
 "vim -C" often has 'nocompatible', because it's set in some startup script.
 Set 'compatible' after startup is done?  Patch by James Vega, 2008 Feb 7.
