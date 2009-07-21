@@ -1164,7 +1164,7 @@
 	<key>CFBundleIconFile</key>
 	<string>MacVim</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.vim.MacVim.KaoriYa</string>
+	<string>org.vim.MacVim</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -1181,7 +1181,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>org.vim.MacVim.KaoriYa</string>
+			<string>org.vim.MacVim</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>mvim</string>
