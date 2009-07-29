@@ -1,4 +1,4 @@
-*insert.txt*    For Vim version 7.2.  Last change: 2009 May 06
+*insert.txt*    For Vim version 7.2.  Last change: 2009 Jul 14
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -1492,7 +1492,7 @@ with data pulled directly from within a database.  For detailed instructions
 and a tutorial see |omni-sql-completion|.
 
 The SQL completion plugin can be used in conjunction with other completion
-plugins.  For example, the PHP filetype has it's own completion plugin.
+plugins.  For example, the PHP filetype has its own completion plugin.
 Since PHP is often used to generate dynamic website by accessing a database,
 the SQL completion plugin can also be enabled.  This allows you to complete
 PHP code and SQL code at the same time.
@@ -1729,14 +1729,9 @@ too long when appending characters a line break is automatically inserted.
 These two commands will keep on asking for lines, until you type a line
 containing only a ".".  Watch out for lines starting with a backslash, see
 |line-continuation|.
-When these commands are used with |:global| or |:vglobal| then the lines are
-obtained from the text following the command.  Separate lines with a NL
-escaped with a backslash: >
-	:global/abc/insert\
-	one line\
-	another line
-The final "." is not needed then.
-NOTE: ":append" and ":insert" don't work properly in between ":if" and
+
+NOTE: These commands cannot be used with |:global| or |:vglobal|.
+":append" and ":insert" don't work properly in between ":if" and
 ":endif", ":for" and ":endfor", ":while" and ":endwhile".
 
 							*:start* *:startinsert*

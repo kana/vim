@@ -4155,10 +4155,12 @@ E808	eval.txt	/*E808*
 E809	cmdline.txt	/*E809*
 E81	map.txt	/*E81*
 E810	diff.txt	/*E810*
+E811	autocmd.txt	/*E811*
 E812	autocmd.txt	/*E812*
 E813	editing.txt	/*E813*
 E814	editing.txt	/*E814*
 E815	if_mzsch.txt	/*E815*
+E816	diff.txt	/*E816*
 E82	message.txt	/*E82*
 E83	message.txt	/*E83*
 E84	windows.txt	/*E84*
@@ -5088,6 +5090,7 @@ daw	motion.txt	/*daw*
 dd	change.txt	/*dd*
 debug-gcc	debug.txt	/*debug-gcc*
 debug-highlight	debugger.txt	/*debug-highlight*
+debug-leaks	debug.txt	/*debug-leaks*
 debug-minidump	debug.txt	/*debug-minidump*
 debug-mode	repeat.txt	/*debug-mode*
 debug-scripts	repeat.txt	/*debug-scripts*
@@ -8071,6 +8074,7 @@ v_x	change.txt	/*v_x*
 v_y	change.txt	/*v_y*
 v_~	change.txt	/*v_~*
 val-variable	eval.txt	/*val-variable*
+valgrind	debug.txt	/*valgrind*
 values()	eval.txt	/*values()*
 variables	eval.txt	/*variables*
 various	various.txt	/*various*
