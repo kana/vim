@@ -420,7 +420,7 @@ the space bar):
 			      of columns, you can press <C-Left>, this will
 			      replace the column list with the list of tables.
 			    - This allows you to quickly drill down into a
-			      table to view it's columns and back again.
+			      table to view its columns and back again.
 
 The SQL completion plugin caches various lists that are displayed in
 the popup window.  This makes the re-displaying of these lists very

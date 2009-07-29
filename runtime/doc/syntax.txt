@@ -1,4 +1,4 @@
-*syntax.txt*	For Vim version 7.2.  Last change: 2009 May 22
+*syntax.txt*	For Vim version 7.2.  Last change: 2009 Jul 14
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -405,14 +405,44 @@ Force to omit the line numbers by using a zero value: >
 Go back to the default to use 'number' by deleting the variable: >
    :unlet html_number_lines
 
-Closed folds are put in the HTML as they are displayed.  If you don't want
-this, use the |zR| command before invoking 2html, or use: >
-   :let html_ignore_folding = 1
-
 By default, HTML optimized for old browsers is generated.  If you prefer using
 cascading style sheets (CSS1) for the attributes (resulting in considerably
 shorter and valid HTML 4 file), use: >
    :let html_use_css = 1
+
+Closed folds are put in the HTML as they are displayed.  If you don't want
+this, use the |zR| command before invoking 2html, or use: >
+   :let html_ignore_folding = 1
+
+You may want to generate HTML that includes all the data within the folds, and
+allow the user to view the folded data similar to how they would in Vim. To
+generate this dynamic fold information, use: >
+   :let html_dynamic_folds = 1
+
+Using html_dynamic_folds will imply html_use_css, because it would be far too
+difficult to do it for old browsers. However, html_ignore_folding overrides
+html_dynamic_folds.
+
+Using html_dynamic_folds will default to generating a foldcolumn in the html
+similar to Vim's foldcolumn, that will use javascript to open and close the
+folds in the HTML document. The width of this foldcolumn starts at the current
+setting of |'foldcolumn'| but grows to fit the greatest foldlevel in your
+document. If you do not want to show a foldcolumn at all, use: >
+   :let html_no_foldcolumn = 1
+
+Using this option, there will be no foldcolumn available to open the folds in
+the HTML. For this reason, another option is provided: html_hover_unfold.
+Enabling this option will use CSS 2.0 to allow a user to open a fold by
+hovering the mouse pointer over it. Note that old browsers (notably Internet
+Explorer 6) will not support this feature.  Browser-specific markup for IE6 is
+included to fall back to the normal CSS1 code so that the folds show up
+correctly for this browser, but they will not be openable without a
+foldcolumn. Note that using html_hover_unfold will allow modern browsers with
+disabled javascript to view closed folds. To use this option, use: >
+   :let html_hover_unfold = 1
+
+Setting html_no_foldcolumn with html_dynamic_folds will automatically set
+html_hover_unfold, because otherwise the folds wouldn't be dynamic.
 
 By default "<pre>" and "</pre>" is used around the text.  This makes it show
 up as you see it in Vim, but without wrapping.	If you prefer wrapping, at the

@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.2.  Last change: 2009 Jul 02
+*todo.txt*      For Vim version 7.2.  Last change: 2009 Jul 26
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,35 +30,25 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
-Still a problem with ":make" in the wrong directory.  Caused by ":bufdo".
-(Ajit Thakkar, 2009 Jul 1)
-
-Increase number of cscope connectsions from 8 to 42? (Robert Bragg, 2009 Apr
-20)  Patch by Dominique Pelle, 2009 Apr 26.
-
-Screen redrawn only after delay. (Raulnac, 2009 May 28)
-
-Patch for Ruby support on Mac. (Bjorn Winckler, 2009 June 19)
-
-Use cppcheck to find unused functions?
-
-Dynamic Folding support for 2html.vim. (Benjamin Fritz, 2009 Feb 12)
-
-Crash in syntax HL code with jquery syntax. (George Reilly, 2009 Mar 24)
-
-Typo fixes for help files. (Dominique Pelle, 2009 May 7, 2nd one)
-
-Crash with completefunc(). (Ingo Karkat, 2009 Jun 13)
-Stack trace by Dominique Pelle.
+When 'enc' is utf-8 and 'fenc' is latin1 and there is a non-latin1 char get an
+error without a hint what causes the problem.
 
 Conversion problem: When 'encoding' is "utf-16" and 'fenc' is "utf-8" writing
 a file does conversion while none is to be done. (Yukihiro Nakadaira)
 Also: when 'fenc' is empty file is written as utf-8 instead of utf-16.
 Also updated docs for 'fileencoding' about not doing conversion.
 
+Update for Matlab syntax file. (Maurizio Tranchero, 2009 July 25)
+
+Updated debian runtime files (James Vega, 2009 July 25)
+
 ":help g" does not jump to index of commands starting with g.
 
+Patch to support :browse for more commands. (Lech Lorens, 2009 Jul 18)
+
 Windows (Vista): download spell file doesn't work? (Chris Bogen, 2009 May 7)
+
+Patches for Mzscheme interface (Sergey Khorev, 2009 Jul 17, 2 parts)
 
 In command line window ":close" doesn't work properly. (Tony Mechelynck, 2009
 Jun 1)
@@ -69,12 +59,33 @@ string value.
 
 Reproducable crash in syntax HL. (George Reilly, Dominique Pelle, 2009 May 9)
 
+submatch() may remove backslash. (Sergey Goldgaber, 2009 Jul 6)
+
+Still a problem with ":make" in the wrong directory.  Caused by ":bufdo".
+(Ajit Thakkar, 2009 Jul 1) More information Jul 9, Jul 15.
+Caused by "doautoall syntaxset BufEnter *" in syntax/nosyntax.vim ?
+There also is a BufLeave/BufEnter aucmd to save/restore view.
+Does the patch to save/restore globaldir work?
+
 Patch for displaying 0x200c and 0x200d. (Ali Gholami Rudi, 2009 May 6)
 Probably needs a bit of work.
+
+List of encoding aliases. (Takao Fujiware, 2009 Jul 18)
+Are they all OK?  Update Jul 22.
+
+Patch for Ruby sockets. (todesking/Ariya Mizutani, 2008 Jul 1,24)
+Confirmed by Anton Sharonov, 2008 Dec 26.
+
+Patch for Ruby 1.9. (Msaki Suketa, 2009 Jul 21)
+
+Patch for GTK resizing problem when maximized. (Vitaly Minko, 2009 Jul 22)
 
 Patch for completion of ":find" arguments. (Nazri Ramliy, 2009 Feb 22, 26)
 8   For ":find" and ":sfind" expand files found in 'path'.
 Update 2009 Mar 28.
+
+Setting 'tags' to "tagsdir/*" does not find "tagsdir/tags". (Steven K. Wong,
+2009 Jul 18)
 
 ":e dir<Tab>" with 'wildmode' set to "list" doesn't highlight directory names
 with a space. (Alexandre Provencio, 2009 Jun 9)
@@ -116,6 +127,9 @@ string_convert() should be able to convert between utf-8 and utf-16le.  Used
 for GTK clipboard.  Avoid requirement for iconv.
 
 Now that colnr_T is int instead of unsigned, more type casts can be removed.
+
+'delcombine' does not work for the command line. (Tony Mechelynck, 2009 Jul
+20)
 
 Unwanted file name escaping: ":echo input('file:' , '', 'file')"
 And use file name completion on a file with spaces. (Frederic Hardy, 2009 Mar
@@ -274,6 +288,8 @@ doesn't. (John Little, 2008 Nov 9)
 Shell expansion returns unexpanded string?
 Don't use shell when "~" is not at the start?
 
+":unlet $VAR" doesn't work.
+
 When using ":e ++enc=foo file" and the file is already loaded with
 'fileencoding' set to "bar", then do_ecmd() uses that buffer, even though the
 fileencoding differs.  Reload the buffer in this situation?  Need to check for
@@ -321,7 +337,7 @@ put_in_typebuf().  Char mapped twice?
 
 Patch for colorscheme submenu. (Juergen Kraemer, 2008 Aug 20)
 
-Patch for Python 3 support. (Roland Puntaier, 2009 Jun 3)
+Patch for Python 3 support. (Roland Puntaier, 2009 Jun 3, update July 15)
 Needs to be tested.
 
 8   Some file systems are case-sensitive, some are not.  Turn
@@ -382,9 +398,6 @@ line doesn't fit. (Dasn, 2008 May 1)
 
 GUI: In Normal mode can't yank the modeless selection.  Make "gy" do this?
 Works like CTRL-Y in Command line mode.
-
-Patch for Ruby sockets. (todesking/Ariya Mizutani, 2008 Jul 1,24)
-Confirmed by Anton Sharonov, 2008 Dec 26.
 
 Mac: Move Carbon todo items to os_mac.txt.  Note that this version is frozen,
 try the Cocoa version.
@@ -3194,7 +3207,7 @@ Autocommands:
     WinClose	    - Just before closing a window
 -   Write the file now and then ('autosave'):
 				  *'autosave'* *'as'* *'noautosave'* *'noas'*
-    'autosave' 'aw' number  (default 0)
+    'autosave' 'as' number  (default 0)
 	    Automatically write the current buffer to file N seconds after the
 	    last change has been made and when |'modified'| is still set.
 	    Default: 0 = do not autosave the buffer.
@@ -4284,7 +4297,6 @@ Various improvements:
     etc.  Combinations of Alt, Ctrl and Shift are also possible.  Recognize
     these to avoid inserting the raw byte sequence, handle like the key
     without modifier (unless mapped).
-7   Support ":browse edit" in console, using explorer.vim?
 6   Add "gG": like what "gj" is to "j": go to the N'th window line.
 8   Add command like ":normal" that accepts <Key> notation like ":map".
 9   Support ACLs on more systems.
