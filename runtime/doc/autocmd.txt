@@ -1,4 +1,4 @@
-*autocmd.txt*   For Vim version 7.2.  Last change: 2009 Jun 24
+*autocmd.txt*   For Vim version 7.2.  Last change: 2009 Jul 22
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -551,7 +551,7 @@ FileChangedShell		When Vim notices that the modification time of
 				buffer that was changed "<afile>".
 				NOTE: The commands must not change the current
 				buffer, jump to another buffer or delete a
-				buffer.  *E246*
+				buffer.  *E246* *E811*
 				NOTE: This event never nests, to avoid an
 				endless loop.  This means that while executing
 				commands for the FileChangedShell event no

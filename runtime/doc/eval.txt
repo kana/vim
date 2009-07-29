@@ -1,4 +1,4 @@
-*eval.txt*	For Vim version 7.2.  Last change: 2009 May 17
+*eval.txt*	For Vim version 7.2.  Last change: 2009 Jul 18
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -7848,7 +7848,7 @@ a "E600: Missing :endtry" error message is given, see |except-single-line|.
 
 Printing in Binary ~
 >
-  :" The function Nr2Bin() returns the Hex string of a number.
+  :" The function Nr2Bin() returns the binary string representation of a number.
   :func Nr2Bin(nr)
   :  let n = a:nr
   :  let r = ""
