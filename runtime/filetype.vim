@@ -1,7 +1,7 @@
 " Vim support file to detect file types
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2009 Jun 13
+" Last Change:	2009 Jul 09
 
 " Listen very carefully, I will say this only once
 if exists("did_load_filetypes")
@@ -1965,6 +1965,10 @@ au BufNewFile,BufRead tags			setf tags
 
 " TAK
 au BufNewFile,BufRead *.tak			setf tak
+
+" Task
+au BufRead,BufNewFile {pending,completed,undo}.data  setf taskdata
+au BufRead,BufNewFile *.task                    setf taskedit
 
 " Tcl (JACL too)
 au BufNewFile,BufRead *.tcl,*.tk,*.itcl,*.itk,*.jacl	setf tcl
