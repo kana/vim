@@ -1291,6 +1291,9 @@ gui_im_set_active(int active)
 im_set_active(int active)
 #endif // FEAT_UIMFEP
 {
+    // Don't enable IM if imdisableactivate is true.
+    if (p_imdisableactivate && active)
+        return;
     // Tell frontend to enable/disable IM (called e.g. when the mode changes).
     if (!p_imdisable) {
         int msgid = active ? ActivateKeyScriptMsgID : DeactivateKeyScriptMsgID;
