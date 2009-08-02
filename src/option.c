@@ -7277,6 +7277,14 @@ set_bool_option(opt_idx, varp, value, opt_flags)
 	compatible_set();
     }
 
+    /* 'list', 'number' */
+    else if ((int *)varp == &curwin->w_p_list
+	  || (int *)varp == &curwin->w_p_nu)
+    {
+	if (curwin->w_curswant != MAXCOL)
+	    curwin->w_set_curswant = TRUE;
+    }
+
     else if ((int *)varp == &curbuf->b_p_ro)
     {
 	/* when 'readonly' is reset globally, also reset readonlymode */
@@ -7765,6 +7773,14 @@ set_bool_option(opt_idx, varp, value, opt_flags)
 	    curbuf->b_p_imsearch = B_IMODE_USE_INSERT;
 # endif
 	}
+	if (curwin->w_curswant != MAXCOL)
+	    curwin->w_set_curswant = TRUE;
+    }
+
+    else if ((int *)varp == &p_arshape)
+    {
+	if (curwin->w_curswant != MAXCOL)
+	    curwin->w_set_curswant = TRUE;
     }
 #endif
 
@@ -7775,8 +7791,7 @@ set_bool_option(opt_idx, varp, value, opt_flags)
     options[opt_idx].flags |= P_WAS_SET;
 
     comp_col();			    /* in case 'ruler' or 'showcmd' changed */
-    if (curwin->w_curswant != MAXCOL)
-	curwin->w_set_curswant = TRUE;  /* in case 'list' changed */
+
     check_redraw(options[opt_idx].flags);
 
     return NULL;
