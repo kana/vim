@@ -312,6 +312,11 @@
     [helper setImControl:enable];
 }
 
+- (void)activateIm:(BOOL)enable
+{
+    [helper activateIm:enable];
+}
+
 - (NSFont *)font
 {
     return [(MMTextStorage*)[self textStorage] font];
@@ -855,6 +860,14 @@
 - (IBAction)selectAll:(id)sender
 {
     [[self windowController] vimMenuItemAction:sender];
+}
+
+- (IBAction)cancelOperation:(id)sender
+{
+    // NSTextView overrides this method to send complete:, whereas NSResponder
+    // sends cancel: by default.  So override it yet again to revert to the
+    // default behavior (we resond to cancel: in MMTextViewHelper).
+    [self doCommandBySelector:@selector(cancel:)];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
