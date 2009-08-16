@@ -3594,6 +3594,15 @@ im_set_active(int active)
     if (im_is_active != was_active)
 	xim_reset();
 }
+# else /* FEAT_GUI_MACVIM */
+    void
+im_set_active(int active)
+{
+    if (gui.in_use)
+	gui_im_set_active(active);
+    else
+	uimfep_set_active(active);
+}
 # endif
 
     void
@@ -4458,6 +4467,15 @@ im_get_status(void)
 	return uimfep_get_status();
 #endif
     return im_is_active;
+}
+# else /* FEAT_GUI_MACVIM */
+    int
+im_get_status(void)
+{
+    if (gui.in_use)
+	return gui_im_get_status();
+    else
+	return uimfep_get_status();
 }
 # endif
 
