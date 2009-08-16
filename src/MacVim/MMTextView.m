@@ -522,7 +522,8 @@
         numInvertRects = 0;
     }
 
-    if ([self hasMarkedText]) {
+#ifdef INCLUDE_OLD_IM_CODE
+    if ([self hasMarkedText] && ![helper useInlineIm]) {
         shouldDrawInsertionPoint = YES;
         MMTextStorage *ts = (MMTextStorage*)[self textStorage];
         NSSize inset = [self textContainerInset];
@@ -580,6 +581,7 @@
             }
         }
     }
+#endif // INCLUDE_OLD_IM_CODE
 
     if (shouldDrawInsertionPoint) {
         MMTextStorage *ts = (MMTextStorage*)[self textStorage];
@@ -589,8 +591,9 @@
         ipRect.origin.x += [self textContainerOrigin].x;
         ipRect.origin.y += [self textContainerOrigin].y;
 
+#ifdef INCLUDE_OLD_IM_CODE
         // Draw insertion point inside marked text.
-        if ([self hasMarkedText]) {
+        if ([self hasMarkedText] && ![helper useInlineIm]) {
             NSFont *theFont = [[self markedTextAttributes]
                     valueForKey:NSFontAttributeName];
             if (theFont == [ts font])
@@ -602,6 +605,7 @@
                                    ([helper imRange].location +
                                    [helper imRange].length);
         }
+#endif // INCLUDE_OLD_IM_CODE
 
         if (MMInsertionPointHorizontal == insertionPointShape) {
             int frac = ([ts cellSize].height * insertionPointFraction + 99)/100;
