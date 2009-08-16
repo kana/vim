@@ -56,6 +56,9 @@ vimmenu_T *menu_for_descriptor(NSArray *desc);
 
 static id evalExprCocoa(NSString * expr, NSString ** errstr);
 
+extern void im_preedit_start_macvim();
+extern void im_preedit_end_macvim();
+extern void im_preedit_changed_macvim(char *preedit_string, int cursor_index);
 
 enum {
     MMBlinkStateNone = 0,
@@ -187,6 +190,7 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
 - (BOOL)unusedEditor;
 - (void)redrawScreen;
 - (void)handleFindReplace:(NSDictionary *)args;
+- (void)handleMarkedText:(NSData *)data;
 @end
 
 
@@ -1131,7 +1135,8 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
         if (1 == len) {
             char_u *str = (char_u*)bytes;
             if ((str[0] == Ctrl_C && ctrl_c_interrupts) ||
-                    (str[0] == intr_char && intr_char != Ctrl_C)) {
+                    (str[0] == intr_char && intr_char != 0)) {
+                ASLogDebug(@"Got INT, str[0]=%#x", str[0]);
                 got_int = TRUE;
                 [inputQueue removeAllObjects];
                 return;
@@ -1731,6 +1736,7 @@ static void netbeansReadCallback(CFSocketRef s,
     [q release];
 }
 
+
 - (void)handleInputEvent:(int)msgid data:(NSData *)data
 {
     if (KeyDownMsgID == msgid) {
@@ -1915,6 +1921,8 @@ static void netbeansReadCallback(CFSocketRef s,
 #ifdef FEAT_NETBEANS_INTG
         messageFromNetbeansMacVim();
 #endif
+    } else if (SetMarkedTextMsgID == msgid) {
+        [self handleMarkedText:data];
     } else {
         ASLogWarn(@"Unknown message received (msgid=%d)", msgid);
     }
@@ -2759,6 +2767,26 @@ static void netbeansReadCallback(CFSocketRef s,
 
     vim_free(find);
     vim_free(replace);
+}
+
+
+- (void)handleMarkedText:(NSData *)data
+{
+    const void *bytes = [data bytes];
+    unsigned pos = *((unsigned*)bytes);  bytes += sizeof(unsigned);
+    unsigned len = *((unsigned*)bytes);  bytes += sizeof(unsigned);
+    char *chars = (char *)bytes;
+
+    ASLogDebug(@"pos=%d len=%d chars=%s", pos, len, chars);
+
+    if (len == 0) {
+	im_preedit_end_macvim();
+    } else {
+        if (!preedit_get_status())
+            im_preedit_start_macvim();
+
+	im_preedit_changed_macvim(chars, pos);
+    }
 }
 
 @end // MMBackend (Private)

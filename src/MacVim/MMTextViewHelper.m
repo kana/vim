@@ -42,6 +42,8 @@ static float MMDragAreaSize = 73.0f;
 - (void)dragTimerFired:(NSTimer *)timer;
 - (void)setCursor;
 - (NSRect)trackingRect;
+- (BOOL)inputManagerHandleMouseEvent:(NSEvent *)event;
+- (void)sendMarkedText:(NSString *)text position:(unsigned)pos;
 @end
 
 
@@ -183,6 +185,8 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
 - (void)insertText:(id)string
 {
     if ([self hasMarkedText]) {
+        [self sendMarkedText:nil position:0];
+
         // NOTE: If this call is left out then the marked text isn't properly
         // erased when Return is used to accept the text.
         // The input manager only ever sets new marked text, it never actually
@@ -247,7 +251,7 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
              @selector(deleteWordBackward:) == sel ||
              @selector(deleteBackwardByDecomposingPreviousCharacter:) == sel ||
              @selector(deleteToBeginningOfLine:) == sel)
-        [self doKeyDown:@"\x7f"];
+        [self doKeyDown:@"\x08"];
     else if (@selector(keySpace:) == sel)
         [self doKeyDown:@" "];
     else if (@selector(cancel:) == sel)
@@ -258,6 +262,8 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
 - (BOOL)performKeyEquivalent:(NSEvent *)event
 {
     ASLogDebug(@"");
+    if ([event type] != NSKeyDown)
+        return NO;
 
     // NOTE: Key equivalent handling was fixed in Leopard.  That is, an
     // unhandled key equivalent is passed to keyDown: -- contrast this with
@@ -296,6 +302,14 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
 
 - (void)scrollWheel:(NSEvent *)event
 {
+    if ([self hasMarkedText]) {
+        // We must clear the marked text since the cursor may move if the
+        // marked text moves outside the view as a result of scrolling.
+        [self sendMarkedText:nil position:0];
+        [self unmarkText];
+        [[NSInputManager currentInputManager] markedTextAbandoned:self];
+    }
+
     if ([event deltaY] == 0)
         return;
 
@@ -317,6 +331,9 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
 
 - (void)mouseDown:(NSEvent *)event
 {
+    if ([self inputManagerHandleMouseEvent:event])
+        return;
+
     int row, col;
     NSPoint pt = [textView convertPoint:[event locationInWindow] fromView:nil];
     if (![textView convertPoint:pt toRow:&row column:&col])
@@ -349,6 +366,9 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
 
 - (void)mouseUp:(NSEvent *)event
 {
+    if ([self inputManagerHandleMouseEvent:event])
+        return;
+
     int row, col;
     NSPoint pt = [textView convertPoint:[event locationInWindow] fromView:nil];
     if (![textView convertPoint:pt toRow:&row column:&col])
@@ -368,6 +388,9 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
 
 - (void)mouseDragged:(NSEvent *)event
 {
+    if ([self inputManagerHandleMouseEvent:event])
+        return;
+
     int flags = [event modifierFlags];
     int row, col;
     NSPoint pt = [textView convertPoint:[event locationInWindow] fromView:nil];
@@ -398,6 +421,9 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
 
 - (void)mouseMoved:(NSEvent *)event
 {
+    if ([self inputManagerHandleMouseEvent:event])
+        return;
+
     // HACK! NSTextView has a nasty habit of resetting the cursor to the
     // default I-beam cursor at random moments.  The only reliable way we know
     // of to work around this is to set the cursor each time the mouse moves.
@@ -602,6 +628,20 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
     ASLogDebug(@"text='%@' range=%@", text, NSStringFromRange(range));
     [self unmarkText];
 
+    if ([self useInlineIm]) {
+        if ([text isKindOfClass:[NSAttributedString class]])
+            text = [text string];
+
+        if ([text length] > 0) {
+            markedRange = NSMakeRange(0, [text length]);
+            imRange = range;
+        }
+
+        [self sendMarkedText:text position:range.location];
+        return;
+    }
+
+#ifdef INCLUDE_OLD_IM_CODE
     if (!(text && [text length] > 0))
         return;
 
@@ -641,6 +681,7 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
     }
 
     [textView setNeedsDisplay:YES];
+#endif // INCLUDE_OLD_IM_CODE
 }
 
 - (void)unmarkText
@@ -812,6 +853,16 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
     // the backend caused weird bugs (second dock icon appearing etc.).
     KeyScript(enable ? smKeySysScript : smKeyRoman);
 #endif
+}
+
+- (BOOL)useInlineIm
+{
+#ifdef INCLUDE_OLD_IM_CODE
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    return [ud boolForKey:MMUseInlineImKey];
+#else
+    return YES;
+#endif // INCLUDE_OLD_IM_CODE
 }
 
 @end // MMTextViewHelper
@@ -1052,6 +1103,39 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
     rect.size.height -= top + bot - 1;
 
     return rect;
+}
+
+- (BOOL)inputManagerHandleMouseEvent:(NSEvent *)event
+{
+    // NOTE: The input manager usually handles events like mouse clicks (e.g.
+    // the Kotoeri manager "commits" the text on left clicks).
+
+    if (event) {
+        NSInputManager *imgr = [NSInputManager currentInputManager];
+        if ([imgr wantsToHandleMouseEvents])
+            return [imgr handleMouseEvent:event];
+    }
+
+    return NO;
+}
+
+- (void)sendMarkedText:(NSString *)text position:(unsigned)pos
+{
+    if (![self useInlineIm])
+        return;
+
+    NSMutableData *data = [NSMutableData data];
+    unsigned len = text == nil ? 0
+                    : [text lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+
+    [data appendBytes:&pos length:sizeof(unsigned)];
+    [data appendBytes:&len length:sizeof(unsigned)];
+    if (len > 0) {
+        [data appendBytes:[text UTF8String] length:len];
+        [data appendBytes:"\x00" length:1];
+    }
+
+    [[self vimController] sendMessage:SetMarkedTextMsgID data:data];
 }
 
 @end // MMTextViewHelper (Private)
