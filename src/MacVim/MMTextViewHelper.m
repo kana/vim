@@ -818,22 +818,6 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
             // Disable IM: switch back to ASCII input source that was used when
             // IM was last off.
             ref = asciiImSource;
-
-            TISInputSourceRef cur = TISCopyCurrentKeyboardInputSource();
-            if (!KeyboardInputSourcesEqual(asciiImSource, cur)) {
-                // Remember current input source so we can switch back to it
-                // when IM is once more enabled.  Note that Vim will call this
-                // method with "enable=NO" even when the ASCII input source is
-                // in use which is why we only remember the current input
-                // source unless it is the ASCII source.
-                ASLogDebug(@"Remember last input source: %@",
-                    TISGetInputSourceProperty(cur, kTISPropertyInputSourceID));
-                if (lastImSource) CFRelease(lastImSource);
-                lastImSource = cur;
-            } else {
-                CFRelease(cur);
-                cur = NULL;
-            }
         }
 
         if (ref) {
@@ -967,7 +951,30 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
 #if (MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_4)
 #if (MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4)
     if (NULL != TISCopyCurrentKeyboardInputSource)
-        return; // Compiled for >=10.4, running on >=10.5
+        // Compiled for >=10.4, running on >=10.5
+        TISInputSourceRef cur = TISCopyCurrentKeyboardInputSource();
+        BOOL remembered = FALSE;
+        BOOL state = !KeyboardInputSourcesEqual(asciiImSource, cur);
+        if (imState != state) {
+            if (state) {
+                // Remember current input source so we can switch back to it
+                // when IM is once more enabled.
+                ASLogDebug(@"Remember last input source: %@",
+                    TISGetInputSourceProperty(cur, kTISPropertyInputSourceID));
+                if (lastImSource) CFRelease(lastImSource);
+                lastImSource = cur;
+                remembered = TRUE;
+            }
+            imState = state;
+            int msgid = state ? ActivatedImMsgID : DeactivatedImMsgID;
+            [[self vimController] sendMessage:msgid data:nil];
+        }
+        if (!remembered) {
+            CFRelease(cur);
+            cur = NULL;
+        }
+        return;
+    }
 #endif
     // Compiled for >=10.4, running on 10.4
 
