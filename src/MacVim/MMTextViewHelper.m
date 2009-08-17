@@ -950,7 +950,7 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
 {
 #if (MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_4)
 #if (MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4)
-    if (NULL != TISCopyCurrentKeyboardInputSource)
+    if (NULL != TISCopyCurrentKeyboardInputSource) {
         // Compiled for >=10.4, running on >=10.5
         TISInputSourceRef cur = TISCopyCurrentKeyboardInputSource();
         BOOL remembered = FALSE;
