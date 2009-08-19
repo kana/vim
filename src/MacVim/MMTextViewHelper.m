@@ -114,6 +114,9 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
 {
     ASLogDebug(@"%@", event);
 
+    if (imControl)
+        [self checkImState];
+
     // NOTE: Keyboard handling is complicated by the fact that we must call
     // interpretKeyEvents: otherwise key equivalents set up by input methods do
     // not work (e.g. Ctrl-Shift-; would not work under Kotoeri).
@@ -149,6 +152,13 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
             && [unmod characterAtIndex:0] < 0x7f) {
         ASLogDebug(@"MACMETA key, don't interpret it");
         string = unmod;
+    } else if (imState && (flags & NSControlKeyMask) && [unmod length] == 1
+            && ([unmod characterAtIndex:0] == '6' ||
+                [unmod characterAtIndex:0] == '^')) {
+        // HACK!  interpretKeyEvents: does not call doCommandBySelector:
+        // with Ctrl-6 and Ctrl-^.
+        [self doKeyDown:@"\x1e"];
+        string = nil;
     } else {
         // HACK!  interpretKeyEvents: may call insertText: or
         // doCommandBySelector:, or it may swallow the key (most likely the
@@ -172,11 +182,6 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
 
     if (string)
         [self doKeyDown:string];
-
-    // NOTE: Check IM state _after_ key has been interpreted or we'll pick up
-    // the old IM state when it has been switched via a keyboard shortcut.
-    if (imControl)
-        [self checkImState];
 
     [currentEvent release];
     currentEvent = nil;
@@ -776,7 +781,7 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
 #if (MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4)
     // The TIS symbols are weakly linked.
     if (NULL != TISCopyCurrentKeyboardInputSource) {
-        // We get here when compiled on =>10.5 and running on >=10.5.
+        // We get here when compiled on >=10.5 and running on >=10.5.
 
         if (asciiImSource) {
             CFRelease(asciiImSource);
@@ -790,7 +795,6 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
             // Save current input source for use when IM is active and get an
             // ASCII source for use when IM is deactivated (by Vim).
             asciiImSource = TISCopyCurrentASCIICapableKeyboardInputSource();
-            lastImSource = TISCopyCurrentKeyboardInputSource();
         }
     }
 #endif
@@ -804,6 +808,7 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
 - (void)activateIm:(BOOL)enable
 {
     ASLogInfo(@"Activate IM=%d", enable);
+    imState = enable;
 
 #if (MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4)
     // The TIS symbols are weakly linked.
@@ -948,10 +953,9 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
 
 - (void)checkImState
 {
-#if (MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_4)
 #if (MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4)
     if (NULL != TISCopyCurrentKeyboardInputSource) {
-        // Compiled for >=10.4, running on >=10.5
+        // We get here when compiled on >=10.5 and running on >=10.5.
         TISInputSourceRef cur = TISCopyCurrentKeyboardInputSource();
         BOOL remembered = FALSE;
         BOOL state = !KeyboardInputSourcesEqual(asciiImSource, cur);
@@ -976,7 +980,8 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
         return;
     }
 #endif
-    // Compiled for >=10.4, running on 10.4
+#if (MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_4)
+    // Compiled for <=10.4, running on 10.4
 
     // IM is active whenever the current script is the system script and the
     // system script isn't roman.  (Hence IM can only be active when using
