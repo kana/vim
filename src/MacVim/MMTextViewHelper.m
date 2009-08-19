@@ -795,6 +795,8 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
             // Save current input source for use when IM is active and get an
             // ASCII source for use when IM is deactivated (by Vim).
             asciiImSource = TISCopyCurrentASCIICapableKeyboardInputSource();
+            NSString *locale = [[NSLocale currentLocale] localeIdentifier];
+            lastImSource = TISCopyInputSourceForLanguage(locale);
         }
     }
 #endif
