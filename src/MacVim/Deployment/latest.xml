@@ -41,6 +41,36 @@
     -->
 
     <item>
+      <title>macvim-kaoriya-20090823 released</title>
+      <description><![CDATA[
+<h1>MacVim-KaoriYa 20090823 released</h1>
+<ul>
+	<li>MacVim snapshot-49
+<p> Changes since snapshot 47:
+  <ul>
+    <li> ATSUI clips text to display cell to avoid "bleeding" </li>
+    <li> The pwd is set properly when dropping a folder on the Dock </li>
+    <li> Add Vimball (.vba) as a supported filetype </li>
+    <li> Refactored input code (e.g. can now bind to numeric keypad) </li>
+    <li> Improved IM support (separate keyboard layouts in normal/insert modes using the 'noimd' option, see ":h macvim-international") </li>
+    <li> Draw marked text inline (listed as +xim in ":ver") </li>
+    <li> Add user default MMUseInlineIm (use to disable above feature) </li>
+    <li> Update Vim source and runtime files </li>
+  </ul>
+</p>
+	<li>IM制御改善
+</ul>
+      ]]></description>
+      <pubDate>Sun, 23 Aug 2009 22:30:00 +0900</pubDate>
+      <enclosure type="application/octet-stream"
+        url="http://macvim-kaoriya.googlecode.com/files/macvim-kaoriya-20090823.dmg"
+        length="39814597"
+        sparkle:version="20090823"
+        sparkle:shortVersionString="7.2"
+        />
+    </item>
+
+    <item>
       <title>macvim-kaoriya-20090802 released</title>
       <description><![CDATA[
 <h1>MacVim-KaoriYa 20090802 released</h1>
