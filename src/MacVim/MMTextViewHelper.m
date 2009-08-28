@@ -152,7 +152,9 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
             && [unmod characterAtIndex:0] < 0x7f) {
         ASLogDebug(@"MACMETA key, don't interpret it");
         string = unmod;
-    } else if (imState && (flags & NSControlKeyMask) && [unmod length] == 1
+    } else if (imState && (flags & NSControlKeyMask)
+            && !(flags & (NSAlternateKeyMask|NSCommandKeyMask))
+            && [unmod length] == 1
             && ([unmod characterAtIndex:0] == '6' ||
                 [unmod characterAtIndex:0] == '^')) {
         // HACK!  interpretKeyEvents: does not call doCommandBySelector:
@@ -947,25 +949,22 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
     if (NULL != TISCopyCurrentKeyboardInputSource) {
         // We get here when compiled on >=10.5 and running on >=10.5.
         TISInputSourceRef cur = TISCopyCurrentKeyboardInputSource();
-        BOOL remembered = FALSE;
         BOOL state = !KeyboardInputSourcesEqual(asciiImSource, cur);
+        BOOL isChanged = !KeyboardInputSourcesEqual(lastImSource, cur);
+        if (state && isChanged) {
+            // Remember current input source so we can switch back to it
+            // when IM is once more enabled.
+            ASLogDebug(@"Remember last input source: %@",
+                TISGetInputSourceProperty(cur, kTISPropertyInputSourceID));
+            if (lastImSource) CFRelease(lastImSource);
+            lastImSource = cur;
+        } else {
+            CFRelease(cur);
+        }
         if (imState != state) {
-            if (state) {
-                // Remember current input source so we can switch back to it
-                // when IM is once more enabled.
-                ASLogDebug(@"Remember last input source: %@",
-                    TISGetInputSourceProperty(cur, kTISPropertyInputSourceID));
-                if (lastImSource) CFRelease(lastImSource);
-                lastImSource = cur;
-                remembered = TRUE;
-            }
             imState = state;
             int msgid = state ? ActivatedImMsgID : DeactivatedImMsgID;
             [[self vimController] sendMessage:msgid data:nil];
-        }
-        if (!remembered) {
-            CFRelease(cur);
-            cur = NULL;
         }
         return;
     }
