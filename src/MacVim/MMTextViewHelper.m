@@ -114,6 +114,9 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
 {
     ASLogDebug(@"%@", event);
 
+    // NOTE: Check IM state _before_ key has been interpreted or we'll pick up
+    // the old IM state when it has been switched via a keyboard shortcut that
+    // MacVim cannot handle.
     if (imControl)
         [self checkImState];
 
@@ -158,7 +161,7 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
             && ([unmod characterAtIndex:0] == '6' ||
                 [unmod characterAtIndex:0] == '^')) {
         // HACK!  interpretKeyEvents: does not call doCommandBySelector:
-        // with Ctrl-6 and Ctrl-^.
+        // with Ctrl-6 or Ctrl-^ when IM is active.
         [self doKeyDown:@"\x1e"];
         string = nil;
     } else {
@@ -794,17 +797,15 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
             lastImSource = NULL;
         }
         if (enable) {
-            // Save current input source for use when IM is active and get an
-            // ASCII source for use when IM is deactivated (by Vim).
+            // Save current locale input source for use when IM is active and
+            // get an ASCII source for use when IM is deactivated (by Vim).
             asciiImSource = TISCopyCurrentASCIICapableKeyboardInputSource();
             NSString *locale = [[NSLocale currentLocale] localeIdentifier];
-            lastImSource = TISCopyInputSourceForLanguage(locale);
+            lastImSource = TISCopyInputSourceForLanguage((CFStringRef)locale);
         }
     }
 #endif
 
-    // The imControl flag is only used on 10.4 -- on >=10.5 we wait for Vim to
-    // call activateIm: and never explicitly check if the input source changes.
     imControl = enable;
     ASLogInfo(@"IM control %sabled", enable ? "en" : "dis");
 }
@@ -819,16 +820,9 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
     if (NULL != TISCopyCurrentKeyboardInputSource) {
         // We get here when compiled on >=10.5 and running on >=10.5.
 
-        TISInputSourceRef ref = NULL;
-        if (enable) {
-            // Enable IM: switch back to input source used when IM was last on.
-            ref = lastImSource;
-        } else {
-            // Disable IM: switch back to ASCII input source that was used when
-            // IM was last off.
-            ref = asciiImSource;
-        }
-
+        // Enable IM: switch back to input source used when IM was last on
+        // Disable IM: switch back to ASCII input source (set in setImControl:)
+        TISInputSourceRef ref = enable ? lastImSource : asciiImSource;
         if (ref) {
             ASLogDebug(@"Change input source: %@",
                     TISGetInputSourceProperty(ref, kTISPropertyInputSourceID));
