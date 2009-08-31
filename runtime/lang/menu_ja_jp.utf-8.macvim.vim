@@ -59,7 +59,7 @@ menutrans Find\ and\ Rep&lace\.\.\.	置換\.\.\.
 menutrans Find\ and\ Rep&lace<Tab>:%s	置換<Tab>:%s
 menutrans Find\ and\ Rep&lace<Tab>:s	置換<Tab>:s
 "menutrans Options\.\.\.			オプション\.\.\.
-menutrans Settings\ &Window		設定ウィンドウ
+menutrans Settings\ &Window		設定ウインドウ
 menutrans Startup\ &Settings		起動時の設定
 
 " Edit/Global Settings
@@ -138,7 +138,7 @@ menutrans &Next\ Error<Tab>:cn		次のエラーへ<Tab>:cn
 menutrans &Previous\ Error<Tab>:cp	前のエラーへ<Tab>:cp
 menutrans &Older\ List<Tab>:cold	古いリスト<Tab>:cold
 menutrans N&ewer\ List<Tab>:cnew	新しいリスト<Tab>:cnew
-menutrans Error\ &Window		エラーウィンドウ
+menutrans Error\ &Window		エラーウインドウ
 menutrans &Update<Tab>:cwin		更新<Tab>:cwin
 menutrans &Open<Tab>:copen		開く<Tab>:copen
 menutrans &Close<Tab>:cclose		閉じる<Tab>:cclose
@@ -202,7 +202,7 @@ menutrans [No\ File]		[無題]
 let g:menutrans_no_file = "[無題]"
 
 " Window menu
-menutrans &Window			ウィンドウ
+menutrans &Window			ウインドウ
 menutrans &New<Tab>^Wn			新規作成<Tab>^Wn
 menutrans S&plit<Tab>^Ws		分割<Tab>^Ws
 menutrans Sp&lit\ To\ #<Tab>^W^^	裏バッファへ分割<Tab>^W^^
@@ -260,11 +260,11 @@ if has("toolbar")
     tmenu ToolBar.FindPrev	前を検索
     tmenu ToolBar.Replace	置換...
     if 0	" disabled; These are in the Windows menu
-      tmenu ToolBar.New		新規ウィンドウ作成
-      tmenu ToolBar.WinSplit	ウィンドウ分割
-      tmenu ToolBar.WinMax	ウィンドウ最大化
-      tmenu ToolBar.WinMin	ウィンドウ最小化
-      tmenu ToolBar.WinClose	ウィンドウを閉じる
+      tmenu ToolBar.New		新規ウインドウ作成
+      tmenu ToolBar.WinSplit	ウインドウ分割
+      tmenu ToolBar.WinMax	ウインドウ最大化
+      tmenu ToolBar.WinMin	ウインドウ最小化
+      tmenu ToolBar.WinClose	ウインドウを閉じる
     endif
     tmenu ToolBar.LoadSesn	セッション読込
     tmenu ToolBar.SaveSesn	セッション保存
@@ -334,244 +334,60 @@ if has('iconv')
   an 10.396.120.130 ファイル.エンコード指定\.\.\..保存\.\.\..UTF-8<Tab>fenc=utf-8 :set fenc=utf-8 \| w<CR>
 endif
 
+
+"---------------------------------------------------------------------------
+" Extra Japanese menus
+"---------------------------------------------------------------------------
+
+" File menu
+menut New\ Window		新規ウインドウ
+menut New\ Tab			新規タブ
+menut Open\.\.\.		開く\.\.\.
+menut Open\ Recent		最近開いたファイル
+menut Close\ Window<Tab>:qa	ウインドウを閉じる<Tab>:qa
+menut Close			閉じる
+menut Save\ All			すべてを保存
+menut Save\ As\.\.\.<Tab>:sav	名前を付けて保存\.\.\.<Tab>:sav
+
+" Edit menu
+menut Find			検索
+menut Find\.\.\.		検索\.\.\.
+menut Find\ Next		次を検索
+menut Find\ Previous		前を検索
+menut Use\ Selection\ for\ Find	選択部分を検索に使用
+
+menut Font			フォント
+menut Show\ Fonts		フォントパネルを表示
+menut Bigger			大きく
+menut Smaller			小さく
+menut Special\ Characters\.\.\. 特殊文字\.\.\.
+
+" Window menu
+menut Minimize			しまう
+menut Minimize\ All		すべてをしまう
+menut Zoom			拡大／縮小
+menut Zoom\ All			すべてを拡大
+menut Toggle\ Full\ Screen\ Mode	フルスクリーンモード切り替え
+an <silent> 9998.331 ウインドウ.次のウインドウ	<Nop>
+macm ウインドウ.次のウインドウ  key=<D-]>	action=selectNextWindow:
+an <silent> 9998.332 ウインドウ.前のウインドウ	<Nop>
+macm ウインドウ.前のウインドウ  key=<D-[>	action=selectPreviousWindow:
+an 9998.333 ウインドウ.-SEP2-			<Nop>
+menut Select\ Next\ Tab		次のタブを選択
+menut Select\ Previous\ Tab	前のタブを選択
+menut Bring\ All\ To\ Front	すべてを手前に移動
+
+" Help menu
+menut MacVim\ Help		MacVim\ ヘルプ
+menut MacVim\ Website		MacVim\ Webサイト
+an <silent> 9999.4 ヘルプ.MacVim-KaoriYa\ Webサイト	<Nop>
+macm ヘルプ.MacVim-KaoriYa\ Webサイト		action=openWebsiteKaoriYa:
+an 9999.5 &ヘルプ.-sep0-			<Nop>
+
+
 " filler to avoid the line above being recognized as a modeline
 " filler
 " filler
 " filler
 
-
-"
-" Extra menus
-"
-
-"---------------------------------------------------------------------------
-" Japanese menu
-"---------------------------------------------------------------------------
-
-" File menu
-
-aunmenu ファイル.新規作成
-aunmenu ファイル.-SEP4-
-aunmenu ファイル.終了
-aunmenu ファイル.保存して終了
-
-an <silent> 10.290 ファイル.新規ウインドウ      <Nop>
-an  10.295 ファイル.新規タブ                    :tabnew<CR>
-an <silent> 10.310 ファイル.開く\.\.\.          <Nop>
-an <silent> 10.325 ファイル.最近開いたファイル  <Nop>
-an 10.328 ファイル.-SEP0-                       <Nop>
-an <silent> 10.330 ファイル.ウインドウを閉じる<Tab>:qa :conf qa<CR>
-an <silent> 10.332 ファイル.閉じる              :conf q<CR>
-an <silent> 10.341 ファイル.すべてを保存        :browse conf wa<CR>
-an 10.350 ファイル.名前を付けて保存\.\.\.<Tab>:sav :browse confirm saveas<CR>
-
-
-" Edit menu
-
-" The following function is aken from menu.vim
-fun! s:FixFText()
-  " Fix text in nameless register to be used with :promptfind.
-  return substitute(@", "[\r\n]", '\\n', 'g')
-endfun
-
-aunmenu 編集.検索
-aunmenu 編集.置換
-
-an <silent> 20.410.10 編集.検索.検索\.\.\.  :promptfind<CR>
-vnoremenu <silent> 編集.検索.検索\.\.\.     y:promptfind <C-R>=<SID>FixFText()<CR><CR>
-an 20.410.20 編集.検索.次を検索             <Nop>
-an 20.410.30 編集.検索.前を検索             <Nop>
-vmenu 20.410.35 編集.検索.選択部分を検索に使用 y:let @/=@"<CR>:<BS>
-
-an 20.470 編集.-SEP4-                       <Nop>
-an 20.475.10 編集.フォント.フォントパネルを表示 <Nop>
-an 20.475.20 編集.フォント.-SEP5-           <Nop>
-an 20.475.30 編集.フォント.大きく           <Nop>
-an 20.475.40 編集.フォント.小さく           <Nop>
-an 20.480 編集.特殊文字\.\.\.               <Nop>
-
-
-" Window menu (should be next to Help so give it a high priority)
-aunmenu ウィンドウ
-
-an <silent> 9998.300 ウインドウ.しまう          <Nop>
-an <silent> 9998.301 ウインドウ.すべてをしまう  <Nop>
-an <silent> 9998.310 ウインドウ.拡大／縮小      <Nop>
-an <silent> 9998.311 ウインドウ.すべてを拡大    <Nop>
-an <silent> 9998.320 ウインドウ.フルスクリーンモード切り替え :set invfullscreen<CR>
-an 9998.330 ウインドウ.-SEP1-                   <Nop>
-" TODO! Grey out if no windows are visible.
-an <silent> 9998.331 ウインドウ.次のウインドウ  <Nop>
-an <silent> 9998.332 ウインドウ.前のウインドウ  <Nop>
-an 9998.333 ウインドウ.-SEP2-                   <Nop>
-" TODO! Grey out if no tabs are visible.
-an <silent> 9998.340 ウインドウ.次のタブを選択  :tabnext<CR>
-an <silent> 9998.350 ウインドウ.前のタブを選択  :tabprevious<CR>
-an 9998.360 ウインドウ.-SEP3-                   <Nop>
-an <silent> 9998.370 ウインドウ.すべてを手前に移動 <Nop>
-
-
-" Help menu
-an 9999.1 ヘルプ.MacVim\ ヘルプ             :h gui_mac<CR>
-an <silent> 9999.2 ヘルプ.MacVim\ Webサイト <Nop>
-an 9999.3 ヘルプ.-sep0-                     <Nop>
-
-
-"
-" Toolbar
-"
-" These items are special ('*' means zero or more arbitrary characters):
-"   -space*-        an empty space
-"   -flexspace*-    a flexible space
-"   -*-             a separator item
-
-" Remove some items so that all items are visible at the default window size.
-"aunmenu ToolBar.Undo
-"aunmenu ToolBar.Redo
-"aunmenu ToolBar.-sep2-
-"aunmenu ToolBar.Cut
-"aunmenu ToolBar.Copy
-"aunmenu ToolBar.Paste
-"aunmenu ToolBar.-sep3-
-aunmenu ToolBar.Replace
-aunmenu ToolBar.FindNext
-aunmenu ToolBar.FindPrev
-aunmenu ToolBar.-sep5-
-aunmenu ToolBar.-sep6-
-aunmenu ToolBar.RunCtags
-aunmenu ToolBar.TagJump
-"aunmenu ToolBar.-sep7-
-aunmenu ToolBar.FindHelp
-
-"an 1.295 ToolBar.-flexspace7-   <Nop>
-
-
-
-" This is so that HIG Cmd and Option movement mappings can be disabled by
-" adding the line
-"   let macvim_skip_cmd_opt_movement = 1
-" to the user .vimrc
-"
-if !exists("macvim_skip_cmd_opt_movement")
-  no   <D-Left>       <Home>
-  no!  <D-Left>       <Home>
-  no   <M-Left>       <C-Left>
-  no!  <M-Left>       <C-Left>
-
-  no   <D-Right>      <End>
-  no!  <D-Right>      <End>
-  no   <M-Right>      <C-Right>
-  no!  <M-Right>      <C-Right>
-
-  no   <D-Up>         <C-Home>
-  ino  <D-Up>         <C-Home>
-  map  <M-Up>         {
-  imap <M-Up>         <C-o>{
-
-  no   <D-Down>       <C-End>
-  ino  <D-Down>       <C-End>
-  map  <M-Down>       }
-  imap <M-Down>       <C-o>}
-
-  imap <M-BS>         <C-w>
-  imap <D-BS>         <C-u>
-endif " !exists("macvim_skip_cmd_opt_movement")
-
-
-" This is so that the HIG shift movement related settings can be enabled by
-" adding the line
-"   let macvim_hig_shift_movement = 1
-" to the user .vimrc (not .gvimrc!).
-"
-if exists("macvim_hig_shift_movement")
-  " Shift + special movement key (<S-Left>, etc.) and mouse starts insert mode
-  set selectmode=mouse,key
-  set keymodel=startsel,stopsel
-
-  " HIG related shift + special movement key mappings
-  nn   <S-D-Left>     <S-Home>
-  vn   <S-D-Left>     <S-Home>
-  ino  <S-D-Left>     <S-Home>
-  nn   <S-M-Left>     <S-C-Left>
-  vn   <S-M-Left>     <S-C-Left>
-  ino  <S-M-Left>     <S-C-Left>
-
-  nn   <S-D-Right>    <S-End>
-  vn   <S-D-Right>    <S-End>
-  ino  <S-D-Right>    <S-End>
-  nn   <S-M-Right>    <S-C-Right>
-  vn   <S-M-Right>    <S-C-Right>
-  ino  <S-M-Right>    <S-C-Right>
-
-  nn   <S-D-Up>       <S-C-Home>
-  vn   <S-D-Up>       <S-C-Home>
-  ino  <S-D-Up>       <S-C-Home>
-
-  nn   <S-D-Down>     <S-C-End>
-  vn   <S-D-Down>     <S-C-End>
-  ino  <S-D-Down>     <S-C-End>
-endif " exists("macvim_hig_shift_movement")
-
-
-
-"
-" Set up menu key equivalents (these should always have the 'D' modifier set),
-" action bindings, and alternate items.
-"
-" Note: menu items which should execute an action are bound to <Nop>; the
-" action message is specified here via the :macmenu command.
-"
-
-macm ファイル.新規ウインドウ                key=<D-n> action=newWindow:
-macm ファイル.新規タブ                      key=<D-t>
-macm ファイル.開く\.\.\.                    key=<D-o> action=fileOpen:
-macm ファイル.タブで開く                    key=<D-T>
-macm ファイル.最近開いたファイル            action=recentFilesDummy:
-macm ファイル.ウインドウを閉じる            key=<D-W>
-macm ファイル.閉じる                        key=<D-w> action=performClose:
-macm ファイル.保存                          key=<D-s>
-macm ファイル.すべてを保存                  key=<D-M-s> alt=YES
-macm ファイル.名前を付けて保存\.\.\.        key=<D-S>
-macm ファイル.印刷                          key=<D-p>
-
-macm 編集.取り消す                          key=<D-z> action=undo:
-macm 編集.やり直す                          key=<D-Z> action=redo:
-macm 編集.カット                            key=<D-x> action=cut:
-macm 編集.コピー                            key=<D-c> action=copy:
-macm 編集.ペースト                          key=<D-v> action=paste:
-macm 編集.全て選択                          key=<D-a> action=selectAll:
-macm 編集.検索.検索\.\.\.                   key=<D-f>
-macm 編集.検索.次を検索                     key=<D-g> action=findNext:
-macm 編集.検索.前を検索                     key=<D-G> action=findPrevious:
-macm 編集.検索.選択部分を検索に使用         key=<D-e>
-macm 編集.特殊文字\.\.\.                    key=<D-M-t>
-macm 編集.フォント.フォントパネルを表示     action=orderFrontFontPanel:
-macm 編集.フォント.大きく                   key=<D-=> action=fontSizeUp:
-macm 編集.フォント.小さく                   key=<D--> action=fontSizeDown:
-macm 編集.特殊文字\.\.\.                    action=orderFrontCharacterPalette:
-
-macm ツール.スペリング.次のエラー           key=<D-;>
-macm ツール.スペリング.修正候補             key=<D-:>
-macm ツール.メイク                          key=<D-b>
-macm ツール.エラーリスト                    key=<D-l>
-macm ツール.メッセージリスト                key=<D-L>
-macm ツール.次のエラーへ                    key=<D-C-Right>
-macm ツール.前のエラーへ                    key=<D-C-Left>
-macm ツール.古いリスト                      key=<D-C-Up>
-macm ツール.新しいリスト                    key=<D-C-Down>
-
-macm ウインドウ.しまう          key=<D-m>       action=performMiniaturize:
-macm ウインドウ.すべてをしまう  key=<D-M-m>     action=miniaturizeAll:  alt=YES
-macm ウインドウ.拡大／縮小      key=<D-C-z>     action=performZoom:
-macm ウインドウ.すべてを拡大    key=<D-M-C-z>   action=zoomAll:         alt=YES
-macm ウインドウ.フルスクリーンモード切り替え key=<D-F>
-macm ウインドウ.次のウインドウ  key=<D-]>       action=selectNextWindow:
-macm ウインドウ.前のウインドウ  key=<D-[>       action=selectPreviousWindow:
-macm ウインドウ.次のタブを選択  key=<D-}>
-macm ウインドウ.前のタブを選択  key=<D-{>
-
-macm ウインドウ.すべてを手前に移動          action=arrangeInFront:
-
-macm ヘルプ.MacVim\ ヘルプ                  key=<D-?>
-macm ヘルプ.MacVim\ Webサイト               action=openWebsite:
 
