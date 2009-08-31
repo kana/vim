@@ -3843,7 +3843,7 @@ $as_echo_n "checking for 10.4 universal SDK... " >&6; }
                             save_cppflags="$CPPFLAGS"
     save_cflags="$CFLAGS"
     save_ldflags="$LDFLAGS"
-    CFLAGS="$CFLAGS -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch i386 -arch ppc"
+    CFLAGS="$CFLAGS -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch x86_64 -arch i386 -arch ppc"
     cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF

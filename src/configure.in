@@ -127,7 +127,7 @@ if test "`(uname) 2>/dev/null`" = Darwin; then
     save_cppflags="$CPPFLAGS"
     save_cflags="$CFLAGS"
     save_ldflags="$LDFLAGS"
-    CFLAGS="$CFLAGS -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch i386 -arch ppc"
+    CFLAGS="$CFLAGS -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch x86_64 -arch i386 -arch ppc"
     AC_TRY_LINK([ ], [ ],
 	AC_MSG_RESULT(found, will make universal binary),
 
