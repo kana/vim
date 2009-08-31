@@ -132,6 +132,11 @@ static void ruby_vim_init(void);
 #define rb_lastline_get			dll_rb_lastline_get
 #define rb_lastline_set			dll_rb_lastline_set
 #define rb_load_protect			dll_rb_load_protect
+#if defined(__LP64__)
+#define rb_fix2int			dll_rb_fix2int
+#define rb_num2int			dll_rb_num2int
+#define rb_num2uint			dll_rb_num2uint
+#endif
 #define rb_num2long			dll_rb_num2long
 #define rb_num2ulong			dll_rb_num2ulong
 #define rb_obj_alloc			dll_rb_obj_alloc
@@ -186,6 +191,11 @@ static VALUE (*dll_rb_int2inum) (long);
 static VALUE (*dll_rb_lastline_get) (void);
 static void (*dll_rb_lastline_set) (VALUE);
 static void (*dll_rb_load_protect) (VALUE, int, int*);
+#if defined(__LP64__)
+static long (*dll_rb_fix2int) (VALUE);
+static long (*dll_rb_num2int) (VALUE);
+static unsigned long (*dll_rb_num2uint) (VALUE);
+#endif
 static long (*dll_rb_num2long) (VALUE);
 static unsigned long (*dll_rb_num2ulong) (VALUE);
 static VALUE (*dll_rb_obj_alloc) (VALUE);
@@ -248,6 +258,11 @@ static struct
     {"rb_lastline_get", (RUBY_PROC*)&dll_rb_lastline_get},
     {"rb_lastline_set", (RUBY_PROC*)&dll_rb_lastline_set},
     {"rb_load_protect", (RUBY_PROC*)&dll_rb_load_protect},
+#if defined(__LP64__)
+    {"rb_fix2int", (RUBY_PROC*)&dll_rb_fix2int},
+    {"rb_num2int", (RUBY_PROC*)&dll_rb_num2int},
+    {"rb_num2uint", (RUBY_PROC*)&dll_rb_num2uint},
+#endif
     {"rb_num2long", (RUBY_PROC*)&dll_rb_num2long},
     {"rb_num2ulong", (RUBY_PROC*)&dll_rb_num2ulong},
     {"rb_obj_alloc", (RUBY_PROC*)&dll_rb_obj_alloc},
