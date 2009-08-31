@@ -60,6 +60,8 @@ static NSTimeInterval MMRequestTimeout = 5;
 static NSTimeInterval MMReplyTimeout = 5;
 
 static NSString *MMWebsiteString = @"http://code.google.com/p/macvim/";
+static NSString *MMWebsiteKaoriYaString =
+    @"http://code.google.com/p/macvim-kaoriya/";
 
 #if (MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4)
 // Latency (in s) between FS event occuring and being reported to MacVim.
@@ -1146,6 +1148,13 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     ASLogDebug(@"Open MacVim website");
     [[NSWorkspace sharedWorkspace] openURL:
             [NSURL URLWithString:MMWebsiteString]];
+}
+
+- (IBAction)openWebsiteKaoriYa:(id)sender
+{
+    ASLogDebug(@"Open MacVim-KaoriYa website");
+    [[NSWorkspace sharedWorkspace] openURL:
+            [NSURL URLWithString:MMWebsiteKaoriYaString]];
 }
 
 - (IBAction)showVimHelp:(id)sender
