@@ -1,7 +1,7 @@
 /*
  * guess.c - guessing character encoding 
  *
- *   Copyright (c) 2000-2007  Shiro Kawai  <shiro@acm.org>
+ *   Copyright (c) 2000-2009  Shiro Kawai  <shiro@acm.org>
  * 
  *   Redistribution and use in source and binary forms, with or without
  *   modification, are permitted provided that the following conditions
@@ -30,7 +30,7 @@
  *   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: guess.c,v 1.5 2007/03/02 07:39:04 shirok Exp $
+ *  $Id: guess.c,v 1.6 2008-05-10 13:35:37 shirok Exp $
  */
 
 #include <stdio.h>
@@ -43,15 +43,14 @@ typedef struct guess_arc_rec {
 } guess_arc;
 
 typedef struct guess_dfa_rec {
-    const char *name;
     signed char (*states)[256];
     guess_arc *arcs;
     int state;
     double score;
 } guess_dfa;
 
-#define DFA_INIT(name, st, ar) \
-    { name, st, ar, 0, 1.0 }
+#define DFA_INIT(st, ar) \
+    { st, ar, 0, 1.0 }
 
 #define DFA_NEXT(dfa, ch)                               \
     do {                                                \
@@ -74,75 +73,62 @@ typedef struct guess_dfa_rec {
 
 static const char *guess_jp(FILE *in, const char *def)
 {
-    int i, c, c2, alive;
-    guess_dfa dfa[] = {
-        DFA_INIT("utf-8",       guess_utf8_st, guess_utf8_ar),
-        DFA_INIT("cp932",       guess_sjis_st, guess_sjis_ar),
-        DFA_INIT("euc-jp",      guess_eucj_st, guess_eucj_ar),
-        DFA_INIT("utf-16be",    guess_utf16be_st, guess_utf16be_ar),
-        DFA_INIT("utf-16le",    guess_utf16le_st, guess_utf16le_ar),
-        DFA_INIT(NULL, NULL, NULL)
-    };
-    guess_dfa *utf16be = &dfa[3];
-    guess_dfa *utf16le = &dfa[4];
+    int c;
+    guess_dfa eucj = DFA_INIT(guess_eucj_st, guess_eucj_ar);
+    guess_dfa sjis = DFA_INIT(guess_sjis_st, guess_sjis_ar);
+    guess_dfa utf8 = DFA_INIT(guess_utf8_st, guess_utf8_ar);
     guess_dfa *top = NULL;
-
-    /* set UTF-16 low priority */
-    utf16be->score = 0.1;
-    utf16le->score = 0.1;
 
     while ((c = fgetc(in)) != EOF) {
 
-        /* UTF-16 */
-        if (utf16be->state == 0 || utf16le->state == 0) {
-            if ((c2 = fgetc(in)) != EOF) {
-                if (utf16be->state == 0 &&
-                        c == 0x00 && (c2 == 0x0A || c2 == 0x0D))
-                    return "utf-16be";
-                if (utf16le->state == 0 &&
-                        (c == 0x0A || c == 0x0D) && c2 == 0x00)
-                    return "utf-16le";
-                ungetc(c2, in);
-            }
-        }
-
         /* special treatment of jis escape sequence */
         if (c == 0x1b) {
-            if ((c2 = fgetc(in)) != EOF) {
-                if (c2 == '$' || c2 == '(') return "iso-2022-jp";
-                ungetc(c2, in);
-            }
+            c = fgetc(in);
+            if (c == EOF)
+                break;
+            if (c == '$' || c == '(') return "iso-2022-jp";
         }
 
-        alive = 0;
-        for (i = 0; dfa[i].name != NULL; ++i) {
-            if (DFA_ALIVE(dfa[i])) {
-                DFA_NEXT(dfa[i], c);
-                if (DFA_ALIVE(dfa[i]))
-                    ++alive;
-            }
+        if (DFA_ALIVE(eucj)) {
+            if (!DFA_ALIVE(sjis) && !DFA_ALIVE(utf8)) return "euc-jp";
+            DFA_NEXT(eucj, c);
+        }
+        if (DFA_ALIVE(sjis)) {
+            if (!DFA_ALIVE(eucj) && !DFA_ALIVE(utf8)) return "cp932";
+            DFA_NEXT(sjis, c);
+        }
+        if (DFA_ALIVE(utf8)) {
+            if (!DFA_ALIVE(sjis) && !DFA_ALIVE(eucj)) return "utf-8";
+            DFA_NEXT(utf8, c);
         }
 
-        if (alive == 0) {
+        if (!DFA_ALIVE(eucj) && !DFA_ALIVE(sjis) && !DFA_ALIVE(utf8)) {
             /* we ran out the possibilities */
             return NULL;
-        } else if (alive == 1) {
-            break;
         }
     }
 
     /* Now, we have ambigous code.  Pick the highest score.  If more than
        one candidate tie, pick the default encoding. */
-    for (i = 0; dfa[i].name != NULL; ++i) {
-        if (DFA_ALIVE(dfa[i])) {
-            if (!top || top->score < dfa[i].score ||
-                    (top->score == dfa[i].score &&
-                     strcmp(dfa[i].name, def) == 0))
-                top = &dfa[i];
+    if (DFA_ALIVE(eucj)) top = &eucj;
+    if (DFA_ALIVE(utf8)) {
+        if (top) {
+            if (top->score <= utf8.score) top = &utf8;
+        } else {
+            top = &utf8;
         }
     }
-    if (top)
-        return top->name;
+    if (DFA_ALIVE(sjis)) {
+        if (top) {
+            if (top->score <  sjis.score) top = &sjis;
+        } else {
+            top = &sjis;
+        }
+    }
+
+    if (top == &eucj) return "euc-jp";
+    if (top == &utf8) return "utf-8";
+    if (top == &sjis) return "cp932";
     return NULL;
 }
 
