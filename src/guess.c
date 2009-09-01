@@ -78,6 +78,7 @@ static const char *guess_jp(FILE *in, const char *def)
     guess_dfa sjis = DFA_INIT(guess_sjis_st, guess_sjis_ar);
     guess_dfa utf8 = DFA_INIT(guess_utf8_st, guess_utf8_ar);
     guess_dfa *top = NULL;
+    int sjis_halfwidth_alive = 1;
 
     while ((c = fgetc(in)) != EOF) {
 
@@ -88,6 +89,9 @@ static const char *guess_jp(FILE *in, const char *def)
                 break;
             if (c == '$' || c == '(') return "iso-2022-jp";
         }
+
+        if (c >= 0x80 && (c < 0xa1 || c > 0xdf))
+            sjis_halfwidth_alive = 0;
 
         if (DFA_ALIVE(eucj)) {
             if (!DFA_ALIVE(sjis) && !DFA_ALIVE(utf8)) return "euc-jp";
@@ -106,6 +110,12 @@ static const char *guess_jp(FILE *in, const char *def)
             /* we ran out the possibilities */
             return NULL;
         }
+    }
+
+    if (DFA_ALIVE(eucj) && DFA_ALIVE(sjis) && !DFA_ALIVE(utf8) &&
+            sjis_halfwidth_alive) {
+        /* non-ASCII chars are only cp932 half width chars */
+        return "cp932";
     }
 
     /* Now, we have ambigous code.  Pick the highest score.  If more than
