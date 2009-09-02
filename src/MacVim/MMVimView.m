@@ -89,13 +89,16 @@ enum {
     [self setAutoresizesSubviews:YES];
 
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+#if ENABLE_ATSUI
     if ([ud boolForKey:MMAtsuiRendererKey]) {
         // Use ATSUI for text rendering.
         //
         // HACK! 'textView' has type MMTextView, but MMAtsuiTextView is not
         // derived from MMTextView.
         textView = [[MMAtsuiTextView alloc] initWithFrame:frame];
-    } else {
+    } else
+#endif // ENABLE_ATSUI
+    {
         // Use Cocoa text system for text rendering.
         textView = [[MMTextView alloc] initWithFrame:frame];
     }
@@ -414,7 +417,12 @@ enum {
                     identifier:(long)ident
 {
     MMScroller *scroller = [self scrollbarForIdentifier:ident index:NULL];
+#if (MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4)
+    [scroller setDoubleValue:val];
+    [scroller setKnobProportion:prop];
+#else
     [scroller setFloatValue:val knobProportion:prop];
+#endif
     [scroller setEnabled:prop != 1.f];
 }
 

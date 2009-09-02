@@ -18,6 +18,18 @@
 #define MM_ENABLE_PLUGINS
 
 
+// Taken from /usr/include/AvailabilityMacros.h
+#ifndef MAC_OS_X_VERSION_10_4
+# define MAC_OS_X_VERSION_10_4 1040
+#endif
+#ifndef MAC_OS_X_VERSION_10_5
+# define MAC_OS_X_VERSION_10_5 1050
+#endif
+#ifndef MAC_OS_X_VERSION_10_6
+# define MAC_OS_X_VERSION_10_6 1060
+#endif
+
+
 
 //
 // This is the protocol MMBackend implements.
@@ -234,6 +246,9 @@ extern NSString *MMLogToStdErrKey;
 // Argument used to stop MacVim from opening an empty window on startup
 // (techincally this is a user default but should not be used as such).
 extern NSString *MMNoWindowKey;
+
+extern NSString *MMAutosaveRowsKey;
+extern NSString *MMAutosaveColumnsKey;
 
 
 // Vim pasteboard type (holds motion type + string)
