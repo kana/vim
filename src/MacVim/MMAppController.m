@@ -1570,7 +1570,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     if (openFiles != nil)
         *openFiles = dict;
 
-    return files;
+    return [files autorelease];
 }
 
 #if MM_HANDLE_XCODE_MOD_EVENT
@@ -1937,6 +1937,13 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     }
 }
 
+
+// HACK: fileAttributesAtPath was deprecated in 10.5
+#if (MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_4)
+#define MM_fileAttributes(fm,p) [fm attributesOfItemAtPath:p error:NULL]
+#else
+#define MM_fileAttributes(fm,p) [fm fileAttributesAtPath:p traverseLink:YES]
+#endif
 - (NSDate *)rcFilesModificationDate
 {
     // Check modification dates for ~/.vimrc and ~/.gvimrc and return the
@@ -1948,20 +1955,20 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     NSFileManager *fm = [NSFileManager defaultManager];
 
     NSString *path = [@"~/.vimrc" stringByExpandingTildeInPath];
-    NSDictionary *attr = [fm fileAttributesAtPath:path traverseLink:YES];
+    NSDictionary *attr = MM_fileAttributes(fm, path);
     if (!attr) {
         path = [@"~/_vimrc" stringByExpandingTildeInPath];
-        attr = [fm fileAttributesAtPath:path traverseLink:YES];
+        attr = MM_fileAttributes(fm, path);
     }
     NSDate *modDate = [attr objectForKey:NSFileModificationDate];
     if (modDate)
         date = modDate;
 
     path = [@"~/.gvimrc" stringByExpandingTildeInPath];
-    attr = [fm fileAttributesAtPath:path traverseLink:YES];
+    attr = MM_fileAttributes(fm, path);
     if (!attr) {
         path = [@"~/_gvimrc" stringByExpandingTildeInPath];
-        attr = [fm fileAttributesAtPath:path traverseLink:YES];
+        attr = MM_fileAttributes(fm, path);
     }
     modDate = [attr objectForKey:NSFileModificationDate];
     if (modDate)
@@ -1969,6 +1976,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
     return date;
 }
+#undef MM_fileAttributes
 
 - (BOOL)openVimControllerWithArguments:(NSDictionary *)arguments
 {
