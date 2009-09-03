@@ -6917,6 +6917,9 @@ $as_echo_n "checking for MacVim GUI... " >&6; }
 $as_echo "yes" >&6; };
     GUITYPE=MACVIMGUI
         datadir='${prefix}/MacVim.app/Contents/Resources'
+
+            CFLAGS="$CFLAGS -m32"
+    LDFLAGS="$LDFLAGS -m32"
   fi
 
   if test "$VIMNAME" = "vim"; then

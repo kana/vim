@@ -1463,8 +1463,8 @@ if test "x$MACOSX" = "xyes"; then
 
     dnl Mac OS X 10.6 compiles 64 bit by default, but the MacVim binary is 32
     dnl bit.  This ensures Vim is 32 bit as well.
-    dnl CFLAGS="$CFLAGS -m32"
-    dnl LDFLAGS="$LDFLAGS -m32"
+    CFLAGS="$CFLAGS -m32"
+    LDFLAGS="$LDFLAGS -m32"
   fi
 
   if test "$VIMNAME" = "vim"; then
