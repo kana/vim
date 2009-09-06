@@ -2793,19 +2793,20 @@ static void netbeansReadCallback(CFSocketRef s,
 - (void)handleMarkedText:(NSData *)data
 {
     const void *bytes = [data bytes];
+    unsigned textlen = *((unsigned*)bytes);  bytes += sizeof(unsigned);
     unsigned pos = *((unsigned*)bytes);  bytes += sizeof(unsigned);
     unsigned len = *((unsigned*)bytes);  bytes += sizeof(unsigned);
     char *chars = (char *)bytes;
 
-    ASLogDebug(@"pos=%d len=%d chars=%s", pos, len, chars);
+    ASLogDebug(@"textlen=%d pos=%d len=%d chars=%s", textlen, pos, len, chars);
 
-    if (len == 0) {
+    if (textlen == 0) {
 	im_preedit_end_macvim();
     } else {
         if (!preedit_get_status())
             im_preedit_start_macvim();
 
-	im_preedit_changed_macvim(chars, pos);
+	im_preedit_changed_macvim(chars, pos + len);
     }
 }
 
