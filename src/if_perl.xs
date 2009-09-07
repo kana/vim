@@ -79,7 +79,7 @@ typedef void *FARPROC;
 # define FreeLibrary(a) dlclose(a)
 # define GetProcAddress dlsym
 # if defined(MACOS_X_UNIX)
-#  define DYNAMIC_PERL_DLL "/System/Library/Perl/lib/5.8/libperl.dylib"
+#  define DYNAMIC_PERL_DLL "/System/Library/Perl/lib/5.10/libperl.dylib"
 # else
 #  define DYNAMIC_PERL_DLL "libperl.so"
 # endif
