@@ -6918,9 +6918,7 @@ $as_echo "yes" >&6; };
     GUITYPE=MACVIMGUI
         datadir='${prefix}/MacVim.app/Contents/Resources'
 
-            CFLAGS="$CFLAGS -m32"
-    LDFLAGS="$LDFLAGS -m32"
-  fi
+                  fi
 
   if test "$VIMNAME" = "vim"; then
     VIMNAME=Vim
