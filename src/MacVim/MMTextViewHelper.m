@@ -922,6 +922,9 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
         if (mods & NSNumericPadKeyMask) {
             flags = mods & NSDeviceIndependentModifierFlagsMask;
             keyCode = [currentEvent keyCode];
+            // HACK! ATOK sends Cursor-Down key.
+            if (imState && keyCode == 0x7d)
+                keyCode = 0;
         }
 
         if ([currentEvent isARepeat])
