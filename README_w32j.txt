@@ -3,7 +3,7 @@
                                                          Version: 1.4.0
                                                           Author: MURAOKA Taro
                                                            Since: 23-Aug-1999
-                                                     Last Change: 01-Mar-2009.
+                                                     Last Change: 19-Sep-2009.
 
 概要
   Vimはviクローンに分類されるテキストエディタです。
