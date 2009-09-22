@@ -1201,7 +1201,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>20090911</string>
+	<string>20090922</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
