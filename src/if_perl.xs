@@ -75,7 +75,7 @@
 typedef void *HANDLE;
 typedef void *FARPROC;
 # include <dlfcn.h>
-# define LoadLibraryEx(a0,a1,a2) dlopen(a0,RTLD_NOW|RTLD_LOCAL)
+# define LoadLibraryEx(a0,a1,a2) dlopen(a0,RTLD_NOW|RTLD_GLOBAL)
 # define FreeLibrary(a) dlclose(a)
 # define GetProcAddress dlsym
 # if defined(MACOS_X_UNIX)

@@ -30,7 +30,7 @@
 typedef void *HINSTANCE;
 typedef void *FARPROC;
 # include <dlfcn.h>
-# define LoadLibrary(a) dlopen(a,RTLD_NOW|RTLD_LOCAL)
+# define LoadLibrary(a) dlopen(a,RTLD_NOW|RTLD_GLOBAL)
 # define FreeLibrary(a) dlclose(a)
 # define GetProcAddress dlsym
 # if defined(MACOS_X_UNIX)
