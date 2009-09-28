@@ -1803,7 +1803,7 @@ maparg( {name}[, {mode} [, {abbr}]])
 				String	rhs of mapping {name} in mode {mode}
 mapcheck( {name}[, {mode} [, {abbr}]])
 				String	check for mappings matching {name}
-mapcopy( {newoption}, {newlhs}, {curoption}, {curlhs})
+mapcopy( {newoptions}, {newlhs}, {curoptions}, {curlhs})
 				String	copy mapping with {curlhs} to {newlhs}
 maplist( {options}, {lhs})	List	list mappings with {lhs}
 match( {expr}, {pat}[, {start}[, {count}]])
@@ -3880,7 +3880,7 @@ mapcheck({name}[, {mode} [, {abbr}]])			*mapcheck()*
 <		This avoids adding the "_vv" mapping when there already is a
 		mapping for "_v" or for "_vvv".
 
-mapcopy({newoption}, {newlhs}, {curoption}, {curlhs})	*mapcopy()*
+mapcopy({newoptions}, {newlhs}, {curoptions}, {curlhs})	*mapcopy()*
 		Create a key mapping with {newlhs} which has the same
 		functionality of a key mapping with {curlhs}, i.e., copy a key
 		mapping.
@@ -3891,7 +3891,7 @@ mapcopy({newoption}, {newlhs}, {curoption}, {curlhs})	*mapcopy()*
 		{newlhs} and {curlhs} are string.  They can have special key
 		names like in :map and other commands.
 
-		{newoption} is a string, which can be one of the followings:
+		{newoptions} is a string, which can be one of the followings:
 		"B"	Create a buffer-local key mapping.
 		"G"	Create a global key mapping.
 		"U"	Raise an error if a key mapping with {newlhs} is
@@ -3900,7 +3900,7 @@ mapcopy({newoption}, {newlhs}, {curoption}, {curlhs})	*mapcopy()*
 			Create a key mapping in Command-line mode, Insert
 			mode, and so forth.
 
-		{oldoption} is a string, which can be one of the followings:
+		{oldoptions} is a string, which can be one of the followings:
 		"A"	Copy a buffer-local key mapping with {curlhs}.
 			If such key mapping does not exist, copy a global key
 			mapping with {curlhs}.
