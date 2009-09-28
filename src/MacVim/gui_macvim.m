@@ -1128,6 +1128,14 @@ gui_macvim_font_with_name(char_u *name)
 
 // -- Scrollbars ------------------------------------------------------------
 
+// NOTE: Even though scrollbar identifiers are 'long' we tacitly assume that
+// they only use 32 bits (in particular when compiling for 64 bit).  This is
+// justified since identifiers are generated from a 32 bit counter in
+// gui_create_scrollbar().  However if that code changes we may be in trouble
+// (if ever that many scrollbars are allocated...).  The reason behind this is
+// that we pass scrollbar identifers over process boundaries so the width of
+// the variable needs to be fixed (and why fix at 64 bit when only 32 are
+// really used?).
 
     void
 gui_mch_create_scrollbar(
@@ -1135,7 +1143,7 @@ gui_mch_create_scrollbar(
 	int orient)	/* SBAR_VERT or SBAR_HORIZ */
 {
     [[MMBackend sharedInstance] 
-            createScrollbarWithIdentifier:sb->ident type:sb->type];
+            createScrollbarWithIdentifier:(int32_t)sb->ident type:sb->type];
 }
 
 
@@ -1143,7 +1151,7 @@ gui_mch_create_scrollbar(
 gui_mch_destroy_scrollbar(scrollbar_T *sb)
 {
     [[MMBackend sharedInstance] 
-            destroyScrollbarWithIdentifier:sb->ident];
+            destroyScrollbarWithIdentifier:(int32_t)sb->ident];
 }
 
 
@@ -1153,7 +1161,7 @@ gui_mch_enable_scrollbar(
 	int		flag)
 {
     [[MMBackend sharedInstance] 
-            showScrollbarWithIdentifier:sb->ident state:flag];
+            showScrollbarWithIdentifier:(int32_t)sb->ident state:flag];
 }
 
 
@@ -1173,7 +1181,7 @@ gui_mch_set_scrollbar_pos(
     }
 
     [[MMBackend sharedInstance] 
-            setScrollbarPosition:pos length:len identifier:sb->ident];
+            setScrollbarPosition:pos length:len identifier:(int32_t)sb->ident];
 }
 
 
@@ -1185,7 +1193,10 @@ gui_mch_set_scrollbar_thumb(
 	long max)
 {
     [[MMBackend sharedInstance] 
-            setScrollbarThumbValue:val size:size max:max identifier:sb->ident];
+            setScrollbarThumbValue:val
+                              size:size
+                               max:max
+                        identifier:(int32_t)sb->ident];
 }
 
 
