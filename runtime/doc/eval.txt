@@ -3912,11 +3912,13 @@ mapcopy({newoption}, {newlhs}, {curoption}, {curlhs})	*mapcopy()*
 			given.
 
 maplist({options}, {lhs})				*maplist()*
-		Return a list of key mappings which have the same lhs as
-		{lhs}.
+		Return a list of key mappings whose lhses start with {lhs}.
+		Each item in the list is a string which is the lhs of a key
+		mapping.
 
 		{options} is a string which can contain the following flags:
-		"P"	List all key mappings whose lhses start with {lhs}.
+		"S"	List all key mappings whose lhses are the same as
+			{lhs}, instead of lhses start with {lhs}.
 		"c", "i", "l", "n", "o", "s", "v", "x"
 			List key mappings which are defined in Command-line
 			mode, Insert mode, etc.
