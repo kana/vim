@@ -1803,6 +1803,9 @@ maparg( {name}[, {mode} [, {abbr}]])
 				String	rhs of mapping {name} in mode {mode}
 mapcheck( {name}[, {mode} [, {abbr}]])
 				String	check for mappings matching {name}
+mapcopy( {newoption}, {newlhs}, {curoption}, {curlhs})
+				String	copy mapping with {curlhs} to {newlhs}
+maplist( {options}, {lhs})	List	list mappings with {lhs}
 match( {expr}, {pat}[, {start}[, {count}]])
 				Number	position where {pat} matches in {expr}
 matchadd( {group}, {pattern}[, {priority}[, {id}]])
@@ -3876,6 +3879,47 @@ mapcheck({name}[, {mode} [, {abbr}]])			*mapcheck()*
 	:endif
 <		This avoids adding the "_vv" mapping when there already is a
 		mapping for "_v" or for "_vvv".
+
+mapcopy({newoption}, {newlhs}, {curoption}, {curlhs})	*mapcopy()*
+		Create a key mapping with {newlhs} which has the same
+		functionality of a key mapping with {curlhs}, i.e., copy a key
+		mapping.
+
+		This function returns 0 if a key mapping is craeted, or
+		returns 1 if an error occurs.
+
+		{newlhs} and {curlhs} are string.  They can have special key
+		names like in :map and other commands.
+
+		{newoption} is a string, which can be one of the followings:
+		"B"	Create a buffer-local key mapping.
+		"G"	Create a global key mapping.
+		"U"	Raise an error if a key mapping with {newlhs} is
+			already defined.
+		"c", "i", "l", "n", "o", "s", "v", "x"
+			Create a key mapping in Command-line mode, Insert
+			mode, and so forth.
+
+		{oldoption} is a string, which can be one of the followings:
+		"A"	Copy a buffer-local key mapping with {curlhs}.
+			If such key mapping does not exist, copy a global key
+			mapping with {curlhs}.
+		"B"	Copy a buffer-local key mapping with {curlhs}.
+		"G"	Copy a global key mapping with {curlhs}.
+		"c", "i", "l", "n", "o", "s", "v", "x"
+			Copy a key mapping which is defined in Command-line
+			mode, Insert mode, etc.  One of this flag must be
+			given.
+
+maplist({options}, {lhs})				*maplist()*
+		Return a list of key mappings which have the same lhs as
+		{lhs}.
+
+		{options} is a string which can contain the following flags:
+		"P"	List all key mappings whose lhses start with {lhs}.
+		"c", "i", "l", "n", "o", "s", "v", "x"
+			List key mappings which are defined in Command-line
+			mode, Insert mode, etc.
 
 match({expr}, {pat}[, {start}[, {count}]])			*match()*
 		When {expr} is a |List| then this returns the index of the
