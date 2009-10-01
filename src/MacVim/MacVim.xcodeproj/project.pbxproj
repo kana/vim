@@ -74,6 +74,7 @@
 		1DE9B9500D341AB8008FEDD4 /* MMWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 1DE9B94E0D341AB8008FEDD4 /* MMWindow.m */; };
 		1DED78600C6DE43D0079945F /* vimrc in Copy Vim Runtime Files */ = {isa = PBXBuildFile; fileRef = 1DED785F0C6DE43D0079945F /* vimrc */; };
 		1DFE25A50C527BC4003000F7 /* PSMTabBarControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D493DB90C52533B00AB718C /* PSMTabBarControl.framework */; };
+		527738B410742FF900B280E0 /* PlugInView.nib in Resources */ = {isa = PBXBuildFile; fileRef = 527738B210742FF900B280E0 /* PlugInView.nib */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -81,7 +82,6 @@
 		BD476E300DAAD74400F08A5C /* RBSplitSubview.m in Sources */ = {isa = PBXBuildFile; fileRef = BD476E2C0DAAD74400F08A5C /* RBSplitSubview.m */; };
 		BD476E310DAAD74400F08A5C /* RBSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = BD476E2E0DAAD74400F08A5C /* RBSplitView.m */; };
 		BD943D530DA3050B00A02D9B /* PlugInImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = BD943D520DA3050B00A02D9B /* PlugInImpl.m */; };
-		BD9DF0A00DB2BA020025C97C /* PlugInView.nib in Resources */ = {isa = PBXBuildFile; fileRef = BD9DF09F0DB2BA020025C97C /* PlugInView.nib */; };
 		BD9DF0B00DB41E780025C97C /* PlugInGUI.m in Sources */ = {isa = PBXBuildFile; fileRef = BD9DF0AF0DB41E780025C97C /* PlugInGUI.m */; };
 		BD9DF0FB0DB48C860025C97C /* CTGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = BD9DF0FA0DB48C860025C97C /* CTGradient.m */; };
 		BDA8B1120D9F8A8500B3511A /* MMPlugInManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BDA8B1110D9F8A8500B3511A /* MMPlugInManager.m */; };
@@ -260,6 +260,7 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* MacVim_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacVim_Prefix.pch; sourceTree = "<group>"; };
+		527738B310742FF900B280E0 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PlugInView.nib; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* MacVim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacVim.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD476E2B0DAAD74400F08A5C /* RBSplitSubview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBSplitSubview.h; sourceTree = "<group>"; };
@@ -270,7 +271,6 @@
 		BD943D310DA2EA2500A02D9B /* PlugInInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlugInInterface.h; sourceTree = "<group>"; };
 		BD943D510DA3050B00A02D9B /* PlugInImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlugInImpl.h; sourceTree = "<group>"; };
 		BD943D520DA3050B00A02D9B /* PlugInImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlugInImpl.m; sourceTree = "<group>"; };
-		BD9DF09F0DB2BA020025C97C /* PlugInView.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = PlugInView.nib; sourceTree = "<group>"; };
 		BD9DF0AE0DB41E780025C97C /* PlugInGUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlugInGUI.h; sourceTree = "<group>"; };
 		BD9DF0AF0DB41E780025C97C /* PlugInGUI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlugInGUI.m; sourceTree = "<group>"; };
 		BD9DF0F90DB48C860025C97C /* CTGradient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTGradient.h; sourceTree = "<group>"; };
@@ -477,13 +477,13 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				527738B210742FF900B280E0 /* PlugInView.nib */,
 				1D384A0D100D671700D3C22F /* KeyBinding.plist */,
 				1D9C602E0EF79C0C0034AD44 /* MacVim.icns */,
 				1D8BEA73104992290069B072 /* FindAndReplace.nib */,
 				0395A8A90D72D88B00881434 /* General.png */,
 				0395A9590D74D47B00881434 /* Integration.png */,
 				1D22374A0E45DF4800E6FFFF /* Advanced.png */,
-				BD9DF09F0DB2BA020025C97C /* PlugInView.nib */,
 				1DD3D51D0D82D4C9006E4320 /* ibeam.png */,
 				1D0F11480D58C77800D5DA09 /* Font */,
 				1DE9726C0C48050600F96A9F /* Toolbar */,
@@ -611,7 +611,6 @@
 				0395A8AA0D72D88B00881434 /* General.png in Resources */,
 				0395A95A0D74D47B00881434 /* Integration.png in Resources */,
 				1DD3D51E0D82D4C9006E4320 /* ibeam.png in Resources */,
-				BD9DF0A00DB2BA020025C97C /* PlugInView.nib in Resources */,
 				1D22374B0E45DF4800E6FFFF /* Advanced.png in Resources */,
 				1DCD00BF0E50B2B700460166 /* Attention.png in Resources */,
 				1DCD00C00E50B2B700460166 /* Copy.png in Resources */,
@@ -637,6 +636,7 @@
 				1D8BEA74104992290069B072 /* FindAndReplace.nib in Resources */,
 				1D9C60520EF79C0C0034AD44 /* MacVim.icns in Resources */,
 				1D384A0E100D671700D3C22F /* KeyBinding.plist in Resources */,
+				527738B410742FF900B280E0 /* PlugInView.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -739,6 +739,14 @@
 				29B97319FDCFA39411CA2CEA /* English */,
 			);
 			name = MainMenu.nib;
+			sourceTree = "<group>";
+		};
+		527738B210742FF900B280E0 /* PlugInView.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				527738B310742FF900B280E0 /* English */,
+			);
+			name = PlugInView.nib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
