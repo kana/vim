@@ -260,6 +260,10 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* MacVim_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacVim_Prefix.pch; sourceTree = "<group>"; };
+		520E732B10743A4D000ED83F /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/Preferences.nib; sourceTree = "<group>"; };
+		520E732C10743A62000ED83F /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/PlugInView.nib; sourceTree = "<group>"; };
+		520E732D10743A6D000ED83F /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		520E732E10743B02000ED83F /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/FindAndReplace.nib; sourceTree = "<group>"; };
 		527738B310742FF900B280E0 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PlugInView.nib; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* MacVim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacVim.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -721,6 +725,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				1D6008820E96886D003763F0 /* English */,
+				520E732E10743B02000ED83F /* Japanese */,
 			);
 			name = FindAndReplace.nib;
 			sourceTree = "<group>";
@@ -729,6 +734,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				1DE3F8E60D50F80500052B9E /* English */,
+				520E732B10743A4D000ED83F /* Japanese */,
 			);
 			name = Preferences.nib;
 			sourceTree = "<group>";
@@ -737,6 +743,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				29B97319FDCFA39411CA2CEA /* English */,
+				520E732D10743A6D000ED83F /* Japanese */,
 			);
 			name = MainMenu.nib;
 			sourceTree = "<group>";
@@ -745,6 +752,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				527738B310742FF900B280E0 /* English */,
+				520E732C10743A62000ED83F /* Japanese */,
 			);
 			name = PlugInView.nib;
 			sourceTree = "<group>";
