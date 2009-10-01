@@ -54,7 +54,12 @@ typedef void *FARPROC;
 
 #define PY_SSIZE_T_CLEAN
 
-#include <Python.h>
+#ifdef FEAT_GUI_MACVIM
+# include <Python/Python.h>
+#else
+# include <Python.h>
+#endif
+
 #if defined(MACOS) && !defined(MACOS_X_UNIX)
 # include "macglue.h"
 # include <CodeFragments.h>

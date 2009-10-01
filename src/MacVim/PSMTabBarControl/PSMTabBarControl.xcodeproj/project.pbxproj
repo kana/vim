@@ -533,61 +533,10 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		1D13D16D0D560DDA0084F3AB /* Universal */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = A;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				INFOPLIST_FILE = "PSMTabBarControlFramework-Info.plist";
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = PSMTabBarControl;
-				SYMROOT = ../build;
-			};
-			name = Universal;
-		};
-		1D13D16E0D560DDA0084F3AB /* Universal */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = G5;
-				PRODUCT_NAME = All;
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = Universal;
-		};
-		1D13D16F0D560DDA0084F3AB /* Universal */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
-				SYMROOT = ../build;
-			};
-			name = Universal;
-		};
 		C056398008A954F8003078D8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH)";
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -600,6 +549,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = "PSMTabBarControlFramework-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = PSMTabBarControl;
 				SYMROOT = ../build;
@@ -610,7 +560,7 @@
 		C056398108A954F8003078D8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH)";
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
@@ -620,6 +570,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = "PSMTabBarControlFramework-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = PSMTabBarControl;
 				SYMROOT = ../build;
@@ -665,8 +616,10 @@
 		C056398C08A954F8003078D8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				SYMROOT = ../build;
 			};
@@ -675,8 +628,10 @@
 		C056398D08A954F8003078D8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				SYMROOT = ../build;
 			};
@@ -690,7 +645,6 @@
 			buildConfigurations = (
 				C056398008A954F8003078D8 /* Debug */,
 				C056398108A954F8003078D8 /* Release */,
-				1D13D16D0D560DDA0084F3AB /* Universal */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -700,7 +654,6 @@
 			buildConfigurations = (
 				C056398808A954F8003078D8 /* Debug */,
 				C056398908A954F8003078D8 /* Release */,
-				1D13D16E0D560DDA0084F3AB /* Universal */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -710,7 +663,6 @@
 			buildConfigurations = (
 				C056398C08A954F8003078D8 /* Debug */,
 				C056398D08A954F8003078D8 /* Release */,
-				1D13D16F0D560DDA0084F3AB /* Universal */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

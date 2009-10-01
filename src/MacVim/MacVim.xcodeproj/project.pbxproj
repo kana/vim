@@ -74,9 +74,6 @@
 		1DE9B9500D341AB8008FEDD4 /* MMWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 1DE9B94E0D341AB8008FEDD4 /* MMWindow.m */; };
 		1DED78600C6DE43D0079945F /* vimrc in Copy Vim Runtime Files */ = {isa = PBXBuildFile; fileRef = 1DED785F0C6DE43D0079945F /* vimrc */; };
 		1DFE25A50C527BC4003000F7 /* PSMTabBarControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D493DB90C52533B00AB718C /* PSMTabBarControl.framework */; };
-		523F4D770F84912F00741BAD /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 523F4D750F84912F00741BAD /* Localizable.strings */; };
-		52AB0BE10F856B4D00C205CA /* FindAndReplace.nib in Resources */ = {isa = PBXBuildFile; fileRef = 52AB0BDD0F856B4D00C205CA /* FindAndReplace.nib */; };
-		52AB0BE20F856B4D00C205CA /* PlugInView.nib in Resources */ = {isa = PBXBuildFile; fileRef = 52AB0BDF0F856B4D00C205CA /* PlugInView.nib */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -84,6 +81,7 @@
 		BD476E300DAAD74400F08A5C /* RBSplitSubview.m in Sources */ = {isa = PBXBuildFile; fileRef = BD476E2C0DAAD74400F08A5C /* RBSplitSubview.m */; };
 		BD476E310DAAD74400F08A5C /* RBSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = BD476E2E0DAAD74400F08A5C /* RBSplitView.m */; };
 		BD943D530DA3050B00A02D9B /* PlugInImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = BD943D520DA3050B00A02D9B /* PlugInImpl.m */; };
+		BD9DF0A00DB2BA020025C97C /* PlugInView.nib in Resources */ = {isa = PBXBuildFile; fileRef = BD9DF09F0DB2BA020025C97C /* PlugInView.nib */; };
 		BD9DF0B00DB41E780025C97C /* PlugInGUI.m in Sources */ = {isa = PBXBuildFile; fileRef = BD9DF0AF0DB41E780025C97C /* PlugInGUI.m */; };
 		BD9DF0FB0DB48C860025C97C /* CTGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = BD9DF0FA0DB48C860025C97C /* CTGradient.m */; };
 		BDA8B1120D9F8A8500B3511A /* MMPlugInManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BDA8B1110D9F8A8500B3511A /* MMPlugInManager.m */; };
@@ -262,14 +260,6 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* MacVim_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacVim_Prefix.pch; sourceTree = "<group>"; };
-		523248FA0F80FF690048E9A9 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/MainMenu.nib; sourceTree = "<group>"; };
-		523248FC0F80FF9F0048E9A9 /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/Preferences.nib; sourceTree = "<group>"; };
-		523F4D760F84912F00741BAD /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
-		523F4D780F84914000741BAD /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Japanese; path = Japanese.lproj/Localizable.strings; sourceTree = "<group>"; };
-		52AB0BDE0F856B4D00C205CA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/FindAndReplace.nib; sourceTree = "<group>"; };
-		52AB0BE00F856B4D00C205CA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PlugInView.nib; sourceTree = "<group>"; };
-		52AB0BE30F856B5600C205CA /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/FindAndReplace.nib; sourceTree = "<group>"; };
-		52AB0BE40F856B6500C205CA /* Japanese */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Japanese; path = Japanese.lproj/PlugInView.nib; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* MacVim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacVim.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD476E2B0DAAD74400F08A5C /* RBSplitSubview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RBSplitSubview.h; sourceTree = "<group>"; };
@@ -280,6 +270,7 @@
 		BD943D310DA2EA2500A02D9B /* PlugInInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlugInInterface.h; sourceTree = "<group>"; };
 		BD943D510DA3050B00A02D9B /* PlugInImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlugInImpl.h; sourceTree = "<group>"; };
 		BD943D520DA3050B00A02D9B /* PlugInImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlugInImpl.m; sourceTree = "<group>"; };
+		BD9DF09F0DB2BA020025C97C /* PlugInView.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = PlugInView.nib; sourceTree = "<group>"; };
 		BD9DF0AE0DB41E780025C97C /* PlugInGUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlugInGUI.h; sourceTree = "<group>"; };
 		BD9DF0AF0DB41E780025C97C /* PlugInGUI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlugInGUI.m; sourceTree = "<group>"; };
 		BD9DF0F90DB48C860025C97C /* CTGradient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTGradient.h; sourceTree = "<group>"; };
@@ -486,15 +477,13 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				52AB0BDD0F856B4D00C205CA /* FindAndReplace.nib */,
-				52AB0BDF0F856B4D00C205CA /* PlugInView.nib */,
-				523F4D750F84912F00741BAD /* Localizable.strings */,
 				1D384A0D100D671700D3C22F /* KeyBinding.plist */,
 				1D9C602E0EF79C0C0034AD44 /* MacVim.icns */,
 				1D8BEA73104992290069B072 /* FindAndReplace.nib */,
 				0395A8A90D72D88B00881434 /* General.png */,
 				0395A9590D74D47B00881434 /* Integration.png */,
 				1D22374A0E45DF4800E6FFFF /* Advanced.png */,
+				BD9DF09F0DB2BA020025C97C /* PlugInView.nib */,
 				1DD3D51D0D82D4C9006E4320 /* ibeam.png */,
 				1D0F11480D58C77800D5DA09 /* Font */,
 				1DE9726C0C48050600F96A9F /* Toolbar */,
@@ -622,6 +611,7 @@
 				0395A8AA0D72D88B00881434 /* General.png in Resources */,
 				0395A95A0D74D47B00881434 /* Integration.png in Resources */,
 				1DD3D51E0D82D4C9006E4320 /* ibeam.png in Resources */,
+				BD9DF0A00DB2BA020025C97C /* PlugInView.nib in Resources */,
 				1D22374B0E45DF4800E6FFFF /* Advanced.png in Resources */,
 				1DCD00BF0E50B2B700460166 /* Attention.png in Resources */,
 				1DCD00C00E50B2B700460166 /* Copy.png in Resources */,
@@ -646,9 +636,6 @@
 				1DCD00D30E50B2B700460166 /* Undo.png in Resources */,
 				1D8BEA74104992290069B072 /* FindAndReplace.nib in Resources */,
 				1D9C60520EF79C0C0034AD44 /* MacVim.icns in Resources */,
-				523F4D770F84912F00741BAD /* Localizable.strings in Resources */,
-				52AB0BE10F856B4D00C205CA /* FindAndReplace.nib in Resources */,
-				52AB0BE20F856B4D00C205CA /* PlugInView.nib in Resources */,
 				1D384A0E100D671700D3C22F /* KeyBinding.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -742,7 +729,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				1DE3F8E60D50F80500052B9E /* English */,
-				523248FC0F80FF9F0048E9A9 /* Japanese */,
 			);
 			name = Preferences.nib;
 			sourceTree = "<group>";
@@ -751,84 +737,17 @@
 			isa = PBXVariantGroup;
 			children = (
 				29B97319FDCFA39411CA2CEA /* English */,
-				523248FA0F80FF690048E9A9 /* Japanese */,
 			);
 			name = MainMenu.nib;
-			sourceTree = "<group>";
-		};
-		523F4D750F84912F00741BAD /* Localizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				523F4D760F84912F00741BAD /* English */,
-				523F4D780F84914000741BAD /* Japanese */,
-			);
-			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-		52AB0BDD0F856B4D00C205CA /* FindAndReplace.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				52AB0BDE0F856B4D00C205CA /* English */,
-				52AB0BE30F856B5600C205CA /* Japanese */,
-			);
-			name = FindAndReplace.nib;
-			sourceTree = "<group>";
-		};
-		52AB0BDF0F856B4D00C205CA /* PlugInView.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				52AB0BE00F856B4D00C205CA /* English */,
-				52AB0BE40F856B6500C205CA /* Japanese */,
-			);
-			name = PlugInView.nib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		1D13D1610D560D9D0084F3AB /* Universal */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 49;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)\"";
-				GCC_DYNAMIC_NO_PIC = YES;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = s;
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "$(HOME)/Applications";
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				PRODUCT_NAME = MacVim;
-				VERSIONING_SYSTEM = "apple-generic";
-				WRAPPER_EXTENSION = app;
-				ZERO_LINK = NO;
-			};
-			name = Universal;
-		};
-		1D13D1620D560D9D0084F3AB /* Universal */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
-			};
-			name = Universal;
-		};
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH)";
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 49;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -841,12 +760,15 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_PEDANTIC = NO;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = "";
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = MacVim;
 				VERSIONING_SYSTEM = "apple-generic";
+				WARNING_CFLAGS = "-Wall";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -855,7 +777,7 @@
 		C01FCF4C08A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH)";
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 49;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -872,6 +794,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = "";
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = MacVim;
 				VERSIONING_SYSTEM = "apple-generic";
 				WRAPPER_EXTENSION = app;
@@ -882,8 +805,10 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 			};
 			name = Debug;
@@ -891,8 +816,10 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 			};
 			name = Release;
@@ -905,7 +832,6 @@
 			buildConfigurations = (
 				C01FCF4B08A954540054247B /* Debug */,
 				C01FCF4C08A954540054247B /* Release */,
-				1D13D1610D560D9D0084F3AB /* Universal */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -915,7 +841,6 @@
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
-				1D13D1620D560D9D0084F3AB /* Universal */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
