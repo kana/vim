@@ -1,4 +1,4 @@
-*diff.txt*      For Vim version 7.2.  Last change: 2009 Jul 22
+*diff.txt*      For Vim version 7.2.  Last change: 2009 Sep 15
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -328,7 +328,7 @@ The "1a2" item appends the line "bbb".
 The "4d4" item deletes the line "111".
 The '7c7" item replaces the line "GGG" with "ggg".
 
-When 'diffexpr' is not empty, Vim evaluates to obtain a diff file in the
+When 'diffexpr' is not empty, Vim evaluates it to obtain a diff file in the
 format mentioned.  These variables are set to the file names used:
 
 	v:fname_in		original file
