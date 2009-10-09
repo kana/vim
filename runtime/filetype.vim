@@ -1,7 +1,7 @@
 " Vim support file to detect file types
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2009 Jul 09
+" Last Change:	2009 Sep 18
 
 " Listen very carefully, I will say this only once
 if exists("did_load_filetypes")
@@ -1558,6 +1558,7 @@ endfunc
 
 " Remind
 au BufNewFile,BufRead .reminders*		call s:StarSetf('remind')
+au BufNewFile,BufRead *.remind,*.rem		setf remind
 
 " Resolv.conf
 au BufNewFile,BufRead resolv.conf		setf resolv

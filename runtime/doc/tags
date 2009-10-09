@@ -489,7 +489,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 'nodg'	options.txt	/*'nodg'*
 'nodiff'	options.txt	/*'nodiff'*
 'nodigraph'	options.txt	/*'nodigraph'*
-'nodisable'	options.txt	/*'nodisable'*
 'noea'	options.txt	/*'noea'*
 'noeb'	options.txt	/*'noeb'*
 'noed'	options.txt	/*'noed'*
@@ -530,6 +529,7 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 'noimc'	options.txt	/*'noimc'*
 'noimcmdline'	options.txt	/*'noimcmdline'*
 'noimd'	options.txt	/*'noimd'*
+'noimdisable'	options.txt	/*'noimdisable'*
 'noincsearch'	options.txt	/*'noincsearch'*
 'noinf'	options.txt	/*'noinf'*
 'noinfercase'	options.txt	/*'noinfercase'*
@@ -4363,6 +4363,7 @@ Ruby	if_ruby.txt	/*Ruby*
 Russian	russian.txt	/*Russian*
 S	change.txt	/*S*
 SHELL	starting.txt	/*SHELL*
+SQLGetType	ft_sql.txt	/*SQLGetType*
 SQLSetType	ft_sql.txt	/*SQLSetType*
 Select	visual.txt	/*Select*
 Select-mode	visual.txt	/*Select-mode*
@@ -4904,6 +4905,7 @@ collapse	tips.txt	/*collapse*
 color-xterm	syntax.txt	/*color-xterm*
 coloring	syntax.txt	/*coloring*
 colortest.vim	syntax.txt	/*colortest.vim*
+command-line-window	cmdline.txt	/*command-line-window*
 command-mode	intro.txt	/*command-mode*
 compatible-default	starting.txt	/*compatible-default*
 compile-changes-5	version5.txt	/*compile-changes-5*
@@ -5582,7 +5584,6 @@ ft-xml-omni	insert.txt	/*ft-xml-omni*
 ft-xml-syntax	syntax.txt	/*ft-xml-syntax*
 ft-xpm-syntax	syntax.txt	/*ft-xpm-syntax*
 ft_ada.txt	ft_ada.txt	/*ft_ada.txt*
-ft_sql.txt	ft_sql.txt	/*ft_sql.txt*
 ftdetect	filetype.txt	/*ftdetect*
 ftp	pi_netrw.txt	/*ftp*
 ftplugin	usr_41.txt	/*ftplugin*
@@ -6974,7 +6975,7 @@ ports-6	version6.txt	/*ports-6*
 posix	vi_diff.txt	/*posix*
 posix-compliance	vi_diff.txt	/*posix-compliance*
 posix-screen-size	vi_diff.txt	/*posix-screen-size*
-postgres	ft_sql.txt	/*postgres*
+postgress	ft_sql.txt	/*postgress*
 postscr.vim	syntax.txt	/*postscr.vim*
 postscript-cjk-printing	print.txt	/*postscript-cjk-printing*
 postscript-print-encoding	print.txt	/*postscript-print-encoding*
@@ -7439,9 +7440,11 @@ sql-object-motions	ft_sql.txt	/*sql-object-motions*
 sql-predefined-objects	ft_sql.txt	/*sql-predefined-objects*
 sql-type-default	ft_sql.txt	/*sql-type-default*
 sql-types	ft_sql.txt	/*sql-types*
+sql.txt	ft_sql.txt	/*sql.txt*
 sql.vim	syntax.txt	/*sql.vim*
 sqlanywhere	ft_sql.txt	/*sqlanywhere*
 sqlanywhere.vim	syntax.txt	/*sqlanywhere.vim*
+sqlgettype	ft_sql.txt	/*sqlgettype*
 sqlinformix.vim	syntax.txt	/*sqlinformix.vim*
 sqlj	ft_sql.txt	/*sqlj*
 sqlserver	ft_sql.txt	/*sqlserver*

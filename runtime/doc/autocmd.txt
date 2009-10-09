@@ -1,4 +1,4 @@
-*autocmd.txt*   For Vim version 7.2.  Last change: 2009 Jul 22
+*autocmd.txt*   For Vim version 7.2.  Last change: 2009 Oct 04
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -59,10 +59,10 @@ Note: The ":autocmd" command cannot be followed by another command, since any
 :au[tocmd] [group] {event} {pat} [nested] {cmd}
 			Add {cmd} to the list of commands that Vim will
 			execute automatically on {event} for a file matching
-			{pat}.  Vim always adds the {cmd} after existing
-			autocommands, so that the autocommands execute in the
-			order in which they were given.  See |autocmd-nested|
-			for [nested].
+			{pat} |autocmd-patterns|.
+			Vim always adds the {cmd} after existing autocommands,
+			so that the autocommands execute in the order in which
+			they were given.  See |autocmd-nested| for [nested].
 
 The special pattern <buffer> or <buffer=N> defines a buffer-local autocommand.
 See |autocmd-buflocal|.

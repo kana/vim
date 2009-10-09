@@ -1,4 +1,4 @@
-*options.txt*	For Vim version 7.2.  Last change: 2009 Jul 19
+*options.txt*	For Vim version 7.2.  Last change: 2009 Sep 11
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -2561,13 +2561,17 @@ A jump table for the options with a short description can be found at |Q_op|.
 			{not in Vi}
 	Sets the character encoding for the file of this buffer.
 	When 'fileencoding' is different from 'encoding', conversion will be
-	done when reading and writing the file.
+	done when writing the file.  For reading see below.
 	When 'fileencoding' is empty, the same value as 'encoding' will be
 	used (no conversion when reading or writing a file).
+	Conversion will also be done when 'encoding' and 'fileencoding' are
+	both a Unicode encoding and 'fileencoding' is not utf-8.  That's
+	because internally Unicode is always stored as utf-8.
 		WARNING: Conversion can cause loss of information!  When
-		'encoding' is "utf-8" conversion is most likely done in a way
-		that the reverse conversion results in the same text.  When
-		'encoding' is not "utf-8" some characters may be lost!
+		'encoding' is "utf-8" or another Unicode encoding, conversion
+		is most likely done in a way that the reverse conversion
+		results in the same text.  When 'encoding' is not "utf-8" some
+		characters may be lost!
 	See 'encoding' for the possible values.  Additionally, values may be
 	specified that can be handled by the converter, see
 	|mbyte-conversion|.
@@ -4652,15 +4656,15 @@ A jump table for the options with a short description can be found at |Q_op|.
 			{not in Vi}
 	Maximum amount of memory (in Kbyte) to use for one buffer.  When this
 	limit is reached allocating extra memory for a buffer will cause
-	other memory to be freed.  Maximum usable value about 2000000.  Use
-	this to work without a limit.  Also see 'maxmemtot'.
+	other memory to be freed.  The maximum usable value is about 2000000.
+	Use this to work without a limit.  Also see 'maxmemtot'.
 
 						*'maxmempattern'* *'mmp'*
 'maxmempattern' 'mmp'	number	(default 1000)
 			global
 			{not in Vi}
 	Maximum amount of memory (in Kbyte) to use for pattern matching.
-	Maximum value about 2000000.  Use this to work without a limit.
+	The maximum value is about 2000000.  Use this to work without a limit.
 							*E363*
 	When Vim runs into the limit it gives an error message and mostly
 	behaves like CTRL-C was typed.
@@ -4676,8 +4680,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global
 			{not in Vi}
 	Maximum amount of memory (in Kbyte) to use for all buffers together.
-	Maximum usable value 2000000.  Use this to work without a limit.  Also
-	see 'maxmem'.
+	The maximum usable value is about 2000000.  Use this to work without a
+	limit.  Also see 'maxmem'.
 
 						*'menuitems'* *'mis'*
 'menuitems' 'mis'	number	(default 25)
