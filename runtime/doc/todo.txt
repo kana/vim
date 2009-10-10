@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.2.  Last change: 2009 Jul 26
+*todo.txt*      For Vim version 7.2.  Last change: 2009 Oct 08
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,25 +30,39 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
-When 'enc' is utf-8 and 'fenc' is latin1 and there is a non-latin1 char get an
-error without a hint what causes the problem.
+C syntax: Recognize comments in #define (Samuel Thibault, 2009 Sep 16)
 
-Conversion problem: When 'encoding' is "utf-16" and 'fenc' is "utf-8" writing
-a file does conversion while none is to be done. (Yukihiro Nakadaira)
-Also: when 'fenc' is empty file is written as utf-8 instead of utf-16.
-Also updated docs for 'fileencoding' about not doing conversion.
+patch to close file desc on ":shell". (James Vega, 2009 Aug 11, Sep 11)
 
-Update for Matlab syntax file. (Maurizio Tranchero, 2009 July 25)
+Coverity: ask someone to create new user: Dominique.
+look into reported defects: http://scan.coverity.com/rung2.html
 
-Updated debian runtime files (James Vega, 2009 July 25)
+Spanish messages and menus. (Omar Campagne, 2009 Oct 1)
 
-":help g" does not jump to index of commands starting with g.
+Patch to fix text formatting with small 'tw'. (Yukihiro Nakadaira, 2009 Sep
+26, update Sep 29)
+
+Bug with 'incsearch' going to wrong line. (Wolfram Kresse, 2009 Aug 17)
+Only with "vim -u NONE".
+
+Problem with editing file in binary mode. (Ingo Krabbe, 2009 Oct 8)
+
+Support .xz with the xz program, like with lzma.
+
+Patch to set v:key for map() function. (Hari Krishna Dara, 2009 Sep 26)
+
+Perl runtime files update. (Andy Lester, 2009 Aug 25)
+
+Gvimext patch to support wide file names. (Szabolcs Horvat 2008 Sep 10)
+
+problem with stop directory in findfile(). (Adam simpkins, 2009 Aug 26)
 
 Patch to support :browse for more commands. (Lech Lorens, 2009 Jul 18)
 
-Windows (Vista): download spell file doesn't work? (Chris Bogen, 2009 May 7)
+New wordlist for Dutch: http://www.opentaal.org/bestanden/1_10/nl_NL-Pack
 
-Patches for Mzscheme interface (Sergey Khorev, 2009 Jul 17, 2 parts)
+Check for unused functions, idea:
+http://blog.flameeyes.eu/2008/01/17/today-how-to-identify-unused-exported-functions-and-variables
 
 In command line window ":close" doesn't work properly. (Tony Mechelynck, 2009
 Jun 1)
@@ -58,6 +72,11 @@ not a string. (Sean Ma)  Need to add flag to call_func_retlist() to force a
 string value.
 
 Reproducable crash in syntax HL. (George Reilly, Dominique Pelle, 2009 May 9)
+
+Invalid read error in Farsi mode. (Dominique Pelle, 2009 Aug 2)
+
+For running gvim on an USB stick: avoid the OLE registration.  Use a command
+line argument -noregister.
 
 submatch() may remove backslash. (Sergey Goldgaber, 2009 Jul 6)
 
@@ -76,9 +95,7 @@ Are they all OK?  Update Jul 22.
 Patch for Ruby sockets. (todesking/Ariya Mizutani, 2008 Jul 1,24)
 Confirmed by Anton Sharonov, 2008 Dec 26.
 
-Patch for Ruby 1.9. (Msaki Suketa, 2009 Jul 21)
-
-Patch for GTK resizing problem when maximized. (Vitaly Minko, 2009 Jul 22)
+Patch for Ruby 1.9. (Msaki Suketa, 2009 Jul 21, Jul 26)
 
 Patch for completion of ":find" arguments. (Nazri Ramliy, 2009 Feb 22, 26)
 8   For ":find" and ":sfind" expand files found in 'path'.
@@ -101,6 +118,8 @@ Problem with <script> mappings (Andy Wokula, 2009 Mar 8)
 
 Patch to support netbeans for Mac. (Kazuki Sakamoto, 2009 Jun 25)
 
+Patch to support clibpard for Mac terminal. (Jjgod Jiang, 2009 Aug 1)
+
 When starting Vim with "gvim -f -u non_existent_file > foo.txt" there are a
 few control characters in the output. (Dale Wiles, 2009 May 28)
 
@@ -113,6 +132,9 @@ J.  Wang, 2009 Mar 31)
 Patch for vertical line at certain column position, 'guidecolumn' option.
 (Pankaj Garg, 2009 Apr 14, aka Lone, Apr 15)
 Update 2009 May 2, 'margincolumn'
+
+Add different highlighting for a fold line depending on the fold level.
+Patch. (Noel Henson, 2009 Sep 13)
 
 When 'ft' changes redraw custom status line.
 
@@ -149,6 +171,9 @@ Ignore window options when not in the right window?
 Perhaps we need to use a hidden window for applying autocommands to a buffer
 that doesn't have a window.
 
+When using "ab foo bar" and mapping <Tab> to <Esc>, pressing <Tab> after foo
+doesn't trigger the abbreviation like <Esc> would. (Ramana Kumar, 2009 Sep 6)
+
 getbufvar() to get a window-local option value for a buffer that's not
 displayed in a window should return the value that's stored for that buffer.
 
@@ -156,6 +181,10 @@ displayed in a window should return the value that's stored for that buffer.
 
 Patch to make synIDattr() work for GUI attributes in Vim without GUI feature.
 (Matt Wozniski, 2009 Apr 15)
+
+There should be a way after an abbreviation has expanded to go back to what
+was typed.  CTRL-G h ?  Would also undo last word or line break inserted
+perhaps.  And undo CTRL-W.  CTRL-G l would redo.
 
 Win32: A --remote command that has a directory name starting with a ( doesn't
 work, the backslash is removed, assuming that it escapes the (. (Valery
@@ -181,6 +210,10 @@ does not work. (Nieko Maatjes, 2009 Jan 8, Ingo Karkat, 2009 Jan 22)
 Directory wrong in session file, caused by ":lcd" in BufEnter autocommand.
 (Felix Kater, 2009 Mar 3)
 
+maparg() doesn't return the flags, such as <buffer>, <script>, <silent>.
+These are needed to save and restore a mapping.
+Also: the rhs string is not always correct. (Hari Krishna Dara, 2009 Sept 29)
+
 Using ~ works OK on 'a' with composing char, but not on 0x0418  with composing
 char 0x0301. (Tony Mechelynck, 2009 Mar 4)
 
@@ -200,6 +233,9 @@ es_ES.utf-8" gives an error and doesn't switch messages. (Dominique Pelle,
 When $HOME contains special characters, sich as a comma, escape them when used
 in an option. (Michael Hordijk, 2009 May 5)
 Turn "esc" argument of expand_env_esc() into string of chars to be escaped.
+
+Can 'undolevels' be a buffer-local option?  Helps for making big changes in
+one file only, set 'ul' to -1 only for that buffer.
 
 Should make 'ignorecase' global-local, so that it makes sense setting it from
 a modeline.
@@ -228,6 +264,9 @@ that :version output shows which patches have been applied.
 
 Have a look at patch for utf-8 line breaking. (Yongwei Wu, 2008 Mar 1, Mar 23)
 Now at: http://vimgadgets.sourceforge.net/liblinebreak/
+
+Greek sigma character should be lower cased depending on the context.  Can we
+make this work?  (Dominique Pelle, 2009 Sep 24)
 
 Disable setting 'encoding' from a modeline?  It usually causes problems, can't
 do any good.  (Patch from Patrick Texier, 2008 Dec 9)
@@ -299,6 +338,9 @@ another look at it.
 
 Patch for c.vim and cpp.vim syntax files. (Chung-chieh Shan, 2008 Nov 26)
 
+c.vim: XXX in a comment is colored yellow, but not when it's after "#if 0".
+(Ilya Dogolazky, 2009 Aug 7)
+
 Win32:  ":dis +" shows nothing, but "+p does insert text.  Problem with "* and
 "+ being the same thing?
 
@@ -337,7 +379,8 @@ put_in_typebuf().  Char mapped twice?
 
 Patch for colorscheme submenu. (Juergen Kraemer, 2008 Aug 20)
 
-Patch for Python 3 support. (Roland Puntaier, 2009 Jun 3, update July 15)
+Patch for Python 3 support. (Roland Puntaier, 2009 Sep 22)
+Includes changes for omnicompletion.
 Needs to be tested.
 
 8   Some file systems are case-sensitive, some are not.  Turn
@@ -767,8 +810,6 @@ Just have two choices, always using one Vim and selecting between using an
 argument list or opening each file in a separate tab.
 (Erik Falor, 2008 May 21, 2008 Jun 26)
 
-Gvimext patch to support wide file names. (Szabolcs Horvat 2008 Sep 10)
-
 GUI: When combining fg en bg make sure they are not equal.
 
 Spell checking: Add a way to specify punctuation characters.  Add the
@@ -807,6 +848,10 @@ The generated vim.bat can avoid the loop for NT. (Carl Zmola, 2006 Sep 3)
 
 Session file creation: 'autochdir' causes trouble.  Keep it off until after
 loading all files.
+
+Win32: When 'autochdir' is on and 'encoding' is changed, files on the command
+line are opened again, but from the wrong directory.  Apply 'autochdir' only
+after starting up?
 
 When showing a diff between a non-existant file and an existing one, with the
 cursor in the empty buffer, the other buffer only shows the last line.  Change
@@ -898,9 +943,6 @@ GDK_WINDOW_STATE_MAXIMIZED) and set it again?
 
 Another resizing problem when setting 'columns' and 'lines' to a very large
 number. (Tony Mechelynck, 2007 Feb 6)
-
-GTK: when using the -geom argument with an offset from the right edge and the
-size is smaller than the default, the Vim window is not positioned properly.
 
 After starting Vim, using '0 to jump somewhere in a file, ":sp" doesn't center
 the cursor line.  It works OK after some other commands.
@@ -1038,10 +1080,15 @@ starting to edit a file.  Things like 'fileencodings' only work up to this
 size, modelines only work at the top.  Useful for large log files where you
 only want to look at the first few pages.  Use zero to disable it.
 
+":vimgrep" does not recognize a recursive symlink.  Is it possible to detect
+this, at least for Unix (using device/inode)?
+
 
 Vim 7.3:
--    STARTUPTIME is difficult to enable.  Use --startuptime=fname argument?
-     Does this require a configure check?
+-   Use NSIS 2.45, it includes Windows 7 support.
+-   Easier/standard way to disable default plugins.
+-   STARTUPTIME is difficult to enable.  Use --startuptime=fname argument?
+    Does this require a configure check?
 -   Add patch for 'relativenumber' option?  Markus Heidelberg, 2008 Jun 27.
 -   Add blowfish encryption.  Openssl has an implementation.  Also by Paul
     Kocher (LGPL), close to original.  Mohsin also has some ideas.
@@ -2295,8 +2342,6 @@ Folding:
 8   Add "z/" and "z?" for searching in not folded text only.
 9   Add search pattern item to only match in closed or open fold and/or fold
     with certain level.  Allows doing ":g/pat/cmd" to work on closed folds.
-8   Add different highlighting for a fold line depending on the fold level.
-    (Noel Henson)
 7   Use "++--", "+++--" for different levels instead of "+---" "+----".
 8   When a closed fold is displayed open because of 'foldminlines', the
     behavior of commands is still like the fold is closed.  How to make the
@@ -2692,6 +2737,7 @@ Built-in script language:
     option or environment variable.
 8   ":let &option" should list the value of the option.
 8   ":let Func().foo = value" should work, also when "foo" doesn't exist.
+    Also: ":let Func()[foo] = value" should work.  Same for a List.
 7   Add synIDlist(), making the whole list of syntax items on the syntax stack
     available as a List.
 8   Add autocommand-event for when a variable is changed:
@@ -2744,8 +2790,6 @@ Performance:
     when starting up in a color terminal.
 8   Avoid alloc() for scratch buffer use, esp. in syntax.c.  It's very slow on
     Win16.
-9   Setting GUI options in the console (e.g., 'guifont') should not cause a
-    redraw.
 8   Profiling shows that in_id_list() is used very often for C code.  Can this
     function be improved?
 8   For an existing file, the page size of the swap file is always the
@@ -3439,6 +3483,13 @@ Insert mode:
 			    "asdf"
 			}
 		    );
+8   In C++ a function isn't recognized inside a namespace:
+    (Chow Loong Jin)
+	namespace {
+	    int
+		 func(int arg) {
+		 }
+	}
 6   Add 'cino' flag for this function argument layout: (Spencer Collyer)
 	    func( arg1
 	        , arg2
@@ -3525,8 +3576,6 @@ Java:
 
 Virtual edit:
 8   Make the horizontal scrollbar work to move the text further left.
-7   Add a mode where the cursor is only allowed to go one character after the
-    end of the line?
 7   Allow specifying it separately for Tabs and beyond end-of-line?
 
 

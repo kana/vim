@@ -7583,6 +7583,8 @@ set_bool_option(opt_idx, varp, value, opt_flags)
     {
 	if (curwin->w_p_wrap)
 	    curwin->w_leftcol = 0;
+	if (curwin->w_curswant != MAXCOL)
+	    curwin->w_set_curswant = TRUE;
     }
 
 #ifdef FEAT_WINDOWS
@@ -7814,6 +7816,22 @@ set_bool_option(opt_idx, varp, value, opt_flags)
     }
 
     else if ((int *)varp == &p_arshape)
+    {
+	if (curwin->w_curswant != MAXCOL)
+	    curwin->w_set_curswant = TRUE;
+    }
+#endif
+
+#ifdef FEAT_LINEBREAK
+    if ((int *)varp == &curwin->w_p_lbr)
+    {
+	if (curwin->w_curswant != MAXCOL)
+	    curwin->w_set_curswant = TRUE;
+    }
+#endif
+
+#ifdef FEAT_RIGHTLEFT
+    if ((int *)varp == &curwin->w_p_rl)
     {
 	if (curwin->w_curswant != MAXCOL)
 	    curwin->w_set_curswant = TRUE;

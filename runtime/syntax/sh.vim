@@ -2,8 +2,8 @@
 " Language:		shell (sh) Korn shell (ksh) bash (sh)
 " Maintainer:		Dr. Charles E. Campbell, Jr.  <NdrOchipS@PcampbellAfamily.Mbiz>
 " Previous Maintainer:	Lennart Schultz <Lennart.Schultz@ecmwf.int>
-" Last Change:		Jul 01, 2009
-" Version:		107
+" Last Change:		Sep 01, 2009
+" Version:		109
 " URL:		http://mysite.verizon.net/astronaut/vim/index.html#vimlinks_syntax
 " For options and settings, please use:      :help ft-sh-syntax
 " This file includes many ideas from Éric Brunet (eric.brunet@ens.fr)
@@ -101,12 +101,12 @@ syn cluster shTestList	contains=shCharClass,shComment,shCommandSub,shDeref,shDer
 " Echo: {{{1
 " ====
 " This one is needed INSIDE a CommandSub, so that `echo bla` be correct
-syn region shEcho matchgroup=shStatement start="\<echo\>"  skip="\\$" matchgroup=shOperator end="$" matchgroup=NONE end="[<>;&|()]"me=e-1 end="\d[<>]"me=e-2 end="#"me=e-1 contains=@shEchoList skipwhite nextgroup=shQuickComment
-syn region shEcho matchgroup=shStatement start="\<print\>" skip="\\$" matchgroup=shOperator end="$" matchgroup=NONE end="[<>;&|()]"me=e-1 end="\d[<>]"me=e-2 end="#"me=e-1 contains=@shEchoList skipwhite nextgroup=shQuickComment
+syn region shEcho matchgroup=shStatement start="\<echo\>"  skip="\\$" matchgroup=shOperator end="$" matchgroup=NONE end="[<>;&|()]"me=e-1 end="\d[<>]"me=e-2 end="\s#"me=e-2 contains=@shEchoList skipwhite nextgroup=shQuickComment
+syn region shEcho matchgroup=shStatement start="\<print\>" skip="\\$" matchgroup=shOperator end="$" matchgroup=NONE end="[<>;&|()]"me=e-1 end="\d[<>]"me=e-2 end="\s#"me=e-2 contains=@shEchoList skipwhite nextgroup=shQuickComment
 syn match  shEchoQuote contained	'\%(\\\\\)*\\["`']'
 
 " This must be after the strings, so that ... \" will be correct
-syn region shEmbeddedEcho contained matchgroup=shStatement start="\<print\>" skip="\\$" matchgroup=shOperator end="$" matchgroup=NONE end="[<>;&|`)]"me=e-1 end="\d[<>]"me=e-2 end="#"me=e-1 contains=shNumber,shExSingleQuote,shSingleQuote,shDeref,shDerefSimple,shSpecialVar,shOperator,shDoubleQuote,shCharClass,shCtrlSeq
+syn region shEmbeddedEcho contained matchgroup=shStatement start="\<print\>" skip="\\$" matchgroup=shOperator end="$" matchgroup=NONE end="[<>;&|`)]"me=e-1 end="\d[<>]"me=e-2 end="\s#"me=e-2 contains=shNumber,shExSingleQuote,shSingleQuote,shDeref,shDerefSimple,shSpecialVar,shOperator,shDoubleQuote,shCharClass,shCtrlSeq
 
 " Alias: {{{1
 " =====
@@ -153,13 +153,12 @@ syn match   shPattern	"\<\S\+\())\)\@="	contained contains=shExSingleQuote,shSin
 
 " Subshells: {{{1
 " ==========
-syn region shExpr  transparent matchgroup=shExprRegion  start="{" end="}"	contains=@shExprList2
-syn region shSubSh transparent matchgroup=shSubShRegion start="(" end=")"	contains=@shSubShList
+syn region shExpr  transparent matchgroup=shExprRegion  start="{" end="}"	contains=@shExprList2 nextgroup=shMoreSpecial
+syn region shSubSh transparent matchgroup=shSubShRegion start="(" end=")"	contains=@shSubShList nextgroup=shMoreSpecial
 
 " Tests: {{{1
 "=======
-"syn region  shExpr transparent matchgroup=shRange start="\[" skip=+\\\\\|\\$+ end="\]" contains=@shTestList
-syn region shExpr	matchgroup=shRange start="\[" skip=+\\\\\|\\$+ end="\]" contains=@shTestList
+syn region shExpr	matchgroup=shRange start="\[" skip=+\\\\\|\\$+ end="\]" contains=@shTestList,shSpecial
 syn region shTest	transparent matchgroup=shStatement start="\<test\>" skip=+\\\\\|\\$+ matchgroup=NONE end="[;&|]"me=e-1 end="$" contains=@shExprList1
 syn match  shTestOpr	contained	"<=\|>=\|!=\|==\|-.\>\|-\(nt\|ot\|ef\|eq\|ne\|lt\|le\|gt\|ge\)\>\|[!<>]"
 syn match  shTestOpr	contained	'=' skipwhite nextgroup=shTestDoubleQuote,shTestSingleQuote,shTestPattern
@@ -258,7 +257,7 @@ endif
 
 syn match   shSource	"^\.\s"
 syn match   shSource	"\s\.\s"
-syn region  shColon	start="^\s*:" end="$\|" end="#"me=e-1 contains=@shColonList
+syn region  shColon	start="^\s*:" end="$\|" end="\s#"me=e-2 contains=@shColonList
 
 " String And Character Constants: {{{1
 "================================
@@ -276,8 +275,9 @@ syn region  shSingleQuote	matchgroup=shOperator start=+'+ end=+'+		contains=shSt
 syn region  shDoubleQuote	matchgroup=shOperator start=+"+ skip=+\\"+ end=+"+	contains=@shDblQuoteList,shStringSpecial,@Spell
 syn match   shStringSpecial	"[^[:print:] \t]"	contained
 syn match   shStringSpecial	"\%(\\\\\)*\\[\\"'`$()#]"
-syn match   shSpecial	"[^\\]\zs\%(\\\\\)*\\[\\"'`$()#]"
+syn match   shSpecial	"[^\\]\zs\%(\\\\\)*\\[\\"'`$()#]" nextgroup=shMoreSpecial
 syn match   shSpecial	"^\%(\\\\\)*\\[\\"'`$()#]"
+syn match   shMoreSpecial	"\%(\\\\\)*\\[\\"'`$()#]" nextgroup=shMoreSpecial contained
 
 " Comments: {{{1
 "==========
@@ -513,6 +513,7 @@ hi def link shFunction	Function
 hi def link shHereDoc	shString
 hi def link shHerePayload	shHereDoc
 hi def link shLoop	shStatement
+hi def link shMoreSpecial	shSpecial
 hi def link shOption	shCommandSub
 hi def link shPattern	shString
 hi def link shParen	shArithmetic

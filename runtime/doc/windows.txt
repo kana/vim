@@ -1,4 +1,4 @@
-*windows.txt*   For Vim version 7.2.  Last change: 2009 Apr 12
+*windows.txt*   For Vim version 7.2.  Last change: 2009 Sep 23
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -34,6 +34,11 @@ disabled at compile time}
 
 ==============================================================================
 1. Introduction					*windows-intro* *window*
+
+Summary:
+   A buffer is the in-memory text of a file.
+   A window is a viewport on a buffer.
+   A tab page is a collection of windows.
 
 A window is a viewport onto a buffer.  You can use multiple windows on one
 buffer, or several windows on different buffers.

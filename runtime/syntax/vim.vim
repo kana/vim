@@ -1,8 +1,8 @@
 " Vim syntax file
 " Language:	Vim 7.2 script
 " Maintainer:	Dr. Charles E. Campbell, Jr. <NdrOchipS@PcampbellAfamily.Mbiz>
-" Last Change:	May 29, 2009
-" Version:	7.2-92
+" Last Change:	Aug 17, 2009
+" Version:	7.2-93
 " Automatically generated keyword lists: {{{1
 
 " Quit when a syntax file was already loaded {{{2
@@ -33,7 +33,7 @@ syn keyword vimOption contained	allowrevins arab autoread backup balloonexpr bh 
 syn keyword vimOption contained	altkeymap arabic autowrite backupcopy bdir bin bomb bt cd ci cinw co completefunc cp cscopetag csto debug dict dir eb enc errorbells expandtab fdl fenc fileformat fml foldignore foldopen fs gfn grepprg guiheadroom helplang history hls imactivatekey iminsert inde insertmode iskeyword keymodel laststatus lisp lpl magic maxfuncdepth menuitems mm modifiable mousem mps number opendevice paste pex pmbcs printencoding prompt rdt ri 
 
 " vimOptions: These are the turn-off setting variants {{{2
-syn keyword vimOption contained	noacd noallowrevins noantialias noarabic noarshape noautoread noaw noballooneval nobinary nobk nobuflisted nocin noconfirm nocopyindent nocscopeverbose nocuc nocursorline nodg nodisable noeb noedcompatible noendofline noequalalways noesckeys noex noexrc nofk nofoldenable nogdefault nohid nohk nohkmapp nohls noic noignorecase noimc noimd noinf noinsertmode nojoinspaces nolazyredraw nolinebreak nolist nolpl noma nomacmeta nomagic noml nomodeline nomodified nomousef nomousehide nonumber noopendevice nopi nopreviewwindow nopvw noremap norevins norightleft norl noro noru nosb noscb noscs nosft noshelltemp noshortname noshowfulltag noshowmode nosm nosmartindent nosmd nosol nosplitbelow nospr nossl nostartofline noswapfile nota notagrelative notbi notbs noterse notextmode notgst notimeout noto notr nottybuiltin notx novisualbell nowarn noweirdinvert nowfw nowinfixheight nowiv nowrap nowrite nowritebackup
+syn keyword vimOption contained	noacd noallowrevins noantialias noarabic noarshape noautoread noaw noballooneval nobinary nobk nobuflisted nocin noconfirm nocopyindent nocscopeverbose nocuc nocursorline nodg noimdisable noeb noedcompatible noendofline noequalalways noesckeys noex noexrc nofk nofoldenable nogdefault nohid nohk nohkmapp nohls noic noignorecase noimc noimd noinf noinsertmode nojoinspaces nolazyredraw nolinebreak nolist nolpl noma nomacmeta nomagic noml nomodeline nomodified nomousef nomousehide nonumber noopendevice nopi nopreviewwindow nopvw noremap norevins norightleft norl noro noru nosb noscb noscs nosft noshelltemp noshortname noshowfulltag noshowmode nosm nosmartindent nosmd nosol nosplitbelow nospr nossl nostartofline noswapfile nota notagrelative notbi notbs noterse notextmode notgst notimeout noto notr nottybuiltin notx novisualbell nowarn noweirdinvert nowfw nowinfixheight nowiv nowrap nowrite nowritebackup
 syn keyword vimOption contained	noai noaltkeymap noar noarabicshape noautochdir noautowrite noawa nobeval nobiosk nobl nocf nocindent noconsk nocp nocst nocul nodeco nodiff noea noed noek noeol noerrorbells noet noexpandtab nofen nofkmap nogd noguipty nohidden nohkmap nohkp nohlsearch noicon noim noimcmdline noincsearch noinfercase nois nojs nolbr nolisp noloadplugins nolz nomacatsui nomh nommta nomod nomodifiable nomore nomousefocus nonu noodev nopaste nopreserveindent noprompt noreadonly norestorescreen nori norightleftcmd norlc nors noruler nosc noscrollbind nosecure noshellslash noshiftround noshowcmd noshowmatch nosi nosmartcase nosmarttab nosn nospell nosplitright nosr nosta nostmp noswf notagbsearch notagstack notbidi notermbidi notextauto notf notildeop notitle notop nottimeout nottyfast novb nowa nowb nowfh nowildmenu nowinfixwidth nowmnu nowrapscan nowriteany nows
 syn keyword vimOption contained	noakm noanti noarab noari noautoindent noautowriteall nobackup nobin nobioskey nobomb noci nocompatible noconskey nocscopetag nocsverb nocursorcolumn nodelcombine nodigraph 
 
@@ -128,7 +128,7 @@ syn keyword vimFTOption contained	detect indent off on plugin
 
 " Augroup : vimAugroupError removed because long augroups caused sync'ing problems. {{{2
 " ======= : Trade-off: Increasing synclines with slower editing vs augroup END error checking.
-syn cluster vimAugroupList	contains=vimIsCommand,vimFuncName,vimFunction,vimFunctionError,vimLineComment,vimSpecFile,vimOper,vimNumber,vimComment,vimString,vimSubst,vimMark,vimRegister,vimAddress,vimFilter,vimCmplxRepeat,vimComment,vimLet,vimSet,vimAutoCmd,vimRegion,vimSynLine,vimNotation,vimCtrlChar,vimFuncVar,vimContinue
+syn cluster vimAugroupList	contains=vimIsCommand,vimFuncName,vimFunction,vimFunctionError,vimLineComment,vimSpecFile,vimOper,vimNumber,vimOperParen,vimComment,vimString,vimSubst,vimMark,vimRegister,vimAddress,vimFilter,vimCmplxRepeat,vimComment,vimLet,vimSet,vimAutoCmd,vimRegion,vimSynLine,vimNotation,vimCtrlChar,vimFuncVar,vimContinue
 if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 'a'
  syn region  vimAugroup	fold start="\<aug\%[roup]\>\s\+\K\k*" end="\<aug\%[roup]\>\s\+[eE][nN][dD]\>"	contains=vimAugroupKey,vimAutoCmd,@vimAugroupList keepend
 else
