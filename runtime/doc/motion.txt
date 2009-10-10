@@ -1,4 +1,4 @@
-*motion.txt*    For Vim version 7.2.  Last change: 2009 Mar 18
+*motion.txt*    For Vim version 7.2.  Last change: 2009 Sep 15
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -151,6 +151,11 @@ CTRL-V		When used after an operator, before the motion command: Force
 ==============================================================================
 2. Left-right motions					*left-right-motions*
 
+These commands move the cursor to the specified column in the current line.
+They stop at the first column and at the end of the line, except "$", which
+may move to one of the next lines.  See 'whichwrap' option to make some of the
+commands move across line boundaries.
+
 h		or					*h*
 <Left>		or					*<Left>*
 CTRL-H		or					*CTRL-H* *<BS>*
@@ -269,11 +274,6 @@ T{char}			Till after [count]'th occurrence of {char} to the
 							*,*
 ,			Repeat latest f, t, F or T in opposite direction
 			[count] times.
-
-These commands move the cursor to the specified column in the current line.
-They stop at the first column and at the end of the line, except "$", which
-may move to one of the next lines.  See 'whichwrap' option to make some of the
-commands move across line boundaries.
 
 ==============================================================================
 3. Up-down motions					*up-down-motions*

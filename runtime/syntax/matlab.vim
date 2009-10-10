@@ -3,7 +3,11 @@
 " Maintainer:	Maurizio Tranchero - maurizio.tranchero@gmail.com
 " Credits:	Preben 'Peppe' Guldberg <peppe-vim@wielders.org>
 "		Original author: Mario Eusebio
-" Last Change:	Tue Apr 21 10:03:31 CEST 2009
+" Change History:
+" 		Sat Jul 25 16:14:55 CEST 2009
+"		- spell check enabled only for comments (thanks to James Vega)
+"
+" 		Tue Apr 21 10:03:31 CEST 2009
 "		- added object oriented support
 "		- added multi-line comments %{ ...\n... %}
 
@@ -38,7 +42,7 @@ syn match matlabLineContinuation	"\.\{3}"
 
 " String
 " MT_ADDON - added 'skip' in order to deal with 'tic' escaping sequence 
-syn region matlabString			start=+'+ end=+'+	oneline skip=+''+
+syn region matlabString			start=+'+ end=+'+	oneline skip=+''+ contains=@Spell
 
 " If you don't like tabs
 syn match matlabTab			"\t"
@@ -57,10 +61,10 @@ syn match matlabTransposeOperator	"[])a-zA-Z0-9.]'"lc=1
 
 syn match matlabSemicolon		";"
 
-syn match matlabComment			"%.*$"	contains=matlabTodo,matlabTab
+syn match matlabComment			"%.*$"	contains=matlabTodo,matlabTab,@Spell
 " MT_ADDON - correctly highlights words after '...' as comments
-syn match matlabComment			"\.\.\..*$"	contains=matlabTodo,matlabTab
-syn region matlabMultilineComment	start=+%{+ end=+%}+ contains=matlabTodo,matlabTab
+syn match matlabComment			"\.\.\..*$"	contains=matlabTodo,matlabTab,@Spell
+syn region matlabMultilineComment	start=+%{+ end=+%}+ contains=matlabTodo,matlabTab,@Spell
 
 syn keyword matlabOperator		break zeros default margin round ones rand
 syn keyword matlabOperator		ceil floor size clear zeros eye mean std cov

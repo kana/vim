@@ -1,4 +1,4 @@
-*eval.txt*	For Vim version 7.2.  Last change: 2009 Jul 18
+*eval.txt*	For Vim version 7.2.  Last change: 2009 Sep 30
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -1283,7 +1283,8 @@ v:beval_winnr	The number of the window, over which the mouse pointer is. Only
 		valid while evaluating the 'balloonexpr' option.
 
 					*v:char* *char-variable*
-v:char		Argument for evaluating 'formatexpr'.
+v:char		Argument for evaluating 'formatexpr' and used for the typed
+		character when using <expr> in an abbreviation |map-<expr>|.
 
 			*v:charconvert_from* *charconvert_from-variable*
 v:charconvert_from
@@ -6669,7 +6670,7 @@ This would call the function "my_func_whizz(parameter)".
 		:try | edit | catch /^Vim(edit):E\d\+/ | echo "error" | endtry
 <
 					*:cat* *:catch* *E603* *E604* *E605*
-:cat[ch] /{pattern}/	The following commands until the next ":catch",
+:cat[ch] /{pattern}/	The following commands until the next |:catch|,
 			|:finally|, or |:endtry| that belongs to the same
 			|:try| as the ":catch" are executed when an exception
 			matching {pattern} is being thrown and has not yet
