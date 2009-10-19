@@ -217,7 +217,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
         [NSNumber numberWithInt:0],     MMLastWindowClosedBehaviorKey,
         [NSNumber numberWithBool:YES],  MMLoadDefaultFontKey,
 #ifdef INCLUDE_OLD_IM_CODE
-        [NSNumber numberWithBool:YES],  MMUseInlineImKey,
+        [NSNumber numberWithBool:NO],   MMUseInlineImKey,
 #endif // INCLUDE_OLD_IM_CODE
         nil];
 
