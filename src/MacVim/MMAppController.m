@@ -1181,6 +1181,14 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     [self rebuildPreloadCache];
 }
 
+- (IBAction)inlineImButtonClicked:(id)sender
+{
+    ASLogDebug(@"Toggle inline IM option");
+    // This action is called when the user clicks the "use inline IM" button
+    // in the advanced preferences pane.
+    [self rebuildPreloadCache];
+}
+
 - (IBAction)loginShellButtonClicked:(id)sender
 {
     ASLogDebug(@"Toggle login shell option");
