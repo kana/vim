@@ -69,7 +69,7 @@ static NSString *MMWideCharacterAttributeName = @"MMWideChar";
 
 #ifdef FIX_HALFWIDE_KATAKANA
 @interface NSString (Private)
-- (NSRange)rangeOfComposedCharacterSequenceAtIndexEx:(NSUInteger)anIndex length:(NSUInteger)length;
+- (NSRange)rangeOfComposedCharacterSequenceAtIndexEx:(NSUInteger)anIndex;
 @end
 #endif
 
@@ -1106,8 +1106,7 @@ static NSString *MMWideCharacterAttributeName = @"MMWideChar";
             if (idx >= stringLen)
                 return NSMakeRange(NSNotFound, 0);
 #ifdef FIX_HALFWIDE_KATAKANA
-            r = [string
-                rangeOfComposedCharacterSequenceAtIndexEx:idx length:stringLen];
+            r = [string rangeOfComposedCharacterSequenceAtIndexEx:idx];
 #else
             r = [string rangeOfComposedCharacterSequenceAtIndex:idx];
 #endif
@@ -1150,8 +1149,7 @@ static NSString *MMWideCharacterAttributeName = @"MMWideChar";
         if (idx >= stringLen)
             return NSMakeRange(NSNotFound, 0);
 #ifdef FIX_HALFWIDE_KATAKANA
-        r = [string
-            rangeOfComposedCharacterSequenceAtIndexEx:idx length:stringLen];
+        r = [string rangeOfComposedCharacterSequenceAtIndexEx:idx];
 #else
         r = [string rangeOfComposedCharacterSequenceAtIndex:idx];
 #endif
@@ -1230,11 +1228,11 @@ static NSString *MMWideCharacterAttributeName = @"MMWideChar";
 #ifdef FIX_HALFWIDE_KATAKANA
 @implementation NSString (Private)
 
-- (NSRange)rangeOfComposedCharacterSequenceAtIndexEx:(NSUInteger)anIndex length:(NSUInteger)length
+- (NSRange)rangeOfComposedCharacterSequenceAtIndexEx:(NSUInteger)anIndex
 {
     NSRange r;
     unichar c = [self characterAtIndex:anIndex];
-    unichar tc = anIndex < length - 1 ?
+    unichar tc = anIndex < [self length] - 1 ?
         [self characterAtIndex:(anIndex + 1)] : 0;
     if ((c >= 0xff61 && c <= 0xff9f) || (tc >= 0xff61 && tc <= 0xff9f)) {
         r.location = anIndex;
