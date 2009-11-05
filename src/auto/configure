@@ -5355,6 +5355,7 @@ $as_echo "$rubyhdrdir" >&6; }
 	  rubylibdir=`$vi_cv_path_ruby -r rbconfig -e 'print Config.expand(Config::CONFIG["libdir"])'`
           if test -d "/System/Library/Frameworks/Ruby.framework"; then
                         RUBY_LIBS="-framework Ruby"
+                        RUBY_CFLAGS=
             librubyarg=
           elif test -f "$rubylibdir/$librubyarg"; then
 	    librubyarg="$rubylibdir/$librubyarg"
@@ -5378,11 +5379,6 @@ $as_echo "$rubyhdrdir" >&6; }
 	RUBY_SRC="if_ruby.c"
 	RUBY_OBJ="objects/if_ruby.o"
 	RUBY_PRO="if_ruby.pro"
-
-                                if test -n "$MACSDK"; then
-          RUBY_CFLAGS=
-          RUBY_LIBS="-framework Ruby"
-        fi
 
 	$as_echo "#define FEAT_RUBY 1" >>confdefs.h
 
