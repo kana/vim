@@ -1,4 +1,4 @@
-*map.txt*       For Vim version 7.2.  Last change: 2009 Sep 23
+*map.txt*       For Vim version 7.2.  Last change: 2009 Oct 14
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -272,9 +272,10 @@ as a special key.
 1.3 MAPPING AND MODES					*:map-modes*
 			*mapmode-nvo* *mapmode-n* *mapmode-v* *mapmode-o*
 
-There are five sets of mappings
+There are six sets of mappings
 - For Normal mode: When typing commands.
 - For Visual mode: When typing commands while the Visual area is highlighted.
+- For Select mode: like Visual mode but typing text replaces the selection.
 - For Operator-pending mode: When an operator is pending (after "d", "y", "c",
   etc.).  See below: |omap-info|.
 - For Insert mode.  These are also used in Replace mode.
@@ -299,6 +300,9 @@ Overview of which map command works in which mode:
 Some commands work both in Visual and Select mode, some in only one.  Note
 that quite often "Visual" is mentioned where both Visual and Select mode
 apply. |Select-mode-mapping|
+NOTE: Mapping a printable character in Select mode may confuse the user.  It's
+better to explicitly use :xmap and :smap for printable characters.  Or use
+:sunmap after defining the mapping.
 
     commands:				      modes: ~
 					  Visual    Select ~

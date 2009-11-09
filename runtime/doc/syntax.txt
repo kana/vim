@@ -1,4 +1,4 @@
-*syntax.txt*	For Vim version 7.2.  Last change: 2009 Jul 14
+*syntax.txt*	For Vim version 7.2.  Last change: 2009 Oct 28
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -386,8 +386,8 @@ Or use the ":TOhtml" user command.  It is defined in a standard plugin.
 
 	:10,40TOhtml
 
-After you save the resulting file, you can view it with any HTML viewer, such
-as Netscape.  The colors should be exactly the same as you see them in Vim.
+After you save the resulting file, you can view it with any browser.  The
+colors should be exactly the same as you see them in Vim.
 
 To restrict the conversion to a range of lines set "html_start_line" and
 "html_end_line" to the first and last line to be converted.  Example, using
