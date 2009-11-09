@@ -1,4 +1,4 @@
-*starting.txt*  For Vim version 7.2.  Last change: 2009 Feb 15
+*starting.txt*  For Vim version 7.2.  Last change: 2009 Oct 25
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -143,6 +143,13 @@ a slash.  Thus "-R" means recovery and "-/R" readonly.
 			-u NONE			no		    no
 			-u NORC			no		    yes
 			--noplugin		yes		    no
+
+--startuptime={fname}					*--startuptime*
+		During startup write timing messages to the file {fname}.
+		This can be used to find out where time is spent while loading
+		your .vimrc and plugins.
+		When {fname} already exists new messages are appended.
+		{only when compiled with this feature}
 
 							*--literal*
 --literal	Take file names literally, don't expand wildcards.  Not needed
@@ -480,6 +487,7 @@ a slash.  Thus "-R" means recovery and "-/R" readonly.
 		window title and copy/paste using the X clipboard.  This
 		avoids a long startup time when running Vim in a terminal
 		emulator and the connection to the X server is slow.
+		See |--startuptime| to find out if affects you.
 		Only makes a difference on Unix or VMS, when compiled with the
 		|+X11| feature.  Otherwise it's ignored.
 		To disable the connection only for specific terminals, see the
@@ -1497,7 +1505,7 @@ most of the information will be restored).
 			the list is edited.
 			If you get the |press-enter| prompt you can press "q"
 			and still get the prompt to enter a file number.
-			Use ! to abondon a modified buffer. |abandon|
+			Use ! to abandon a modified buffer. |abandon|
 			{not when compiled with tiny or small features}
 
  vim:tw=78:ts=8:ft=help:norl:

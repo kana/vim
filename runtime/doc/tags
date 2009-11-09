@@ -1249,6 +1249,7 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 --serverlist	remote.txt	/*--serverlist*
 --servername	remote.txt	/*--servername*
 --socketid	starting.txt	/*--socketid*
+--startuptime	starting.txt	/*--startuptime*
 --version	starting.txt	/*--version*
 --windowid	starting.txt	/*--windowid*
 -A	starting.txt	/*-A*
@@ -1799,7 +1800,9 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 :_!	cmdline.txt	/*:_!*
 :_#	cmdline.txt	/*:_#*
 :_##	cmdline.txt	/*:_##*
+:_#0	cmdline.txt	/*:_#0*
 :_#<	cmdline.txt	/*:_#<*
+:_#n	cmdline.txt	/*:_#n*
 :_%	cmdline.txt	/*:_%*
 :_%:	cmdline.txt	/*:_%:*
 :_%<	cmdline.txt	/*:_%<*
@@ -4763,6 +4766,7 @@ cW	change.txt	/*cW*
 c_#	cmdline.txt	/*c_#*
 c_##	cmdline.txt	/*c_##*
 c_#<	cmdline.txt	/*c_#<*
+c_#n	cmdline.txt	/*c_#n*
 c_%	cmdline.txt	/*c_%*
 c_<BS>	cmdline.txt	/*c_<BS>*
 c_<C-Left>	cmdline.txt	/*c_<C-Left>*

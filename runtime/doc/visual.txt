@@ -1,4 +1,4 @@
-*visual.txt*    For Vim version 7.2.  Last change: 2009 Mar 05
+*visual.txt*    For Vim version 7.2.  Last change: 2009 Oct 14
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -462,6 +462,10 @@ When mappings and menus are defined with the |:vmap| or |:vmenu| command they
 work both in Visual mode and in Select mode.  When these are used in Select
 mode Vim automatically switches to Visual mode, so that the same behavior as
 in Visual mode is effective.  If you don't want this use |:xmap| or |:smap|.
+
+Users will expect printable characters to replace the selected area.
+Therefore avoid mapping printable characters in Select mode.  Or use
+|:sunmap|  after |:map| and |:vmap| to remove it for Select mode.
 
 After the mapping or menu finishes, the selection is enabled again and Select
 mode entered, unless the selected area was deleted, another buffer became
