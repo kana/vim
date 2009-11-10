@@ -2,7 +2,7 @@
 " Language:	Pyrex
 " Maintainer:	Marco Barisione <marco.bari@people.it>
 " URL:		http://marcobari.altervista.org/pyrex_vim.html
-" Last Change:	2004 May 16
+" Last Change:	2009 Oct 28
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded
@@ -35,9 +35,9 @@ endif
 
 " This deletes "from" from the keywords and re-adds it as a
 " match with lower priority than pyrexForFrom
-syn clear   pythonPreCondit
-syn keyword pythonPreCondit     import
-syn match   pythonPreCondit     "from"
+syn clear   pythonInclude
+syn keyword pythonInclude     import
+syn match   pythonInclude     "from"
 
 " With "for[^:]*\zsfrom" VIM does not match "for" anymore, so
 " I used the slower "\@<=" form

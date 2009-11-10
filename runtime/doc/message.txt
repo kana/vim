@@ -1,4 +1,4 @@
-*message.txt*   For Vim version 7.2.  Last change: 2009 Apr 29
+*message.txt*   For Vim version 7.2.  Last change: 2009 Oct 28
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -135,8 +135,8 @@ This means that there are not enough colors available for Vim.  It will still
 run, but some of the colors will not appear in the specified color.  Try
 stopping other applications that use many colors, or start them after starting
 gvim.
-Netscape is known to consume a lot of colors.  You can avoid this by telling
-it to use its own colormap: >
+Browsers are known to consume a lot of colors.  You can avoid this with
+netscape by telling it to use its own colormap: >
 	netscape -install
 Or tell it to limit to a certain number of colors (64 should work well): >
 	netscape -ncols 64
