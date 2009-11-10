@@ -4,7 +4,7 @@
 "               line anywhere, unless prohibited. (for Vim 7.0)
 "
 " Version:        1.7rc2
-" Last Change:    03-Mar-2007.
+" Last Change:    10-Nov-2009.
 " Maintainer:     MURAOKA Taro <koron@tka.att.ne.jp>
 " Practised By:   Takuhiro Nishioka <takuhiro@super.win.ne.jp>
 " Base Idea:      MURAOKA Taro <koron@tka.att.ne.jp>
@@ -712,7 +712,8 @@ function! Format_Japanese()
     " Too difficult to implement.
     return 1
   else
-    let curcol = col('.')
+    " let curcol = col('.')
+    let curcol = virtcol('.')
     " v:char‚ð“ü—Í‚µ‚½Œã‚Å&textwidth‚ð’´‚¦‚éê‡‚É‰üsˆÊ’u‚Ì•â³‚ðs‚¤
     let new_line = getline('.') . v:char
     if curcol + strlen(v:char) > &textwidth
