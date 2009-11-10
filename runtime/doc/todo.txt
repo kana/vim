@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.2.  Last change: 2009 Oct 08
+*todo.txt*      For Vim version 7.2.  Last change: 2009 Oct 28
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,9 +30,16 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
+Crash with redir to unknown array. (Christian Brabandt, 2009 Oct 25)
+Analysis by Dominique Pelle.
+  vim -u NONE -N -c 'redir => temp[0] |echo 1| redir END'
+
 C syntax: Recognize comments in #define (Samuel Thibault, 2009 Sep 16)
 
 patch to close file desc on ":shell". (James Vega, 2009 Aug 11, Sep 11)
+
+Crash when assigning s: to variable, pointer becomes invalid later.
+(Yukihiro Nakadaira, 2009 Oct 12, confirmed by Dominique Pelle)
 
 Coverity: ask someone to create new user: Dominique.
 look into reported defects: http://scan.coverity.com/rung2.html
@@ -55,7 +62,7 @@ Perl runtime files update. (Andy Lester, 2009 Aug 25)
 
 Gvimext patch to support wide file names. (Szabolcs Horvat 2008 Sep 10)
 
-problem with stop directory in findfile(). (Adam simpkins, 2009 Aug 26)
+Problem with stop directory in findfile(). (Adam Simpkins, 2009 Aug 26)
 
 Patch to support :browse for more commands. (Lech Lorens, 2009 Jul 18)
 
@@ -118,7 +125,7 @@ Problem with <script> mappings (Andy Wokula, 2009 Mar 8)
 
 Patch to support netbeans for Mac. (Kazuki Sakamoto, 2009 Jun 25)
 
-Patch to support clibpard for Mac terminal. (Jjgod Jiang, 2009 Aug 1)
+Patch to support clibpoard for Mac terminal. (Jjgod Jiang, 2009 Aug 1)
 
 When starting Vim with "gvim -f -u non_existent_file > foo.txt" there are a
 few control characters in the output. (Dale Wiles, 2009 May 28)
@@ -142,7 +149,7 @@ When 'ft' changes redraw custom status line.
 because win_valid() always returns FALSE.  Below win_new_tabpage() in
 ex_docmd.c.
 
-Space before comma in funtion defenition not allowed: "function x(a , b)"
+Space before comma in function defenition not allowed: "function x(a , b)"
 Give a more appropriate error message.  Add a remark to the docs.
 
 string_convert() should be able to convert between utf-8 and utf-16le.  Used
@@ -164,6 +171,13 @@ Add "no_hlsearch" to winsaveview().
 
 Cursorline highlighting combines with Search ('hlsearch') but not with
 SpellBad. (Jim Karsten, 2009 Mar 18)
+
+When 'foldmethod' is "indent", using >> on a line just above a fold makes the
+cursor line folded. (Evan Laforge, 2009 Oct 17)
+
+When 'foldmethod' is "indent", adding an empty line below a fold and then
+indented text, creates a new fold instead of joining it with the previous one.
+(Evan Laforge, 2009 Oct 17)
 
 Bug: When reloading a buffer changed outside of Vim, BufRead autocommands
 are applied to the wrong buffer/window. (Ben Fritz, 2009 Apr 2, May 11)
@@ -1087,8 +1101,6 @@ this, at least for Unix (using device/inode)?
 Vim 7.3:
 -   Use NSIS 2.45, it includes Windows 7 support.
 -   Easier/standard way to disable default plugins.
--   STARTUPTIME is difficult to enable.  Use --startuptime=fname argument?
-    Does this require a configure check?
 -   Add patch for 'relativenumber' option?  Markus Heidelberg, 2008 Jun 27.
 -   Add blowfish encryption.  Openssl has an implementation.  Also by Paul
     Kocher (LGPL), close to original.  Mohsin also has some ideas.
