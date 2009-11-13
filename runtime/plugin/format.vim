@@ -4,7 +4,7 @@
 "               line anywhere, unless prohibited. (for Vim 7.0)
 "
 " Version:        1.7rc2
-" Last Change:    10-Nov-2009.
+" Last Change:    13-Nov-2009.
 " Maintainer:     MURAOKA Taro <koron@tka.att.ne.jp>
 " Practised By:   Takuhiro Nishioka <takuhiro@super.win.ne.jp>
 " Base Idea:      MURAOKA Taro <koron@tka.att.ne.jp>
@@ -686,17 +686,17 @@ function! s:GetLinebreakOffset(curr_line, curr_col)
   let back_count = 0
   let no_begin = s:GetOption('format_no_begin')
   let no_end = s:GetOption('format_no_end')
-  let curr_char = matchstr(a:curr_line, '\%'.a:curr_col.'c.')
+  let curr_char = matchstr(a:curr_line, '\%'.a:curr_col.'v.')
   let back_col = 0
   while 1
-    let prev_char = matchstr(a:curr_line, '.\%'.(a:curr_col - back_col).'c')
+    let prev_char = matchstr(a:curr_line, '.\%'.(a:curr_col - back_col).'v')
     if curr_char == ''
       let back_count = 0
       break
     elseif s:IsTaboo(curr_char, no_begin) || s:IsTaboo(prev_char, no_end)
       let back_count += 1
       let curr_char = prev_char
-      let back_col += strlen(curr_char)
+      let back_col += (strlen(curr_char) > 1 ? 2 : strlen(curr_char))
     else
       break
     endif
@@ -712,11 +712,10 @@ function! Format_Japanese()
     " Too difficult to implement.
     return 1
   else
-    " let curcol = col('.')
     let curcol = virtcol('.')
     " v:charを入力した後で&textwidthを超える場合に改行位置の補正を行う
     let new_line = getline('.') . v:char
-    if curcol + strlen(v:char) > &textwidth
+    if curcol + (strlen(v:char) > 1 ? 2 : strlen(v:char)) - 1 > &textwidth
       let back_count = s:GetLinebreakOffset(new_line, curcol)
       " カーソル移動と改行の挿入を行う
       if back_count > 0
