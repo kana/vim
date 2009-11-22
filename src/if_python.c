@@ -51,6 +51,12 @@ typedef void *FARPROC;
 #ifdef HAVE_STDARG_H
 # undef HAVE_STDARG_H	/* Python's config.h defines it as well. */
 #endif
+#ifdef _POSIX_C_SOURCE
+# undef _POSIX_C_SOURCE	/* pyconfig.h defines it as well. */
+#endif
+#ifdef _XOPEN_SOURCE
+# undef _XOPEN_SOURCE	/* pyconfig.h defines it as well. */
+#endif
 
 #define PY_SSIZE_T_CLEAN
 

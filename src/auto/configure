@@ -9855,7 +9855,7 @@ fi
 
 for ac_func in bcmp fchdir fchown fseeko fsync ftello getcwd getpseudotty \
 	getpwnam getpwuid getrlimit gettimeofday getwd lstat memcmp \
-	memset nanosleep opendir putenv qsort readlink select setenv \
+	memset mkdtemp nanosleep opendir putenv qsort readlink select setenv \
 	setpgid setsid sigaltstack sigstack sigset sigsetjmp sigaction \
 	sigvec strcasecmp strerror strftime stricmp strncasecmp \
 	strnicmp strpbrk strtol tgetent towlower towupper iswupper \
@@ -10466,6 +10466,31 @@ else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for FD_CLOEXEC" >&5
+$as_echo_n "checking for FD_CLOEXEC... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#if HAVE_FCNTL_H
+# include <fcntl.h>
+#endif
+int
+main ()
+{
+	int flag = FD_CLOEXEC;
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }; $as_echo "#define HAVE_FD_CLOEXEC 1" >>confdefs.h
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: not usable" >&5
+$as_echo "not usable" >&6; }
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for rename" >&5
 $as_echo_n "checking for rename... " >&6; }
