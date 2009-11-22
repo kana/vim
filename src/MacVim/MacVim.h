@@ -194,8 +194,6 @@ enum {
 };
 
 
-#define DRAW_WIDE   0x40    /* draw wide text */
-
 enum {
     ClearAllDrawType = 1,
     ClearBlockDrawType,
@@ -249,6 +247,13 @@ extern NSString *MMNoWindowKey;
 
 extern NSString *MMAutosaveRowsKey;
 extern NSString *MMAutosaveColumnsKey;
+extern NSString *MMRendererKey;
+
+enum {
+    MMRendererDefault = 0,
+    MMRendererATSUI,
+    MMRendererCoreText
+};
 
 
 // Vim pasteboard type (holds motion type + string)

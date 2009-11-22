@@ -19,6 +19,9 @@
 #import <Foundation/Foundation.h>
 
 
+// HACK! Used in gui.c to determine which string drawing code to use.
+int use_gui_macvim_draw_string = 1;
+
 
 // NOTE: The default font is bundled with the application.
 static NSString *MMDefaultFontName = @"DejaVu Sans Mono";
@@ -130,6 +133,22 @@ gui_macvim_after_fork_init()
             && (rows > 4 && rows < 1000 && cols > 29 && cols < 4000)) {
         gui.num_rows = rows;
         gui.num_cols = cols;
+    } else {
+        // Use the defaults (typically 80x24), if there are no autosaved rows &
+        // columns.
+        gui.num_rows = Rows;
+        gui.num_cols = Columns;
+    }
+
+    // Check which code path to take for string drawing.
+    CFIndex val;
+    Boolean keyValid;
+    val = CFPreferencesGetAppIntegerValue((CFStringRef)MMRendererKey,
+                                            kCFPreferencesCurrentApplication,
+                                            &keyValid);
+    if (keyValid) {
+        ASLogInfo(@"Use renderer=%d", val);
+        use_gui_macvim_draw_string = (val != MMRendererCoreText);
     }
 }
 
@@ -360,7 +379,7 @@ gui_mch_delete_lines(int row, int num_lines)
 
 
     void
-gui_mch_draw_string(int row, int col, char_u *s, int len, int flags)
+gui_mch_draw_string(int row, int col, char_u *s, int len, int cells, int flags)
 {
 #ifdef FEAT_MBYTE
     char_u *conv_str = NULL;
@@ -371,9 +390,12 @@ gui_mch_draw_string(int row, int col, char_u *s, int len, int flags)
     }
 #endif
 
-    [[MMBackend sharedInstance] drawString:(char*)s length:len row:row
-                                    column:col cells:len flags:flags];
-
+    [[MMBackend sharedInstance] drawString:s
+                                    length:len
+                                       row:row
+                                    column:col
+                                     cells:cells
+                                     flags:flags];
 #ifdef FEAT_MBYTE
     if (conv_str)
         vim_free(conv_str);
@@ -412,7 +434,7 @@ gui_macvim_draw_string(int row, int col, char_u *s, int len, int flags)
         if (!utf_iscomposing(c)) {
             if ((cn > 1 && !wide) || (cn <= 1 && wide)) {
                 // Changed from normal to wide or vice versa.
-                [backend drawString:(char*)(s+start) length:i-start
+                [backend drawString:(s+start) length:i-start
                                    row:row column:startcol
                                  cells:endcol-startcol
                                  flags:(wide ? flags|DRAW_WIDE : flags)];
@@ -427,7 +449,7 @@ gui_macvim_draw_string(int row, int col, char_u *s, int len, int flags)
     }
 
     // Output remaining characters.
-    [backend drawString:(char*)(s+start) length:len-start
+    [backend drawString:(s+start) length:len-start
                     row:row column:startcol cells:endcol-startcol
                   flags:(wide ? flags|DRAW_WIDE : flags)];
 
