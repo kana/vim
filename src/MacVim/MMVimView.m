@@ -18,7 +18,11 @@
  * the view is filled by the text view.
  */
 
-#import "MMAtsuiTextView.h"
+#if MM_ENABLE_ATSUI
+# import "MMAtsuiTextView.h"
+#else
+# import "MMCoreTextView.h"
+#endif
 #import "MMTextView.h"
 #import "MMVimController.h"
 #import "MMVimView.h"
@@ -89,16 +93,20 @@ enum {
     [self setAutoresizesSubviews:YES];
 
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-#if ENABLE_ATSUI
-    if ([ud boolForKey:MMAtsuiRendererKey]) {
-        // Use ATSUI for text rendering.
-        //
+    NSInteger renderer = [ud integerForKey:MMRendererKey];
+    ASLogInfo(@"Use renderer=%d", renderer);
+
+    if (MMRendererCoreText == renderer) {
+        // HACK! 'textView' has type MMTextView, but MMCoreTextView is not
+        // derived from MMTextView.
+        textView = [[MMCoreTextView alloc] initWithFrame:frame];
+#if MM_ENABLE_ATSUI
+    } else if (MMRendererATSUI == renderer) {
         // HACK! 'textView' has type MMTextView, but MMAtsuiTextView is not
         // derived from MMTextView.
         textView = [[MMAtsuiTextView alloc] initWithFrame:frame];
-    } else
-#endif // ENABLE_ATSUI
-    {
+#endif
+    } else {
         // Use Cocoa text system for text rendering.
         textView = [[MMTextView alloc] initWithFrame:frame];
     }
@@ -170,6 +178,11 @@ enum {
     [textView release];  textView = nil;
 
     [super dealloc];
+}
+
+- (BOOL)isOpaque
+{
+    return YES;
 }
 
 - (void)drawRect:(NSRect)rect
