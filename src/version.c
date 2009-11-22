@@ -515,6 +515,11 @@ static char *(features[]) =
 #else
 	"-sniff",
 #endif
+#ifdef STARTUPTIME
+	"+startuptime",
+#else
+	"-startuptime",
+#endif
 #ifdef FEAT_STL_OPT
 	"+statusline",
 #else
@@ -702,6 +707,44 @@ static char *(features[]) =
 
 static int included_patches[] =
 {   /* Add new patch number below this line */
+/**/
+    303,
+/**/
+    302,
+/**/
+    301,
+/**/
+    300,
+/**/
+    299,
+/**/
+    298,
+/**/
+    297,
+/**/
+    296,
+/**/
+    295,
+/**/
+    294,
+/**/
+    293,
+/**/
+    292,
+/**/
+    291,
+/**/
+    290,
+/**/
+    289,
+/**/
+    288,
+/**/
+    287,
+/**/
+    286,
+/**/
+    285,
 /**/
     284,
 /**/
