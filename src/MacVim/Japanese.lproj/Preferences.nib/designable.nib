@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
+<archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.03">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">10C540</string>
-		<string key="IBDocument.InterfaceBuilderVersion">740</string>
-		<string key="IBDocument.AppKitVersion">1038.25</string>
-		<string key="IBDocument.HIToolboxVersion">458.00</string>
-		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">740</string>
-		</object>
+		<string key="IBDocument.SystemVersion">9L30</string>
+		<string key="IBDocument.InterfaceBuilderVersion">680</string>
+		<string key="IBDocument.AppKitVersion">949.54</string>
+		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<integer value="620"/>
@@ -20,7 +16,7 @@
 		</object>
 		<object class="NSMutableDictionary" key="IBDocument.Metadata">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<object class="NSArray" key="dict.sortedKeys" id="0">
+			<object class="NSArray" key="dict.sortedKeys">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 			</object>
 			<object class="NSMutableArray" key="dict.values">
@@ -39,6 +35,10 @@
 				<string key="NSClassName">NSApplication</string>
 			</object>
 			<object class="NSUserDefaultsController" id="443695008">
+				<object class="NSMutableArray" key="NSDeclaredKeys">
+					<bool key="EncodedWithXMLCoder">YES</bool>
+					<string>MMRenderer</string>
+				</object>
 				<bool key="NSSharedInstance">YES</bool>
 			</object>
 			<object class="NSCustomView" id="692684003">
@@ -55,10 +55,10 @@
 						<object class="NSTextFieldCell" key="NSCell" id="176275210">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">71303168</int>
-							<string key="NSContents">アプリケーションからファイルを開く時:</string>
+							<string type="base64-UTF8" key="NSContents">44Ki44OX44Oq44Kx44O844K344On44Oz44GL44KJ44OV44Kh44Kk44Or44KS6ZaL44GP5pmCOg</string>
 							<object class="NSFont" key="NSSupport" id="69237166">
 								<string key="NSName">LucidaGrande</string>
-								<double key="NSSize">13</double>
+								<double key="NSSize">1.300000e+01</double>
 								<int key="NSfFlags">1044</int>
 							</object>
 							<reference key="NSControlView" ref="1011778337"/>
@@ -68,7 +68,7 @@
 								<string key="NSColorName">controlColor</string>
 								<object class="NSColor" key="NSColor">
 									<int key="NSColorSpace">3</int>
-									<bytes key="NSWhite">MC42NjY2NjY2NjY3AA</bytes>
+									<bytes key="NSWhite">MC42NjY2NjY2OQA</bytes>
 								</object>
 							</object>
 							<object class="NSColor" key="NSTextColor" id="953660091">
@@ -91,7 +91,7 @@
 						<object class="NSTextFieldCell" key="NSCell" id="182678354">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">71303168</int>
-							<string key="NSContents">空のウインドウを開く時:</string>
+							<string type="base64-UTF8" key="NSContents">56m644Gu44Km44Kk44Oz44OJ44Km44KS6ZaL44GP5pmCOg</string>
 							<reference key="NSSupport" ref="69237166"/>
 							<reference key="NSControlView" ref="311501696"/>
 							<reference key="NSBackgroundColor" ref="576932459"/>
@@ -111,10 +111,10 @@
 							<object class="NSButtonCell" id="1059536040">
 								<int key="NSCellFlags">-2080244224</int>
 								<int key="NSCellFlags2">0</int>
-								<string key="NSContents">起動時と再アクティブ時</string>
+								<string type="base64-UTF8" key="NSContents">6LW35YuV5pmC44Go5YaN44Ki44Kv44OG44Kj44OW5pmCA</string>
 								<reference key="NSSupport" ref="69237166"/>
-								<reference key="NSControlView" ref="263280186"/>
 								<int key="NSTag">3</int>
+								<reference key="NSControlView" ref="263280186"/>
 								<int key="NSButtonFlags">1211912703</int>
 								<int key="NSButtonFlags2">0</int>
 								<object class="NSCustomResource" key="NSNormalImage" id="800405459">
@@ -134,10 +134,10 @@
 							<object class="NSButtonCell" id="346081275">
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">0</int>
-								<string key="NSContents">MacVim起動時のみ</string>
+								<string type="base64-UTF8" key="NSContents">TWFjVmlt6LW35YuV5pmC44Gu44G/A</string>
 								<reference key="NSSupport" ref="69237166"/>
-								<reference key="NSControlView" ref="263280186"/>
 								<int key="NSTag">1</int>
+								<reference key="NSControlView" ref="263280186"/>
 								<int key="NSButtonFlags">1211912703</int>
 								<int key="NSButtonFlags2">0</int>
 								<reference key="NSNormalImage" ref="800405459"/>
@@ -150,7 +150,7 @@
 							<object class="NSButtonCell" id="42305172">
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">0</int>
-								<string key="NSContents">開かない</string>
+								<string type="base64-UTF8" key="NSContents">6ZaL44GL44Gq44GEA</string>
 								<reference key="NSSupport" ref="69237166"/>
 								<reference key="NSControlView" ref="263280186"/>
 								<int key="NSButtonFlags">1211912703</int>
@@ -200,7 +200,7 @@
 							<object class="NSButtonCell" id="778654746">
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">0</int>
-								<string key="NSContents">新規ウインドウで開く</string>
+								<string type="base64-UTF8" key="NSContents">5paw6KaP44Km44Kk44Oz44OJ44Km44Gn6ZaL44GPA</string>
 								<reference key="NSSupport" ref="69237166"/>
 								<reference key="NSControlView" ref="434448200"/>
 								<int key="NSButtonFlags">1211912703</int>
@@ -215,10 +215,10 @@
 							<object class="NSButtonCell" id="197934213">
 								<int key="NSCellFlags">-2080244224</int>
 								<int key="NSCellFlags2">0</int>
-								<string key="NSContents">現在のウインドウで開く</string>
+								<string type="base64-UTF8" key="NSContents">54++5Zyo44Gu44Km44Kk44Oz44OJ44Km44Gn6ZaL44GPA</string>
 								<reference key="NSSupport" ref="69237166"/>
-								<reference key="NSControlView" ref="434448200"/>
 								<int key="NSTag">1</int>
+								<reference key="NSControlView" ref="434448200"/>
 								<int key="NSButtonFlags">1211912703</int>
 								<int key="NSButtonFlags2">0</int>
 								<reference key="NSNormalImage" ref="800405459"/>
@@ -260,10 +260,14 @@
 						<object class="NSTextFieldCell" key="NSCell" id="41358801">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">4194304</int>
-							<string key="NSContents">Finderからファイルを開いたとき(たとえば、ファイルをダブルクリックしたり、ファイルをDockのMacVimアイコンにドラッグしたとき)、またはXcodeのような外部プログラムからファイルを開いたときに適用されます。</string>
+							<string type="base64-UTF8" key="NSContents">RmluZGVy44GL44KJ44OV44Kh44Kk44Or44KS6ZaL44GE44Gf44Go44GNKOOBn+OBqOOBiOOBsOOAgeOD
+leOCoeOCpOODq+OCkuODgOODluODq+OCr+ODquODg+OCr+OBl+OBn+OCiuOAgeODleOCoeOCpOODq+OC
+kkRvY2vjga5NYWNWaW3jgqLjgqTjgrPjg7Pjgavjg4njg6njg4PjgrDjgZfjgZ/jgajjgY0p44CB44G+
+44Gf44GvWGNvZGXjga7jgojjgYbjgarlpJbpg6jjg5fjg63jgrDjg6njg6DjgYvjgonjg5XjgqHjgqTj
+g6vjgpLplovjgYTjgZ/jgajjgY3jgavpgannlKjjgZXjgozjgb7jgZnjgII</string>
 							<object class="NSFont" key="NSSupport" id="26">
 								<string key="NSName">LucidaGrande</string>
-								<double key="NSSize">11</double>
+								<double key="NSSize">1.100000e+01</double>
 								<int key="NSfFlags">3100</int>
 							</object>
 							<reference key="NSControlView" ref="60845768"/>
@@ -274,7 +278,7 @@
 								<string key="NSColorName">disabledControlTextColor</string>
 								<object class="NSColor" key="NSColor">
 									<int key="NSColorSpace">3</int>
-									<bytes key="NSWhite">MC4zMzMzMzMzMzMzAA</bytes>
+									<bytes key="NSWhite">MC4zMzMzMzMzNAA</bytes>
 								</object>
 							</object>
 						</object>
@@ -288,7 +292,7 @@
 						<object class="NSButtonCell" key="NSCell" id="704542680">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">0</int>
-							<string key="NSContents">アップデートを確認</string>
+							<string type="base64-UTF8" key="NSContents">44Ki44OD44OX44OH44O844OI44KS56K66KqNA</string>
 							<reference key="NSSupport" ref="69237166"/>
 							<reference key="NSControlView" ref="939556115"/>
 							<int key="NSButtonFlags">1211912703</int>
@@ -315,7 +319,7 @@
 						<object class="NSTextFieldCell" key="NSCell" id="492477134">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">71303168</int>
-							<string key="NSContents">MacVim起動時:</string>
+							<string type="base64-UTF8" key="NSContents">TWFjVmlt6LW35YuV5pmCOg</string>
 							<reference key="NSSupport" ref="69237166"/>
 							<reference key="NSControlView" ref="558178727"/>
 							<reference key="NSBackgroundColor" ref="576932459"/>
@@ -341,7 +345,7 @@
 							<int key="NSPeriodicInterval">75</int>
 							<object class="NSMenuItem" key="NSMenuItem" id="622996703">
 								<reference key="NSMenu" ref="498821549"/>
-								<string key="NSTitle">引数リストに設定する</string>
+								<string type="base64-UTF8" key="NSTitle">5byV5pWw44Oq44K544OI44Gr6Kit5a6a44GZ44KLA</string>
 								<string key="NSKeyEquiv"/>
 								<int key="NSKeyEquivModMask">1048576</int>
 								<int key="NSMnemonicLoc">2147483647</int>
@@ -364,7 +368,7 @@
 									<bool key="EncodedWithXMLCoder">YES</bool>
 									<object class="NSMenuItem" id="404614950">
 										<reference key="NSMenu" ref="498821549"/>
-										<string key="NSTitle">タブで開く</string>
+										<string type="base64-UTF8" key="NSTitle">44K/44OW44Gn6ZaL44GPA</string>
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
@@ -376,7 +380,7 @@
 									</object>
 									<object class="NSMenuItem" id="959027250">
 										<reference key="NSMenu" ref="498821549"/>
-										<string key="NSTitle">ウインドウで開く</string>
+										<string type="base64-UTF8" key="NSTitle">44Km44Kk44Oz44OJ44Km44Gn6ZaL44GPA</string>
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
@@ -388,7 +392,7 @@
 									</object>
 									<object class="NSMenuItem" id="147491575">
 										<reference key="NSMenu" ref="498821549"/>
-										<string key="NSTitle">分割して開く</string>
+										<string type="base64-UTF8" key="NSTitle">5YiG5Ymy44GX44Gm6ZaL44GPA</string>
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
@@ -417,7 +421,7 @@
 						<object class="NSTextFieldCell" key="NSCell" id="927563737">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">71303168</int>
-							<string key="NSContents">最後のウインドウを閉じた時:</string>
+							<string type="base64-UTF8" key="NSContents">5pyA5b6M44Gu44Km44Kk44Oz44OJ44Km44KS6ZaJ44GY44Gf5pmCOg</string>
 							<reference key="NSSupport" ref="69237166"/>
 							<reference key="NSControlView" ref="391474310"/>
 							<reference key="NSBackgroundColor" ref="576932459"/>
@@ -443,7 +447,7 @@
 							<int key="NSPeriodicInterval">75</int>
 							<object class="NSMenuItem" key="NSMenuItem" id="892582244">
 								<reference key="NSMenu" ref="916474003"/>
-								<string key="NSTitle">MacVimを終了しない</string>
+								<string type="base64-UTF8" key="NSTitle">TWFjVmlt44KS57WC5LqG44GX44Gq44GEA</string>
 								<string key="NSKeyEquiv"/>
 								<int key="NSKeyEquivModMask">1048576</int>
 								<int key="NSMnemonicLoc">2147483647</int>
@@ -461,7 +465,7 @@
 									<reference ref="892582244"/>
 									<object class="NSMenuItem" id="79235412">
 										<reference key="NSMenu" ref="916474003"/>
-										<string key="NSTitle">MacVimを隠す</string>
+										<string type="base64-UTF8" key="NSTitle">TWFjVmlt44KS6Zqg44GZA</string>
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
@@ -472,7 +476,7 @@
 									</object>
 									<object class="NSMenuItem" id="1011698351">
 										<reference key="NSMenu" ref="916474003"/>
-										<string key="NSTitle">MacVimを終了</string>
+										<string type="base64-UTF8" key="NSTitle">TWFjVmlt44KS57WC5LqGA</string>
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
@@ -517,7 +521,7 @@
 										<object class="NSButtonCell" key="NSCell" id="897913319">
 											<int key="NSCellFlags">604110336</int>
 											<int key="NSCellFlags2">134217728</int>
-											<string key="NSContents">アンインストール</string>
+											<string type="base64-UTF8" key="NSContents">44Ki44Oz44Kk44Oz44K544OI44O844OrA</string>
 											<reference key="NSSupport" ref="69237166"/>
 											<reference key="NSControlView" ref="424851875"/>
 											<int key="NSButtonFlags">-2038284033</int>
@@ -538,7 +542,12 @@
 										<object class="NSTextFieldCell" key="NSCell" id="287354553">
 											<int key="NSCellFlags">67239424</int>
 											<int key="NSCellFlags2">4194304</int>
-											<string key="NSContents">外部エディタ機能はちょっとしたハックです。他のアプリケーションを不安定にしたり、OS Xの新しいバージョンで動作しなくなる可能性があります。しかし、たいていはちゃんと動きますし、アンインストールで完全に機能を取り除くことができます。</string>
+											<string type="base64-UTF8" key="NSContents">5aSW6YOo44Ko44OH44Kj44K/5qmf6IO944Gv44Gh44KH44Gj44Go44GX44Gf44OP44OD44Kv44Gn44GZ
+44CC5LuW44Gu44Ki44OX44Oq44Kx44O844K344On44Oz44KS5LiN5a6J5a6a44Gr44GX44Gf44KK44CB
+T1MgWOOBruaWsOOBl+OBhOODkOODvOOCuOODp+ODs+OBp+WLleS9nOOBl+OBquOBj+OBquOCi+WPr+iD
+veaAp+OBjOOBguOCiuOBvuOBmeOAguOBl+OBi+OBl+OAgeOBn+OBhOOBpuOBhOOBr+OBoeOCg+OCk+OB
+qOWLleOBjeOBvuOBmeOBl+OAgeOCouODs+OCpOODs+OCueODiOODvOODq+OBp+WujOWFqOOBq+apn+iD
+veOCkuWPluOCiumZpOOBj+OBk+OBqOOBjOOBp+OBjeOBvuOBmeOAgg</string>
 											<reference key="NSSupport" ref="69237166"/>
 											<reference key="NSControlView" ref="169809062"/>
 											<reference key="NSBackgroundColor" ref="576932459"/>
@@ -586,7 +595,7 @@
 										<object class="NSButtonCell" key="NSCell" id="1028224891">
 											<int key="NSCellFlags">604110336</int>
 											<int key="NSCellFlags2">134217728</int>
-											<string key="NSContents">インストール</string>
+											<string type="base64-UTF8" key="NSContents">44Kk44Oz44K544OI44O844OrA</string>
 											<reference key="NSSupport" ref="69237166"/>
 											<reference key="NSControlView" ref="736352571"/>
 											<int key="NSButtonFlags">-2038284033</int>
@@ -623,7 +632,7 @@
 										<object class="NSTextFieldCell" key="NSCell" id="825751992">
 											<int key="NSCellFlags">67239488</int>
 											<int key="NSCellFlags2">272630784</int>
-											<string key="NSContents">外部エディタ:</string>
+											<string type="base64-UTF8" key="NSContents">5aSW6YOo44Ko44OH44Kj44K/Og</string>
 											<reference key="NSSupport" ref="69237166"/>
 											<reference key="NSControlView" ref="999631757"/>
 											<reference key="NSBackgroundColor" ref="576932459"/>
@@ -639,7 +648,11 @@
 										<object class="NSTextFieldCell" key="NSCell" id="972727551">
 											<int key="NSCellFlags">67239424</int>
 											<int key="NSCellFlags2">4325376</int>
-											<string key="NSContents">好きなエディタでメールを書いたり、Webフォームを記入したい場合に設定します。そのエディタで開かれたファイルを保存して閉じると、呼び出し元のアプリケーションに反映されます。</string>
+											<string type="base64-UTF8" key="NSContents">5aW944GN44Gq44Ko44OH44Kj44K/44Gn44Oh44O844Or44KS5pu444GE44Gf44KK44CBV2Vi44OV44Kp
+44O844Og44KS6KiY5YWl44GX44Gf44GE5aC05ZCI44Gr6Kit5a6a44GX44G+44GZ44CC44Gd44Gu44Ko
+44OH44Kj44K/44Gn6ZaL44GL44KM44Gf44OV44Kh44Kk44Or44KS5L+d5a2Y44GX44Gm6ZaJ44GY44KL
+44Go44CB5ZG844Gz5Ye644GX5YWD44Gu44Ki44OX44Oq44Kx44O844K344On44Oz44Gr5Y+N5pig44GV
+44KM44G+44GZ44CCA</string>
 											<reference key="NSSupport" ref="26"/>
 											<reference key="NSControlView" ref="473400160"/>
 											<reference key="NSBackgroundColor" ref="576932459"/>
@@ -655,7 +668,8 @@
 										<object class="NSTextFieldCell" key="NSCell" id="888908248">
 											<int key="NSCellFlags">67239424</int>
 											<int key="NSCellFlags2">4194304</int>
-											<string key="NSContents">この変更を反映するには、それぞれのアプリケーションを再起動する必要があります。</string>
+											<string type="base64-UTF8" key="NSContents">44GT44Gu5aSJ5pu044KS5Y+N5pig44GZ44KL44Gr44Gv44CB44Gd44KM44Ge44KM44Gu44Ki44OX44Oq
+44Kx44O844K344On44Oz44KS5YaN6LW35YuV44GZ44KL5b+F6KaB44GM44GC44KK44G+44GZ44CCA</string>
 											<reference key="NSSupport" ref="69237166"/>
 											<reference key="NSControlView" ref="886207934"/>
 											<reference key="NSBackgroundColor" ref="576932459"/>
@@ -671,7 +685,7 @@
 										<object class="NSTextFieldCell" key="NSCell" id="443203291">
 											<int key="NSCellFlags">67239424</int>
 											<int key="NSCellFlags2">1078067200</int>
-											<string key="NSContents">外部エディタ機能を完全に取り除きます。</string>
+											<string type="base64-UTF8" key="NSContents">5aSW6YOo44Ko44OH44Kj44K/5qmf6IO944KS5a6M5YWo44Gr5Y+W44KK6Zmk44GN44G+44GZ44CCA</string>
 											<reference key="NSSupport" ref="26"/>
 											<reference key="NSControlView" ref="442919607"/>
 											<reference key="NSBackgroundColor" ref="576932459"/>
@@ -687,7 +701,9 @@
 										<object class="NSTextFieldCell" key="NSCell" id="75258939">
 											<int key="NSCellFlags">67239424</int>
 											<int key="NSCellFlags2">4194304</int>
-											<string key="NSContents">MailやSafariのような他のアプリケーションの編集メニューに「外部エディタで編集…」を追加します</string>
+											<string type="base64-UTF8" key="NSContents">TWFpbOOChFNhZmFyaeOBruOCiOOBhuOBquS7luOBruOCouODl+ODquOCseODvOOCt+ODp+ODs+OBrue3
+qOmbhuODoeODi+ODpeODvOOBq+OAjOWklumDqOOCqOODh+OCo+OCv+OBp+e3qOmbhuKApuOAjeOCkui/
+veWKoOOBl+OBvuOBmQ</string>
 											<reference key="NSSupport" ref="69237166"/>
 											<reference key="NSControlView" ref="459194375"/>
 											<reference key="NSBackgroundColor" ref="576932459"/>
@@ -705,7 +721,7 @@
 						<object class="NSTextFieldCell" key="NSTitleCell">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">0</int>
-							<string key="NSContents">外部エディタ</string>
+							<string type="base64-UTF8" key="NSContents">5aSW6YOo44Ko44OH44Kj44K/A</string>
 							<reference key="NSSupport" ref="26"/>
 							<object class="NSColor" key="NSBackgroundColor">
 								<int key="NSColorSpace">6</int>
@@ -742,10 +758,10 @@
 						<object class="NSButtonCell" key="NSCell" id="73718464">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">0</int>
-							<string key="NSContents">実験的レンダラを使用する</string>
+							<string type="base64-UTF8" key="NSContents">5a6f6aiT55qE44Os44Oz44OA44Op44KS5L2/55So44GZ44KLA</string>
 							<object class="NSFont" key="NSSupport">
 								<string key="NSName">HiraKakuProN-W3</string>
-								<double key="NSSize">13</double>
+								<double key="NSSize">1.300000e+01</double>
 								<int key="NSfFlags">16</int>
 							</object>
 							<reference key="NSControlView" ref="521128178"/>
@@ -768,10 +784,12 @@
 						<object class="NSTextFieldCell" key="NSCell" id="951668512">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">272760832</int>
-							<string key="NSContents">実験的レンダラは標準レンダラよりも高速ですが、表示上の問題があるかもしれません。</string>
+							<string type="base64-UTF8" key="NSContents">5a6f6aiT55qE44Os44Oz44OA44Op44Gv5qiZ5rqW44Os44Oz44OA44Op44KI44KK44KC6auY6YCf44Gn
+44GZ44GM44CB6KGo56S65LiK44Gu5ZWP6aGM44GM44GC44KL44GL44KC44GX44KM44G+44Gb44KT44CC
+A</string>
 							<object class="NSFont" key="NSSupport">
 								<string key="NSName">HiraKakuProN-W3</string>
-								<double key="NSSize">11</double>
+								<double key="NSSize">1.100000e+01</double>
 								<int key="NSfFlags">16</int>
 							</object>
 							<reference key="NSControlView" ref="5563083"/>
@@ -791,7 +809,7 @@
 						<object class="NSButtonCell" key="NSCell" id="100732225">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">0</int>
-							<string key="NSContents">クイックスタートを有効にする</string>
+							<string type="base64-UTF8" key="NSContents">44Kv44Kk44OD44Kv44K544K/44O844OI44KS5pyJ5Yq544Gr44GZ44KLA</string>
 							<reference key="NSSupport" ref="69237166"/>
 							<reference key="NSControlView" ref="603213044"/>
 							<int key="NSButtonFlags">1211912703</int>
@@ -813,7 +831,14 @@
 						<object class="NSTextFieldCell" key="NSCell" id="714570285">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">272760832</int>
-							<string key="NSContents">クイックスタートを有効にすると、新規ウインドウが瞬時に開くようになりますが、最新のランタイムファイルが読み込まれない場合があります。ランタイムファイル(たとえば ~/.vim ディレクトリのファイル)を変更して、新規ウインドウに確実に変更を反映させたい場合は、一旦クイックスタートを無効にしてから、再度有効にしてください。</string>
+							<string type="base64-UTF8" key="NSContents">44Kv44Kk44OD44Kv44K544K/44O844OI44KS5pyJ5Yq544Gr44GZ44KL44Go44CB5paw6KaP44Km44Kk
+44Oz44OJ44Km44GM556s5pmC44Gr6ZaL44GP44KI44GG44Gr44Gq44KK44G+44GZ44GM44CB5pyA5paw
+44Gu44Op44Oz44K/44Kk44Og44OV44Kh44Kk44Or44GM6Kqt44G/6L6844G+44KM44Gq44GE5aC05ZCI
+44GM44GC44KK44G+44GZ44CC44Op44Oz44K/44Kk44Og44OV44Kh44Kk44OrKOOBn+OBqOOBiOOBsCB+
+Ly52aW0g44OH44Kj44Os44Kv44OI44Oq44Gu44OV44Kh44Kk44OrKeOCkuWkieabtOOBl+OBpuOAgeaW
+sOimj+OCpuOCpOODs+ODieOCpuOBq+eiuuWun+OBq+WkieabtOOCkuWPjeaYoOOBleOBm+OBn+OBhOWg
+tOWQiOOBr+OAgeS4gOaXpuOCr+OCpOODg+OCr+OCueOCv+ODvOODiOOCkueEoeWKueOBq+OBl+OBpuOB
+i+OCieOAgeWGjeW6puacieWKueOBq+OBl+OBpuOBj+OBoOOBleOBhOOAgg</string>
 							<reference key="NSSupport" ref="26"/>
 							<reference key="NSControlView" ref="1005485662"/>
 							<reference key="NSBackgroundColor" ref="576932459"/>
@@ -835,7 +860,7 @@
 						<object class="NSButtonCell" key="NSCell" id="399052867">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">0</int>
-							<string key="NSContents">インラインインプットメソッドを使用する</string>
+							<string type="base64-UTF8" key="NSContents">44Kk44Oz44Op44Kk44Oz44Kk44Oz44OX44OD44OI44Oh44K944OD44OJ44KS5L2/55So44GZ44KLA</string>
 							<reference key="NSSupport" ref="69237166"/>
 							<reference key="NSControlView" ref="493301367"/>
 							<int key="NSButtonFlags">1211912703</int>
@@ -857,7 +882,9 @@
 						<object class="NSTextFieldCell" key="NSCell" id="408486306">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">272760832</int>
-							<string key="NSContents">インプットメソッド使用時もVIMに統合された入力ができますが、ATOKやAquaSKKなどのインプットメソッドで入力時に問題が発生します。</string>
+							<string type="base64-UTF8" key="NSContents">44Kk44Oz44OX44OD44OI44Oh44K944OD44OJ5L2/55So5pmC44KCVklN44Gr57Wx5ZCI44GV44KM44Gf
+5YWl5Yqb44GM44Gn44GN44G+44GZ44GM44CBQVRPS+OChEFxdWFTS0vjgarjganjga7jgqTjg7Pjg5fj
+g4Pjg4jjg6Hjgr3jg4Pjg4njgaflhaXlipvmmYLjgavllY/poYzjgYznmbrnlJ/jgZfjgb7jgZnjgII</string>
 							<reference key="NSSupport" ref="26"/>
 							<reference key="NSControlView" ref="349400025"/>
 							<reference key="NSBackgroundColor" ref="576932459"/>
@@ -1047,22 +1074,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.MMAtsuiRenderer</string>
-						<reference key="source" ref="521128178"/>
-						<reference key="destination" ref="443695008"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="521128178"/>
-							<reference key="NSDestination" ref="443695008"/>
-							<string key="NSLabel">value: values.MMAtsuiRenderer</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.MMAtsuiRenderer</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">784</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: values.MMPreloadCacheSize</string>
 						<reference key="source" ref="603213044"/>
 						<reference key="destination" ref="443695008"/>
@@ -1133,38 +1144,56 @@
 					</object>
 					<int key="connectionID">1033</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.MMRenderer</string>
+						<reference key="source" ref="521128178"/>
+						<reference key="destination" ref="443695008"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="521128178"/>
+							<reference key="NSDestination" ref="443695008"/>
+							<string key="NSLabel">value: values.MMRenderer</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.MMRenderer</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1063</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<object class="IBObjectRecord">
 						<int key="objectID">0</int>
-						<reference key="object" ref="0"/>
+						<object class="NSArray" key="object" id="730870132">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+						</object>
 						<reference key="children" ref="262533429"/>
 						<nil key="parent"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">-2</int>
 						<reference key="object" ref="740873335"/>
-						<reference key="parent" ref="0"/>
-						<string key="objectName">File's Owner</string>
+						<reference key="parent" ref="730870132"/>
+						<string type="base64-UTF8" key="objectName">RmlsZSdzIE93bmVyA</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">-1</int>
 						<reference key="object" ref="1018244485"/>
-						<reference key="parent" ref="0"/>
+						<reference key="parent" ref="730870132"/>
 						<string key="objectName">First Responder</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">-3</int>
 						<reference key="object" ref="691195122"/>
-						<reference key="parent" ref="0"/>
+						<reference key="parent" ref="730870132"/>
 						<string key="objectName">Application</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">58</int>
 						<reference key="object" ref="443695008"/>
-						<reference key="parent" ref="0"/>
+						<reference key="parent" ref="730870132"/>
 						<string key="objectName">Shared Defaults</string>
 					</object>
 					<object class="IBObjectRecord">
@@ -1183,7 +1212,7 @@
 							<reference ref="295458963"/>
 							<reference ref="340248609"/>
 						</object>
-						<reference key="parent" ref="0"/>
+						<reference key="parent" ref="730870132"/>
 						<string key="objectName">General</string>
 					</object>
 					<object class="IBObjectRecord">
@@ -1313,7 +1342,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="231772550"/>
 						</object>
-						<reference key="parent" ref="0"/>
+						<reference key="parent" ref="730870132"/>
 						<string key="objectName">Integration</string>
 					</object>
 					<object class="IBObjectRecord">
@@ -1346,7 +1375,7 @@
 							<reference ref="5563083"/>
 							<reference ref="521128178"/>
 						</object>
-						<reference key="parent" ref="0"/>
+						<reference key="parent" ref="730870132"/>
 						<string key="objectName">Advanced</string>
 					</object>
 					<object class="IBObjectRecord">
@@ -1702,8 +1731,10 @@
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<object class="NSArray" key="dict.sortedKeys">
+				<object class="NSMutableArray" key="dict.sortedKeys">
 					<bool key="EncodedWithXMLCoder">YES</bool>
+					<string>-1.IBPluginDependency</string>
+					<string>-2.IBPluginDependency</string>
 					<string>-3.IBPluginDependency</string>
 					<string>-3.ImportedFromIB2</string>
 					<string>1035.IBPluginDependency</string>
@@ -1829,9 +1860,9 @@
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<boolean value="YES" id="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1857,103 +1888,107 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
-					<string>{{21, 614}, {483, 208}}</string>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
+					<string>{{33, 386}, {483, 208}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<boolean value="YES"/>
+					<reference ref="5"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="5"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<reference ref="5"/>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="unlocalizedProperties">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<reference key="dict.sortedKeys" ref="0"/>
+				<object class="NSArray" key="dict.sortedKeys">
+					<bool key="EncodedWithXMLCoder">YES</bool>
+				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 				</object>
@@ -1961,13 +1996,15 @@
 			<nil key="activeLocalization"/>
 			<object class="NSMutableDictionary" key="localizations">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<reference key="dict.sortedKeys" ref="0"/>
+				<object class="NSArray" key="dict.sortedKeys">
+					<bool key="EncodedWithXMLCoder">YES</bool>
+				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">1062</int>
+			<int key="maxID">1063</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1985,7 +2022,7 @@
 					<string key="superclassName">NSObject</string>
 					<object class="NSMutableDictionary" key="actions">
 						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
+						<object class="NSMutableArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>atsuiButtonClicked:</string>
 							<string>inlineImButtonClicked:</string>
@@ -2010,7 +2047,7 @@
 					<string key="superclassName">DBPrefsWindowController</string>
 					<object class="NSMutableDictionary" key="actions">
 						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
+						<object class="NSMutableArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>changePreloadCacheSize:</string>
 							<string>installOdb:</string>
@@ -2027,7 +2064,7 @@
 					</object>
 					<object class="NSMutableDictionary" key="outlets">
 						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
+						<object class="NSMutableArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>advancedPreferences</string>
 							<string>editors</string>
@@ -2067,7 +2104,7 @@
 					<string key="className">NSObject</string>
 					<object class="NSMutableDictionary" key="actions">
 						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSArray" key="dict.sortedKeys">
+						<object class="NSMutableArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>didAdjustSubviews:</string>
 							<string>willAdjustSubviews:</string>
@@ -2106,15 +2143,6 @@
 			</object>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
-		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<integer value="1050" key="NS.object.0"/>
-		</object>
-		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>
-			<integer value="3000" key="NS.object.0"/>
-		</object>
-		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<string key="IBDocument.LastKnownRelativeProjectPath">../../MacVim.xcodeproj</string>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 	</data>
