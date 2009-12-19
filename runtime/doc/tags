@@ -1187,6 +1187,7 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 +signs	various.txt	/*+signs*
 +smartindent	various.txt	/*+smartindent*
 +sniff	various.txt	/*+sniff*
++startuptime	various.txt	/*+startuptime*
 +statusline	various.txt	/*+statusline*
 +sun_workshop	various.txt	/*+sun_workshop*
 +syntax	various.txt	/*+syntax*
@@ -4725,6 +4726,7 @@ blockwise-operators	visual.txt	/*blockwise-operators*
 blockwise-register	change.txt	/*blockwise-register*
 blockwise-visual	visual.txt	/*blockwise-visual*
 bold	syntax.txt	/*bold*
+bom-bytes	mbyte.txt	/*bom-bytes*
 book	intro.txt	/*book*
 bookmark	usr_03.txt	/*bookmark*
 boolean	options.txt	/*boolean*
@@ -8309,6 +8311,7 @@ xterm-function-keys	term.txt	/*xterm-function-keys*
 xterm-modifier-keys	term.txt	/*xterm-modifier-keys*
 xterm-mouse	options.txt	/*xterm-mouse*
 xterm-mouse-wheel	scroll.txt	/*xterm-mouse-wheel*
+xterm-resize	term.txt	/*xterm-resize*
 xterm-save-screen	tips.txt	/*xterm-save-screen*
 xterm-screens	tips.txt	/*xterm-screens*
 xterm-scroll-region	term.txt	/*xterm-scroll-region*

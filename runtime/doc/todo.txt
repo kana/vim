@@ -1,4 +1,4 @@
-*todo.txt*      For Vim version 7.2.  Last change: 2009 Oct 28
+*todo.txt*      For Vim version 7.2.  Last change: 2009 Dec 16
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -30,24 +30,42 @@ be worked on, but only if you sponsor Vim development.  See |sponsor|.
 							*known-bugs*
 -------------------- Known bugs and current work -----------------------
 
-Crash with redir to unknown array. (Christian Brabandt, 2009 Oct 25)
-Analysis by Dominique Pelle.
-  vim -u NONE -N -c 'redir => temp[0] |echo 1| redir END'
+Spanish messages and menus. (Omar Campagne, 2009 Dec 4)
 
-C syntax: Recognize comments in #define (Samuel Thibault, 2009 Sep 16)
+iconv() doesn't fail on an illegal character, as documented. (Yongwei Wu, 2009
+Nov 15, example Nov 26)  Add argument to specify whether iconv() should fail
+or replace with a character and continue?
 
-patch to close file desc on ":shell". (James Vega, 2009 Aug 11, Sep 11)
+Update for form syntax. (Michael M Tung, 2009 Dec 4)
+
+Suggestion for more verbose test output and exit status. (Petr Splichal)
+Lech: later version already does this.
+
+When there is a stray "w" in the .vimrc file, the edited file is overwritten
+with an empty file. (Stone Kang).
+Detect that the file was not read and either read it first or give an error
+message.
+
+Problem with window jumping to other screen when changing font. (patch by
+Michael Wookey, 2009 Oct 16)
+Better: if the window offset was negative before changing something, then
+don't change it.
+
+Add local time at start of --startuptime output.
+Requires configure check for localtime().
+Use format year-month-day hr:min:sec.
+
+Shell not recognized properly if it ends in "csh -f". (James Vega, 2009 Nov 3)
+Find tail?  Might have a / in argument.  Find space?  Might have space in
+path.
 
 Crash when assigning s: to variable, pointer becomes invalid later.
 (Yukihiro Nakadaira, 2009 Oct 12, confirmed by Dominique Pelle)
 
+ml_get error when using SiSU syntax. (Nathan Thomas, 2009 Oct 29)
+
 Coverity: ask someone to create new user: Dominique.
 look into reported defects: http://scan.coverity.com/rung2.html
-
-Spanish messages and menus. (Omar Campagne, 2009 Oct 1)
-
-Patch to fix text formatting with small 'tw'. (Yukihiro Nakadaira, 2009 Sep
-26, update Sep 29)
 
 Bug with 'incsearch' going to wrong line. (Wolfram Kresse, 2009 Aug 17)
 Only with "vim -u NONE".
@@ -55,8 +73,6 @@ Only with "vim -u NONE".
 Problem with editing file in binary mode. (Ingo Krabbe, 2009 Oct 8)
 
 Support .xz with the xz program, like with lzma.
-
-Patch to set v:key for map() function. (Hari Krishna Dara, 2009 Sep 26)
 
 Perl runtime files update. (Andy Lester, 2009 Aug 25)
 
@@ -66,6 +82,10 @@ Problem with stop directory in findfile(). (Adam Simpkins, 2009 Aug 26)
 
 Patch to support :browse for more commands. (Lech Lorens, 2009 Jul 18)
 
+Change to C syntax folding to make it work much faster, but a bit less
+reliable. (Lech Lorens, 2009 Nov 9)  Enable with an option?
+Most time is spent in in_id_list().
+
 New wordlist for Dutch: http://www.opentaal.org/bestanden/1_10/nl_NL-Pack
 
 Check for unused functions, idea:
@@ -74,6 +94,11 @@ http://blog.flameeyes.eu/2008/01/17/today-how-to-identify-unused-exported-functi
 In command line window ":close" doesn't work properly. (Tony Mechelynck, 2009
 Jun 1)
 
+Why does this give a #705 error:
+let X = function('haslocaldir')
+let X = function('getcwd')
+Inserting "unlet X" helps.
+
 When a:base in 'completefunc' starts with a number it's passed as a number,
 not a string. (Sean Ma)  Need to add flag to call_func_retlist() to force a
 string value.
@@ -81,6 +106,9 @@ string value.
 Reproducable crash in syntax HL. (George Reilly, Dominique Pelle, 2009 May 9)
 
 Invalid read error in Farsi mode. (Dominique Pelle, 2009 Aug 2)
+
+Patch to add diff functionality to 2html.vim. (Christian Brabandt, 2009 Dec
+15)
 
 For running gvim on an USB stick: avoid the OLE registration.  Use a command
 line argument -noregister.
@@ -92,6 +120,10 @@ Still a problem with ":make" in the wrong directory.  Caused by ":bufdo".
 Caused by "doautoall syntaxset BufEnter *" in syntax/nosyntax.vim ?
 There also is a BufLeave/BufEnter aucmd to save/restore view.
 Does the patch to save/restore globaldir work?
+
+":bufdo normal gg" while 'hidden' is set leaves buffers without syntax
+highlighting.  Don't disable Syntax autocommands then?  Or add a flag/modifier
+to avoid changing 'eventignore'?
 
 Patch for displaying 0x200c and 0x200d. (Ali Gholami Rudi, 2009 May 6)
 Probably needs a bit of work.
@@ -107,6 +139,8 @@ Patch for Ruby 1.9. (Msaki Suketa, 2009 Jul 21, Jul 26)
 Patch for completion of ":find" arguments. (Nazri Ramliy, 2009 Feb 22, 26)
 8   For ":find" and ":sfind" expand files found in 'path'.
 Update 2009 Mar 28.
+
+Win32: Expanding 'path' runs into a maximum size limit. (bgold12, 2009 Nov 15)
 
 Setting 'tags' to "tagsdir/*" does not find "tagsdir/tags". (Steven K. Wong,
 2009 Jul 18)
@@ -288,6 +322,9 @@ do any good.  (Patch from Patrick Texier, 2008 Dec 9)
 When changing 'encoding' convert all the swap file names, so that we can
 still delete them.  Also convert all buffer file names?
 
+"gqip" in Insert mode has an off-by-one error, causing it to reflow text.
+(Raul Coronado, 2009 Nov 2)
+
 Update src/testdir/main.aap.
 
 "vim -c 'sniff connect'" hangs Vim. (Dominique Pelle, 2008 Dec 7)
@@ -422,6 +459,9 @@ escaping characters where the backslash is not removed later.  Asked Chris for
 an alternate solution, also for src/ex_getln.c.
 This also fails when the file or directory name contains "%". (Thoml, 2008
 July 7)
+
+Win32: The "4913" file is sometimes not deleted.  Perhaps another program has
+opened it?  Use FILE_FLAG_DELETE_ON_CLOSE? (Craig Barkhouse, 2009 Nov 6)
 
 The str2special() function doesn't handle multi-byte characters properly.
 Patch from Vladimir Vichniakov, 2007 Apr 24.
@@ -758,9 +798,6 @@ use a different dialog: "busy saving, really quit? yes / no".
 Check other interfaces for changing curbuf in a wrong way.  Patch like for
 if_ruby.c.
 
-Problem with cursorcolumn highlighting and folds. (John Mullin, 2008 Jul 18)
-Problem with cursorcolumn in wide characters. (Dominique Pelle, 2009 May 5)
-
 ":helpgrep" should use the directory from 'helpfile'.
 
 Patch to dynamically load Python on Solaris. (Danek Duvall, 2009 Feb 16)
@@ -946,15 +983,6 @@ Wokula, 2007 Aug 25)
 Problem with using :redir in user command completion function? (Hari Krishna
 Dara, 2006 June 21)
 
-GTK: When maximizing Vim the result is slightly smaller, the filler border is
-not there, and the "maximize" button is still there.  Clicking it again does
-give a maximized window. (Darren Hiebert)
-Problem is that gui_mch_set_text_area_pos() is invoked to change the text area
-size, which causes the toplevel window to resize.  When doing this while the
-size is already right the filler remains there.
-Detect using the maximize button (GdkWindowState bit
-GDK_WINDOW_STATE_MAXIMIZED) and set it again?
-
 Another resizing problem when setting 'columns' and 'lines' to a very large
 number. (Tony Mechelynck, 2007 Feb 6)
 
@@ -1001,6 +1029,8 @@ visible.
 
 GTK: when setting 'columns' in a startup script and doing ":vertical diffsplit"
 the window isn't redrawn properly, see two vertical bars.
+
+GTK: file choser is disabled.  Patch by Tim Starling, 2009 Nov 13.
 
 The magic clipboard format "VimClipboard2" appears in several places.  Should
 be only one.
@@ -1097,8 +1127,13 @@ only want to look at the first few pages.  Use zero to disable it.
 ":vimgrep" does not recognize a recursive symlink.  Is it possible to detect
 this, at least for Unix (using device/inode)?
 
+When switching between windows the cursor is often put in the middle.
+Remember the relative position and restore that, just like lnum and col are
+restored. (Luc St-Louis)
+
 
 Vim 7.3:
+-   Use latest autoconf (3.64)
 -   Use NSIS 2.45, it includes Windows 7 support.
 -   Easier/standard way to disable default plugins.
 -   Add patch for 'relativenumber' option?  Markus Heidelberg, 2008 Jun 27.
@@ -1106,7 +1141,7 @@ Vim 7.3:
     Kocher (LGPL), close to original.  Mohsin also has some ideas.
     Take four bytes and turn them into unsigned to avoid byte-order problems.
     Need to buffer up to 7 bytes to align on 8 byte boundaries.
--   ":{range}source": source the lines from the file.
+-   ":{range}source": source the lines from the current file.
 	You can already yank lines and use :@" to execute them.
 	Most of do_source() would not be used, need a new function.
 	It's easy when not doing breakpoints or profiling.
@@ -1143,6 +1178,8 @@ More patches:
     Schmidt, 2008 Jul 22.
 -   testdir/Make_dos_sh.mak for running tests with MingW. (Bill Mccarthy, 2008
     Sep 13)
+-   Patch for adding "space" item in 'listchars'. (Jérémie Roquet, 2009 Oct 29,
+    Docs patch Oct 30)
 
 
 Awaiting updated patches:
@@ -1167,6 +1204,7 @@ Awaiting updated patches:
     How does this work?  Missing comments.
 -   Patch for 'breakindent' option: repeat indent for wrapped line. (Vaclav
     Smilauer, 2004 Sep 13, fix Oct 31, update 2007 May 30)
+    Version for latest MacVim: Tobia Conforto, 2009 Nov 23
 8   Add a few more command names to the menus.  Patch from Jiri Brezina
     (28 feb 2002).  Will mess the translations...
 7   ATTENTION dialog choices are more logical when "Delete it' appears
@@ -3933,7 +3971,7 @@ Undo:
 8   Search for pattern in undo tree, showing when it happened and the text
     state, so that you can jump to it.
 -   Persistent undo: store undo in a file.  Patch by Jordan Lewis, 2009 Feb
-    20.
+    20.  Repost 2009 Nov 16.
     Older ideas:
     Use timestamps, so that a version a certain time ago can be found and info
     before some time/date can be flushed. 'undopersist' gives maximum time to

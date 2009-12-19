@@ -1,4 +1,4 @@
-*options.txt*	For Vim version 7.2.  Last change: 2009 Oct 12
+*options.txt*	For Vim version 7.2.  Last change: 2009 Nov 09
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -818,11 +818,11 @@ A jump table for the options with a short description can be found at |Q_op|.
 	When 'background' is set Vim will adjust the default color groups for
 	the new value.  But the colors used for syntax highlighting will not
 	change.					*g:colors_name*
-	When a color scheme is loaded (the "colors_name" variable is set)
+	When a color scheme is loaded (the "g:colors_name" variable is set)
 	setting 'background' will cause the color scheme to be reloaded.  If
 	the color scheme adjusts to the value of 'background' this will work.
 	However, if the color scheme sets 'background' itself the effect may
-	be undone.  First delete the "colors_name" variable when needed.
+	be undone.  First delete the "g:colors_name" variable when needed.
 
 	When setting 'background' to the default value with: >
 		:set background&
@@ -2456,6 +2456,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 	'eadirection' option tells in which direction the size is affected.
 	Changing the height and width of a window can be avoided by setting
 	'winfixheight' and 'winfixwidth', respectively.
+	If a window size is specified when creating a new window sizes are
+	currently not equalized (it's complicated, but may be implemented in
+	the future).
 
 						*'equalprg'* *'ep'*
 'equalprg' 'ep'		string	(default "")
@@ -6026,8 +6029,12 @@ A jump table for the options with a short description can be found at |Q_op|.
 			{not available when compiled without the  |+linebreak|
 			feature}
 	String to put at the start of lines that have been wrapped.  Useful
-	values are "> " or "+++ ".
-	Only printable single-cell characters are allowed, excluding <Tab> and
+	values are "> " or "+++ ": >
+		:set showbreak=>\ 
+<	Note the backslash to escape the trailing space.  It's easier like
+	this: >
+		:let &showbreak = '+++ ' 
+<	Only printable single-cell characters are allowed, excluding <Tab> and
 	comma (in a future version the comma might be used to separate the
 	part that is shown at the end and at the start of a line).
 	The characters are highlighted according to the '@' flag in

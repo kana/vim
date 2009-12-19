@@ -1,4 +1,4 @@
-*version7.txt*  For Vim version 7.2.  Last change: 2008 Dec 17
+*version7.txt*  For Vim version 7.2.  Last change: 2009 Dec 02
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -224,7 +224,7 @@ The 'spelllang'    option is used to specify the accepted language(s)
 The 'spellfile'    option specifies where new words are added
 The 'spellsuggest' option specifies the methods used for making suggestions
 
-The |[s| and |]s| commands can be used to move to the next or previous error
+The |]s| and |[s| commands can be used to move to the next or previous error
 The |zg| and |zw| commands can be used to add good and wrong words
 The |z=|	  command can be used to list suggestions and correct the word
 The |:mkspell|    command is used to generate a Vim spell file from word lists
