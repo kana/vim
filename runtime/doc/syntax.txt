@@ -1,4 +1,4 @@
-*syntax.txt*	For Vim version 7.2.  Last change: 2009 Oct 28
+*syntax.txt*	For Vim version 7.2.  Last change: 2009 Nov 08
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -3872,10 +3872,11 @@ in their own color.
 :colo[rscheme] {name}	Load color scheme {name}.  This searches 'runtimepath'
 			for the file "colors/{name}.vim.  The first one that
 			is found is loaded.
-			To see the name of the currently active color scheme
-			(if there is one): >
+			To see the name of the currently active color scheme: >
 				:echo g:colors_name
-<			Doesn't work recursively, thus you can't use
+<			When using the default colors you will get an E121
+			error.
+			Doesn't work recursively, thus you can't use
 			":colorscheme" in a color scheme script.
 			After the color scheme has been loaded the
 			|ColorScheme| autocommand event is triggered.
@@ -4072,7 +4073,7 @@ ctermbg={color-nr}				*highlight-ctermbg*
 	colors.
 	When a colorscheme is being used, changing 'background' causes it to
 	be reloaded, which may reset all colors (including Normal).  First
-	delete the "colors_name" variable when you don't want this.
+	delete the "g:colors_name" variable when you don't want this.
 
 	When you have set "ctermfg" or "ctermbg" for the Normal group, Vim
 	needs to reset the color when exiting.	This is done with the "op"

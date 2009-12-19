@@ -1,4 +1,4 @@
-*change.txt*    For Vim version 7.2.  Last change: 2009 Sep 15
+*change.txt*    For Vim version 7.2.  Last change: 2009 Nov 11
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -879,7 +879,10 @@ inside of strings can change!  Also see 'softtabstop' option. >
 
 							*:reg* *:registers*
 :reg[isters]		Display the contents of all numbered and named
-			registers.  {not in Vi}
+			registers.  If a register is written to for |:redir|
+			it will not be listed.
+			{not in Vi}
+
 
 :reg[isters] {arg}	Display the contents of the numbered and named
 			registers that are mentioned in {arg}.  For example: >

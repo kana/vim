@@ -1,4 +1,4 @@
-*autocmd.txt*   For Vim version 7.2.  Last change: 2009 Oct 04
+*autocmd.txt*   For Vim version 7.2.  Last change: 2009 Nov 25
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -1052,7 +1052,7 @@ option will not cause any commands to be executed.
 						*:doautoa* *:doautoall*
 :doautoa[ll] [group] {event} [fname]
 			Like ":doautocmd", but apply the autocommands to each
-			loaded buffer.  Note that {fname} is used to select
+			loaded buffer.  Note that [fname] is used to select
 			the autocommands, not the buffers to which they are
 			applied.
 			Careful: Don't use this for autocommands that delete a
