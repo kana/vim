@@ -1,4 +1,4 @@
-*tips.txt*      For Vim version 7.2.  Last change: 2009 Feb 18
+*tips.txt*      For Vim version 7.2.  Last change: 2009 Nov 07
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -250,6 +250,8 @@ Breaking up restoring the position:
 	't	go to the line previously at the top of the window
 	zt	scroll to move this line to the top of the window
 	`s	jump to the original position of the cursor
+
+For something more advanced see |winsaveview()| and |winrestview()|.
 
 ==============================================================================
 Renaming files						*rename-files*

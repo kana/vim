@@ -1,4 +1,4 @@
-*various.txt*   For Vim version 7.2.  Last change: 2009 Jul 09
+*various.txt*   For Vim version 7.2.  Last change: 2009 Nov 11
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -376,6 +376,7 @@ N  *+scrollbind*	|'scrollbind'|
 B  *+signs*		|:sign|
 N  *+smartindent*	|'smartindent'|
 m  *+sniff*		SniFF interface |sniff|
+N  *+startuptime*	|--startuptime| argument
 N  *+statusline*	Options 'statusline', 'rulerformat' and special
 			formats of 'titlestring' and 'iconstring'
 m  *+sun_workshop*	|workshop|

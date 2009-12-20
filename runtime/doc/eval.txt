@@ -1,4 +1,4 @@
-*eval.txt*	For Vim version 7.2.  Last change: 2009 Sep 30
+*eval.txt*	For Vim version 7.2.  Last change: 2009 Nov 17
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -3484,7 +3484,9 @@ hostname()						*hostname()*
 iconv({expr}, {from}, {to})				*iconv()*
 		The result is a String, which is the text {expr} converted
 		from encoding {from} to encoding {to}.
-		When the conversion fails an empty string is returned.
+		When the conversion completely fails an empty string is
+		returned.  When some characters could not be converted they
+		are replaced with "?".
 		The encoding names are whatever the iconv() library function
 		can accept, see ":!man 3 iconv".
 		Most conversions require Vim to be compiled with the |+iconv|
@@ -3812,7 +3814,8 @@ map({expr}, {string})					*map()*
 		Replace each item in {expr} with the result of evaluating
 		{string}.
 		Inside {string} |v:val| has the value of the current item.
-		For a |Dictionary| |v:key| has the key of the current item.
+		For a |Dictionary| |v:key| has the key of the current item
+		and for a |List| |v:key| has the index of the current item.
 		Example: >
 			:call map(mylist, '"> " . v:val . " <"')
 <		This puts "> " before and " <" after each item in "mylist".
@@ -4998,7 +5001,7 @@ setwinvar({nr}, {varname}, {val})			*setwinvar()*
 			:call setwinvar(2, "myvar", "foobar")
 
 shellescape({string} [, {special}])			*shellescape()*
-		Escape {string} for use as shell command argument.
+		Escape {string} for use as a shell command argument.
 		On MS-Windows and MS-DOS, when 'shellslash' is not set, it
 		will enclose {string} in double quotes and double all double
 		quotes within {string}.
@@ -5884,6 +5887,7 @@ showcmd			Compiled with 'showcmd' support.
 signs			Compiled with |:sign| support.
 smartindent		Compiled with 'smartindent' support.
 sniff			Compiled with SNiFF interface support.
+startuptime		Compiled with |--startuptime| support.
 statusline		Compiled with support for 'statusline', 'rulerformat'
 			and special formats of 'titlestring' and 'iconstring'.
 sun_workshop		Compiled with support for Sun |workshop|.
