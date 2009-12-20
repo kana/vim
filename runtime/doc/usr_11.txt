@@ -1,4 +1,4 @@
-*usr_11.txt*	For Vim version 7.2.  Last change: 2009 Apr 18
+*usr_11.txt*	For Vim version 7.2.  Last change: 2009 Oct 29
 
 		     VIM USER MANUAL - by Bram Moolenaar
 
@@ -111,6 +111,8 @@ Example: >
 	vim -r .help.txt.swo
 
 This is also handy when the swap file is in another directory than expected.
+Vim recognizes files with the pattern *.s[uvw][a-z] as swap files.
+
 If this still does not work, see what file names Vim reports and rename the
 files accordingly.  Check the 'directory' option to see where Vim may have
 put the swap file.

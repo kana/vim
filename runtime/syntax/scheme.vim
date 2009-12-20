@@ -1,6 +1,6 @@
 " Vim syntax file
 " Language:	Scheme (R5RS + some R6RS extras)
-" Last Change:	2009 Apr 12
+" Last Change:	2009 Nov 27
 " Maintainer:	Sergey Khorev <sergey.khorev@gmail.com>
 " Original author:	Dirk van Deun <dirk@igwe.vub.ac.be>
 
@@ -174,16 +174,16 @@ syn match	schemeError	![-#+0-9.][-#+/0-9a-f@i.boxesfdl]*[^-#+/0-9a-f@i.boxesfdl 
 syn match	schemeBoolean	"#[tf]"
 syn match	schemeError	!#[tf][^ \t\[\]()";]\+!
 
-syn match	schemeChar	"#\\"
-syn match	schemeChar	"#\\."
+syn match	schemeCharacter	"#\\"
+syn match	schemeCharacter	"#\\."
 syn match       schemeError	!#\\.[^ \t\[\]()";]\+!
-syn match	schemeChar	"#\\space"
+syn match	schemeCharacter	"#\\space"
 syn match	schemeError	!#\\space[^ \t\[\]()";]\+!
-syn match	schemeChar	"#\\newline"
+syn match	schemeCharacter	"#\\newline"
 syn match	schemeError	!#\\newline[^ \t\[\]()";]\+!
 
 " R6RS
-syn match schemeChar "#\\x[0-9a-fA-F]\+"
+syn match schemeCharacter "#\\x[0-9a-fA-F]\+"
 
 
 if exists("b:is_mzscheme") || exists("is_mzscheme")
@@ -196,7 +196,7 @@ if exists("b:is_mzscheme") || exists("is_mzscheme")
     " anything limited by |'s is identifier
     syn match schemeOther "|[^|]\+|"
 
-    syn match	schemeChar	"#\\\%(return\|tab\)"
+    syn match	schemeCharacter	"#\\\%(return\|tab\)"
 
     " Modules require stmt
     syn keyword schemeExtSyntax module require dynamic-require lib prefix all-except prefix-all-except rename
@@ -305,7 +305,7 @@ if version >= 508 || !exists("did_scheme_syntax_inits")
   HiLink schemeFunc		Function
 
   HiLink schemeString		String
-  HiLink schemeChar		Character
+  HiLink schemeCharacter	Character
   HiLink schemeNumber		Number
   HiLink schemeBoolean		Boolean
 
