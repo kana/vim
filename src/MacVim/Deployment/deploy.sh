@@ -11,3 +11,4 @@ cp -r readme.rtfd "$DESTDIR/はじめにお読みください.rtfd"
 SetFile -a E "$DESTDIR/はじめにお読みください.rtfd"
 ln -s /Applications "$DESTDIR/アプリケーション"
 cp -r /Applications/MacPorts/MacVim.app $DESTDIR
+hdiutil create -srcfolder MacVim-KaoriYa -format UDBZ macvim-kaoriya-`date +'%Y%m%d'`.dmg
