@@ -466,7 +466,7 @@ function! s:SQLCAddAlias(table_name, table_alias, cols)
                 if table_name =~ '_'
                     " Treat _ as separators since people often use these
                     " for word separators
-                    let save_keyword = &iskeyword
+                    let save_keyword = &l:iskeyword
                     setlocal iskeyword-=_
 
                     " Get the first letter of each word
@@ -480,7 +480,7 @@ function! s:SQLCAddAlias(table_name, table_alias, cols)
                                 \ 'g'
                                 \ )
                     " Restore original value
-                    let &iskeyword = save_keyword
+                    let &l:iskeyword = save_keyword
                 elseif table_name =~ '\u\U'
                     let table_alias = substitute(
                                 \ table_name, '\(\u\)\U*', '\1', 'g')
