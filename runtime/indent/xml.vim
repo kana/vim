@@ -1,11 +1,10 @@
 " Language:	xml
 " Maintainer:	Johannes Zellner <johannes@zellner.org>
-" Last Change:	2009-05-26 00:17:25
+" Last Change:	Tue, 27 Apr 2004 14:54:59 CEST
 " Notes:	1) does not indent pure non-xml code (e.g. embedded scripts)
 "		2) will be confused by unbalanced tags in comments
 "		or CDATA sections.
-"		2009-05-26 patch by Nikolai Weibull
-" TODO: 	implement pre-like tags, see xml_indent_open / xml_indent_close
+" TODO:		implement pre-like tags, see xml_indent_open / xml_indent_close
 
 " Only load this indent file when no other was loaded.
 if exists("b:did_indent")
@@ -47,9 +46,6 @@ fun! <SID>XmlIndentSynCheck(lnum)
 	if '' != syn1 && syn1 !~ 'xml' && '' != syn2 && syn2 !~ 'xml'
 	    " don't indent pure non-xml code
 	    return 0
-	elseif syn1 =~ '^xmlComment' && syn2 =~ '^xmlComment'
-	    " indent comments specially
-	    return -1
 	endif
     endif
     return 1
@@ -78,12 +74,8 @@ fun! XmlIndentGet(lnum, use_syntax_check)
     endif
 
     if a:use_syntax_check
-	let check_lnum = <SID>XmlIndentSynCheck(lnum)
-	let check_alnum = <SID>XmlIndentSynCheck(a:lnum)
-	if 0 == check_lnum || 0 == check_alnum
+	if 0 == <SID>XmlIndentSynCheck(lnum) || 0 == <SID>XmlIndentSynCheck(a:lnum)
 	    return indent(a:lnum)
-	elseif -1 == check_lnum || -1 == check_alnum
-	    return -1
 	endif
     endif
 

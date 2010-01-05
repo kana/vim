@@ -1,9 +1,9 @@
 " Vim syntax file
 " Language:	Man page
-" Maintainer:	SungHyun Nam <goweol@gmail.com>
+" Maintainer:	Nam SungHyun <namsh@kldp.org>
 " Previous Maintainer:	Gautam H. Mudunuri <gmudunur@informatica.com>
 " Version Info:
-" Last Change:	2008 Sep 17
+" Last Change:	2007 Dec 30
 
 " Additional highlighting by Johannes Tanzler <johannes.tanzler@aon.at>:
 "	* manSubHeading

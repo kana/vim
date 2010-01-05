@@ -227,7 +227,7 @@ syn match maximaFloat /\<\d\+[BbDdEeSs][-+]\=\d\+\>/
 " Comments:
 " maxima supports /* ... */ (like C)
 syn keyword maximaTodo contained	TODO Todo DEBUG
-syn region  maximaCommentBlock	start="/\*" end="\*/"	contains=maximaString,maximaTodo,maximaCommentBlock
+syn region  maximaCommentBlock	start="/\*" end="\*/"	contains=maximaString,maximaTodo
 
 " synchronizing
 syn sync match maximaSyncComment	grouphere maximaCommentBlock "/*"

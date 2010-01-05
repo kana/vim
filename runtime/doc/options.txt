@@ -1,4 +1,4 @@
-*options.txt*	For Vim version 7.2.  Last change: 2009 Nov 09
+*options.txt*	For Vim version 7.2.  Last change: 2008 Nov 25
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -664,8 +664,6 @@ A jump table for the options with a short description can be found at |Q_op|.
 	"single":	Use the same width as characters in US-ASCII.  This is
 			expected by most users.
 	"double":	Use twice the width of ASCII characters.
-	"auto":		Use obtained width from system.
-			{only for Win NT/2K systems, currently}
 
 	There are a number of CJK fonts for which the width of glyphs for
 	those characters are solely based on how many octets they take in
@@ -682,26 +680,17 @@ A jump table for the options with a short description can be found at |Q_op|.
 	when the system locale is set to one of CJK locales.  See Unicode
 	Standard Annex #11 (http://www.unicode.org/reports/tr11).
 
-	On some systems, we can use width for a character which defined by
-	font design.  If you use such a system try "auto" for this option.
-	It will give you more nice result for a font which you select.
-
 			*'antialias'* *'anti'* *'noantialias'* *'noanti'*
-'antialias' 'anti'	boolean (default off, on for MacVim)
+'antialias' 'anti'	boolean (default: off)
 			global
 			{not in Vi}
-                        {only available when compiled with GUI enabled on
-			 Mac OS X}
+			{only available when compiled with GUI enabled
+			on Mac OS X}
 	This option only has an effect in the GUI version of Vim on Mac OS X
 	v10.2 or later.  When on, Vim will use smooth ("antialiased") fonts,
 	which can be easier to read at certain sizes on certain displays.
-
-	Setting this option in the Carbon version can sometimes cause problems
-	if 'guifont' is set to its default (empty string).
-
-	Support for this option is not flawless in MacVim. In particular,
-	Monaco always seems to render not antialiased for point sizes up
-	to 10. The ATSUI renderer has better antialias support.
+	Setting this option can sometimes cause problems if 'guifont' is set
+	to its default (empty string).
 
 			*'autochdir'* *'acd'* *'noautochdir'* *'noacd'*
 'autochdir' 'acd'	boolean (default off)
@@ -754,8 +743,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	     within a word (initial, medial, final and stand-alone).
 	  b) the enabling of the ability to compose characters
 	  c) the enabling of the required combining of some characters
-	When disabled the display shows each character's true stand-alone
-	form.
+	When disabled the character display reverts back to each character's
+	true stand-alone form.
 	Arabic is a complex language which requires other settings, for
 	further details see |arabic.txt|.
 
@@ -824,11 +813,11 @@ A jump table for the options with a short description can be found at |Q_op|.
 	When 'background' is set Vim will adjust the default color groups for
 	the new value.  But the colors used for syntax highlighting will not
 	change.					*g:colors_name*
-	When a color scheme is loaded (the "g:colors_name" variable is set)
+	When a color scheme is loaded (the "colors_name" variable is set)
 	setting 'background' will cause the color scheme to be reloaded.  If
 	the color scheme adjusts to the value of 'background' this will work.
 	However, if the color scheme sets 'background' itself the effect may
-	be undone.  First delete the "g:colors_name" variable when needed.
+	be undone.  First delete the "colors_name" variable when needed.
 
 	When setting 'background' to the default value with: >
 		:set background&
@@ -970,8 +959,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			{not in Vi}
 	List of directories for the backup file, separated with commas.
 	- The backup file will be created in the first directory in the list
-	  where this is possible.  The directory must exist, Vim will not
-	  create it for you.
+	  where this is possible.
 	- Empty means that no backup file will be created ('patchmode' is
 	  impossible!).  Writing may fail because of this.
 	- A directory "." means to put the backup file in the same directory
@@ -1155,7 +1143,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Some applications use the BOM to recognize the encoding of the file.
 	Often used for UCS-2 files on MS-Windows.  For other applications it
 	causes trouble, for example: "cat file1 file2" makes the BOM of file2
-	appear halfway the resulting file.  Gcc doesn't accept a BOM.
+	appear halfway the resulting file.
 	When Vim reads a file and 'fileencodings' starts with "ucs-bom", a
 	check for the presence of the BOM is done and 'bomb' set accordingly.
 	Unless 'binary' is set, it is removed from the first line, so that you
@@ -2386,8 +2374,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	It should normally be kept at its default value, or set when Vim
 	starts up.  See |multibyte|.  To reload the menus see |:menutrans|.
 
-	NOTE: For MacVim and GTK+ 2 it is highly recommended to set 'encoding'
-	to "utf-8".  Although care has been taken to allow different values of
+	NOTE: For GTK+ 2 it is highly recommended to set 'encoding' to
+	"utf-8".  Although care has been taken to allow different values of
 	'encoding', "utf-8" is the natural choice for the environment and
 	avoids unnecessary conversion overhead.  "utf-8" has not been made
 	the default to prevent different behavior of the GUI and terminal
@@ -2398,10 +2386,6 @@ A jump table for the options with a short description can be found at |Q_op|.
 	This is specified with 'fileencoding'.  The conversion is done with
 	iconv() or as specified with 'charconvert'.
 
-	If you need to know whether 'encoding' is a multi-byte encoding, you
-	can use: >
-		if has("multi_byte_encoding")
-<
 	Normally 'encoding' will be equal to your current locale.  This will
 	be the default if Vim recognizes your environment settings.  If
 	'encoding' is not set to the current locale, 'termencoding' must be
@@ -2462,9 +2446,6 @@ A jump table for the options with a short description can be found at |Q_op|.
 	'eadirection' option tells in which direction the size is affected.
 	Changing the height and width of a window can be avoided by setting
 	'winfixheight' and 'winfixwidth', respectively.
-	If a window size is specified when creating a new window sizes are
-	currently not equalized (it's complicated, but may be implemented in
-	the future).
 
 						*'equalprg'* *'ep'*
 'equalprg' 'ep'		string	(default "")
@@ -2472,8 +2453,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			{not in Vi}
 	External program to use for "=" command.  When this option is empty
 	the internal formatting functions are used; either 'lisp', 'cindent'
-	or 'indentexpr'.  When Vim was compiled without internal formatting,
-	the "indent" program is used.
+	or 'indentexpr'.
 	Environment variables are expanded |:set_env|.  See |option-backslash|
 	about including spaces and backslashes.
 	This option cannot be set from a |modeline| or in the |sandbox|, for
@@ -2570,17 +2550,13 @@ A jump table for the options with a short description can be found at |Q_op|.
 			{not in Vi}
 	Sets the character encoding for the file of this buffer.
 	When 'fileencoding' is different from 'encoding', conversion will be
-	done when writing the file.  For reading see below.
+	done when reading and writing the file.
 	When 'fileencoding' is empty, the same value as 'encoding' will be
 	used (no conversion when reading or writing a file).
-	Conversion will also be done when 'encoding' and 'fileencoding' are
-	both a Unicode encoding and 'fileencoding' is not utf-8.  That's
-	because internally Unicode is always stored as utf-8.
 		WARNING: Conversion can cause loss of information!  When
-		'encoding' is "utf-8" or another Unicode encoding, conversion
-		is most likely done in a way that the reverse conversion
-		results in the same text.  When 'encoding' is not "utf-8" some
-		characters may be lost!
+		'encoding' is "utf-8" conversion is most likely done in a way
+		that the reverse conversion results in the same text.  When
+		'encoding' is not "utf-8" some characters may be lost!
 	See 'encoding' for the possible values.  Additionally, values may be
 	specified that can be handled by the converter, see
 	|mbyte-conversion|.
@@ -2867,8 +2843,6 @@ A jump table for the options with a short description can be found at |Q_op|.
 
 	The expression may be evaluated in the |sandbox|, see
 	|sandbox-option|.
-	This option can't be set from a |modeline| when the 'diff' option is
-	on.
 
 	It is not allowed to change text or jump to another window while
 	evaluating 'foldexpr' |textlock|.
@@ -3082,8 +3056,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	The expression may be evaluated in the |sandbox|, see
 	|sandbox-option|.
 
-					*'fsync'* *'fs'* *'nofsync'* *'nofs'*
-'fsync' 'fs'		boolean (default on)
+						*'fsync'* *'fs'*
+'fsync' 'fs'		boolean	(default on)
 			global
 			{not in Vi}
 	When on, the library function fsync() will be called after writing a
@@ -3095,87 +3069,6 @@ A jump table for the options with a short description can be found at |Q_op|.
 	systems without an fsync() implementation, this variable is always
 	off.
 	Also see 'swapsync' for controlling fsync() on swap files.
-
-			    *'fullscreen'* *'fu'* *'nofullscreen'* *'nofu'*
-'fullscreen' 'fu'	boolean (default off)
-			global
-			{not in Vi}
-			{only in MacVim GUI}
-	When this option is set, the whole screen is covered by Vim.  Screen
-	decorations drawn by the operating system (such as the dock or the
-	menu bar) are hidden.  Most of Vim's window chrome is hidden as well
-	(e.g. toolbar, title bar).  The tab bar and scroll bars remain visible.
-	Updates to the window position are ignored in fullscreen mode.
-
-	See 'fuoptions' for how Vim resizes and colors the background when 
-	entering and leaving fullscreen mode.
-
-	Note: Setting 'fullscreen' usually changes the size of the Vim
-	control. However, for technical reasons, 'lines' and 'columns' will
-	currently only be updated when Vim runs its event loop. As a
-	consequence, if you set 'fullscreen' and 'lines' or 'columns' in a
-	Vim script file, you should always set 'fullscreen' after setting
-	'lines' and 'columns', else 'lines' and 'columns' will be overwritten
-	with the values 'fullscreen' sets after the script has been executed
-	and the event loop is ran again.
-
-	XXX: Add fuenter/fuleave autocommands? You might want to display
-	a NERDTree or a Tlist only in fullscreen for example. Then again, this
-	could probably be in a sizechanged autocommand that triggers if the
-	size is above a certain threshold.
-	XXX: Think about how 'fullscreen' and 'transparency' should interact. 
-
-						*'fuoptions'* *'fuopt'*
-'fuoptions' 'fuopt'	string (default "maxvert")
-			global
-			{not in Vi}
-			{only in MacVim GUI}
-	In fullscreen mode, most of the screen is black, only a part of the
-	screen is covered by the actual Vim control.  The control is centered.
-	This option controls the size of the Vim control as well as the color
-	of the unused screen area. 
-	value	effect	~
-        maxvert	When entering fullscreen, 'lines' is set to the maximum number
-		of lines fitting on the screen in fullscreen mode. When
-		leaving fullscreen, if 'lines' is still equal to the maximized
-		number of lines, it is restored to the value it had before
-		entering fullscreen.
-        maxhorz	When entering fullscreen, 'columns' is set to the maximum number
-		of columns fitting on the screen in fullscreen mode. When
-		leaving fullscreen, if 'columns' is still equal to the maximized
-		number of columns, it is restored to the value it had before
-		entering fullscreen.
-	background:color
-		When entering fullscreen, 'color' defines the color of the part
-		of the screen that is not occupied by the Vim control. If
-		'color' is an 8-digit hexadecimal number preceded by '#',
-		it is interpreted as an explicit color value '#aarrggbb', with
-		one byte each for the alpha, red, green, and blue values.
-		Otherwise, 'color' is interpreted as a highlight group name,
-		and the fullscreen background is filled with that highlight
-		group's background color, as defined by the current color
-		scheme.
-
-	Examples: 
-	Don't change size of Vim when entering fullscreen: >
-	  :set fuoptions=
-<	Maximize Vim when entering fullscreen: >
-	  :set fuoptions=maxvert,maxhorz
-<	Maximize Vim only vertically when entering fullscreen, and color the
-	background dark blue: >
-	  :set fuoptions=maxvert,background:#FF003042
-<	Don't change the size of Vim when entering fullscreen, and color the
-	background like the current text background: >
-	  :set fuoptions=background:Normal
-<
-	XXX: what if the font size is changed? you probably never want to
-	restore the old 'lines' or 'columns' in that case.
-	XXX: Each time the Vim window resizes (for example due to font size
-	changes, re-maximize Vim to fullscreen?)
-	XXX: The approach doesn't restore vertical Vim size if fu is entered
-	without tabs and leaves with tabs (or the other way round).
-
-
 
 				   *'gdefault'* *'gd'* *'nogdefault'* *'nogd'*
 'gdefault' 'gd'		boolean	(default off)
@@ -3345,31 +3238,20 @@ A jump table for the options with a short description can be found at |Q_op|.
 	For Win32, GTK, Mac OS and Photon: >
 	    :set guifont=*
 <	will bring up a font requester, where you can pick the font you want.
-        In MacVim ":set guifont=*" calls: >
-	    :macaction orderFrontFontPanel:
-<	which is the same as choosing "Show Fonts..." from the main menu.
 
 	The font name depends on the GUI used.  See |setting-guifont| for a
 	way to set 'guifont' for various systems.
 
 	For the GTK+ 2 GUI the font name looks like this: >
 	    :set guifont=Andale\ Mono\ 11
-<	That's all.  XLFDs are not used.  For Chinese this is reported to work
-	well: >
-	    if has("gui_gtk2")
-	      set guifont=Bitstream\ Vera\ Sans\ Mono\ 12,Fixed\ 12
-	      set guifontwide=Microsoft\ Yahei\ 12,WenQuanYi\ Zen\ Hei\ 12
-	    endif
-<
+<	That's all.  XLFDs are no longer accepted.
+
 	For Mac OSX you can use something like this: >
 	    :set guifont=Monaco:h10
-<	Also see 'macatsui', it can help fix display problems {not in MacVim}.
-	In MacVim, fonts with spaces are set like this: >
-	    :set guifont=DejaVu\ Sans\ Mono:h13
-<
+<	Also see 'macatsui', it can help fix display problems.
 								*E236*
 	Note that the fonts must be mono-spaced (all characters have the same
-        width).  An exception is MacVim and GTK 2: all fonts are accepted, but
+	width).  An exception is GTK 2: all fonts are accepted, but
 	mono-spaced fonts look best.
 
 	To preview a font on X11, you might be able to use the "xfontsel"
@@ -3433,19 +3315,13 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Note: The size of these fonts must be exactly twice as wide as the one
 	specified with 'guifont' and the same height.
 
-	All GUI versions but MacVim and GTK+ 2:
+	All GUI versions but GTK+ 2:
 
 	'guifontwide' is only used when 'encoding' is set to "utf-8" and
 	'guifontset' is empty or invalid.
 	When 'guifont' is set and a valid font is found in it and
 	'guifontwide' is empty Vim will attempt to find a matching
 	double-width font and set 'guifontwide' to it.
-
-	MacVim only:				*guifontwide_macvim*
-
-        MacVim performs automatic font substitution.  If 'guifontwide' is set,
-        that font will be used for all wide fonts.  However, if a glyph is
-	not available in the wide font, then font substitution is still used.
 
 	GTK+ 2 GUI only:			*guifontwide_gtk2*
 
@@ -3524,8 +3400,6 @@ A jump table for the options with a short description can be found at |Q_op|.
 		foreground.  |gui-fork|
 		Note: Set this option in the vimrc file.  The forking may have
 		happened already when the |gvimrc| file is read.
-		MacVim does not support this flag due to limitations with
-		forking on Mac OS X.
 								*'go-i'*
 	  'i'	Use a Vim icon.  For GTK with KDE it is used in the left-upper
 		corner of the window.  It's black&white on non-GTK, because of
@@ -3544,7 +3418,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 		Exception: Athena will always use grey menu items.
 								*'go-t'*
 	  't'	Include tearoff menu items.  Currently only works for Win32,
-		GTK+, MacVim, and Motif 1.2 GUI.
+		GTK+, and Motif 1.2 GUI.
 								*'go-T'*
 	  'T'	Include Toolbar.  Currently only in Win32, GTK+, Motif, Photon
 		and Athena GUIs.
@@ -3583,9 +3457,6 @@ A jump table for the options with a short description can be found at |Q_op|.
 	  'F'	Add a footer.  Only for Motif.  See |gui-footer|.
 
 
-	  'C'	Remove caption (title) bar.  Support Win32 only.
-
-
 						*'guipty'* *'noguipty'*
 'guipty'		boolean	(default on)
 			global
@@ -3620,9 +3491,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	When nonempty describes the text to use in a tooltip for the GUI tab
 	pages line.  When empty Vim will use a default tooltip.
 	This option is otherwise just like 'guitablabel' above.
-	You can include a line break.  Simplest method is to use |:let|: >
-		:let &guitabtooltip = "line one\nline two"
-<
+
 
 						*'helpfile'* *'hf'*
 'helpfile' 'hf'		string	(default (MSDOS)  "$VIMRUNTIME\doc\help.txt"
@@ -3908,16 +3777,15 @@ A jump table for the options with a short description can be found at |Q_op|.
 	characters with dead keys.
 
 				*'imdisable'* *'imd'* *'nodisable'* *'noimd'*
-'imdisable' 'imd'	boolean (default off, on for SGI and MacVim)
+'imdisable' 'imd'	boolean (default off, on for some systems (SGI))
 			global
 			{not in Vi}
 			{only available when compiled with the |+xim|
-			|+multi_byte_ime| or |global-ime| feature, always
-			available in MacVim}
+			|+multi_byte_ime| or |global-ime| feature}
 	When set the Input Method is never used.  This is useful to disable
 	the IM when it doesn't work properly.
-	Currently this option is on by default for SGI/IRIX.  This may change
-	in later releases.
+	Currently this option is on by default for SGI/IRIX machines.  This
+	may change in later releases.
 
 						*'iminsert'* *'imi'*
 'iminsert' 'imi'	number (default 0, 2 when an input method is supported)
@@ -4224,8 +4092,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	displayed as <xx>, with the hexadecimal value of the byte.
 	When 'display' contains "uhex" all unprintable characters are
 	displayed as <xx>.
-	The SpecialKey highlighting will be used for unprintable characters.
-	|hl-SpecialKey|
+	The NonText highlighting will be used for unprintable characters.
+	|hl-NonText|
 
 	Multi-byte characters 256 and above are always included, only the
 	characters up to 255 are specified with this option.  When a character
@@ -4462,17 +4330,10 @@ A jump table for the options with a short description can be found at |Q_op|.
 						*'list'* *'nolist'*
 'list'			boolean	(default off)
 			local to window
-	List mode: Show tabs as CTRL-I is displayed, display $ after end of
-	line.  Useful to see the difference between tabs and spaces and for
-	trailing blanks.  Further changed by the 'listchars' option.
-
-	The cursor is displayed at the start of the space a Tab character
-	occupies, not at the end as usual in Normal mode.  To get this cursor
-	position while displaying Tabs with spaces, use: >
-		:set list lcs=tab\ \ 
-<
-	Note that list mode will also affect formatting (set with 'textwidth'
-	or 'wrapmargin') when 'cpoptions' includes 'L'.  See 'listchars' for
+	List mode: Show tabs as CTRL-I, show end of line with $.  Useful to
+	see the difference between tabs and spaces and for trailing blanks.
+	Note that this will also affect formatting (set with 'textwidth' or
+	'wrapmargin') when 'cpoptions' includes 'L'.  See 'listchars' for
 	changing the way tabs are displayed.
 
 						*'listchars'* *'lcs'*
@@ -4525,7 +4386,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 						*'macatsui'* *'nomacatsui'*
 'macatsui'		boolean	(default on)
 			global
-			{only available in Mac Carbon GUI version}
+			{only available in Mac GUI version}
 	This is a workaround for when drawing doesn't work properly.  When set
 	and compiled with multi-byte support ATSUI text drawing is used.  When
 	not set ATSUI text drawing is not used.  Switch this option off when
@@ -4537,19 +4398,6 @@ A jump table for the options with a short description can be found at |Q_op|.
 		endif
 <	Another option to check if you have drawing problems is
 	'termencoding'.
-	Note: MacVim does not use this option.
-
-				*'macmeta'* *'mmta'* *'nomacmeta'* *'nommta'*
-'macmeta'		boolean	(default off)
-			local to buffer
-			{only available in MacVim GUI}
-	Use option (alt) as meta key.  When on, option-key presses are not
-	interpreted, thus enabling bindings to <M-..>.  When off, option-key
-	presses are interpreted by the selected input method and inserted as
-	text.
-	Note: Some keys (e.g. <M-F1>, <M-Tab>, <M-Return>, <M-Left>) can be
-	bound with the Meta flag even when this option is disabled, but this
-	is not the case for the majority of keys (e.g. <M-a>, <M-`>).
 
 						*'magic'* *'nomagic'*
 'magic'			boolean	(default on)
@@ -4668,15 +4516,15 @@ A jump table for the options with a short description can be found at |Q_op|.
 			{not in Vi}
 	Maximum amount of memory (in Kbyte) to use for one buffer.  When this
 	limit is reached allocating extra memory for a buffer will cause
-	other memory to be freed.  The maximum usable value is about 2000000.
-	Use this to work without a limit.  Also see 'maxmemtot'.
+	other memory to be freed.  Maximum value 2000000.  Use this to work
+	without a limit.  Also see 'maxmemtot'.
 
 						*'maxmempattern'* *'mmp'*
 'maxmempattern' 'mmp'	number	(default 1000)
 			global
 			{not in Vi}
 	Maximum amount of memory (in Kbyte) to use for pattern matching.
-	The maximum value is about 2000000.  Use this to work without a limit.
+	Maximum value 2000000.  Use this to work without a limit.
 							*E363*
 	When Vim runs into the limit it gives an error message and mostly
 	behaves like CTRL-C was typed.
@@ -4691,11 +4539,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 				 available)
 			global
 			{not in Vi}
-	Maximum amount of memory in Kbyte to use for all buffers together.
-	The maximum usable value is about 2000000 (2 Gbyte).  Use this to work
-	without a limit.  On 64 bit machines higher values might work.  But
-	hey, do you really need more than 2 Gbyte for text editing?
-	Also see 'maxmem'.
+	Maximum amount of memory (in Kbyte) to use for all buffers together.
+	Maximum value 2000000.  Use this to work without a limit.  Also see
+	'maxmem'.
 
 						*'menuitems'* *'mis'*
 'menuitems' 'mis'	number	(default 25)
@@ -5499,7 +5345,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 <
 				*'runtimepath'* *'rtp'* *vimfiles*
 'runtimepath' 'rtp'	string	(default:
-					Unix, Mac OS X: "$HOME/.vim,
+					Unix: "$HOME/.vim,
 						$VIM/vimfiles,
 						$VIMRUNTIME,
 						$VIM/vimfiles/after,
@@ -5514,7 +5360,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 						$VIMRUNTIME,
 						$VIM/vimfiles/after,
 						$HOME/vimfiles/after"
-					Macintosh (pre-OS X): "$VIM:vimfiles,
+					Macintosh: "$VIM:vimfiles,
 						$VIMRUNTIME,
 						$VIM:vimfiles:after"
 					RISC-OS: "Choices:vimfiles,
@@ -5761,8 +5607,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	   winsize	window sizes
 
 	Don't include both "curdir" and "sesdir".
-	When neither "curdir" nor "sesdir" is included, file names are stored
-	with absolute paths.
+	When "curdir" nor "sesdir" is included, file names are stored with
+	absolute paths.
 	"slash" and "unix" are useful on Windows when sharing session files
 	with Unix.  The Unix version of Vim cannot source dos format scripts,
 	but the Windows version of Vim can source unix format scripts.
@@ -6038,12 +5884,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 			{not available when compiled without the  |+linebreak|
 			feature}
 	String to put at the start of lines that have been wrapped.  Useful
-	values are "> " or "+++ ": >
-		:set showbreak=>\ 
-<	Note the backslash to escape the trailing space.  It's easier like
-	this: >
-		:let &showbreak = '+++ ' 
-<	Only printable single-cell characters are allowed, excluding <Tab> and
+	values are "> " or "+++ ".
+	Only printable single-cell characters are allowed, excluding <Tab> and
 	comma (in a future version the comma might be used to separate the
 	part that is shown at the end and at the start of a line).
 	The characters are highlighted according to the '@' flag in
@@ -6064,8 +5906,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	In Visual mode the size of the selected area is shown:
 	- When selecting characters within a line, the number of characters.
 	- When selecting more than one line, the number of lines.
-	- When selecting a block, the size in screen characters:
-	  {lines}x{columns}.
+	- When selecting a block, the size in screen characters: linesxcolumns.
 	NOTE: This option is set to the Vi default value when 'compatible' is
 	set and to the Vim default value when 'compatible' is reset.
 
@@ -6800,9 +6641,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	of '2' in the "!_TAG_FILE_SORTED" line for this.  A tag file can be
 	case-fold sorted with the -f switch to "sort" in most unices, as in
 	the command: "sort -f -o tags tags".  For "Exuberant ctags" version
-	5.x or higher (at least 5.5) the --sort=foldcase switch can be used
-	for this as well.  Note that case must be folded to uppercase for this
-	to work.
+	5.3 or higher the -f or --fold-case-sort switch can be used for this
+	as well.  Note that case must be folded to uppercase for this to work.
 
 	When 'tagbsearch' is off, tags searching is slower when a full match
 	exists, but faster when no full match exists.  Tags in unsorted tags
@@ -6902,9 +6742,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	For further details see |arabic.txt|.
 
 					*'termencoding'* *'tenc'*
-'termencoding' 'tenc'	string	(default ""
-				 with GTK+ 2 and MacVim GUIs: "utf-8"
-				 with Macintosh (Carbon) GUI: "macroman")
+'termencoding' 'tenc'	string	(default ""; with GTK+ 2 GUI: "utf-8"; with
+						    Macintosh GUI: "macroman")
 			global
 			{only available when compiled with the |+multi_byte|
 			feature}
@@ -6913,14 +6752,14 @@ A jump table for the options with a short description can be found at |Q_op|.
 	encoding the keyboard produces and the display will understand.  For
 	the GUI it only applies to the keyboard ('encoding' is used for the
 	display).  Except for the Mac when 'macatsui' is off, then
-	'termencoding' should be "macroman" (for the Carbon GUI).
+	'termencoding' should be "macroman".
 	In the Win32 console version the default value is the console codepage
 	when it differs from the ANSI codepage.
 								*E617*
-        Note: This does not apply to the GTK+ 2 and MacVim GUIs.  After the
-        GUI has been successfully initialized, 'termencoding' is forcibly set
-        to "utf-8".  Any attempts to set a different value will be rejected,
-	and an error message is shown.
+	Note: This does not apply to the GTK+ 2 GUI.  After the GUI has been
+	successfully initialized, 'termencoding' is forcibly set to "utf-8".
+	Any attempts to set a different value will be rejected, and an error
+	message is shown.
 	For the Win32 GUI 'termencoding' is not used for typed characters,
 	because the Win32 system always passes Unicode characters.
 	When empty, the same encoding is used as for the 'encoding' option.
@@ -7157,8 +6996,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 				*'toolbar'* *'tb'*
 'toolbar' 'tb'		string	(default "icons,tooltips")
 			global
-			{only for |+GUI_GTK|, |+GUI_Athena|, |+GUI_Motif|,
-			|+GUI_Photon| and |gui_macvim|}
+			{only for |+GUI_GTK|, |+GUI_Athena|, |+GUI_Motif| and
+			|+GUI_Photon|}
 	The contents of this option controls various toolbar settings.  The
 	possible values are:
 		icons		Toolbar buttons are shown with icons.
@@ -7168,7 +7007,6 @@ A jump table for the options with a short description can be found at |Q_op|.
 		tooltips	Tooltips are active for toolbar buttons.
 	Tooltips refer to the popup help text which appears after the mouse
 	cursor is placed over a toolbar button for a brief moment.
-	Note: Tooltips are always enabled in MacVim.
 
 	If you want the toolbar to be shown with icons as well as text, do the
 	following: >
@@ -7186,7 +7024,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 'toolbariconsize' 'tbis'	string	(default "small")
 				global
 				{not in Vi}
-				{only in the GTK+ 2 and MacVim GUIs}
+				{only in the GTK+ 2 GUI}
 	Controls the size of toolbar icons.  The possible values are:
 		tiny		Use tiny toolbar icons.
 		small		Use small toolbar icons (default).
@@ -7194,20 +7032,10 @@ A jump table for the options with a short description can be found at |Q_op|.
 		large		Use large toolbar icons.
 	The exact dimensions in pixels of the various icon sizes depend on
 	the current theme.  Common dimensions are large=32x32, medium=24x24,
-        small=20x20 and tiny=16x16.  In MacVim, both tiny and small equal
-	24x24, whereas medium and large equal 32x32.
+	small=20x20 and tiny=16x16.
 
 	If 'toolbariconsize' is empty, the global default size as determined
 	by user preferences or the current theme is used.
-
-						*'transparency'* *'transp'*
-'transparency' 'transp'	number  (default 0)
-			global
-			{not in Vi}
-			{only in MacVim GUI}
-	Transparency of the window background as a percent, with 0 meaning
-	opaque and 100 meaning completely transparent.  Trying to set a value
-	outside the range 0-100 results in an error.
 
 			     *'ttybuiltin'* *'tbi'* *'nottybuiltin'* *'notbi'*
 'ttybuiltin' 'tbi'	boolean	(default on)
@@ -7424,9 +7252,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 
 				*'viminfo'* *'vi'* *E526* *E527* *E528*
 'viminfo' 'vi'		string	(Vi default: "", Vim default for MS-DOS,
-				   Windows and OS/2: '100,<50,s10,h,rA:,rB:,
-				   for Amiga: '100,<50,s10,h,rdf0:,rdf1:,rdf2:
-				   for others: '100,<50,s10,h)
+				   Windows and OS/2: '20,<50,s10,h,rA:,rB:,
+				   for Amiga: '20,<50,s10,h,rdf0:,rdf1:,rdf2:
+				   for others: '20,<50,s10,h)
 			global
 			{not in Vi}
 			{not available when compiled without the  |+viminfo|
@@ -7899,8 +7727,6 @@ A jump table for the options with a short description can be found at |Q_op|.
 		:set sidescroll=5
 		:set listchars+=precedes:<,extends:>
 <	See 'sidescroll', 'listchars' and |wrap-off|.
-	This option can't be set from a |modeline| when the 'diff' option is
-	on.
 
 						*'wrapmargin'* *'wm'*
 'wrapmargin' 'wm'	number	(default 0)

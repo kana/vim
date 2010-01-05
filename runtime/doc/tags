@@ -4,8 +4,6 @@
 $	motion.txt	/*$*
 $HOME	options.txt	/*$HOME*
 $HOME-use	version5.txt	/*$HOME-use*
-$MYGVIMRC	gui.txt	/*$MYGVIMRC*
-$MYVIMRC	starting.txt	/*$MYVIMRC*
 $VIM	starting.txt	/*$VIM*
 $VIM-use	version5.txt	/*$VIM-use*
 $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
@@ -246,10 +244,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 'fs'	options.txt	/*'fs'*
 'fsync'	options.txt	/*'fsync'*
 'ft'	options.txt	/*'ft'*
-'fu'	options.txt	/*'fu'*
-'fullscreen'	options.txt	/*'fullscreen'*
-'fuopt'	options.txt	/*'fuopt'*
-'fuoptions'	options.txt	/*'fuoptions'*
 'gcr'	options.txt	/*'gcr'*
 'gd'	options.txt	/*'gd'*
 'gdefault'	options.txt	/*'gdefault'*
@@ -383,7 +377,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 'lz'	options.txt	/*'lz'*
 'ma'	options.txt	/*'ma'*
 'macatsui'	options.txt	/*'macatsui'*
-'macmeta'	options.txt	/*'macmeta'*
 'magic'	options.txt	/*'magic'*
 'makeef'	options.txt	/*'makeef'*
 'makeprg'	options.txt	/*'makeprg'*
@@ -410,7 +403,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 'mmd'	options.txt	/*'mmd'*
 'mmp'	options.txt	/*'mmp'*
 'mmt'	options.txt	/*'mmt'*
-'mmta'	options.txt	/*'mmta'*
 'mod'	options.txt	/*'mod'*
 'modeline'	options.txt	/*'modeline'*
 'modelines'	options.txt	/*'modelines'*
@@ -489,6 +481,7 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 'nodg'	options.txt	/*'nodg'*
 'nodiff'	options.txt	/*'nodiff'*
 'nodigraph'	options.txt	/*'nodigraph'*
+'nodisable'	options.txt	/*'nodisable'*
 'noea'	options.txt	/*'noea'*
 'noeb'	options.txt	/*'noeb'*
 'noed'	options.txt	/*'noed'*
@@ -507,10 +500,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 'nofk'	options.txt	/*'nofk'*
 'nofkmap'	options.txt	/*'nofkmap'*
 'nofoldenable'	options.txt	/*'nofoldenable'*
-'nofs'	options.txt	/*'nofs'*
-'nofsync'	options.txt	/*'nofsync'*
-'nofu'	options.txt	/*'nofu'*
-'nofullscreen'	options.txt	/*'nofullscreen'*
 'nogd'	options.txt	/*'nogd'*
 'nogdefault'	options.txt	/*'nogdefault'*
 'noguipty'	options.txt	/*'noguipty'*
@@ -529,7 +518,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 'noimc'	options.txt	/*'noimc'*
 'noimcmdline'	options.txt	/*'noimcmdline'*
 'noimd'	options.txt	/*'noimd'*
-'noimdisable'	options.txt	/*'noimdisable'*
 'noincsearch'	options.txt	/*'noincsearch'*
 'noinf'	options.txt	/*'noinf'*
 'noinfercase'	options.txt	/*'noinfercase'*
@@ -547,11 +535,9 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 'nolz'	options.txt	/*'nolz'*
 'noma'	options.txt	/*'noma'*
 'nomacatsui'	options.txt	/*'nomacatsui'*
-'nomacmeta'	options.txt	/*'nomacmeta'*
 'nomagic'	options.txt	/*'nomagic'*
 'nomh'	options.txt	/*'nomh'*
 'noml'	options.txt	/*'noml'*
-'nommta'	options.txt	/*'nommta'*
 'nomod'	options.txt	/*'nomod'*
 'nomodeline'	options.txt	/*'nomodeline'*
 'nomodifiable'	options.txt	/*'nomodifiable'*
@@ -995,8 +981,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 'top'	options.txt	/*'top'*
 'tpm'	options.txt	/*'tpm'*
 'tr'	options.txt	/*'tr'*
-'transp'	options.txt	/*'transp'*
-'transparency'	options.txt	/*'transparency'*
 'ts'	options.txt	/*'ts'*
 'tsl'	options.txt	/*'tsl'*
 'tsr'	options.txt	/*'tsr'*
@@ -1136,7 +1120,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 +folding	various.txt	/*+folding*
 +footer	various.txt	/*+footer*
 +fork	various.txt	/*+fork*
-+fullscreen	various.txt	/*+fullscreen*
 +gettext	various.txt	/*+gettext*
 +hangul_input	various.txt	/*+hangul_input*
 +iconv	various.txt	/*+iconv*
@@ -1167,7 +1150,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 +mzscheme	various.txt	/*+mzscheme*
 +mzscheme/dyn	various.txt	/*+mzscheme\/dyn*
 +netbeans_intg	various.txt	/*+netbeans_intg*
-+odbeditor	various.txt	/*+odbeditor*
 +ole	various.txt	/*+ole*
 +osfiletype	various.txt	/*+osfiletype*
 +path_extra	various.txt	/*+path_extra*
@@ -1187,7 +1169,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 +signs	various.txt	/*+signs*
 +smartindent	various.txt	/*+smartindent*
 +sniff	various.txt	/*+sniff*
-+startuptime	various.txt	/*+startuptime*
 +statusline	various.txt	/*+statusline*
 +sun_workshop	various.txt	/*+sun_workshop*
 +syntax	various.txt	/*+syntax*
@@ -1203,7 +1184,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 +tgetent	various.txt	/*+tgetent*
 +title	various.txt	/*+title*
 +toolbar	various.txt	/*+toolbar*
-+transparency	various.txt	/*+transparency*
 +user_commands	various.txt	/*+user_commands*
 +vertsplit	various.txt	/*+vertsplit*
 +viminfo	various.txt	/*+viminfo*
@@ -1250,7 +1230,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 --serverlist	remote.txt	/*--serverlist*
 --servername	remote.txt	/*--servername*
 --socketid	starting.txt	/*--socketid*
---startuptime	starting.txt	/*--startuptime*
 --version	starting.txt	/*--version*
 --windowid	starting.txt	/*--windowid*
 -A	starting.txt	/*-A*
@@ -1789,6 +1768,7 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 :Print	various.txt	/*:Print*
 :Rexplore	pi_netrw.txt	/*:Rexplore*
 :RmVimball	pi_vimball.txt	/*:RmVimball*
+:Sexplore	pi_netrw.txt	/*:Sexplore*
 :TOhtml	syntax.txt	/*:TOhtml*
 :Texplore	pi_netrw.txt	/*:Texplore*
 :UseVimball	pi_vimball.txt	/*:UseVimball*
@@ -1801,9 +1781,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 :_!	cmdline.txt	/*:_!*
 :_#	cmdline.txt	/*:_#*
 :_##	cmdline.txt	/*:_##*
-:_#0	cmdline.txt	/*:_#0*
-:_#<	cmdline.txt	/*:_#<*
-:_#n	cmdline.txt	/*:_#n*
 :_%	cmdline.txt	/*:_%*
 :_%:	cmdline.txt	/*:_%:*
 :_%<	cmdline.txt	/*:_%<*
@@ -1994,7 +1971,7 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 :command-range	map.txt	/*:command-range*
 :command-register	map.txt	/*:command-register*
 :command-verbose	map.txt	/*:command-verbose*
-:comment	cmdline.txt	/*:comment*
+:comment	eval.txt	/*:comment*
 :comp	quickfix.txt	/*:comp*
 :compiler	quickfix.txt	/*:compiler*
 :con	eval.txt	/*:con*
@@ -2110,7 +2087,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 :enew!	editing.txt	/*:enew!*
 :ex	editing.txt	/*:ex*
 :exe	eval.txt	/*:exe*
-:exe-comment	eval.txt	/*:exe-comment*
 :execute	eval.txt	/*:execute*
 :exi	editing.txt	/*:exi*
 :exit	editing.txt	/*:exit*
@@ -2351,10 +2327,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 :lwindow	quickfix.txt	/*:lwindow*
 :m	change.txt	/*:m*
 :ma	motion.txt	/*:ma*
-:maca	gui_mac.txt	/*:maca*
-:macaction	gui_mac.txt	/*:macaction*
-:macm	gui_mac.txt	/*:macm*
-:macmenu	gui_mac.txt	/*:macmenu*
 :mak	quickfix.txt	/*:mak*
 :make	quickfix.txt	/*:make*
 :make_makeprg	quickfix.txt	/*:make_makeprg*
@@ -2462,8 +2434,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 :nunme	gui.txt	/*:nunme*
 :nunmenu	gui.txt	/*:nunmenu*
 :o	vi_diff.txt	/*:o*
-:ol	starting.txt	/*:ol*
-:oldfiles	starting.txt	/*:oldfiles*
 :om	map.txt	/*:om*
 :omap	map.txt	/*:omap*
 :omap_l	map.txt	/*:omap_l*
@@ -2892,8 +2862,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 :unme	gui.txt	/*:unme*
 :unmenu	gui.txt	/*:unmenu*
 :unmenu-all	gui.txt	/*:unmenu-all*
-:uns	various.txt	/*:uns*
-:unsilent	various.txt	/*:unsilent*
 :up	editing.txt	/*:up*
 :update	editing.txt	/*:update*
 :v	repeat.txt	/*:v*
@@ -3024,12 +2992,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 <Char->	map.txt	/*<Char->*
 <Char>	map.txt	/*<Char>*
 <D-	intro.txt	/*<D-*
-<D-.>	gui_mac.txt	/*<D-.>*
-<D-Down>	gui_mac.txt	/*<D-Down>*
-<D-Left>	gui_mac.txt	/*<D-Left>*
-<D-Right>	gui_mac.txt	/*<D-Right>*
-<D-Up>	gui_mac.txt	/*<D-Up>*
-<D-`>	gui_mac.txt	/*<D-`>*
 <Del>	change.txt	/*<Del>*
 <Down>	motion.txt	/*<Down>*
 <Drop>	change.txt	/*<Drop>*
@@ -3066,10 +3028,6 @@ $VIMRUNTIME	starting.txt	/*$VIMRUNTIME*
 <LeftRelease>	visual.txt	/*<LeftRelease>*
 <LocalLeader>	map.txt	/*<LocalLeader>*
 <M-	intro.txt	/*<M-*
-<M-Down>	gui_mac.txt	/*<M-Down>*
-<M-Left>	gui_mac.txt	/*<M-Left>*
-<M-Right>	gui_mac.txt	/*<M-Right>*
-<M-Up>	gui_mac.txt	/*<M-Up>*
 <MiddleDrag>	term.txt	/*<MiddleDrag>*
 <MiddleMouse>	change.txt	/*<MiddleMouse>*
 <MiddleRelease>	term.txt	/*<MiddleRelease>*
@@ -3200,12 +3158,7 @@ A	insert.txt	/*A*
 ACL	editing.txt	/*ACL*
 ATTENTION	usr_11.txt	/*ATTENTION*
 Abbreviations	map.txt	/*Abbreviations*
-Actions.plist	gui_mac.txt	/*Actions.plist*
 Aleph	options.txt	/*Aleph*
-Alt-Down	gui_mac.txt	/*Alt-Down*
-Alt-Left	gui_mac.txt	/*Alt-Left*
-Alt-Right	gui_mac.txt	/*Alt-Right*
-Alt-Up	gui_mac.txt	/*Alt-Up*
 Amiga	os_amiga.txt	/*Amiga*
 Arabic	arabic.txt	/*Arabic*
 Atari	os_mint.txt	/*Atari*
@@ -3351,19 +3304,12 @@ CTRL-]	tagsrch.txt	/*CTRL-]*
 CTRL-^	editing.txt	/*CTRL-^*
 CTRL-{char}	intro.txt	/*CTRL-{char}*
 Chinese	mbyte.txt	/*Chinese*
-Cmd-.	gui_mac.txt	/*Cmd-.*
-Cmd-Down	gui_mac.txt	/*Cmd-Down*
-Cmd-Left	gui_mac.txt	/*Cmd-Left*
-Cmd-Right	gui_mac.txt	/*Cmd-Right*
-Cmd-Up	gui_mac.txt	/*Cmd-Up*
-Cmd-`	gui_mac.txt	/*Cmd-`*
 Cmd-event	autocmd.txt	/*Cmd-event*
 Cmdline	cmdline.txt	/*Cmdline*
 Cmdline-mode	cmdline.txt	/*Cmdline-mode*
 CmdwinEnter	autocmd.txt	/*CmdwinEnter*
 CmdwinLeave	autocmd.txt	/*CmdwinLeave*
 ColorScheme	autocmd.txt	/*ColorScheme*
-Colors.plist	gui_mac.txt	/*Colors.plist*
 Command-line	cmdline.txt	/*Command-line*
 Command-line-mode	cmdline.txt	/*Command-line-mode*
 Contents	quickref.txt	/*Contents*
@@ -4156,15 +4102,7 @@ E805	eval.txt	/*E805*
 E806	eval.txt	/*E806*
 E807	eval.txt	/*E807*
 E808	eval.txt	/*E808*
-E809	cmdline.txt	/*E809*
 E81	map.txt	/*E81*
-E810	diff.txt	/*E810*
-E811	autocmd.txt	/*E811*
-E812	autocmd.txt	/*E812*
-E813	editing.txt	/*E813*
-E814	editing.txt	/*E814*
-E815	if_mzsch.txt	/*E815*
-E816	diff.txt	/*E816*
 E82	message.txt	/*E82*
 E83	message.txt	/*E83*
 E84	windows.txt	/*E84*
@@ -4355,7 +4293,6 @@ QuickFixCmdPost	autocmd.txt	/*QuickFixCmdPost*
 QuickFixCmdPost-example	quickfix.txt	/*QuickFixCmdPost-example*
 QuickFixCmdPre	autocmd.txt	/*QuickFixCmdPre*
 Quickfix	quickfix.txt	/*Quickfix*
-Quickstart	gui_mac.txt	/*Quickstart*
 R	change.txt	/*R*
 RISC-OS	os_risc.txt	/*RISC-OS*
 RISCOS	os_risc.txt	/*RISCOS*
@@ -4367,7 +4304,6 @@ Ruby	if_ruby.txt	/*Ruby*
 Russian	russian.txt	/*Russian*
 S	change.txt	/*S*
 SHELL	starting.txt	/*SHELL*
-SQLGetType	ft_sql.txt	/*SQLGetType*
 SQLSetType	ft_sql.txt	/*SQLSetType*
 Select	visual.txt	/*Select*
 Select-mode	visual.txt	/*Select-mode*
@@ -4384,7 +4320,6 @@ StdinReadPost	autocmd.txt	/*StdinReadPost*
 StdinReadPre	autocmd.txt	/*StdinReadPre*
 SwapExists	autocmd.txt	/*SwapExists*
 Syntax	autocmd.txt	/*Syntax*
-SystemColors.plist	gui_mac.txt	/*SystemColors.plist*
 T	motion.txt	/*T*
 TCL	if_tcl.txt	/*TCL*
 TERM	starting.txt	/*TERM*
@@ -4619,7 +4554,6 @@ after-directory	options.txt	/*after-directory*
 aleph	options.txt	/*aleph*
 alt	intro.txt	/*alt*
 alt-input	debugger.txt	/*alt-input*
-alt-movement	gui_mac.txt	/*alt-movement*
 alternate-file	editing.txt	/*alternate-file*
 amiga-window	starting.txt	/*amiga-window*
 anonymous-function	eval.txt	/*anonymous-function*
@@ -4726,7 +4660,6 @@ blockwise-operators	visual.txt	/*blockwise-operators*
 blockwise-register	change.txt	/*blockwise-register*
 blockwise-visual	visual.txt	/*blockwise-visual*
 bold	syntax.txt	/*bold*
-bom-bytes	mbyte.txt	/*bom-bytes*
 book	intro.txt	/*book*
 bookmark	usr_03.txt	/*bookmark*
 boolean	options.txt	/*boolean*
@@ -4765,11 +4698,6 @@ bzip2	pi_gzip.txt	/*bzip2*
 c	change.txt	/*c*
 c.vim	syntax.txt	/*c.vim*
 cW	change.txt	/*cW*
-c_#	cmdline.txt	/*c_#*
-c_##	cmdline.txt	/*c_##*
-c_#<	cmdline.txt	/*c_#<*
-c_#n	cmdline.txt	/*c_#n*
-c_%	cmdline.txt	/*c_%*
 c_<BS>	cmdline.txt	/*c_<BS>*
 c_<C-Left>	cmdline.txt	/*c_<C-Left>*
 c_<C-R>	cmdline.txt	/*c_<C-R>*
@@ -4805,7 +4733,6 @@ c_CTRL-B	cmdline.txt	/*c_CTRL-B*
 c_CTRL-C	cmdline.txt	/*c_CTRL-C*
 c_CTRL-D	cmdline.txt	/*c_CTRL-D*
 c_CTRL-E	cmdline.txt	/*c_CTRL-E*
-c_CTRL-F	cmdline.txt	/*c_CTRL-F*
 c_CTRL-H	cmdline.txt	/*c_CTRL-H*
 c_CTRL-I	cmdline.txt	/*c_CTRL-I*
 c_CTRL-J	cmdline.txt	/*c_CTRL-J*
@@ -4846,7 +4773,6 @@ cc	change.txt	/*cc*
 ceil()	eval.txt	/*ceil()*
 ch.vim	syntax.txt	/*ch.vim*
 change-list-jumps	motion.txt	/*change-list-jumps*
-change-name	tips.txt	/*change-name*
 change-tabs	change.txt	/*change-tabs*
 change.txt	change.txt	/*change.txt*
 changed-5.1	version5.txt	/*changed-5.1*
@@ -4886,7 +4812,6 @@ clearmatches()	eval.txt	/*clearmatches()*
 client-server	remote.txt	/*client-server*
 clientserver	remote.txt	/*clientserver*
 clipboard	gui.txt	/*clipboard*
-cmd-movement	gui_mac.txt	/*cmd-movement*
 cmdarg-variable	eval.txt	/*cmdarg-variable*
 cmdbang-variable	eval.txt	/*cmdbang-variable*
 cmdline-arguments	vi_diff.txt	/*cmdline-arguments*
@@ -4911,7 +4836,6 @@ collapse	tips.txt	/*collapse*
 color-xterm	syntax.txt	/*color-xterm*
 coloring	syntax.txt	/*coloring*
 colortest.vim	syntax.txt	/*colortest.vim*
-command-line-window	cmdline.txt	/*command-line-window*
 command-mode	intro.txt	/*command-mode*
 compatible-default	starting.txt	/*compatible-default*
 compile-changes-5	version5.txt	/*compile-changes-5*
@@ -5098,7 +5022,6 @@ daw	motion.txt	/*daw*
 dd	change.txt	/*dd*
 debug-gcc	debug.txt	/*debug-gcc*
 debug-highlight	debugger.txt	/*debug-highlight*
-debug-leaks	debug.txt	/*debug-leaks*
 debug-minidump	debug.txt	/*debug-minidump*
 debug-mode	repeat.txt	/*debug-mode*
 debug-scripts	repeat.txt	/*debug-scripts*
@@ -5355,7 +5278,6 @@ exrc	starting.txt	/*exrc*
 extend()	eval.txt	/*extend()*
 extension-removal	cmdline.txt	/*extension-removal*
 extensions-improvements	todo.txt	/*extensions-improvements*
-external-editor	gui_mac.txt	/*external-editor*
 f	motion.txt	/*f*
 faq	intro.txt	/*faq*
 farsi	farsi.txt	/*farsi*
@@ -5590,6 +5512,7 @@ ft-xml-omni	insert.txt	/*ft-xml-omni*
 ft-xml-syntax	syntax.txt	/*ft-xml-syntax*
 ft-xpm-syntax	syntax.txt	/*ft-xpm-syntax*
 ft_ada.txt	ft_ada.txt	/*ft_ada.txt*
+ft_sql.txt	ft_sql.txt	/*ft_sql.txt*
 ftdetect	filetype.txt	/*ftdetect*
 ftp	pi_netrw.txt	/*ftp*
 ftplugin	usr_41.txt	/*ftplugin*
@@ -5621,7 +5544,6 @@ g-	undo.txt	/*g-*
 g0	motion.txt	/*g0*
 g8	various.txt	/*g8*
 g:NetrwTopLvlMenu	pi_netrw.txt	/*g:NetrwTopLvlMenu*
-g:Netrw_funcref	pi_netrw.txt	/*g:Netrw_funcref*
 g:ada#Comment	ft_ada.txt	/*g:ada#Comment*
 g:ada#Ctags_Kinds	ft_ada.txt	/*g:ada#Ctags_Kinds*
 g:ada#DotWordRegex	ft_ada.txt	/*g:ada#DotWordRegex*
@@ -5666,10 +5588,8 @@ g:netrw_alto	pi_netrw.txt	/*g:netrw_alto*
 g:netrw_altv	pi_netrw.txt	/*g:netrw_altv*
 g:netrw_browse_split	pi_netrw.txt	/*g:netrw_browse_split*
 g:netrw_browsex_viewer	pi_netrw.txt	/*g:netrw_browsex_viewer*
-g:netrw_chgwin	pi_netrw.txt	/*g:netrw_chgwin*
 g:netrw_compress	pi_netrw.txt	/*g:netrw_compress*
 g:netrw_ctags	pi_netrw.txt	/*g:netrw_ctags*
-g:netrw_cursorline	pi_netrw.txt	/*g:netrw_cursorline*
 g:netrw_cygwin	pi_netrw.txt	/*g:netrw_cygwin*
 g:netrw_dav_cmd	pi_netrw.txt	/*g:netrw_dav_cmd*
 g:netrw_decompress	pi_netrw.txt	/*g:netrw_decompress*
@@ -5686,9 +5606,7 @@ g:netrw_ftp_timelist_cmd	pi_netrw.txt	/*g:netrw_ftp_timelist_cmd*
 g:netrw_ftpmode	pi_netrw.txt	/*g:netrw_ftpmode*
 g:netrw_glob_escape	pi_netrw.txt	/*g:netrw_glob_escape*
 g:netrw_hide	pi_netrw.txt	/*g:netrw_hide*
-g:netrw_home	pi_netrw.txt	/*g:netrw_home*
 g:netrw_http_cmd	pi_netrw.txt	/*g:netrw_http_cmd*
-g:netrw_http_xcmd	pi_netrw.txt	/*g:netrw_http_xcmd*
 g:netrw_ignorenetrc	pi_netrw.txt	/*g:netrw_ignorenetrc*
 g:netrw_keepdir	pi_netrw.txt	/*g:netrw_keepdir*
 g:netrw_list_cmd	pi_netrw.txt	/*g:netrw_list_cmd*
@@ -5711,7 +5629,6 @@ g:netrw_rmf_cmd	pi_netrw.txt	/*g:netrw_rmf_cmd*
 g:netrw_rsync_cmd	pi_netrw.txt	/*g:netrw_rsync_cmd*
 g:netrw_scp_cmd	pi_netrw.txt	/*g:netrw_scp_cmd*
 g:netrw_scpport	pi_netrw.txt	/*g:netrw_scpport*
-g:netrw_sepchr	pi_netrw.txt	/*g:netrw_sepchr*
 g:netrw_sftp_cmd	pi_netrw.txt	/*g:netrw_sftp_cmd*
 g:netrw_silent	pi_netrw.txt	/*g:netrw_silent*
 g:netrw_sort_by	pi_netrw.txt	/*g:netrw_sort_by*
@@ -5888,7 +5805,6 @@ gui-gtk-socketid	gui_x11.txt	/*gui-gtk-socketid*
 gui-horiz-scroll	gui.txt	/*gui-horiz-scroll*
 gui-init	gui.txt	/*gui-init*
 gui-kde	gui_x11.txt	/*gui-kde*
-gui-macvim	gui_mac.txt	/*gui-macvim*
 gui-mouse	gui.txt	/*gui-mouse*
 gui-mouse-focus	gui.txt	/*gui-mouse-focus*
 gui-mouse-mapping	gui.txt	/*gui-mouse-mapping*
@@ -5929,12 +5845,10 @@ gui-x11-printing	gui_x11.txt	/*gui-x11-printing*
 gui-x11-start	gui_x11.txt	/*gui-x11-start*
 gui-x11-various	gui_x11.txt	/*gui-x11-various*
 gui.txt	gui.txt	/*gui.txt*
-gui_mac.txt	gui_mac.txt	/*gui_mac.txt*
 gui_w16.txt	gui_w16.txt	/*gui_w16.txt*
 gui_w32.txt	gui_w32.txt	/*gui_w32.txt*
 gui_x11.txt	gui_x11.txt	/*gui_x11.txt*
 guifontwide_gtk2	options.txt	/*guifontwide_gtk2*
-guifontwide_macvim	options.txt	/*guifontwide_macvim*
 guioptions_a	options.txt	/*guioptions_a*
 guu	change.txt	/*guu*
 gv	visual.txt	/*gv*
@@ -6140,7 +6054,6 @@ i_CTRL-O	insert.txt	/*i_CTRL-O*
 i_CTRL-P	insert.txt	/*i_CTRL-P*
 i_CTRL-Q	insert.txt	/*i_CTRL-Q*
 i_CTRL-R	insert.txt	/*i_CTRL-R*
-i_CTRL-R_=	insert.txt	/*i_CTRL-R_=*
 i_CTRL-R_CTRL-O	insert.txt	/*i_CTRL-R_CTRL-O*
 i_CTRL-R_CTRL-P	insert.txt	/*i_CTRL-R_CTRL-P*
 i_CTRL-R_CTRL-R	insert.txt	/*i_CTRL-R_CTRL-R*
@@ -6315,7 +6228,6 @@ keys()	eval.txt	/*keys()*
 known-bugs	todo.txt	/*known-bugs*
 l	motion.txt	/*l*
 l:var	eval.txt	/*l:var*
-lCursor	mbyte.txt	/*lCursor*
 lace.vim	syntax.txt	/*lace.vim*
 lang-variable	eval.txt	/*lang-variable*
 language-mapping	map.txt	/*language-mapping*
@@ -6382,38 +6294,6 @@ mac-lack	os_mac.txt	/*mac-lack*
 mac-vimfile	os_mac.txt	/*mac-vimfile*
 macintosh	os_mac.txt	/*macintosh*
 macro	map.txt	/*macro*
-macvim	gui_mac.txt	/*macvim*
-macvim-backspace	gui_mac.txt	/*macvim-backspace*
-macvim-clientserver	remote.txt	/*macvim-clientserver*
-macvim-colors	gui_mac.txt	/*macvim-colors*
-macvim-colorscheme	gui_mac.txt	/*macvim-colorscheme*
-macvim-commands	gui_mac.txt	/*macvim-commands*
-macvim-default-menu	gui_mac.txt	/*macvim-default-menu*
-macvim-delete	gui_mac.txt	/*macvim-delete*
-macvim-dialogs	gui_mac.txt	/*macvim-dialogs*
-macvim-differences	gui_mac.txt	/*macvim-differences*
-macvim-drag-n-drop	gui_mac.txt	/*macvim-drag-n-drop*
-macvim-encoding	gui_mac.txt	/*macvim-encoding*
-macvim-find	gui_mac.txt	/*macvim-find*
-macvim-hints	gui_mac.txt	/*macvim-hints*
-macvim-important	gui_mac.txt	/*macvim-important*
-macvim-international	gui_mac.txt	/*macvim-international*
-macvim-login-shell	gui_mac.txt	/*macvim-login-shell*
-macvim-menus	gui_mac.txt	/*macvim-menus*
-macvim-options	gui_mac.txt	/*macvim-options*
-macvim-preferences	gui_mac.txt	/*macvim-preferences*
-macvim-prefs	gui_mac.txt	/*macvim-prefs*
-macvim-services	gui_mac.txt	/*macvim-services*
-macvim-shift-movement	gui_mac.txt	/*macvim-shift-movement*
-macvim-shortcuts	gui_mac.txt	/*macvim-shortcuts*
-macvim-start	gui_mac.txt	/*macvim-start*
-macvim-tablabel	gui_mac.txt	/*macvim-tablabel*
-macvim-todo	gui_mac.txt	/*macvim-todo*
-macvim-toolbar	gui_mac.txt	/*macvim-toolbar*
-macvim-url-handler	gui_mac.txt	/*macvim-url-handler*
-macvim-user-defaults	gui_mac.txt	/*macvim-user-defaults*
-macvim-window-title	gui_mac.txt	/*macvim-window-title*
-macvim-windows	gui_mac.txt	/*macvim-windows*
 mail-list	intro.txt	/*mail-list*
 mail.vim	syntax.txt	/*mail.vim*
 maillist	intro.txt	/*maillist*
@@ -6556,8 +6436,6 @@ multilang	mlang.txt	/*multilang*
 multilang-menus	mlang.txt	/*multilang-menus*
 multilang-messages	mlang.txt	/*multilang-messages*
 multilang-scripts	mlang.txt	/*multilang-scripts*
-mvim	gui_mac.txt	/*mvim*
-mvim://	gui_mac.txt	/*mvim:\/\/*
 myfiletypefile	syntax.txt	/*myfiletypefile*
 myscriptsfile	syntax.txt	/*myscriptsfile*
 mysql	ft_sql.txt	/*mysql*
@@ -6605,7 +6483,6 @@ netreadfixup	pi_netrw.txt	/*netreadfixup*
 netrw	pi_netrw.txt	/*netrw*
 netrw-%	pi_netrw.txt	/*netrw-%*
 netrw--	pi_netrw.txt	/*netrw--*
-netrw-C	pi_netrw.txt	/*netrw-C*
 netrw-D	pi_netrw.txt	/*netrw-D*
 netrw-O	pi_netrw.txt	/*netrw-O*
 netrw-P	pi_netrw.txt	/*netrw-P*
@@ -6647,12 +6524,9 @@ netrw-explore	pi_netrw.txt	/*netrw-explore*
 netrw-explore-cmds	pi_netrw.txt	/*netrw-explore-cmds*
 netrw-externapp	pi_netrw.txt	/*netrw-externapp*
 netrw-file	pi_netrw.txt	/*netrw-file*
-netrw-filigree	pi_netrw.txt	/*netrw-filigree*
 netrw-fixup	pi_netrw.txt	/*netrw-fixup*
 netrw-ftp	pi_netrw.txt	/*netrw-ftp*
-netrw-ftype	pi_netrw.txt	/*netrw-ftype*
 netrw-gb	pi_netrw.txt	/*netrw-gb*
-netrw-getftype	pi_netrw.txt	/*netrw-getftype*
 netrw-gh	pi_netrw.txt	/*netrw-gh*
 netrw-gx	pi_netrw.txt	/*netrw-gx*
 netrw-handler	pi_netrw.txt	/*netrw-handler*
@@ -6669,7 +6543,6 @@ netrw-list	pi_netrw.txt	/*netrw-list*
 netrw-listbookmark	pi_netrw.txt	/*netrw-listbookmark*
 netrw-listhack	pi_netrw.txt	/*netrw-listhack*
 netrw-login	pi_netrw.txt	/*netrw-login*
-netrw-mB	pi_netrw.txt	/*netrw-mB*
 netrw-mT	pi_netrw.txt	/*netrw-mT*
 netrw-mb	pi_netrw.txt	/*netrw-mb*
 netrw-mc	pi_netrw.txt	/*netrw-mc*
@@ -6698,7 +6571,6 @@ netrw-p	pi_netrw.txt	/*netrw-p*
 netrw-p1	pi_netrw.txt	/*netrw-p1*
 netrw-p10	pi_netrw.txt	/*netrw-p10*
 netrw-p11	pi_netrw.txt	/*netrw-p11*
-netrw-p12	pi_netrw.txt	/*netrw-p12*
 netrw-p2	pi_netrw.txt	/*netrw-p2*
 netrw-p3	pi_netrw.txt	/*netrw-p3*
 netrw-p4	pi_netrw.txt	/*netrw-p4*
@@ -6860,8 +6732,6 @@ object-select	motion.txt	/*object-select*
 objects	index.txt	/*objects*
 obtaining-exted	netbeans.txt	/*obtaining-exted*
 ocaml.vim	syntax.txt	/*ocaml.vim*
-odbeditor	gui_mac.txt	/*odbeditor*
-oldfiles-variable	eval.txt	/*oldfiles-variable*
 ole-activation	if_ole.txt	/*ole-activation*
 ole-eval	if_ole.txt	/*ole-eval*
 ole-gethwnd	if_ole.txt	/*ole-gethwnd*
@@ -6982,7 +6852,7 @@ ports-6	version6.txt	/*ports-6*
 posix	vi_diff.txt	/*posix*
 posix-compliance	vi_diff.txt	/*posix-compliance*
 posix-screen-size	vi_diff.txt	/*posix-screen-size*
-postgress	ft_sql.txt	/*postgress*
+postgres	ft_sql.txt	/*postgres*
 postscr.vim	syntax.txt	/*postscr.vim*
 postscript-cjk-printing	print.txt	/*postscript-cjk-printing*
 postscript-print-encoding	print.txt	/*postscript-print-encoding*
@@ -7019,7 +6889,6 @@ profiling	repeat.txt	/*profiling*
 profiling-variable	eval.txt	/*profiling-variable*
 progname-variable	eval.txt	/*progname-variable*
 progress.vim	syntax.txt	/*progress.vim*
-pronounce	intro.txt	/*pronounce*
 psql	ft_sql.txt	/*psql*
 ptcap.vim	syntax.txt	/*ptcap.vim*
 pterm-mouse	options.txt	/*pterm-mouse*
@@ -7280,7 +7149,6 @@ settabwinvar()	eval.txt	/*settabwinvar()*
 setting-guifont	gui.txt	/*setting-guifont*
 setting-guitablabel	tabpage.txt	/*setting-guitablabel*
 setting-tabline	tabpage.txt	/*setting-tabline*
-setuid	change.txt	/*setuid*
 setwinvar()	eval.txt	/*setwinvar()*
 sftp	pi_netrw.txt	/*sftp*
 sgml.vim	syntax.txt	/*sgml.vim*
@@ -7303,7 +7171,6 @@ simulated-command	vi_diff.txt	/*simulated-command*
 sin()	eval.txt	/*sin()*
 single-repeat	repeat.txt	/*single-repeat*
 skeleton	autocmd.txt	/*skeleton*
-slice	eval.txt	/*slice*
 slow-fast-terminal	term.txt	/*slow-fast-terminal*
 slow-start	starting.txt	/*slow-start*
 slow-terminal	term.txt	/*slow-terminal*
@@ -7328,7 +7195,6 @@ spell	spell.txt	/*spell*
 spell-ACCENT	spell.txt	/*spell-ACCENT*
 spell-AUTHOR	spell.txt	/*spell-AUTHOR*
 spell-BAD	spell.txt	/*spell-BAD*
-spell-BREAK	spell.txt	/*spell-BREAK*
 spell-CHECKCOMPOUNDCASE	spell.txt	/*spell-CHECKCOMPOUNDCASE*
 spell-CHECKCOMPOUNDDUP	spell.txt	/*spell-CHECKCOMPOUNDDUP*
 spell-CHECKCOMPOUNDPATTERN	spell.txt	/*spell-CHECKCOMPOUNDPATTERN*
@@ -7348,7 +7214,6 @@ spell-COMPOUNDMIN	spell.txt	/*spell-COMPOUNDMIN*
 spell-COMPOUNDPERMITFLAG	spell.txt	/*spell-COMPOUNDPERMITFLAG*
 spell-COMPOUNDROOT	spell.txt	/*spell-COMPOUNDROOT*
 spell-COMPOUNDRULE	spell.txt	/*spell-COMPOUNDRULE*
-spell-COMPOUNDRULES	spell.txt	/*spell-COMPOUNDRULES*
 spell-COMPOUNDSYLLABLE	spell.txt	/*spell-COMPOUNDSYLLABLE*
 spell-COMPOUNDSYLMAX	spell.txt	/*spell-COMPOUNDSYLMAX*
 spell-COMPOUNDWORDMAX	spell.txt	/*spell-COMPOUNDWORDMAX*
@@ -7359,7 +7224,6 @@ spell-FOL	spell.txt	/*spell-FOL*
 spell-FORBIDDENWORD	spell.txt	/*spell-FORBIDDENWORD*
 spell-HOME	spell.txt	/*spell-HOME*
 spell-KEEPCASE	spell.txt	/*spell-KEEPCASE*
-spell-KEY	spell.txt	/*spell-KEY*
 spell-LANG	spell.txt	/*spell-LANG*
 spell-LEMMA_PRESENT	spell.txt	/*spell-LEMMA_PRESENT*
 spell-LOW	spell.txt	/*spell-LOW*
@@ -7447,11 +7311,9 @@ sql-object-motions	ft_sql.txt	/*sql-object-motions*
 sql-predefined-objects	ft_sql.txt	/*sql-predefined-objects*
 sql-type-default	ft_sql.txt	/*sql-type-default*
 sql-types	ft_sql.txt	/*sql-types*
-sql.txt	ft_sql.txt	/*sql.txt*
 sql.vim	syntax.txt	/*sql.vim*
 sqlanywhere	ft_sql.txt	/*sqlanywhere*
 sqlanywhere.vim	syntax.txt	/*sqlanywhere.vim*
-sqlgettype	ft_sql.txt	/*sqlgettype*
 sqlinformix.vim	syntax.txt	/*sqlinformix.vim*
 sqlj	ft_sql.txt	/*sqlj*
 sqlserver	ft_sql.txt	/*sqlserver*
@@ -7502,14 +7364,12 @@ sub-menu-priority	gui.txt	/*sub-menu-priority*
 sub-replace-\=	change.txt	/*sub-replace-\\=*
 sub-replace-expression	change.txt	/*sub-replace-expression*
 sub-replace-special	change.txt	/*sub-replace-special*
-sublist	eval.txt	/*sublist*
 submatch()	eval.txt	/*submatch()*
 subscribe-maillist	intro.txt	/*subscribe-maillist*
 substitute()	eval.txt	/*substitute()*
 substitute-CR	version6.txt	/*substitute-CR*
 suffixes	cmdline.txt	/*suffixes*
 suspend	starting.txt	/*suspend*
-swap-exists-choices	usr_11.txt	/*swap-exists-choices*
 swap-file	recover.txt	/*swap-file*
 swapchoice-variable	eval.txt	/*swapchoice-variable*
 swapcommand-variable	eval.txt	/*swapcommand-variable*
@@ -7790,7 +7650,6 @@ tcsh.vim	syntax.txt	/*tcsh.vim*
 tear-off-menus	gui.txt	/*tear-off-menus*
 telnet-CTRL-]	tagsrch.txt	/*telnet-CTRL-]*
 temp-file-name	eval.txt	/*temp-file-name*
-tempfile	change.txt	/*tempfile*
 template	autocmd.txt	/*template*
 tempname()	eval.txt	/*tempname()*
 term-dependent-settings	term.txt	/*term-dependent-settings*
@@ -7959,7 +7818,6 @@ v:lnum	eval.txt	/*v:lnum*
 v:mouse_col	eval.txt	/*v:mouse_col*
 v:mouse_lnum	eval.txt	/*v:mouse_lnum*
 v:mouse_win	eval.txt	/*v:mouse_win*
-v:oldfiles	eval.txt	/*v:oldfiles*
 v:operator	eval.txt	/*v:operator*
 v:prevcount	eval.txt	/*v:prevcount*
 v:profiling	eval.txt	/*v:profiling*
@@ -8084,7 +7942,6 @@ v_x	change.txt	/*v_x*
 v_y	change.txt	/*v_y*
 v_~	change.txt	/*v_~*
 val-variable	eval.txt	/*val-variable*
-valgrind	debug.txt	/*valgrind*
 values()	eval.txt	/*values()*
 variables	eval.txt	/*variables*
 various	various.txt	/*various*
@@ -8135,7 +7992,6 @@ vim-variable	eval.txt	/*vim-variable*
 vim.vim	syntax.txt	/*vim.vim*
 vim7	version7.txt	/*vim7*
 vim:	options.txt	/*vim:*
-vim_mac	gui_mac.txt	/*vim_mac*
 vimball	pi_vimball.txt	/*vimball*
 vimball-contents	pi_vimball.txt	/*vimball-contents*
 vimball-extract	pi_vimball.txt	/*vimball-extract*
@@ -8152,7 +8008,6 @@ viminfo-file	starting.txt	/*viminfo-file*
 viminfo-file-marks	starting.txt	/*viminfo-file-marks*
 viminfo-file-name	starting.txt	/*viminfo-file-name*
 viminfo-read	starting.txt	/*viminfo-read*
-viminfo-read-write	starting.txt	/*viminfo-read-write*
 viminfo-write	starting.txt	/*viminfo-write*
 vimrc	starting.txt	/*vimrc*
 vimrc-filetype	usr_05.txt	/*vimrc-filetype*
@@ -8312,7 +8167,6 @@ xterm-function-keys	term.txt	/*xterm-function-keys*
 xterm-modifier-keys	term.txt	/*xterm-modifier-keys*
 xterm-mouse	options.txt	/*xterm-mouse*
 xterm-mouse-wheel	scroll.txt	/*xterm-mouse-wheel*
-xterm-resize	term.txt	/*xterm-resize*
 xterm-save-screen	tips.txt	/*xterm-save-screen*
 xterm-screens	tips.txt	/*xterm-screens*
 xterm-scroll-region	term.txt	/*xterm-scroll-region*

@@ -1,7 +1,8 @@
 " Filename:    spec.vim
 " Purpose:     Vim syntax file
 " Language:    SPEC: Build/install scripts for Linux RPM packages
-" Maintainer:  Donovan Rebbechi elflord@panix.com
+" Maintainer:  Donovan Rebbechi elflord@pegasus.rutgers.edu
+" URL:	       http://pegasus.rutgers.edu/~elflord/vim/syntax/spec.vim
 " Last Change: Fri Dec 3 11:54 EST 2004 Marcin Dalecki
 
 " For version 5.x: Clear all syntax items

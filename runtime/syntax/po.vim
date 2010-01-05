@@ -1,10 +1,10 @@
 " Vim syntax file
 " Language:	po (gettext)
 " Maintainer:	Dwayne Bailey <dwayne@translate.org.za>
-" Last Change:	2008 Sep 17
+" Last Change:	2008 Jan 08
 " Contributors: Dwayne Bailey (Most advanced syntax highlighting)
 "               Leonardo Fontenelle (Spell checking)
-"               SungHyun Nam <goweol@gmail.com> (Original maintainer)
+"               Nam SungHyun <namsh@kldp.org> (Original maintainer)
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded

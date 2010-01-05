@@ -1,4 +1,4 @@
-*indent.txt*    For Vim version 7.2.  Last change: 2009 Nov 12
+*indent.txt*    For Vim version 7.2.  Last change: 2008 Jul 30
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -609,9 +609,8 @@ b:sh_indent_options['continuation-line']
 
 b:sh_indent_options['case-labels']
 				Amount of indent to add for case labels.
-				(not actually implemented)
 
-b:sh_indent_options['case-statements']
+b:sh_indent_options['case-statement']
 				Amount of indent to add for case statements.
 
 b:sh_indent_options['case-breaks']

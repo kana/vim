@@ -3,7 +3,7 @@
 " Maintainer:	Johannes Zellner <johannes@zellner.org>
 "		Author and previous maintainer:
 "		Paul Siegmann <pauls@euronet.nl>
-" Last Change:	2009-07-13 21:26:55
+" Last Change:	Mi, 13 Apr 2005 22:40:09 CEST
 " Filenames:	*.xml
 " $Id: xml.vim,v 1.3 2006/04/11 21:32:00 vimboss Exp $
 
@@ -216,7 +216,7 @@ if exists('g:xml_syntax_folding')
     syn region  xmlComment
 	\ start=+<!+
 	\ end=+>+
-	\ contains=xmlCommentStart,xmlCommentError
+	\ contains=xmlCommentPart,xmlCommentError
 	\ extend
 	\ fold
 
@@ -228,12 +228,11 @@ else
     syn region  xmlComment
 	\ start=+<!+
 	\ end=+>+
-	\ contains=xmlCommentStart,xmlCommentError
+	\ contains=xmlCommentPart,xmlCommentError
 	\ extend
 
 endif
 
-syn match xmlCommentStart   contained "<!" nextgroup=xmlCommentPart
 syn keyword xmlTodo         contained TODO FIXME XXX
 syn match   xmlCommentError contained "[^><!]"
 syn region  xmlCommentPart
@@ -321,7 +320,6 @@ hi def link xmlAttrib		Type
 
 hi def link xmlString		String
 hi def link xmlComment		Comment
-hi def link xmlCommentStart	xmlComment
 hi def link xmlCommentPart	Comment
 hi def link xmlCommentError	Error
 hi def link xmlError		Error
