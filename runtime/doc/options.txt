@@ -7037,6 +7037,14 @@ A jump table for the options with a short description can be found at |Q_op|.
 	If 'toolbariconsize' is empty, the global default size as determined
 	by user preferences or the current theme is used.
 
+							      *'transparency'*
+'transparency'		number	(default 0)
+			global
+			{not in Vi}
+			{only available in Mac GUI version}
+	Set transparency of the GUI window.  0 means opaque and 100 means
+	completely transparent.
+
 			     *'ttybuiltin'* *'tbi'* *'nottybuiltin'* *'notbi'*
 'ttybuiltin' 'tbi'	boolean	(default on)
 			global
