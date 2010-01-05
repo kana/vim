@@ -144,6 +144,7 @@ Special issues ~
 |hebrew.txt|	Hebrew language support and editing
 |russian.txt|	Russian language support and editing
 |ft_ada.txt|	Ada (the programming language) support
+|ft_sql.txt|	about the SQL filetype plugin
 |hangulin.txt|	Hangul (Korean) input mode
 |rileft.txt|	right-to-left editing mode
 
@@ -152,6 +153,7 @@ GUI ~
 |gui_w16.txt|	Windows 3.1 GUI
 |gui_w32.txt|	Win32 GUI
 |gui_x11.txt|	X11 GUI
+|gui_mac.txt|	MacVim GUI
 
 Interfaces ~
 |if_cscop.txt|	using Cscope with Vim
