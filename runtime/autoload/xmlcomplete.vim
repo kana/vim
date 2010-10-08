@@ -475,12 +475,12 @@ function! s:InCommentAt(line, col)
 endfunction
 
 function! s:SetKeywords()
-	let g:IsKeywordBak=&iskeyword
-	let &iskeyword='33-255'
+	let g:IsKeywordBak=&l:iskeyword
+	let &l:iskeyword='33-255'
 endfunction
 
 function! s:RestoreKeywords()
-	let &iskeyword=g:IsKeywordBak
+	let &l:iskeyword=g:IsKeywordBak
 endfunction
 
 function! s:Push(el, sname)

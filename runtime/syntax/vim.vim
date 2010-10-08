@@ -679,9 +679,9 @@ if !filereadable(s:mzschemepath)
 endif
 if (g:vimsyn_embed =~ 'm' && has("mzscheme")) && filereadable(s:mzschemepath)
  unlet! b:current_syntax
- let iskKeep= &isk
+ let iskKeep= &l:isk
  exe "syn include @vimMzSchemeScript ".s:mzschemepath
- let &isk= iskKeep
+ let &l:isk= iskKeep
  if exists("g:vimsyn_folding") && g:vimsyn_folding =~ 'm'
   syn region vimMzSchemeRegion fold matchgroup=vimScriptDelim start=+mz\%[scheme]\s*<<\s*\z(.*\)$+ end=+^\z1$+	contains=@vimMzSchemeScript
   syn region vimMzSchemeRegion fold matchgroup=vimScriptDelim start=+mz\%[scheme]\s*<<\s*$+ end=+\.$+		contains=@vimMzSchemeScript
