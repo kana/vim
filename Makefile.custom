@@ -49,3 +49,7 @@ build:
 DOC_DIRECTORY=src/MacVim/build/Release/MacVim.app/Contents/Resources/vim/runtime/doc
 create-helptags:
 	vim -u NONE -esX -c 'helptags $(DOC_DIRECTORY)' -c 'quit'
+
+install:
+	mkdir -p $(PREFIX)
+	cp -a src/MacVim/build/Release/MacVim.app $(PREFIX)/
