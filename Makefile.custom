@@ -29,9 +29,10 @@ remove-automatically-generated-files:
 fix-iskeyword-problems:
 	@echo 'Please fix: /\<set[^l].*\<isk\|&isk/ runtime/**/*.vim'
 
+PREFIX=/usr/local/apps/vim-gui
 configure-macvim:
 	./configure \
-	  --prefix=/usr/local/apps/vim-gui \
+	  --prefix=$(PREFIX) \
 	  --with-features=huge \
 	  --enable-darwin \
 	  --disable-netbeans \
