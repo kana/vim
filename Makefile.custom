@@ -4,6 +4,7 @@ all: \
 	remove-automatically-generated-files \
 	fix-iskeyword-problems \
 	configure-macvim \
+	build \
 	create-helptags
 
 remove-garbage-from-the-runtime-directory:
@@ -40,6 +41,9 @@ configure-macvim:
 	  --disable-nls \
 	  --without-x \
 	  CC=gcc 'CFLAGS=-g -O3'
+
+build:
+	make -k
 
 DOC_DIRECTORY=src/MacVim/build/Release/MacVim.app/Contents/Resources/vim/runtime/doc
 create-helptags:
