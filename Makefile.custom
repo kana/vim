@@ -2,7 +2,8 @@ all: \
 	remove-garbage-from-the-runtime-directory \
 	remove-garbage-vimrcs \
 	remove-automatically-generated-files \
-	fix-iskeyword-problems
+	fix-iskeyword-problems \
+	configure-macvim
 
 remove-garbage-from-the-runtime-directory:
 	rm -f \
@@ -25,3 +26,16 @@ remove-automatically-generated-files:
 
 fix-iskeyword-problems:
 	@echo 'Please fix: /\<set[^l].*\<isk\|&isk/ runtime/**/*.vim'
+
+configure-macvim:
+	./configure \
+	  --prefix=/usr/local/apps/vim-gui \
+	  --with-features=huge \
+	  --enable-darwin \
+	  --disable-netbeans \
+	  --enable-multibyte \
+	  --enable-gui=macvim \
+	  --enable-acl \
+	  --disable-nls \
+	  --without-x \
+	  CC=gcc 'CFLAGS=-g -O3'
