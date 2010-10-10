@@ -9,6 +9,7 @@ all: \
 
 remove-garbage-from-the-runtime-directory:
 	rm -f \
+	  runtime/doc/*.jax \
 	  runtime/encode_japan.vim \
 	  runtime/plugin/autodate.vim \
 	  runtime/plugin/cmdex.vim \
