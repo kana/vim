@@ -8991,7 +8991,7 @@ ins_left()
     pos_T	tpos;
 
 #ifdef FEAT_FOLDING
-    if ((fdo_flags & FDO_HOR) && KeyTyped)
+    if ((fdo_flags & FDO_HOR) && (KeyTyped || (fdo_flags & FDO_MAP)))
 	foldOpenCursor();
 #endif
     undisplay_dollar();
@@ -9034,7 +9034,7 @@ ins_home(c)
     pos_T	tpos;
 
 #ifdef FEAT_FOLDING
-    if ((fdo_flags & FDO_HOR) && KeyTyped)
+    if ((fdo_flags & FDO_HOR) && (KeyTyped || (fdo_flags & FDO_MAP)))
 	foldOpenCursor();
 #endif
     undisplay_dollar();
@@ -9056,7 +9056,7 @@ ins_end(c)
     pos_T	tpos;
 
 #ifdef FEAT_FOLDING
-    if ((fdo_flags & FDO_HOR) && KeyTyped)
+    if ((fdo_flags & FDO_HOR) && (KeyTyped || (fdo_flags & FDO_MAP)))
 	foldOpenCursor();
 #endif
     undisplay_dollar();
@@ -9073,7 +9073,7 @@ ins_end(c)
 ins_s_left()
 {
 #ifdef FEAT_FOLDING
-    if ((fdo_flags & FDO_HOR) && KeyTyped)
+    if ((fdo_flags & FDO_HOR) && (KeyTyped || (fdo_flags & FDO_MAP)))
 	foldOpenCursor();
 #endif
     undisplay_dollar();
@@ -9091,7 +9091,7 @@ ins_s_left()
 ins_right()
 {
 #ifdef FEAT_FOLDING
-    if ((fdo_flags & FDO_HOR) && KeyTyped)
+    if ((fdo_flags & FDO_HOR) && (KeyTyped || (fdo_flags & FDO_MAP)))
 	foldOpenCursor();
 #endif
     undisplay_dollar();
@@ -9141,7 +9141,7 @@ ins_right()
 ins_s_right()
 {
 #ifdef FEAT_FOLDING
-    if ((fdo_flags & FDO_HOR) && KeyTyped)
+    if ((fdo_flags & FDO_HOR) && (KeyTyped || (fdo_flags & FDO_MAP)))
 	foldOpenCursor();
 #endif
     undisplay_dollar();

@@ -344,7 +344,8 @@ do_tag(tag, type, count, forceit, verbose)
 		curwin->w_set_curswant = TRUE;
 		check_cursor();
 #ifdef FEAT_FOLDING
-		if ((fdo_flags & FDO_TAG) && old_KeyTyped)
+		if ((fdo_flags & FDO_TAG)
+		    && (old_KeyTyped || (fdo_flags & FDO_MAP)))
 		    foldOpenCursor();
 #endif
 
@@ -3320,7 +3321,8 @@ jumpto_tag(lbuf, forceit, keep_help)
 	    if (curbuf->b_help)
 		set_topline(curwin, curwin->w_cursor.lnum);
 #ifdef FEAT_FOLDING
-	    if ((fdo_flags & FDO_TAG) && old_KeyTyped)
+	    if ((fdo_flags & FDO_TAG)
+		&& (old_KeyTyped || (fdo_flags & FDO_MAP)))
 		foldOpenCursor();
 #endif
 	}

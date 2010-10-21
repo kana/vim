@@ -1840,7 +1840,8 @@ win_found:
 	}
 
 #ifdef FEAT_FOLDING
-	if ((fdo_flags & FDO_QUICKFIX) && old_KeyTyped)
+	if ((fdo_flags & FDO_QUICKFIX)
+	    && (old_KeyTyped || (fdo_flags & FDO_MAP)))
 	    foldOpenCursor();
 #endif
 	if (print_message)
