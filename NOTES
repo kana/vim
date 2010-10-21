@@ -1,0 +1,53 @@
+About this repository
+=====================
+
+This repository is a clone of the official repository of Vim, the editor
+with several hacks written by Kana Natsuno <kana at whileimautomaton dot
+net>.
+
+
+
+
+Branches
+========
+
+hack/base
+	Topic branch to record stuffs about hacks.
+	Based on "official" (2010-10-22).
+
+hack/*
+	Topic branch for each hack.
+	Based on "hack/base".
+
+master
+	Integrated branch for terminal version.
+	Based on "official".
+
+master-gui
+	Integrated branch for GUI version on Mac OS X.
+	Based on "master" at MacVim-KaoriYa.
+
+official
+	A mirror of the mainline of the official repository of Vim.
+
+
+
+
+Tags
+====
+
+daily-use-cui-YYYYMMDD
+	The version for daily use since YYYY-MM-DD.
+	Tagged on "master".
+
+daily-use-gui-YYYYMMDD
+	The version for daily use since YYYY-MM-DD.
+	Tagged on "master-gui".
+
+z/*
+	Memorandums for oldies.
+
+
+
+
+__END__
