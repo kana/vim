@@ -2664,7 +2664,7 @@ u_undo_end(did_undo, absolute)
     char_u	msgbuf[80];
 
 #ifdef FEAT_FOLDING
-    if ((fdo_flags & FDO_UNDO) && KeyTyped)
+    if ((fdo_flags & FDO_UNDO) && (KeyTyped || (fdo_flags & FDO_MAP)))
 	foldOpenCursor();
 #endif
 

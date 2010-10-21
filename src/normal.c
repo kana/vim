@@ -4253,7 +4253,9 @@ nv_gd(oap, nchar, thisblock)
 	    || find_decl(ptr, len, nchar == 'd', thisblock, 0) == FAIL)
 	clearopbeep(oap);
 #ifdef FEAT_FOLDING
-    else if ((fdo_flags & FDO_SEARCH) && KeyTyped && oap->op_type == OP_NOP)
+    else if ((fdo_flags & FDO_SEARCH)
+	     && (KeyTyped || (fdo_flags & FDO_MAP))
+	     && oap->op_type == OP_NOP)
 	foldOpenCursor();
 #endif
 }
@@ -6030,8 +6032,10 @@ nv_right(cap)
 #endif
     }
 #ifdef FEAT_FOLDING
-    if (n != cap->count1 && (fdo_flags & FDO_HOR) && KeyTyped
-					       && cap->oap->op_type == OP_NOP)
+    if (n != cap->count1
+	&& (fdo_flags & FDO_HOR)
+	&& (KeyTyped || (fdo_flags & FDO_MAP))
+	&& cap->oap->op_type == OP_NOP)
 	foldOpenCursor();
 #endif
 }
@@ -6100,8 +6104,10 @@ nv_left(cap)
 	}
     }
 #ifdef FEAT_FOLDING
-    if (n != cap->count1 && (fdo_flags & FDO_HOR) && KeyTyped
-					       && cap->oap->op_type == OP_NOP)
+    if (n != cap->count1
+	&& (fdo_flags & FDO_HOR)
+	&& (KeyTyped || (fdo_flags & FDO_MAP))
+	&& cap->oap->op_type == OP_NOP)
 	foldOpenCursor();
 #endif
 }
@@ -6256,7 +6262,9 @@ nv_dollar(cap)
 					 cap->oap->op_type == OP_NOP) == FAIL)
 	clearopbeep(cap->oap);
 #ifdef FEAT_FOLDING
-    else if ((fdo_flags & FDO_HOR) && KeyTyped && cap->oap->op_type == OP_NOP)
+    else if ((fdo_flags & FDO_HOR)
+	     && (KeyTyped || (fdo_flags & FDO_MAP))
+	     && cap->oap->op_type == OP_NOP)
 	foldOpenCursor();
 #endif
 }
@@ -6341,7 +6349,9 @@ normal_search(cap, dir, pat, opt)
 	curwin->w_cursor.coladd = 0;
 #endif
 #ifdef FEAT_FOLDING
-	if (cap->oap->op_type == OP_NOP && (fdo_flags & FDO_SEARCH) && KeyTyped)
+	if (cap->oap->op_type == OP_NOP
+	    && (fdo_flags & FDO_SEARCH)
+	    && (KeyTyped || (fdo_flags & FDO_MAP)))
 	    foldOpenCursor();
 #endif
     }
@@ -6391,7 +6401,9 @@ nv_csearch(cap)
 	adjust_for_sel(cap);
 #endif
 #ifdef FEAT_FOLDING
-	if ((fdo_flags & FDO_HOR) && KeyTyped && cap->oap->op_type == OP_NOP)
+	if ((fdo_flags & FDO_HOR)
+	    && (KeyTyped || (fdo_flags & FDO_MAP))
+	    && cap->oap->op_type == OP_NOP)
 	    foldOpenCursor();
 #endif
     }
@@ -6591,7 +6603,7 @@ nv_brackets(cap)
 	    curwin->w_cursor = *pos;
 	    curwin->w_set_curswant = TRUE;
 #ifdef FEAT_FOLDING
-	    if ((fdo_flags & FDO_BLOCK) && KeyTyped
+	    if ((fdo_flags & FDO_BLOCK) && (KeyTyped || (fdo_flags & FDO_MAP))
 					       && cap->oap->op_type == OP_NOP)
 		foldOpenCursor();
 #endif
@@ -6622,7 +6634,9 @@ nv_brackets(cap)
 	    if (cap->oap->op_type == OP_NOP)
 		beginline(BL_WHITE | BL_FIX);
 #ifdef FEAT_FOLDING
-	    if ((fdo_flags & FDO_BLOCK) && KeyTyped && cap->oap->op_type == OP_NOP)
+	    if ((fdo_flags & FDO_BLOCK)
+		&& (KeyTyped || (fdo_flags & FDO_MAP))
+		&& cap->oap->op_type == OP_NOP)
 		foldOpenCursor();
 #endif
 	}
@@ -6713,7 +6727,9 @@ nv_brackets(cap)
 		break;
 	    }
 # ifdef FEAT_FOLDING
-	if (cap->oap->op_type == OP_NOP && (fdo_flags & FDO_SEARCH) && KeyTyped)
+	if (cap->oap->op_type == OP_NOP
+	    && (fdo_flags & FDO_SEARCH)
+	    && (KeyTyped || (fdo_flags & FDO_MAP)))
 	    foldOpenCursor();
 # endif
     }
@@ -6781,7 +6797,7 @@ nv_percent(cap)
     if (cap->oap->op_type == OP_NOP
 	    && lnum != curwin->w_cursor.lnum
 	    && (fdo_flags & FDO_PERCENT)
-	    && KeyTyped)
+	    && (KeyTyped || (fdo_flags & FDO_MAP)))
 	foldOpenCursor();
 #endif
 }
@@ -6810,7 +6826,9 @@ nv_brace(cap)
 	curwin->w_cursor.coladd = 0;
 #endif
 #ifdef FEAT_FOLDING
-	if ((fdo_flags & FDO_BLOCK) && KeyTyped && cap->oap->op_type == OP_NOP)
+	if ((fdo_flags & FDO_BLOCK)
+	    && (KeyTyped || (fdo_flags & FDO_MAP))
+	    && cap->oap->op_type == OP_NOP)
 	    foldOpenCursor();
 #endif
     }
@@ -6850,7 +6868,9 @@ nv_findpar(cap)
 	curwin->w_cursor.coladd = 0;
 #endif
 #ifdef FEAT_FOLDING
-	if ((fdo_flags & FDO_BLOCK) && KeyTyped && cap->oap->op_type == OP_NOP)
+	if ((fdo_flags & FDO_BLOCK)
+	    && (KeyTyped || (fdo_flags & FDO_MAP))
+	    && cap->oap->op_type == OP_NOP)
 	    foldOpenCursor();
 #endif
     }
@@ -7479,7 +7499,7 @@ nv_gomark(cap)
     if (cap->oap->op_type == OP_NOP
 	    && (pos == (pos_T *)-1 || lnum != curwin->w_cursor.lnum)
 	    && (fdo_flags & FDO_MARK)
-	    && old_KeyTyped)
+	    && (old_KeyTyped || (fdo_flags & FDO_MAP)))
 	foldOpenCursor();
 #endif
 }
@@ -7526,7 +7546,7 @@ nv_pcmark(cap)
 	if (cap->oap->op_type == OP_NOP
 		&& (pos == (pos_T *)-1 || lnum != curwin->w_cursor.lnum)
 		&& (fdo_flags & FDO_MARK)
-		&& old_KeyTyped)
+		&& (old_KeyTyped || (fdo_flags & FDO_MAP)))
 	    foldOpenCursor();
 # endif
     }
@@ -8610,7 +8630,9 @@ nv_bck_word(cap)
     if (bck_word(cap->count1, cap->arg, FALSE) == FAIL)
 	clearopbeep(cap->oap);
 #ifdef FEAT_FOLDING
-    else if ((fdo_flags & FDO_HOR) && KeyTyped && cap->oap->op_type == OP_NOP)
+    else if ((fdo_flags & FDO_HOR)
+	     && (KeyTyped || (fdo_flags & FDO_MAP))
+	     && cap->oap->op_type == OP_NOP)
 	foldOpenCursor();
 #endif
 }
@@ -8700,7 +8722,9 @@ nv_wordcmd(cap)
 	adjust_for_sel(cap);
 #endif
 #ifdef FEAT_FOLDING
-	if ((fdo_flags & FDO_HOR) && KeyTyped && cap->oap->op_type == OP_NOP)
+	if ((fdo_flags & FDO_HOR)
+	    && (KeyTyped || (fdo_flags & FDO_MAP))
+	    && cap->oap->op_type == OP_NOP)
 	    foldOpenCursor();
 #endif
     }
@@ -8751,7 +8775,9 @@ nv_beginline(cap)
     cap->oap->inclusive = FALSE;
     beginline(cap->arg);
 #ifdef FEAT_FOLDING
-    if ((fdo_flags & FDO_HOR) && KeyTyped && cap->oap->op_type == OP_NOP)
+    if ((fdo_flags & FDO_HOR)
+	&& (KeyTyped || (fdo_flags & FDO_MAP))
+	&& cap->oap->op_type == OP_NOP)
 	foldOpenCursor();
 #endif
     ins_at_eol = FALSE;	    /* Don't move cursor past eol (only necessary in a
@@ -8863,7 +8889,9 @@ nv_goto(cap)
     curwin->w_cursor.lnum = lnum;
     beginline(BL_SOL | BL_FIX);
 #ifdef FEAT_FOLDING
-    if ((fdo_flags & FDO_JUMP) && KeyTyped && cap->oap->op_type == OP_NOP)
+    if ((fdo_flags & FDO_JUMP)
+	&& (KeyTyped || (fdo_flags & FDO_MAP))
+	&& cap->oap->op_type == OP_NOP)
 	foldOpenCursor();
 #endif
 }

@@ -3082,6 +3082,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 		insert		any command in Insert mode
 		jump		far jumps: "G", "gg", etc.
 		mark		jumping to a mark: "'m", CTRL-O, etc.
+		map		any command via a key mapping (see below)
 		percent		"%"
 		quickfix	":cn", ":crew", ":make", etc.
 		search		search for a pattern: "/", "n", "*", "gd", etc.
@@ -3089,8 +3090,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 				Also for |[s| and |]s|.
 		tag		jumping to a tag: ":ta", CTRL-T, etc.
 		undo		undo or redo: "u" and CTRL-R
-	When the command is part of a mapping this option is not used.  Add
-	the |zv| command to the mapping to get the same effect.
+	When the command is part of a key mapping this option is not used
+	unless this option contains "map".  Add the |zv| command to the key
+	mapping to get the same effect.
 	When a movement command is used for an operator (e.g., "dl" or "y%")
 	this option is not used.  This means the operator will include the
 	whole closed fold.

@@ -460,7 +460,7 @@ EXTERN unsigned	fdo_flags;
 # ifdef IN_OPTION_C
 static char *(p_fdo_values[]) = {"all", "block", "hor", "mark", "percent",
 				 "quickfix", "search", "tag", "insert",
-				 "undo", "jump", NULL};
+				 "undo", "jump", "map", NULL};
 # endif
 # define FDO_ALL		0x001
 # define FDO_BLOCK		0x002
@@ -473,6 +473,7 @@ static char *(p_fdo_values[]) = {"all", "block", "hor", "mark", "percent",
 # define FDO_INSERT		0x100
 # define FDO_UNDO		0x200
 # define FDO_JUMP		0x400
+# define FDO_MAP		0x800
 #endif
 EXTERN char_u	*p_fp;		/* 'formatprg' */
 #ifdef HAVE_FSYNC
