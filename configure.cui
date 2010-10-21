@@ -1,0 +1,13 @@
+#!/bin/sh
+
+./configure \
+  --disable-darwin \
+  --disable-gui \
+  --disable-netbeans \
+  --disable-nls \
+  --enable-acl \
+  --enable-multibyte \
+  --prefix=/usr/local/apps/vim \
+  --with-features=huge \
+  --without-x \
+  CC=gcc 'CFLAGS=-g -O3'
