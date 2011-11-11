@@ -3056,6 +3056,7 @@ static void set_option_scriptID_idx __ARGS((int opt_idx, int opt_flags, int id))
 #endif
 static char_u *set_bool_option __ARGS((int opt_idx, char_u *varp, int value, int opt_flags));
 static char_u *set_num_option __ARGS((int opt_idx, char_u *varp, long value, char_u *errbuf, size_t errbuflen, int opt_flags));
+static int is_safe_option_on_curswant __ARGS((char_u *varp));
 static void check_redraw __ARGS((long_u flags));
 static int findoption __ARGS((char_u *));
 static int find_key_option __ARGS((char_u *));
@@ -8656,11 +8657,26 @@ set_num_option(opt_idx, varp, value, errbuf, errbuflen, opt_flags)
     options[opt_idx].flags |= P_WAS_SET;
 
     comp_col();			    /* in case 'columns' or 'ls' changed */
-    if (curwin->w_curswant != MAXCOL)
+    if (curwin->w_curswant != MAXCOL && !is_safe_option_on_curswant(varp))
 	curwin->w_set_curswant = TRUE;  /* in case 'tabstop' changed */
     check_redraw(options[opt_idx].flags);
 
     return errmsg;
+}
+
+/*
+ * Check whether an option does affect to cursor position or not.
+ * Return 1 for option without side effect, or 0 for option with side effect.
+ */
+    static int
+is_safe_option_on_curswant(varp)
+    char_u	*varp;			/* pointer to the option variable */
+{
+    return (
+	varp == (char_u *)&p_tm		/* 'timeoutlen' */
+	|| varp == (char_u *)&p_ttm	/* 'ttimeoutlen' */
+	/* TODO: List more safe options. */
+    );
 }
 
 /*
