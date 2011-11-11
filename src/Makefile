@@ -1285,7 +1285,7 @@ MACVIMGUI_IPATH	=
 MACVIMGUI_LIBS_DIR =
 MACVIMGUI_LIBS1	= -framework Cocoa -framework Carbon
 MACVIMGUI_LIBS2	=
-MACVIMGUI_INSTALL = install_normal
+MACVIMGUI_INSTALL = install_normal install_macvim
 MACVIMGUI_TARGETS =
 MACVIMGUI_MAN_TARGETS =
 MACVIMGUI_TESTTARGET = gui
@@ -2810,7 +2810,7 @@ $(APPDIR)/Contents:
 
 ##############################################################################
 ### MacVim GUI
-.PHONY: macvim macvimclean
+.PHONY: macvim macvimclean install_macvim
 macvim: $(VIMTARGET)
 	xcodebuild -project MacVim/MacVim.xcodeproj $(XCODEFLAGS)
 
@@ -2818,6 +2818,9 @@ macvimclean:
 	if test -d MacVim; then \
 		xcodebuild -project MacVim/MacVim.xcodeproj clean; \
 	fi
+
+install_macvim:
+	cp -a MacVim/build/Release/MacVim.app "$(DEST_BIN)"
 
 
 ###############################################################################
