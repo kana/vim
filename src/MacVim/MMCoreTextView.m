@@ -124,6 +124,7 @@ defaultAdvanceForFont(NSFont *font)
     antialias = YES;
 
     drawData = [[NSMutableArray alloc] init];
+    fontCache = [[NSMutableArray alloc] init];
 
     helper = [[MMTextViewHelper alloc] init];
     [helper setTextView:self];
@@ -141,12 +142,13 @@ defaultAdvanceForFont(NSFont *font)
     [defaultBackgroundColor release];  defaultBackgroundColor = nil;
     [defaultForegroundColor release];  defaultForegroundColor = nil;
     [drawData release];  drawData = nil;
+    [fontCache release];  fontCache = nil;
 
     [helper setTextView:nil];
     [helper release];  helper = nil;
 
     if (glyphs) { free(glyphs); glyphs = NULL; }
-    if (advances) { free(advances); advances = NULL; }
+    if (positions) { free(positions); positions = NULL; }
 
     [super dealloc];
 }
@@ -290,6 +292,8 @@ defaultAdvanceForFont(NSFont *font)
     cellSize.height = linespace + defaultLineHeightForFont(font);
 
     fontDescent = ceil(CTFontGetDescent(fontRef));
+
+    [fontCache removeAllObjects];
 }
 
 - (void)setWideFont:(NSFont *)newFont
@@ -981,26 +985,51 @@ defaultAdvanceForFont(NSFont *font)
 #endif
 }
 
-    static void
-recurseDraw(const unichar *chars, CGGlyph *glyphs, CGSize *advances,
-            UniCharCount length, CGContextRef context, CTFontRef fontRef,
-            float x, float y)
+   static CTFontRef
+lookupFont(NSMutableArray *fontCache, const unichar *chars,
+           CTFontRef currFontRef)
 {
-    CGFontRef cgFontRef = CTFontCopyGraphicsFont(fontRef, NULL);
+    // See if font in cache can draw at least one character
+    NSUInteger i;
+    for (i = 0; i < [fontCache count]; ++i) {
+        NSFont *font = [fontCache objectAtIndex:i];
+        CGGlyph glyphs[1];
+
+        if (CTFontGetGlyphsForCharacters((CTFontRef)font, chars, glyphs, 1))
+            return (CTFontRef)[font retain];
+    }
+
+    // Ask Core Text for a font (can be *very* slow, which is why we cache
+    // fonts in the first place)
+    CFRange r = { 0, 1 };
+    CFStringRef strRef = CFStringCreateWithCharacters(NULL, chars, 1);
+    CTFontRef newFontRef = CTFontCreateForString(currFontRef, strRef, r);
+    CFRelease(strRef);
+
+    if (newFontRef)
+        [fontCache addObject:(NSFont *)newFontRef];
+
+    return newFontRef;
+}
+
+    static void
+recurseDraw(const unichar *chars, CGGlyph *glyphs, CGPoint *positions,
+            UniCharCount length, CGContextRef context, CTFontRef fontRef,
+            NSMutableArray *fontCache)
+{
 
     if (CTFontGetGlyphsForCharacters(fontRef, chars, glyphs, length)) {
         // All chars were mapped to glyphs, so draw all at once and return.
+        CGFontRef cgFontRef = CTFontCopyGraphicsFont(fontRef, NULL);
         CGContextSetFont(context, cgFontRef);
-        CGContextSetTextPosition(context, x, y);
-        CGContextShowGlyphsWithAdvances(context, glyphs, advances, length);
+        CGContextShowGlyphsAtPositions(context, glyphs, positions, length);
         CGFontRelease(cgFontRef);
         return;
     }
 
     CGGlyph *glyphsEnd = glyphs+length, *g = glyphs;
-    CGSize *a = advances;
+    CGPoint *p = positions;
     const unichar *c = chars;
-    float x0 = x;
     while (glyphs < glyphsEnd) {
         if (*g) {
             // Draw as many consecutive glyphs as possible in the current font
@@ -1009,49 +1038,39 @@ recurseDraw(const unichar *chars, CGGlyph *glyphs, CGSize *advances,
             while (*g && g < glyphsEnd) {
                 ++g;
                 ++c;
-                x += a->width;
-                ++a;
+                ++p;
             }
 
             int count = g-glyphs;
+            CGFontRef cgFontRef = CTFontCopyGraphicsFont(fontRef, NULL);
             CGContextSetFont(context, cgFontRef);
-            CGContextSetTextPosition(context, x0, y);
-            CGContextShowGlyphsWithAdvances(context, glyphs, advances, count);
+            CGContextShowGlyphsAtPositions(context, glyphs, positions, count);
+            CGFontRelease(cgFontRef);
         } else {
             // Skip past as many consecutive chars as possible which cannot be
             // drawn in the current font.
             while (0 == *g && g < glyphsEnd) {
                 ++g;
                 ++c;
-                x += a->width;
-                ++a;
+                ++p;
             }
 
             // Figure out which font to draw these chars with.
             UniCharCount count = c - chars;
-            CFRange r = { 0, count };
-            CFStringRef strRef = CFStringCreateWithCharactersNoCopy(
-                    NULL, chars, count, kCFAllocatorNull);
-            CTFontRef newFontRef = CTFontCreateForString(fontRef, strRef, r);
-            CFRelease(strRef);
-            if (!newFontRef) {
-                CGFontRelease(cgFontRef);
+            CTFontRef newFontRef = lookupFont(fontCache, chars, fontRef);
+            if (!newFontRef)
                 return;
-            }
 
-            recurseDraw(chars, glyphs, advances, count, context, newFontRef,
-                        x0, y);
+            recurseDraw(chars, glyphs, positions, count, context, newFontRef,
+                        fontCache);
 
             CFRelease(newFontRef);
         }
 
         chars = c;
         glyphs = g;
-        advances = a;
-        x0 = x;
+        positions = p;
     }
-
-    CGFontRelease(cgFontRef);
 }
 
 - (void)drawString:(const UniChar *)chars length:(UniCharCount)length
@@ -1123,9 +1142,9 @@ recurseDraw(const unichar *chars, CGGlyph *glyphs, CGSize *advances,
 
     if (length > maxlen) {
         if (glyphs) free(glyphs);
-        if (advances) free(advances);
+        if (positions) free(positions);
         glyphs = (CGGlyph*)malloc(length*sizeof(CGGlyph));
-        advances = (CGSize*)calloc(length, sizeof(CGSize));
+        positions = (CGPoint*)calloc(length, sizeof(CGPoint));
         maxlen = length;
     }
 
@@ -1134,9 +1153,13 @@ recurseDraw(const unichar *chars, CGGlyph *glyphs, CGSize *advances,
     CGContextSetRGBFillColor(context, RED(fg), GREEN(fg), BLUE(fg), ALPHA(fg));
     CGContextSetFontSize(context, [font pointSize]);
 
+    // Calculate position of each glyph relative to (x,y).
     NSUInteger i;
-    for (i = 0; i < length; ++i)
-        advances[i].width = w;
+    float xrel = 0;
+    for (i = 0; i < length; ++i) {
+        positions[i].x = xrel;
+        xrel += w;
+    }
 
     CTFontRef fontRef = (CTFontRef)(flags & DRAW_WIDE ? [fontWide retain]
                                                       : [font retain]);
@@ -1155,8 +1178,8 @@ recurseDraw(const unichar *chars, CGGlyph *glyphs, CGSize *advances,
         }
     }
 
-    recurseDraw(chars, glyphs, advances, length, context, fontRef, x,
-                y+fontDescent);
+    CGContextSetTextPosition(context, x, y+fontDescent);
+    recurseDraw(chars, glyphs, positions, length, context, fontRef, fontCache);
 
     CFRelease(fontRef);
     CGContextRestoreGState(context);
@@ -1240,7 +1263,6 @@ recurseDraw(const unichar *chars, CGGlyph *glyphs, CGSize *advances,
 {
     CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
     NSRect rect = [self rectForRow:row column:col numRows:1 numColumns:1];
-    CGRect clipRect = *(CGRect *)&rect;
 
     CGContextSaveGState(context);
 
@@ -1261,18 +1283,16 @@ recurseDraw(const unichar *chars, CGGlyph *glyphs, CGSize *advances,
     // over into adjacent display cells and it may look ugly.
     CGContextSetShouldAntialias(context, NO);
 
-    // Even though antialiasing is disabled and we adjust the rect to fit
-    // inside the display cell it still happens on Retina displays (only) that
-    // the cursor bleeds over into the neighboring cells.  To work around this
-    // issue we enable clipping.
-    CGContextClipToRect(context, clipRect);
-
     if (MMInsertionPointHollow == shape) {
         // When stroking a rect its size is effectively 1 pixel wider/higher
         // than we want so make it smaller to avoid having it bleed over into
         // the adjacent display cell.
+        // We also have to shift the rect by half a point otherwise it will be
+        // partially drawn outside its bounds on a Retina display.
         rect.size.width -= 1;
         rect.size.height -= 1;
+        rect.origin.x += 0.5;
+        rect.origin.y += 0.5;
 
         CGContextSetRGBStrokeColor(context, RED(color), GREEN(color),
                                    BLUE(color), ALPHA(color));

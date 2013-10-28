@@ -382,13 +382,21 @@ edit(cmdchar, startln, count)
 	else
 	    ptr = (char_u *)"i";
 	set_vim_var_string(VV_INSERTMODE, ptr, 1);
+	set_vim_var_string(VV_CHAR, NULL, -1);  /* clear v:char */
 # endif
 	apply_autocmds(EVENT_INSERTENTER, NULL, NULL, FALSE, curbuf);
 
-	/* Since Insert mode was not started yet a call to check_cursor_col()
-	 * may have moved the cursor, especially with the "A" command. */
-	if (curwin->w_cursor.col != save_cursor.col
-		&& curwin->w_cursor.lnum == save_cursor.lnum)
+	/* Make sure the cursor didn't move.  Do call check_cursor_col() in
+	 * case the text was modified.  Since Insert mode was not started yet
+	 * a call to check_cursor_col() may move the cursor, especially with
+	 * the "A" command, thus set State to avoid that. Also check that the
+	 * line number is still valid (lines may have been deleted).
+	 * Do not restore if v:char was set to a non-empty string. */
+	if (!equalpos(curwin->w_cursor, save_cursor)
+# ifdef FEAT_EVAL
+		&& *get_vim_var_str(VV_CHAR) == NUL
+# endif
+		&& save_cursor.lnum <= curbuf->b_ml.ml_line_count)
 	{
 	    int save_state = State;
 
@@ -3136,7 +3144,7 @@ ins_compl_dictionaries(dict_start, pat, flags, thesaurus)
 
 theend:
     p_scs = save_p_scs;
-    vim_free(regmatch.regprog);
+    vim_regfree(regmatch.regprog);
     vim_free(buf);
 }
 
@@ -5190,9 +5198,21 @@ ins_complete(c)
 	}
 	else if (ctrl_x_mode == CTRL_X_FILES)
 	{
-	    while (--startcol >= 0 && vim_isfilec(line[startcol]))
-		;
-	    compl_col += ++startcol;
+	    /* Go back to just before the first filename character. */
+	    if (startcol > 0)
+	    {
+		char_u	*p = line + startcol;
+
+		mb_ptr_back(line, p);
+		while (p > line && vim_isfilec(PTR2CHAR(p)))
+		    mb_ptr_back(line, p);
+		if (p == line && vim_isfilec(PTR2CHAR(p)))
+		    startcol = 0;
+		else
+		    startcol = (int)(p - line) + 1;
+	    }
+
+	    compl_col += startcol;
 	    compl_length = (int)curs_col - startcol;
 	    compl_pattern = addstar(line + compl_col, compl_length,
 								EXPAND_FILES);
@@ -8133,16 +8153,18 @@ ins_reg()
     --no_mapping;
 
 #ifdef FEAT_EVAL
-    /*
-     * Don't call u_sync() while getting the expression,
-     * evaluating it or giving an error message for it!
-     */
+    /* Don't call u_sync() while typing the expression or giving an error
+     * message for it. Only call it explicitly. */
     ++no_u_sync;
     if (regname == '=')
     {
 # ifdef USE_IM_CONTROL
 	int	im_on = im_get_status();
 # endif
+	/* Sync undo when evaluating the expression calls setline() or
+	 * append(), so that it can be undone separately. */
+	u_sync_once = 2;
+
 	regname = get_expr_register();
 # ifdef USE_IM_CONTROL
 	/* Restore the Input Method. */
@@ -8182,6 +8204,9 @@ ins_reg()
 #ifdef FEAT_EVAL
     }
     --no_u_sync;
+    if (u_sync_once == 1)
+	ins_need_undo = TRUE;
+    u_sync_once = 0;
 #endif
 #ifdef FEAT_CMDL_INFO
     clear_showcmd();

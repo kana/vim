@@ -23,10 +23,6 @@
 # include <limits.h>
 #endif
 
-#ifdef FEAT_GUI_MACVIM
-#include <objc/objc-runtime.h>  /* for objc_*() and sel_*() */
-#endif
-
 /* Maximum number of commands from + or -c arguments. */
 #define MAX_ARG_CMDS 10
 
@@ -180,9 +176,7 @@ main
     // Cocoa needs an NSAutoreleasePool in place or it will leak memory.
     // This particular pool will hold autorelease objects created during
     // initialization.
-    id autoreleasePool = objc_msgSend(objc_msgSend(
-            objc_getClass("NSAutoreleasePool"),sel_getUid("alloc")
-            ), sel_getUid("init"));
+    void *autoreleasePool = gui_macvim_new_autoreleasepool();
 #endif
 
     /*
@@ -834,7 +828,7 @@ vim_main2(int argc UNUSED, char **argv UNUSED)
     starttermcap();	    /* start termcap if not done by wait_return() */
     TIME_MSG("start termcap");
 #if defined(FEAT_TERMRESPONSE) && defined(FEAT_MBYTE)
-    may_req_ambiguous_character_width();
+    may_req_ambiguous_char_width();
 #endif
 
 #ifdef FEAT_MOUSE
@@ -1066,13 +1060,11 @@ vim_main2(int argc UNUSED, char **argv UNUSED)
 #ifdef FEAT_GUI_MACVIM
     // The autorelease pool might have filled up quite a bit during
     // initialization, so purge it before entering the main loop.
-    objc_msgSend(autoreleasePool, sel_getUid("release"));
+    gui_macvim_release_autoreleasepool(autoreleasePool);
 
     // The main loop sets up its own autorelease pool, but to be safe we still
     // realloc this one here.
-    autoreleasePool = objc_msgSend(objc_msgSend(
-            objc_getClass("NSAutoreleasePool"),sel_getUid("alloc")
-            ), sel_getUid("init"));
+    autoreleasePool = gui_macvim_new_autoreleasepool();
 #endif
 
     /*
@@ -1081,7 +1073,7 @@ vim_main2(int argc UNUSED, char **argv UNUSED)
     main_loop(FALSE, FALSE);
 
 #ifdef FEAT_GUI_MACVIM
-    objc_msgSend(autoreleasePool, sel_getUid("release"));
+    gui_macvim_release_autoreleasepool(autoreleasePool);
 #endif
 
     return 0;
@@ -1152,9 +1144,7 @@ main_loop(cmdwin, noexmode)
 #ifdef FEAT_GUI_MACVIM
         // Cocoa needs an NSAutoreleasePool in place or it will leak memory.
         // This particular pool gets released once every loop.
-        id autoreleasePool = objc_msgSend(objc_msgSend(
-                objc_getClass("NSAutoreleasePool"),sel_getUid("alloc")
-                ), sel_getUid("init"));
+        void *autoreleasePool = gui_macvim_new_autoreleasepool();
 #endif
 
 	if (stuff_empty())
@@ -1404,7 +1394,7 @@ main_loop(cmdwin, noexmode)
 #ifdef FEAT_GUI_MACVIM
         // TODO! Make sure there are no continue statements that will cause
         // this not to be called or MacVim will leak memory!
-        objc_msgSend(autoreleasePool, sel_getUid("release"));
+        gui_macvim_release_autoreleasepool(autoreleasePool);
 #endif
     }
 }
@@ -2497,7 +2487,7 @@ scripterror:
 	     * Look for evidence of non-Cygwin paths before we bother.
 	     * This is only for when using the Unix files.
 	     */
-	    if (strpbrk(p, "\\:") != NULL && !path_with_url(p))
+	    if (vim_strpbrk(p, "\\:") != NULL && !path_with_url(p))
 	    {
 		char posix_path[PATH_MAX];
 
@@ -2507,7 +2497,7 @@ scripterror:
 		cygwin_conv_to_posix_path(p, posix_path);
 # endif
 		vim_free(p);
-		p = vim_strsave(posix_path);
+		p = vim_strsave((char_u *)posix_path);
 		if (p == NULL)
 		    mch_exit(2);
 	    }
@@ -2816,6 +2806,7 @@ edit_buffers(parmp)
     int		arg_idx;		/* index in argument list */
     int		i;
     int		advance = TRUE;
+    win_T	*win;
 
 # ifdef FEAT_AUTOCMD
     /*
@@ -2905,7 +2896,23 @@ edit_buffers(parmp)
 # ifdef FEAT_AUTOCMD
     --autocmd_no_enter;
 # endif
-    win_enter(firstwin, FALSE);		/* back to first window */
+
+    /* make the first window the current window */
+    win = firstwin;
+#if defined(FEAT_WINDOWS) && defined(FEAT_QUICKFIX)
+    /* Avoid making a preview window the current window. */
+    while (win->w_p_pvw)
+    {
+	win = win->w_next;
+	if (win == NULL)
+	{
+	    win = firstwin;
+	    break;
+	}
+    }
+#endif
+    win_enter(win, FALSE);
+
 # ifdef FEAT_AUTOCMD
     --autocmd_no_leave;
 # endif
@@ -3068,6 +3075,10 @@ source_startup_scripts(parmp)
 #endif
 #ifdef USR_VIMRC_FILE3
 		&& do_source((char_u *)USR_VIMRC_FILE3, TRUE,
+							   DOSO_VIMRC) == FAIL
+#endif
+#ifdef USR_VIMRC_FILE4
+		&& do_source((char_u *)USR_VIMRC_FILE4, TRUE,
 							   DOSO_VIMRC) == FAIL
 #endif
 		&& process_env((char_u *)"EXINIT", FALSE) == FAIL

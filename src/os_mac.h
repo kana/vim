@@ -16,6 +16,11 @@
 # define OPAQUE_TOOLBOX_STRUCTS 0
 #endif
 
+/* Include MAC_OS_X_VERSION_* macros */
+#ifdef HAVE_AVAILABILITYMACROS_H
+# include <AvailabilityMacros.h>
+#endif
+
 /*
  * Macintosh machine-dependent things.
  *

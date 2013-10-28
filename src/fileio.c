@@ -428,13 +428,13 @@ readfile(fname, sfname, from, lines_to_skip, lines_to_read, eap, flags)
 	}
     }
 
-#ifdef UNIX
-    /*
-     * On Unix it is possible to read a directory, so we have to
-     * check for it before the mch_open().
-     */
     if (!read_stdin && !read_buffer)
     {
+#ifdef UNIX
+	/*
+	 * On Unix it is possible to read a directory, so we have to
+	 * check for it before the mch_open().
+	 */
 	perm = mch_getperm(fname);
 	if (perm >= 0 && !S_ISREG(perm)		    /* not a regular file ... */
 # ifdef S_ISFIFO
@@ -457,8 +457,8 @@ readfile(fname, sfname, from, lines_to_skip, lines_to_read, eap, flags)
 	    msg_scroll = msg_save;
 	    return FAIL;
 	}
-
-# if defined(MSDOS) || defined(MSWIN) || defined(OS2)
+#endif
+#if defined(MSDOS) || defined(MSWIN) || defined(OS2)
 	/*
 	 * MS-Windows allows opening a device, but we will probably get stuck
 	 * trying to read it.
@@ -470,27 +470,11 @@ readfile(fname, sfname, from, lines_to_skip, lines_to_read, eap, flags)
 	    msg_scroll = msg_save;
 	    return FAIL;
 	}
-# endif
-    }
 #endif
-
-    /* set default 'fileformat' */
-    if (set_options)
-    {
-	if (eap != NULL && eap->force_ff != 0)
-	    set_fileformat(get_fileformat_force(curbuf, eap), OPT_LOCAL);
-	else if (*p_ffs != NUL)
-	    set_fileformat(default_fileformat(), OPT_LOCAL);
     }
 
-    /* set or reset 'binary' */
-    if (eap != NULL && eap->force_bin != 0)
-    {
-	int	oldval = curbuf->b_p_bin;
-
-	curbuf->b_p_bin = (eap->force_bin == FORCE_BIN);
-	set_options_bin(oldval, curbuf->b_p_bin, OPT_LOCAL);
-    }
+    /* Set default or forced 'fileformat' and 'binary'. */
+    set_file_options(set_options, eap);
 
     /*
      * When opening a new file we take the readonly flag from the file.
@@ -647,15 +631,9 @@ readfile(fname, sfname, from, lines_to_skip, lines_to_read, eap, flags)
 		    check_marks_read();
 #endif
 #ifdef FEAT_MBYTE
-		    if (eap != NULL && eap->force_enc != 0)
-		    {
-			/* set forced 'fileencoding' */
-			fenc = enc_canonize(eap->cmd + eap->force_enc);
-			if (fenc != NULL)
-			    set_string_option_direct((char_u *)"fenc", -1,
-						 fenc, OPT_FREE|OPT_LOCAL, 0);
-			vim_free(fenc);
-		    }
+		    /* Set forced 'fileencoding'.  */
+		    if (eap != NULL)
+			set_forced_fenc(eap);
 #endif
 #ifdef FEAT_AUTOCMD
 		    apply_autocmds_exarg(EVENT_BUFNEWFILE, sfname, sfname,
@@ -2738,7 +2716,52 @@ prep_exarg(eap, buf)
     return OK;
 }
 
-#ifdef FEAT_MBYTE
+/*
+ * Set default or forced 'fileformat' and 'binary'.
+ */
+    void
+set_file_options(set_options, eap)
+    int set_options;
+    exarg_T *eap;
+{
+    /* set default 'fileformat' */
+    if (set_options)
+    {
+	if (eap != NULL && eap->force_ff != 0)
+	    set_fileformat(get_fileformat_force(curbuf, eap), OPT_LOCAL);
+	else if (*p_ffs != NUL)
+	    set_fileformat(default_fileformat(), OPT_LOCAL);
+    }
+
+    /* set or reset 'binary' */
+    if (eap != NULL && eap->force_bin != 0)
+    {
+	int	oldval = curbuf->b_p_bin;
+
+	curbuf->b_p_bin = (eap->force_bin == FORCE_BIN);
+	set_options_bin(oldval, curbuf->b_p_bin, OPT_LOCAL);
+    }
+}
+
+#if defined(FEAT_MBYTE) || defined(PROTO)
+/*
+ * Set forced 'fileencoding'.
+ */
+    void
+set_forced_fenc(eap)
+    exarg_T *eap;
+{
+    if (eap->force_enc != 0)
+    {
+	char_u *fenc = enc_canonize(eap->cmd + eap->force_enc);
+
+	if (fenc != NULL)
+	    set_string_option_direct((char_u *)"fenc", -1,
+				 fenc, OPT_FREE|OPT_LOCAL, 0);
+	vim_free(fenc);
+    }
+}
+
 /*
  * Find next fileencoding to use from 'fileencodings'.
  * "pp" points to fenc_next.  It's advanced to the next item.
@@ -2902,9 +2925,14 @@ check_for_cryptkey(cryptkey, ptr, sizep, filesizep, newfile, fname, did_ask)
     int		*did_ask;	/* flag: whether already asked for key */
 {
     int method = crypt_method_from_magic((char *)ptr, *sizep);
+    int b_p_ro = curbuf->b_p_ro;
 
     if (method >= 0)
     {
+	/* Mark the buffer as read-only until the decryption has taken place.
+	 * Avoids accidentally overwriting the file with garbage. */
+	curbuf->b_p_ro = TRUE;
+
 	set_crypt_method(curbuf, method);
 	if (method > 0)
 	    (void)blowfish_self_test();
@@ -2953,6 +2981,8 @@ check_for_cryptkey(cryptkey, ptr, sizep, filesizep, newfile, fname, did_ask)
 	    *sizep -= CRYPT_MAGIC_LEN + salt_len + seed_len;
 	    mch_memmove(ptr, ptr + CRYPT_MAGIC_LEN + salt_len + seed_len,
 							      (size_t)*sizep);
+	    /* Restore the read-only flag. */
+	    curbuf->b_p_ro = b_p_ro;
 	}
     }
     /* When starting to edit a new file which does not have encryption, clear
@@ -3780,12 +3810,12 @@ buf_write(buf, fname, sfname, start, end, eap, append, forceit,
 	    }
 	}
 
-# ifdef UNIX
 	/*
 	 * Break symlinks and/or hardlinks if we've been asked to.
 	 */
 	if ((bkc_flags & BKC_BREAKSYMLINK) || (bkc_flags & BKC_BREAKHARDLINK))
 	{
+# ifdef UNIX
 	    int	lstat_res;
 
 	    lstat_res = mch_lstat((char *)fname, &st);
@@ -3801,8 +3831,18 @@ buf_write(buf, fname, sfname, start, end, eap, append, forceit,
 		    && st_old.st_nlink > 1
 		    && (lstat_res != 0 || st.st_ino == st_old.st_ino))
 		backup_copy = FALSE;
+# else
+#  if defined(WIN32)
+	    /* Symlinks. */
+	    if ((bkc_flags & BKC_BREAKSYMLINK) && mch_is_symbolic_link(fname))
+		backup_copy = FALSE;
+
+	    /* Hardlinks. */
+	    if ((bkc_flags & BKC_BREAKHARDLINK) && mch_is_hard_link(fname))
+		backup_copy = FALSE;
+#  endif
+# endif
 	}
-#endif
 
 #endif
 
@@ -7652,16 +7692,16 @@ typedef struct AutoCmd
 
 typedef struct AutoPat
 {
-    int		    group;		/* group ID */
     char_u	    *pat;		/* pattern as typed (NULL when pattern
 					   has been removed) */
-    int		    patlen;		/* strlen() of pat */
     regprog_T	    *reg_prog;		/* compiled regprog for pattern */
-    char	    allow_dirs;		/* Pattern may match whole path */
-    char	    last;		/* last pattern for apply_autocmds() */
     AutoCmd	    *cmds;		/* list of commands to do */
     struct AutoPat  *next;		/* next AutoPat in AutoPat list */
+    int		    group;		/* group ID */
+    int		    patlen;		/* strlen() of pat */
     int		    buflocal_nr;	/* !=0 for buffer-local AutoPat */
+    char	    allow_dirs;		/* Pattern may match whole path */
+    char	    last;		/* last pattern for apply_autocmds() */
 } AutoPat;
 
 static struct event_name
@@ -7959,7 +7999,7 @@ au_cleanup()
 	    if (ap->pat == NULL)
 	    {
 		*prev_ap = ap->next;
-		vim_free(ap->reg_prog);
+		vim_regfree(ap->reg_prog);
 		vim_free(ap);
 	    }
 	    else
@@ -8865,6 +8905,9 @@ aucmd_prepbuf(aco, buf)
 #ifdef FEAT_WINDOWS
     int		save_ea;
 #endif
+#ifdef FEAT_AUTOCHDIR
+    int		save_acd;
+#endif
 
     /* Find a window that is for the new buffer */
     if (buf == curbuf)		/* be quick when buf is curbuf */
@@ -8913,11 +8956,10 @@ aucmd_prepbuf(aco, buf)
 	aucmd_win->w_s = &buf->b_s;
 	++buf->b_nwindows;
 	win_init_empty(aucmd_win); /* set cursor and topline to safe values */
-	vim_free(aucmd_win->w_localdir);
-	aucmd_win->w_localdir = NULL;
 
 	/* Make sure w_localdir and globaldir are NULL to avoid a chdir() in
 	 * win_enter_ext(). */
+	vim_free(aucmd_win->w_localdir);
 	aucmd_win->w_localdir = NULL;
 	aco->globaldir = globaldir;
 	globaldir = NULL;
@@ -8930,9 +8972,19 @@ aucmd_prepbuf(aco, buf)
 	make_snapshot(SNAP_AUCMD_IDX);
 	save_ea = p_ea;
 	p_ea = FALSE;
+
+# ifdef FEAT_AUTOCHDIR
+	/* Prevent chdir() call in win_enter_ext(), through do_autochdir(). */
+	save_acd = p_acd;
+	p_acd = FALSE;
+# endif
+
 	(void)win_split_ins(0, WSP_TOP, aucmd_win, 0);
 	(void)win_comp_pos();   /* recompute window positions */
 	p_ea = save_ea;
+# ifdef FEAT_AUTOCHDIR
+	p_acd = save_acd;
+# endif
 	unblock_autocmds();
 #endif
 	curwin = aucmd_win;
@@ -9600,6 +9652,12 @@ unblock_autocmds()
 # endif
 }
 
+    int
+is_autocmd_blocked()
+{
+    return autocmd_blocked != 0;
+}
+
 /*
  * Find next autocommand pattern that matches.
  */
@@ -10108,7 +10166,7 @@ match_file_pat(pattern, prog, fname, sfname, tail, allow_dirs)
 	result = TRUE;
 
     if (prog == NULL)
-	vim_free(regmatch.regprog);
+	vim_regfree(regmatch.regprog);
     return result;
 }
 #endif
@@ -10323,7 +10381,10 @@ file_pat_to_reg_pat(pat, pat_end, allow_dirs, no_bslash)
 		 * foo\,bar -> foo,bar
 		 * foo\ bar -> foo bar
 		 * Don't unescape \, * and others that are also special in a
-		 * regexp. */
+		 * regexp.
+		 * An escaped { must be unescaped since we use magic not
+		 * verymagic.  Use "\\\{n,m\}"" to get "\{n,m}".
+		 */
 		if (*++p == '?'
 #ifdef BACKSLASH_IN_FILENAME
 			&& no_bslash
@@ -10331,8 +10392,15 @@ file_pat_to_reg_pat(pat, pat_end, allow_dirs, no_bslash)
 			)
 		    reg_pat[i++] = '?';
 		else
-		    if (*p == ',' || *p == '%' || *p == '#' || *p == ' ')
+		    if (*p == ',' || *p == '%' || *p == '#'
+				       || *p == ' ' || *p == '{' || *p == '}')
 			reg_pat[i++] = *p;
+		    else if (*p == '\\' && p[1] == '\\' && p[2] == '{')
+		    {
+			reg_pat[i++] = '\\';
+			reg_pat[i++] = '{';
+			p += 2;
+		    }
 		    else
 		    {
 			if (allow_dirs != NULL && vim_ispathsep(*p)

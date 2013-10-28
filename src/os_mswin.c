@@ -456,7 +456,14 @@ mch_FullName(
     int
 mch_isFullName(char_u *fname)
 {
+#ifdef FEAT_MBYTE
+    /* WinNT and later can use _MAX_PATH wide characters for a pathname, which
+     * means that the maximum pathname is _MAX_PATH * 3 bytes when 'enc' is
+     * UTF-8. */
+    char szName[_MAX_PATH * 3 + 1];
+#else
     char szName[_MAX_PATH + 1];
+#endif
 
     /* A name like "d:/foo" and "//server/share" is absolute */
     if ((fname[0] && fname[1] == ':' && (fname[2] == '/' || fname[2] == '\\'))
@@ -464,7 +471,7 @@ mch_isFullName(char_u *fname)
 	return TRUE;
 
     /* A name that can't be made absolute probably isn't absolute. */
-    if (mch_FullName(fname, szName, _MAX_PATH, FALSE) == FAIL)
+    if (mch_FullName(fname, szName, sizeof(szName) - 1, FALSE) == FAIL)
 	return FALSE;
 
     return pathcmp(fname, szName, -1) == 0;
@@ -491,6 +498,104 @@ slash_adjust(p)
     }
 }
 
+#if (_MSC_VER >= 1300)
+# define OPEN_OH_ARGTYPE intptr_t
+#else
+# define OPEN_OH_ARGTYPE long
+#endif
+
+    static int
+stat_symlink_aware(const char *name, struct stat *stp)
+{
+#if defined(_MSC_VER) && _MSC_VER < 1700
+    /* Work around for VC10 or earlier. stat() can't handle symlinks properly.
+     * VC9 or earlier: stat() doesn't support a symlink at all. It retrieves
+     * status of a symlink itself.
+     * VC10: stat() supports a symlink to a normal file, but it doesn't support
+     * a symlink to a directory (always returns an error). */
+    WIN32_FIND_DATA	findData;
+    HANDLE		hFind, h;
+    DWORD		attr = 0;
+    BOOL		is_symlink = FALSE;
+
+    hFind = FindFirstFile(name, &findData);
+    if (hFind != INVALID_HANDLE_VALUE)
+    {
+	attr = findData.dwFileAttributes;
+	if ((attr & FILE_ATTRIBUTE_REPARSE_POINT)
+		&& (findData.dwReserved0 == IO_REPARSE_TAG_SYMLINK))
+	    is_symlink = TRUE;
+	FindClose(hFind);
+    }
+    if (is_symlink)
+    {
+	h = CreateFile(name, FILE_READ_ATTRIBUTES,
+		FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+		OPEN_EXISTING,
+		(attr & FILE_ATTRIBUTE_DIRECTORY)
+					    ? FILE_FLAG_BACKUP_SEMANTICS : 0,
+		NULL);
+	if (h != INVALID_HANDLE_VALUE)
+	{
+	    int	    fd, n;
+
+	    fd = _open_osfhandle((OPEN_OH_ARGTYPE)h, _O_RDONLY);
+	    n = _fstat(fd, (struct _stat*)stp);
+	    _close(fd);
+	    return n;
+	}
+    }
+#endif
+    return stat(name, stp);
+}
+
+#ifdef FEAT_MBYTE
+    static int
+wstat_symlink_aware(const WCHAR *name, struct _stat *stp)
+{
+# if defined(_MSC_VER) && _MSC_VER < 1700
+    /* Work around for VC10 or earlier. _wstat() can't handle symlinks properly.
+     * VC9 or earlier: _wstat() doesn't support a symlink at all. It retrieves
+     * status of a symlink itself.
+     * VC10: _wstat() supports a symlink to a normal file, but it doesn't
+     * support a symlink to a directory (always returns an error). */
+    int			n;
+    BOOL		is_symlink = FALSE;
+    HANDLE		hFind, h;
+    DWORD		attr = 0;
+    WIN32_FIND_DATAW	findDataW;
+
+    hFind = FindFirstFileW(name, &findDataW);
+    if (hFind != INVALID_HANDLE_VALUE)
+    {
+	attr = findDataW.dwFileAttributes;
+	if ((attr & FILE_ATTRIBUTE_REPARSE_POINT)
+		&& (findDataW.dwReserved0 == IO_REPARSE_TAG_SYMLINK))
+	    is_symlink = TRUE;
+	FindClose(hFind);
+    }
+    if (is_symlink)
+    {
+	h = CreateFileW(name, FILE_READ_ATTRIBUTES,
+		FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+		OPEN_EXISTING,
+		(attr & FILE_ATTRIBUTE_DIRECTORY)
+					    ? FILE_FLAG_BACKUP_SEMANTICS : 0,
+		NULL);
+	if (h != INVALID_HANDLE_VALUE)
+	{
+	    int	    fd;
+
+	    fd = _open_osfhandle((OPEN_OH_ARGTYPE)h, _O_RDONLY);
+	    n = _fstat(fd, stp);
+	    _close(fd);
+	    return n;
+	}
+    }
+# endif
+    return _wstat(name, stp);
+}
+#endif
 
 /*
  * stat() can't handle a trailing '/' or '\', remove it first.
@@ -498,10 +603,17 @@ slash_adjust(p)
     int
 vim_stat(const char *name, struct stat *stp)
 {
+#ifdef FEAT_MBYTE
+    /* WinNT and later can use _MAX_PATH wide characters for a pathname, which
+     * means that the maximum pathname is _MAX_PATH * 3 bytes when 'enc' is
+     * UTF-8. */
+    char	buf[_MAX_PATH * 3 + 1];
+#else
     char	buf[_MAX_PATH + 1];
+#endif
     char	*p;
 
-    vim_strncpy((char_u *)buf, (char_u *)name, _MAX_PATH);
+    vim_strncpy((char_u *)buf, (char_u *)name, sizeof(buf) - 1);
     p = buf + strlen(buf);
     if (p > buf)
 	mb_ptr_back(buf, p);
@@ -520,7 +632,7 @@ vim_stat(const char *name, struct stat *stp)
 
 	if (wp != NULL)
 	{
-	    n = _wstat(wp, (struct _stat *)stp);
+	    n = wstat_symlink_aware(wp, (struct _stat *)stp);
 	    vim_free(wp);
 	    if (n >= 0)
 		return n;
@@ -530,7 +642,7 @@ vim_stat(const char *name, struct stat *stp)
 	}
     }
 #endif
-    return stat(buf, stp);
+    return stat_symlink_aware(buf, stp);
 }
 
 #if defined(FEAT_GUI_MSWIN) || defined(PROTO)
@@ -1045,6 +1157,29 @@ static char_u		*prt_name = NULL;
 #define IDC_PRINTTEXT2		402
 #define IDC_PROGRESS		403
 
+#if !defined(FEAT_MBYTE) || defined(WIN16)
+# define vimSetDlgItemText(h, i, s) SetDlgItemText(h, i, s)
+#else
+    static BOOL
+vimSetDlgItemText(HWND hDlg, int nIDDlgItem, char_u *s)
+{
+    WCHAR   *wp = NULL;
+    BOOL    ret;
+
+    if (enc_codepage >= 0 && (int)GetACP() != enc_codepage)
+    {
+	wp = enc_to_utf16(s, NULL);
+    }
+    if (wp != NULL)
+    {
+	ret = SetDlgItemTextW(hDlg, nIDDlgItem, wp);
+	vim_free(wp);
+	return ret;
+    }
+    return SetDlgItemText(hDlg, nIDDlgItem, s);
+}
+#endif
+
 /*
  * Convert BGR to RGB for Windows GDI calls
  */
@@ -1096,18 +1231,18 @@ PrintDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		    SendDlgItemMessage(hDlg, i, WM_SETFONT, (WPARAM)hfont, 1);
 		    if (GetDlgItemText(hDlg,i, buff, sizeof(buff)))
-			SetDlgItemText(hDlg,i, _(buff));
+			vimSetDlgItemText(hDlg,i, _(buff));
 		}
 		SendDlgItemMessage(hDlg, IDCANCEL,
 						WM_SETFONT, (WPARAM)hfont, 1);
 		if (GetDlgItemText(hDlg,IDCANCEL, buff, sizeof(buff)))
-		    SetDlgItemText(hDlg,IDCANCEL, _(buff));
+		    vimSetDlgItemText(hDlg,IDCANCEL, _(buff));
 	    }
 #endif
 	    SetWindowText(hDlg, szAppName);
 	    if (prt_name != NULL)
 	    {
-		SetDlgItemText(hDlg, IDC_PRINTTEXT2, (LPSTR)prt_name);
+		vimSetDlgItemText(hDlg, IDC_PRINTTEXT2, (LPSTR)prt_name);
 		vim_free(prt_name);
 		prt_name = NULL;
 	    }
@@ -1565,7 +1700,7 @@ mch_print_begin(prt_settings_T *psettings)
     SetAbortProc(prt_dlg.hDC, AbortProc);
 #endif
     wsprintf(szBuffer, _("Printing '%s'"), gettail(psettings->jobname));
-    SetDlgItemText(hDlgPrint, IDC_PRINTTEXT1, (LPSTR)szBuffer);
+    vimSetDlgItemText(hDlgPrint, IDC_PRINTTEXT1, (LPSTR)szBuffer);
 
     vim_memset(&di, 0, sizeof(DOCINFO));
     di.cbSize = sizeof(DOCINFO);
@@ -1599,7 +1734,7 @@ mch_print_end_page(void)
 mch_print_begin_page(char_u *msg)
 {
     if (msg != NULL)
-	SetDlgItemText(hDlgPrint, IDC_PROGRESS, (LPSTR)msg);
+	vimSetDlgItemText(hDlgPrint, IDC_PROGRESS, (LPSTR)msg);
     return (StartPage(prt_dlg.hDC) > 0);
 }
 
@@ -1628,10 +1763,41 @@ mch_print_start_line(margin, page_line)
     int
 mch_print_text_out(char_u *p, int len)
 {
-#ifdef FEAT_PROPORTIONAL_FONTS
+#if defined(FEAT_PROPORTIONAL_FONTS) || (defined(FEAT_MBYTE) && !defined(WIN16))
     SIZE	sz;
 #endif
+#if defined(FEAT_MBYTE) && !defined(WIN16)
+    WCHAR	*wp = NULL;
+    int		wlen = len;
 
+    if (enc_codepage >= 0 && (int)GetACP() != enc_codepage)
+    {
+	wp = enc_to_utf16(p, &wlen);
+    }
+    if (wp != NULL)
+    {
+	int ret = FALSE;
+
+	TextOutW(prt_dlg.hDC, prt_pos_x + prt_left_margin,
+					 prt_pos_y + prt_top_margin, wp, wlen);
+	GetTextExtentPoint32W(prt_dlg.hDC, wp, wlen, &sz);
+	vim_free(wp);
+	prt_pos_x += (sz.cx - prt_tm.tmOverhang);
+	/* This is wrong when printing spaces for a TAB. */
+	if (p[len] != NUL)
+	{
+	    wlen = MB_PTR2LEN(p + len);
+	    wp = enc_to_utf16(p + len, &wlen);
+	    if (wp != NULL)
+	    {
+		GetTextExtentPoint32W(prt_dlg.hDC, wp, 1, &sz);
+		ret = (prt_pos_x + prt_left_margin + sz.cx > prt_right_margin);
+		vim_free(wp);
+	    }
+	}
+	return ret;
+    }
+#endif
     TextOut(prt_dlg.hDC, prt_pos_x + prt_left_margin,
 					  prt_pos_y + prt_top_margin, p, len);
 #ifndef FEAT_PROPORTIONAL_FONTS
@@ -1707,9 +1873,13 @@ mch_resolve_shortcut(char_u *fname)
     IPersistFile	*ppf = NULL;
     OLECHAR		wsz[MAX_PATH];
     WIN32_FIND_DATA	ffd; // we get those free of charge
-    TCHAR		buf[MAX_PATH]; // could have simply reused 'wsz'...
+    CHAR		buf[MAX_PATH]; // could have simply reused 'wsz'...
     char_u		*rfname = NULL;
     int			len;
+# ifdef FEAT_MBYTE
+    IShellLinkW		*pslw = NULL;
+    WIN32_FIND_DATAW	ffdw; // we get those free of charge
+# endif
 
     /* Check if the file name ends in ".lnk". Avoid calling
      * CoCreateInstance(), it's quite slow. */
@@ -1721,18 +1891,62 @@ mch_resolve_shortcut(char_u *fname)
 
     CoInitialize(NULL);
 
+# ifdef FEAT_MBYTE
+    if (enc_codepage >= 0 && (int)GetACP() != enc_codepage)
+    {
+	// create a link manager object and request its interface
+	hr = CoCreateInstance(
+		&CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER,
+		&IID_IShellLinkW, (void**)&pslw);
+	if (hr == S_OK)
+	{
+	    WCHAR	*p = enc_to_utf16(fname, NULL);
+
+	    if (p != NULL)
+	    {
+		// Get a pointer to the IPersistFile interface.
+		hr = pslw->lpVtbl->QueryInterface(
+			pslw, &IID_IPersistFile, (void**)&ppf);
+		if (hr != S_OK)
+		    goto shortcut_errorw;
+
+		// "load" the name and resolve the link
+		hr = ppf->lpVtbl->Load(ppf, p, STGM_READ);
+		if (hr != S_OK)
+		    goto shortcut_errorw;
+#  if 0  // This makes Vim wait a long time if the target does not exist.
+		hr = pslw->lpVtbl->Resolve(pslw, NULL, SLR_NO_UI);
+		if (hr != S_OK)
+		    goto shortcut_errorw;
+#  endif
+
+		// Get the path to the link target.
+		ZeroMemory(wsz, MAX_PATH * sizeof(WCHAR));
+		hr = pslw->lpVtbl->GetPath(pslw, wsz, MAX_PATH, &ffdw, 0);
+		if (hr == S_OK && wsz[0] != NUL)
+		    rfname = utf16_to_enc(wsz, NULL);
+
+shortcut_errorw:
+		vim_free(p);
+		if (hr == S_OK)
+		    goto shortcut_end;
+	    }
+	}
+	/* Retry with non-wide function (for Windows 98). */
+    }
+# endif
     // create a link manager object and request its interface
     hr = CoCreateInstance(
 	    &CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER,
 	    &IID_IShellLink, (void**)&psl);
     if (hr != S_OK)
-	goto shortcut_error;
+	goto shortcut_end;
 
     // Get a pointer to the IPersistFile interface.
     hr = psl->lpVtbl->QueryInterface(
 	    psl, &IID_IPersistFile, (void**)&ppf);
     if (hr != S_OK)
-	goto shortcut_error;
+	goto shortcut_end;
 
     // full path string must be in Unicode.
     MultiByteToWideChar(CP_ACP, 0, fname, -1, wsz, MAX_PATH);
@@ -1740,12 +1954,12 @@ mch_resolve_shortcut(char_u *fname)
     // "load" the name and resolve the link
     hr = ppf->lpVtbl->Load(ppf, wsz, STGM_READ);
     if (hr != S_OK)
-	goto shortcut_error;
-#if 0  // This makes Vim wait a long time if the target doesn't exist.
+	goto shortcut_end;
+# if 0  // This makes Vim wait a long time if the target doesn't exist.
     hr = psl->lpVtbl->Resolve(psl, NULL, SLR_NO_UI);
     if (hr != S_OK)
-	goto shortcut_error;
-#endif
+	goto shortcut_end;
+# endif
 
     // Get the path to the link target.
     ZeroMemory(buf, MAX_PATH);
@@ -1753,12 +1967,16 @@ mch_resolve_shortcut(char_u *fname)
     if (hr == S_OK && buf[0] != NUL)
 	rfname = vim_strsave(buf);
 
-shortcut_error:
+shortcut_end:
     // Release all interface pointers (both belong to the same object)
     if (ppf != NULL)
 	ppf->lpVtbl->Release(ppf);
     if (psl != NULL)
 	psl->lpVtbl->Release(psl);
+# ifdef FEAT_MBYTE
+    if (pslw != NULL)
+	pslw->lpVtbl->Release(pslw);
+# endif
 
     CoUninitialize();
     return rfname;
@@ -1897,7 +2115,6 @@ Messaging_WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	HWND		sender = (HWND)wParam;
 	COPYDATASTRUCT	reply;
 	char_u		*res;
-	char_u		winstr[30];
 	int		retval;
 	char_u		*str;
 	char_u		*tofree;
@@ -1948,8 +2165,8 @@ Messaging_WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	    reply.cbData = (DWORD)STRLEN(res) + 1;
 
 	    serverSendEnc(sender);
-	    retval = (int)SendMessage(sender, WM_COPYDATA, (WPARAM)message_window,
-							    (LPARAM)(&reply));
+	    retval = (int)SendMessage(sender, WM_COPYDATA,
+				    (WPARAM)message_window, (LPARAM)(&reply));
 	    vim_free(res);
 	    return retval;
 
@@ -1970,6 +2187,8 @@ Messaging_WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 #ifdef FEAT_AUTOCMD
 		else if (data->dwData == COPYDATA_REPLY)
 		{
+		    char_u	winstr[30];
+
 		    sprintf((char *)winstr, PRINTF_HEX_LONG_U, (long_u)sender);
 		    apply_autocmds(EVENT_REMOTEREPLY, winstr, str,
 								TRUE, curbuf);

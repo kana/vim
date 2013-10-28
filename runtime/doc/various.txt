@@ -1,4 +1,4 @@
-*various.txt*   For Vim version 7.3.  Last change: 2012 Dec 06
+*various.txt*   For Vim version 7.4.  Last change: 2013 May 18
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -291,6 +291,7 @@ g8			Print the hex values of the bytes used in the
 			in the normal, big and huge versions of Vim.
 
 							*+feature-list*
+   *+acl*		|ACL| support included
    *+ARP*		Amiga only: ARP support included
 B  *+arabic*		|Arabic| language support
 N  *+autocmd*		|:autocmd|, automatic commands
@@ -369,7 +370,7 @@ N  *+mouse_sysmouse*	Unix only: *BSD console mouse handling |sysmouse|
 B  *+mouse_sgr*		Unix only: sgr mouse handling |sgr-mouse|
 B  *+mouse_urxvt*	Unix only: urxvt mouse handling |urxvt-mouse|
 N  *+mouse_xterm*	Unix only: xterm mouse handling |xterm-mouse|
-B  *+multi_byte*	16 and 32 bit characters |multibyte|
+N  *+multi_byte*	16 and 32 bit characters |multibyte|
    *+multi_byte_ime*	Win32 input method for multibyte chars |multibyte-ime|
 N  *+multi_lang*	non-English language support |multi-lang|
 m  *+mzscheme*		Mzscheme interface |mzscheme|
@@ -429,6 +430,7 @@ S  *+windows*		more than one window
 m  *+writebackup*	|'writebackup'| is default on
 m  *+xim*		X input method |xim|
    *+xfontset*		X fontset support |xfontset|
+   *+xpm*		pixmap support
 m  *+xpm_w32*		Win32 GUI only: pixmap support |w32-xpm-support|
    *+xsmp*		XSMP (X session management) support
    *+xsmp_interact*	interactive XSMP (X session management) support

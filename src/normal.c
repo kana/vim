@@ -701,6 +701,7 @@ normal_cmd(oap, toplevel)
 	else
 	    c = 'c';
 	msg_nowait = TRUE;	/* don't delay going to insert mode */
+	old_mapped_len = 0;	/* do go to Insert mode */
     }
 #endif
 
@@ -4549,7 +4550,7 @@ nv_screengo(oap, dir, dist)
     int		width2;		/* test width for wrapped screen line */
 
     oap->motion_type = MCHAR;
-    oap->inclusive = FALSE;
+    oap->inclusive = (curwin->w_curswant == MAXCOL);
 
     col_off1 = curwin_col_off();
     col_off2 = col_off1 - curwin_col_off2();
@@ -5270,8 +5271,12 @@ dozet:
 		    {
 			pos_T	pos = curwin->w_cursor;
 
-			/* Find bad word under the cursor. */
+			/* Find bad word under the cursor.  When 'spell' is
+			 * off this fails and find_ident_under_cursor() is
+			 * used below. */
+			emsg_off++;
 			len = spell_move_to(curwin, FORWARD, TRUE, TRUE, NULL);
+			emsg_off--;
 			if (len != 0 && curwin->w_cursor.col <= pos.col)
 			    ptr = ml_get_pos(&curwin->w_cursor);
 			curwin->w_cursor = pos;
@@ -8253,6 +8258,11 @@ nv_g_cmd(cap)
 			i += ((curwin->w_virtcol - width1) / width2 + 1)
 								     * width2;
 		    coladvance((colnr_T)i);
+
+		    /* Make sure we stick in this column. */
+		    validate_virtcol();
+		    curwin->w_curswant = curwin->w_virtcol;
+		    curwin->w_set_curswant = FALSE;
 #if defined(FEAT_LINEBREAK) || defined(FEAT_MBYTE)
 		    if (curwin->w_cursor.col > 0 && curwin->w_p_wrap)
 		    {
@@ -8261,7 +8271,6 @@ nv_g_cmd(cap)
 			 * the end of the line.  We do not want to advance to
 			 * the next screen line.
 			 */
-			validate_virtcol();
 			if (curwin->w_virtcol > (colnr_T)i)
 			    --curwin->w_cursor.col;
 		    }
@@ -9547,6 +9556,8 @@ nv_put(cap)
 		/* cursor is at the end of the line or end of file, put
 		 * forward. */
 		dir = FORWARD;
+	    /* May have been reset in do_put(). */
+	    VIsual_active = TRUE;
 	}
 #endif
 	do_put(cap->oap->regname, dir, cap->count1, flags);

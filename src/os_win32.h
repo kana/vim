@@ -57,14 +57,11 @@
 
 #define FEAT_SHORTCUT		/* resolve shortcuts */
 
-#if !defined(__MINGW32__) \
-	&& !defined(__CYGWIN__) \
-	&& (!defined(__BORLANDC__) || __BORLANDC__ >= 0x550) \
+#if (!defined(__BORLANDC__) || __BORLANDC__ >= 0x550) \
 	&& (!defined(_MSC_VER) || _MSC_VER > 1020)
 /*
  * Access Control List (actually security info).
- * Mingw and Cygwin don't have the acl stuff.
- * Borland only in version 5.5 and later.
+ * Borland has the acl stuff only in version 5.5 and later.
  * MSVC in 5.0, not in 4.2, don't know about 4.3.
  */
 # define HAVE_ACL
@@ -80,7 +77,6 @@
 #ifndef FEAT_GUI_W32		/* GUI works different */
 # define BREAKCHECK_SKIP    1	/* call mch_breakcheck() each time, it's fast */
 #endif
-#define HAVE_AVAIL_MEM
 
 #define HAVE_PUTENV		/* at least Bcc 5.2 and MSC have it */
 
@@ -106,6 +102,9 @@
 #endif
 #ifndef PROTO
 # include <windows.h>
+# ifndef SM_CXPADDEDBORDER
+#  define SM_CXPADDEDBORDER     92
+# endif
 #endif
 
 /*
@@ -129,6 +128,19 @@
 
 #ifndef DFLT_MAXMEMTOT
 # define DFLT_MAXMEMTOT	(5*1024)    /* use up to 5 Mbyte for Vim */
+#endif
+
+/*
+ * Reparse Point
+ */
+#ifndef FILE_ATTRIBUTE_REPARSE_POINT
+# define FILE_ATTRIBUTE_REPARSE_POINT	0x00000400
+#endif
+#ifndef IO_REPARSE_TAG_MOUNT_POINT
+# define IO_REPARSE_TAG_MOUNT_POINT	0xA0000003
+#endif
+#ifndef IO_REPARSE_TAG_SYMLINK
+# define IO_REPARSE_TAG_SYMLINK		0xA000000C
 #endif
 
 #if defined(_MSC_VER) || defined(__BORLANDC__)

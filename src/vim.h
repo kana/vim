@@ -101,6 +101,9 @@
 # endif
 # ifndef FEAT_CLIPBOARD
 #  define FEAT_CLIPBOARD
+#  if defined(FEAT_SMALL) && !defined(FEAT_MOUSE)
+#   define FEAT_MOUSE
+#  endif
 # endif
 #endif
 #if defined(MACOS_X) || defined(MACOS_CLASSIC)
@@ -785,7 +788,8 @@ extern char *(*dyn_libintl_textdomain)(const char *domainname);
 #define EXPAND_LOCALES		40
 #define EXPAND_HISTORY		41
 #define EXPAND_USER		42
-#define EXPAND_MACACTION	43
+#define EXPAND_SYNTIME		43
+#define EXPAND_MACACTION	44
 
 /* Values for exmode_active (0 is no exmode) */
 #define EXMODE_NORMAL		1
@@ -2179,10 +2183,6 @@ typedef int VimClipboard;	/* This is required for the prototypes. */
   /* Borland has the structure stati64 but not _stati64 */
 #  define _stati64 stati64
 # endif
-
-# include <EXTERN.h>
-# include <perl.h>
-# include <XSUB.h>
 #endif
 
 /* values for vim_handle_signal() that are not a signal */
@@ -2245,5 +2245,8 @@ typedef int VimClipboard;	/* This is required for the prototypes. */
 #define SREQ_GLOBAL	0	/* Request global option */
 #define SREQ_WIN	1	/* Request window-local option */
 #define SREQ_BUF	2	/* Request buffer-local option */
+
+/* Character used as separated in autoload function/variable names. */
+#define AUTOLOAD_CHAR '#'
 
 #endif /* VIM__H */

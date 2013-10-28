@@ -988,6 +988,10 @@ do_bufdel(command, arg, addr_count, start_bnr, end_bnr, forceit)
 
     return errormsg;
 }
+#endif /* FEAT_LISTCMDS */
+
+#if defined(FEAT_LISTCMDS) || defined(FEAT_PYTHON) \
+	|| defined(FEAT_PYTHON3) || defined(PROTO)
 
 /*
  * Implementation of the commands for the buffer list.
@@ -1186,7 +1190,10 @@ do_buffer(action, start, dir, count, forceit)
 		   && !(curwin->w_closing || curwin->w_buffer->b_closing)
 # endif
 		   && (firstwin != lastwin || first_tabpage->tp_next != NULL))
-	    win_close(curwin, FALSE);
+	{
+	    if (win_close(curwin, FALSE) == FAIL)
+		break;
+	}
 #endif
 
 	/*
@@ -1368,8 +1375,7 @@ do_buffer(action, start, dir, count, forceit)
 
     return OK;
 }
-
-#endif /* FEAT_LISTCMDS */
+#endif
 
 /*
  * Set current buffer to "buf".  Executes autocommands and closes current
@@ -1902,7 +1908,7 @@ free_buf_options(buf, free_p_ff)
 #ifdef FEAT_SPELL
     clear_string_option(&buf->b_s.b_p_spc);
     clear_string_option(&buf->b_s.b_p_spf);
-    vim_free(buf->b_s.b_cap_prog);
+    vim_regfree(buf->b_s.b_cap_prog);
     buf->b_s.b_cap_prog = NULL;
     clear_string_option(&buf->b_s.b_p_spl);
 #endif
@@ -2250,7 +2256,7 @@ buflist_findpat(pattern, pattern_end, unlisted, diffmode, curtab_only)
 			match = buf->b_fnum;	/* remember first match */
 		    }
 
-		vim_free(prog);
+		vim_regfree(prog);
 		if (match >= 0)			/* found one match */
 		    break;
 	    }
@@ -2359,14 +2365,14 @@ ExpandBufnames(pat, num_file, file, options)
 		*file = (char_u **)alloc((unsigned)(count * sizeof(char_u *)));
 		if (*file == NULL)
 		{
-		    vim_free(prog);
+		    vim_regfree(prog);
 		    if (patc != pat)
 			vim_free(patc);
 		    return FAIL;
 		}
 	    }
 	}
-	vim_free(prog);
+	vim_regfree(prog);
 	if (count)		/* match(es) found, break here */
 	    break;
     }
@@ -3143,7 +3149,7 @@ fileinfo(fullname, shorthelp, dont_truncate)
 #endif
 					? _("[New file]") : "",
 	    (curbuf->b_flags & BF_READERR) ? _("[Read errors]") : "",
-	    curbuf->b_p_ro ? (shortmess(SHM_RO) ? "[RO]"
+	    curbuf->b_p_ro ? (shortmess(SHM_RO) ? _("[RO]")
 						      : _("[readonly]")) : "",
 	    (curbufIsChanged() || (curbuf->b_flags & BF_WRITE_MASK)
 							  || curbuf->b_p_ro) ?
@@ -3986,7 +3992,7 @@ build_stl_str_hl(wp, out, outlen, fmt, use_sandbox, fillchar,
 	case STL_ROFLAG_ALT:
 	    itemisflag = TRUE;
 	    if (wp->w_buffer->b_p_ro)
-		str = (char_u *)((opt == STL_ROFLAG_ALT) ? ",RO" : "[RO]");
+		str = (char_u *)((opt == STL_ROFLAG_ALT) ? ",RO" : _("[RO]"));
 	    break;
 
 	case STL_HELPFLAG:
@@ -5103,7 +5109,8 @@ chk_modeline(lnum, flags)
 	    if ((prev != -1 && STRNCMP(s, "ex:", (size_t)3) == 0)
 		    || STRNCMP(s, "vi:", (size_t)3) == 0)
 		break;
-	    if (STRNCMP(s, "vim", 3) == 0)
+	    /* Accept both "vim" and "Vim". */
+	    if ((s[0] == 'v' || s[0] == 'V') && s[1] == 'i' && s[2] == 'm')
 	    {
 		if (s[3] == '<' || s[3] == '=' || s[3] == '>')
 		    e = s + 4;
@@ -5111,6 +5118,8 @@ chk_modeline(lnum, flags)
 		    e = s + 3;
 		vers = getdigits(&e);
 		if (*e == ':'
+			&& (s[0] != 'V'
+				  || STRNCMP(skipwhite(e + 1), "set", 3) == 0)
 			&& (s[3] == ':'
 			    || (VIM_VERSION_100 >= vers && isdigit(s[3]))
 			    || (VIM_VERSION_100 < vers && s[3] == '<')
@@ -5317,18 +5326,14 @@ buf_spname(buf)
 #if defined(FEAT_QUICKFIX) && defined(FEAT_WINDOWS)
     if (bt_quickfix(buf))
     {
-	win_T	    *win = NULL;
+	win_T	    *win;
 	tabpage_T   *tp;
 
 	/*
 	 * For location list window, w_llist_ref points to the location list.
 	 * For quickfix window, w_llist_ref is NULL.
 	 */
-	FOR_ALL_TAB_WINDOWS(tp, win)
-	    if (win->w_buffer == buf)
-		goto win_found;
-win_found:
-	if (win != NULL && win->w_llist_ref != NULL)
+	if (find_win_for_buf(buf, &win, &tp) == OK && win->w_llist_ref != NULL)
 	    return (char_u *)_(msg_loclist);
 	else
 	    return (char_u *)_(msg_qflist);
@@ -5349,6 +5354,28 @@ win_found:
     return NULL;
 }
 
+#if (defined(FEAT_QUICKFIX) && defined(FEAT_WINDOWS)) \
+	|| defined(FEAT_PYTHON) || defined(FEAT_PYTHON3) \
+	|| defined(PROTO)
+/*
+ * Find a window for buffer "buf".
+ * If found OK is returned and "wp" and "tp" are set to the window and tabpage.
+ * If not found FAIL is returned.
+ */
+    int
+find_win_for_buf(buf, wp, tp)
+    buf_T     *buf;
+    win_T     **wp;
+    tabpage_T **tp;
+{
+    FOR_ALL_TAB_WINDOWS(*tp, *wp)
+	if ((*wp)->w_buffer == buf)
+	    goto win_found;
+    return FAIL;
+win_found:
+    return OK;
+}
+#endif
 
 #if defined(FEAT_SIGNS) || defined(PROTO)
 /*

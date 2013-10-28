@@ -1,7 +1,7 @@
 " Vim support file to detect file types
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2013 May 15
+" Last Change:	2013 Sep 22
 
 " Listen very carefully, I will say this only once
 if exists("did_load_filetypes")
@@ -129,7 +129,7 @@ au BufNewFile,BufRead .asoundrc,*/usr/share/alsa/alsa.conf,*/etc/asound.conf set
 au BufNewFile,BufRead *.aml			setf aml
 
 " APT config file
-au BufNewFile,BufRead apt.conf                 setf aptconf
+au BufNewFile,BufRead apt.conf		       setf aptconf
 au BufNewFile,BufRead */.aptitude/config       setf aptconf
 au BufNewFile,BufRead */etc/apt/apt.conf.d/{[-_[:alnum:]]\+,[-_.[:alnum:]]\+.conf} setf aptconf
 
@@ -755,14 +755,15 @@ au BufNewFile,BufRead *.ged,lltxxxxx.txt	setf gedcom
 au BufNewFile,BufRead *.git/COMMIT_EDITMSG	setf gitcommit
 au BufNewFile,BufRead *.git/MERGE_MSG		setf gitcommit
 au BufNewFile,BufRead *.git/config,.gitconfig,.gitmodules setf gitconfig
-au BufNewFile,BufRead *.git/modules/**/COMMIT_EDITMSG setf gitcommit
-au BufNewFile,BufRead *.git/modules/**/config	setf gitconfig
+au BufNewFile,BufRead *.git/modules/*/COMMIT_EDITMSG setf gitcommit
+au BufNewFile,BufRead *.git/modules/*/config	setf gitconfig
+au BufNewFile,BufRead */.config/git/config	setf gitconfig
 au BufNewFile,BufRead git-rebase-todo		setf gitrebase
 au BufNewFile,BufRead .msg.[0-9]*
       \ if getline(1) =~ '^From.*# This line is ignored.$' |
       \   setf gitsendemail |
       \ endif
-au BufNewFile,BufRead *.git/**
+au BufNewFile,BufRead *.git/*
       \ if getline(1) =~ '^\x\{40\}\>\|^ref: ' |
       \   setf git |
       \ endif
@@ -776,7 +777,7 @@ au BufNewFile,BufRead *.gp,.gprc		setf gp
 " GPG
 au BufNewFile,BufRead */.gnupg/options		setf gpg
 au BufNewFile,BufRead */.gnupg/gpg.conf		setf gpg
-au BufNewFile,BufRead */usr/**/gnupg/options.skel setf gpg
+au BufNewFile,BufRead */usr/*/gnupg/options.skel setf gpg
 
 " gnash(1) configuration files
 au BufNewFile,BufRead gnashrc,.gnashrc,gnashpluginrc,.gnashpluginrc setf gnash
@@ -869,6 +870,9 @@ au BufNewFile,BufRead */etc/hosts.allow,*/etc/hosts.deny  setf hostsaccess
 " Hyper Builder
 au BufNewFile,BufRead *.hb			setf hb
 
+" Httest
+au BufNewFile,BufRead *.htt,*.htb		setf httest
+
 " Icon
 au BufNewFile,BufRead *.icn			setf icon
 
@@ -924,7 +928,14 @@ au BufNewFile,BufRead indentrc			setf indent
 au BufNewFile,BufRead *.inf,*.INF		setf inform
 
 " Initng
-au BufNewFile,BufRead */etc/initng/**/*.i,*.ii	setf initng
+au BufNewFile,BufRead */etc/initng/*/*.i,*.ii	setf initng
+
+" Innovation Data Processing
+au BufRead,BufNewFile upstream.dat\c,upstream.*.dat\c,*.upstream.dat\c 	setf upstreamdat
+au BufRead,BufNewFile upstream.log\c,upstream.*.log\c,*.upstream.log\c 	setf upstreamlog
+au BufRead,BufNewFile upstreaminstall.log\c,upstreaminstall.*.log\c,*.upstreaminstall.log\c setf upstreaminstalllog
+au BufRead,BufNewFile usserver.log\c,usserver.*.log\c,*.usserver.log\c 	setf usserverlog
+au BufRead,BufNewFile usw2kagt.log\c,usw2kagt.*.log\c,*.usw2kagt.log\c 	setf usw2kagtlog
 
 " Ipfilter
 au BufNewFile,BufRead ipf.conf,ipf6.conf,ipf.rules	setf ipfilter
@@ -940,6 +951,9 @@ au BufNewFile,BufRead inittab			setf inittab
 
 " Inno Setup
 au BufNewFile,BufRead *.iss			setf iss
+
+" J
+au BufNewFile,BufRead *.ijs			setf j
 
 " JAL
 au BufNewFile,BufRead *.jal,*.JAL		setf jal
@@ -1071,7 +1085,7 @@ au BufNewFile,BufRead *.m4
 au BufNewFile,BufRead *.mgp			setf mgp
 
 " Mail (for Elm, trn, mutt, muttng, rn, slrn)
-au BufNewFile,BufRead snd.\d\+,.letter,.letter.\d\+,.followup,.article,.article.\d\+,pico.\d\+,mutt{ng,}-*-\w\+,mutt[[:alnum:]_-]\{6\},ae\d\+.txt,/tmp/SLRN[0-9A-Z.]\+,*.eml setf mail
+au BufNewFile,BufRead snd.\d\+,.letter,.letter.\d\+,.followup,.article,.article.\d\+,pico.\d\+,mutt{ng,}-*-\w\+,mutt[[:alnum:]_-]\\\{6\},ae\d\+.txt,/tmp/SLRN[0-9A-Z.]\+,*.eml setf mail
 
 " Mail aliases
 au BufNewFile,BufRead */etc/mail/aliases,*/etc/aliases	setf mailaliases
@@ -1101,7 +1115,7 @@ au BufNewFile,BufRead *.mv,*.mpl,*.mws		setf maple
 au BufNewFile,BufRead *.map			setf map
 
 " Markdown
-au BufNewFile,BufRead *.markdown,*.mdown,*.mkd,*.mkdn,README.md  setf markdown
+au BufNewFile,BufRead *.markdown,*.mdown,*.mkd,*.mkdn,*.mdwn,README.md  setf markdown
 
 " Mason
 au BufNewFile,BufRead *.mason,*.mhtml		setf mason
@@ -1386,6 +1400,9 @@ au BufNewFile,BufRead *.rcp			setf pilrc
 " Pine config
 au BufNewFile,BufRead .pinerc,pinerc,.pinercex,pinercex		setf pine
 
+" PL/1, PL/I
+au BufNewFile,BufRead *.pli,*.pl1		setf pli
+
 " PL/M (also: *.inp)
 au BufNewFile,BufRead *.plm,*.p36,*.pac		setf plm
 
@@ -1546,6 +1563,9 @@ au BufNewFile,BufRead *.pdb			setf prolog
 
 " Promela
 au BufNewFile,BufRead *.pml			setf promela
+
+" Google protocol buffers
+au BufNewFile,BufRead *.proto			setf proto
 
 " Protocols
 au BufNewFile,BufRead */etc/protocols		setf protocols
@@ -2075,7 +2095,7 @@ au BufNewFile,BufRead *.tak			setf tak
 
 " Task
 au BufRead,BufNewFile {pending,completed,undo}.data  setf taskdata
-au BufRead,BufNewFile *.task                    setf taskedit
+au BufRead,BufNewFile *.task			setf taskedit
 
 " Tcl (JACL too)
 au BufNewFile,BufRead *.tcl,*.tk,*.itcl,*.itk,*.jacl	setf tcl
@@ -2200,12 +2220,12 @@ au BufNewFile,BufRead *.uc			setf uc
 au BufNewFile,BufRead */etc/updatedb.conf	setf updatedb
 
 " Upstart (init(8)) config files
-au BufNewFile,BufRead */usr/share/upstart/*.conf               setf upstart
-au BufNewFile,BufRead */usr/share/upstart/*.override           setf upstart
+au BufNewFile,BufRead */usr/share/upstart/*.conf	       setf upstart
+au BufNewFile,BufRead */usr/share/upstart/*.override	       setf upstart
 au BufNewFile,BufRead */etc/init/*.conf,*/etc/init/*.override  setf upstart
 au BufNewFile,BufRead */.init/*.conf,*/.init/*.override        setf upstart
-au BufNewFile,BufRead */.config/upstart/*.conf                 setf upstart
-au BufNewFile,BufRead */.config/upstart/*.override             setf upstart
+au BufNewFile,BufRead */.config/upstart/*.conf		       setf upstart
+au BufNewFile,BufRead */.config/upstart/*.override	       setf upstart
 
 " Vera
 au BufNewFile,BufRead *.vr,*.vri,*.vrh		setf vera
@@ -2534,7 +2554,7 @@ au BufNewFile,BufRead [mM]akefile*		call s:StarSetf('make')
 au BufNewFile,BufRead [rR]akefile*		call s:StarSetf('ruby')
 
 " Mail (also matches muttrc.vim, so this is below the other checks)
-au BufNewFile,BufRead mutt[[:alnum:]._-]\{6\}	setf mail
+au BufNewFile,BufRead mutt[[:alnum:]._-]\\\{6\}	setf mail
 
 " Modconf
 au BufNewFile,BufRead */etc/modutils/*

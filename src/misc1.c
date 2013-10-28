@@ -16,6 +16,9 @@
 
 static char_u *vim_version_dir __ARGS((char_u *vimdir));
 static char_u *remove_tail __ARGS((char_u *p, char_u *pend, char_u *name));
+#if defined(FEAT_CMDL_COMPL)
+static void init_users __ARGS((void));
+#endif
 static int copy_indent __ARGS((int size, char_u	*src));
 
 /* All user names (for ~user completion as done by shell). */
@@ -300,10 +303,18 @@ set_indent(size, flags)
 	ml_replace(curwin->w_cursor.lnum, newline, FALSE);
 	if (flags & SIN_CHANGED)
 	    changed_bytes(curwin->w_cursor.lnum, 0);
-	/* Correct saved cursor position if it's after the indent. */
-	if (saved_cursor.lnum == curwin->w_cursor.lnum
-				&& saved_cursor.col >= (colnr_T)(p - oldline))
-	    saved_cursor.col += ind_len - (colnr_T)(p - oldline);
+	/* Correct saved cursor position if it is in this line. */
+	if (saved_cursor.lnum == curwin->w_cursor.lnum)
+	{
+	    if (saved_cursor.col >= (colnr_T)(p - oldline))
+		/* cursor was after the indent, adjust for the number of
+		 * bytes added/removed */
+		saved_cursor.col += ind_len - (colnr_T)(p - oldline);
+	    else if (saved_cursor.col >= (colnr_T)(s - newline))
+		/* cursor was in the indent, and is now after it, put it back
+		 * at the start of the indent (replacing spaces with TAB) */
+		saved_cursor.col = (colnr_T)(s - newline);
+	}
 	retval = TRUE;
     }
     else
@@ -456,8 +467,8 @@ get_number_indent(lnum)
 	    pos.coladd = 0;
 #endif
 	}
+	vim_regfree(regmatch.regprog);
     }
-    vim_free(regmatch.regprog);
 
     if (pos.lnum == 0 || *ml_get_pos(&pos) == NUL)
 	return -1;
@@ -1578,9 +1589,9 @@ theend:
 
 #if defined(FEAT_COMMENTS) || defined(PROTO)
 /*
- * get_leader_len() returns the length of the prefix of the given string
- * which introduces a comment.	If this string is not a comment then 0 is
- * returned.
+ * get_leader_len() returns the length in bytes of the prefix of the given
+ * string which introduces a comment.  If this string is not a comment then
+ * 0 is returned.
  * When "flags" is not NULL, it is set to point to the flags of the recognized
  * comment leader.
  * "backward" must be true for the "O" command.
@@ -4493,7 +4504,8 @@ get_env_name(xp, idx)
  * Done only once and then cached.
  */
     static void
-init_users() {
+init_users()
+{
     static int	lazy_init_done = FALSE;
 
     if (lazy_init_done)
@@ -4613,7 +4625,7 @@ home_replace(buf, src, dst, dstlen, one)
     if (homedir_env != NULL && *homedir_env == NUL)
 	homedir_env = NULL;
 
-#if defined(FEAT_MODIFY_FNAME) || defined(WIN3264)
+#if defined(FEAT_MODIFY_FNAME) || defined(FEAT_EVAL)
     if (homedir_env != NULL && vim_strchr(homedir_env, '~') != NULL)
     {
 	int	usedlen = 0;
@@ -9176,6 +9188,8 @@ prepare_to_exit()
 /*
  * Preserve files and exit.
  * When called IObuff must contain a message.
+ * NOTE: This may be called from deathtrap() in a signal handler, avoid unsafe
+ * functions, such as allocating memory.
  */
     void
 preserve_exit()
@@ -9198,7 +9212,7 @@ preserve_exit()
     {
 	if (buf->b_ml.ml_mfp != NULL && buf->b_ml.ml_mfp->mf_fname != NULL)
 	{
-	    OUT_STR(_("Vim: preserving files...\n"));
+	    OUT_STR("Vim: preserving files...\n");
 	    screen_start();	    /* don't know where cursor is now */
 	    out_flush();
 	    ml_sync_all(FALSE, FALSE);	/* preserve all swap files */
@@ -9208,7 +9222,7 @@ preserve_exit()
 
     ml_close_all(FALSE);	    /* close all memfiles, without deleting */
 
-    OUT_STR(_("Vim: Finished.\n"));
+    OUT_STR("Vim: Finished.\n");
 
     getout(1);
 }
@@ -9757,7 +9771,7 @@ dos_expandpath(
 # endif
 #endif
     vim_free(buf);
-    vim_free(regmatch.regprog);
+    vim_regfree(regmatch.regprog);
     vim_free(matchname);
 
     matches = gap->ga_len - start_len;
@@ -9999,7 +10013,7 @@ unix_expandpath(gap, path, wildoff, flags, didstar)
     }
 
     vim_free(buf);
-    vim_free(regmatch.regprog);
+    vim_regfree(regmatch.regprog);
 
     matches = gap->ga_len - start_len;
     if (matches > 0)
@@ -10364,7 +10378,7 @@ theend:
 	vim_free(in_curdir);
     }
     ga_clear_strings(&path_ga);
-    vim_free(regmatch.regprog);
+    vim_regfree(regmatch.regprog);
 
     if (sort_again)
 	remove_duplicates(gap);
@@ -10459,6 +10473,54 @@ remove_duplicates(gap)
 }
 #endif
 
+static int has_env_var __ARGS((char_u *p));
+
+/*
+ * Return TRUE if "p" contains what looks like an environment variable.
+ * Allowing for escaping.
+ */
+    static int
+has_env_var(p)
+    char_u *p;
+{
+    for ( ; *p; mb_ptr_adv(p))
+    {
+	if (*p == '\\' && p[1] != NUL)
+	    ++p;
+	else if (vim_strchr((char_u *)
+#if defined(MSDOS) || defined(MSWIN) || defined(OS2)
+				    "$%"
+#else
+				    "$"
+#endif
+					, *p) != NULL)
+	    return TRUE;
+    }
+    return FALSE;
+}
+
+#ifdef SPECIAL_WILDCHAR
+static int has_special_wildchar __ARGS((char_u *p));
+
+/*
+ * Return TRUE if "p" contains a special wildcard character.
+ * Allowing for escaping.
+ */
+    static int
+has_special_wildchar(p)
+    char_u  *p;
+{
+    for ( ; *p; mb_ptr_adv(p))
+    {
+	if (*p == '\\' && p[1] != NUL)
+	    ++p;
+	else if (vim_strchr((char_u *)SPECIAL_WILDCHAR, *p) != NULL)
+	    return TRUE;
+    }
+    return FALSE;
+}
+#endif
+
 /*
  * Generic wildcard expansion code.
  *
@@ -10509,7 +10571,7 @@ gen_expand_wildcards(num_pat, pat, num_file, file, flags)
      */
     for (i = 0; i < num_pat; i++)
     {
-	if (vim_strpbrk(pat[i], (char_u *)SPECIAL_WILDCHAR) != NULL
+	if (has_special_wildchar(pat[i])
 # ifdef VIM_BACKTICK
 		&& !(vim_backtick(pat[i]) && pat[i][1] == '=')
 # endif
@@ -10539,7 +10601,7 @@ gen_expand_wildcards(num_pat, pat, num_file, file, flags)
 	    /*
 	     * First expand environment variables, "~/" and "~user/".
 	     */
-	    if (vim_strchr(p, '$') != NULL || *p == '~')
+	    if (has_env_var(p) || *p == '~')
 	    {
 		p = expand_env_save_opt(p, TRUE);
 		if (p == NULL)
@@ -10550,7 +10612,7 @@ gen_expand_wildcards(num_pat, pat, num_file, file, flags)
 		 * variable, use the shell to do that.  Discard previously
 		 * found file names and start all over again.
 		 */
-		else if (vim_strchr(p, '$') != NULL || *p == '~')
+		else if (has_env_var(p) || *p == '~')
 		{
 		    vim_free(p);
 		    ga_clear_strings(&ga);
@@ -10841,7 +10903,14 @@ get_cmd_output(cmd, infile, flags)
 	buffer = NULL;
     }
     else
+    {
+	/* Change NUL into SOH, otherwise the string is truncated. */
+	for (i = 0; i < len; ++i)
+	    if (buffer[i] == NUL)
+		buffer[i] = 1;
+
 	buffer[len] = NUL;	/* make sure the buffer is terminated */
+    }
 
 done:
     vim_free(tempname);

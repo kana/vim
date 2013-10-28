@@ -44,7 +44,11 @@ gnd/[u]niquepattern/s
 vlgnd
 /mother
 :set selection=exclusive
-$cgNmongoose
+$cgNmongoose/i
+cgnj
+:" Make sure there is no other match y uppercase.
+/x59
+gggnd
 :/^start:/,/^end:/wq! test.out
 ENDTEST
 
@@ -73,4 +77,8 @@ zero width pattern
 delete first and last chars
 uniquepattern uniquepattern
 my very excellent mother just served us nachos
+for (i=0; i<=10; i++)
+Y
+text
+Y
 end:

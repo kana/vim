@@ -957,8 +957,10 @@ mch_didjmp()
 
 /*
  * This function handles deadly signals.
- * It tries to preserve any swap file and exit properly.
+ * It tries to preserve any swap files and exit properly.
  * (partly from Elvis).
+ * NOTE: Avoid unsafe functions, such as allocating memory, they can result in
+ * a deadlock.
  */
     static RETSIGTYPE
 deathtrap SIGDEFARG(sigarg)
@@ -1090,18 +1092,23 @@ deathtrap SIGDEFARG(sigarg)
     }
     if (entered == 2)
     {
-	OUT_STR(_("Vim: Double signal, exiting\n"));
+	/* No translation, it may call malloc(). */
+	OUT_STR("Vim: Double signal, exiting\n");
 	out_flush();
 	getout(1);
     }
 
+    /* No translation, it may call malloc(). */
 #ifdef SIGHASARG
-    sprintf((char *)IObuff, _("Vim: Caught deadly signal %s\n"),
+    sprintf((char *)IObuff, "Vim: Caught deadly signal %s\n",
 							 signal_info[i].name);
 #else
-    sprintf((char *)IObuff, _("Vim: Caught deadly signal\n"));
+    sprintf((char *)IObuff, "Vim: Caught deadly signal\n");
 #endif
-    preserve_exit();		    /* preserve files and exit */
+
+    /* Preserve files and exit.  This sets the really_exiting flag to prevent
+     * calling free(). */
+    preserve_exit();
 
 #ifdef NBDEBUG
     reset_signals();
@@ -1559,7 +1566,7 @@ x_IOerror_check(dpy)
 {
     /* This function should not return, it causes exit().  Longjump instead. */
     LONGJMP(lc_jump_env, 1);
-#  ifdef VMS
+#  if defined(VMS) || defined(__CYGWIN__) || defined(__CYGWIN32__)
     return 0;  /* avoid the compiler complains about missing return value */
 #  endif
 }
@@ -1581,7 +1588,7 @@ x_IOerror_handler(dpy)
 
     /* This function should not return, it causes exit().  Longjump instead. */
     LONGJMP(x_jump_env, 1);
-# ifdef VMS
+# if defined(VMS) || defined(__CYGWIN__) || defined(__CYGWIN32__)
     return 0;  /* avoid the compiler complains about missing return value */
 # endif
 }
@@ -3783,6 +3790,7 @@ mch_get_shellsize()
 
     Rows = rows;
     Columns = columns;
+    limit_screen_size();
     return OK;
 }
 
@@ -5951,7 +5959,7 @@ mch_expand_wildcards(num_pat, pat, num_file, file, flags)
 # if defined(__CYGWIN__) || defined(__CYGWIN32__)
     /* Translate <CR><NL> into <NL>.  Caution, buffer may contain NUL. */
     p = buffer;
-    for (i = 0; i < len; ++i)
+    for (i = 0; i < (int)len; ++i)
 	if (!(buffer[i] == CAR && buffer[i + 1] == NL))
 	    *p++ = buffer[i];
     len = p - buffer;
@@ -6149,7 +6157,6 @@ save_patterns(num_pat, pat, num_file, file)
     return OK;
 }
 #endif
-
 
 /*
  * Return TRUE if the string "p" contains a wildcard that mch_expandpath() can

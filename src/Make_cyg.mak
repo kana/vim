@@ -1,6 +1,6 @@
 #
 # Makefile for VIM on Win32, using Cygnus gcc
-# Last updated by Dan Sharp.  Last Change: 2013 Apr 22
+# Last updated by Dan Sharp.  Last Change: 2013 Sep 19
 #
 # Also read INSTALLpc.txt!
 #
@@ -118,6 +118,9 @@ endif
 
 DEFINES = -DWIN32 -DHAVE_PATHDEF -DFEAT_$(FEATURES) \
 	  -DWINVER=$(WINVER) -D_WIN32_WINNT=$(WINVER)
+ifeq ($(ARCH),x86-64)
+DEFINES+=-DMS_WIN64
+endif
 INCLUDES = -march=$(ARCH) -Iproto
 
 #>>>>> name of the compiler and linker, name of lib directory
@@ -436,8 +439,6 @@ endif
 ##############################
 ifeq (yes, $(USEDLL))
 DEFINES += -D_MAX_PATH=256 -D__CYGWIN__
-else
-INCLUDES += -mno-cygwin
 endif
 
 ##############################
@@ -648,10 +649,10 @@ $(OUTDIR)/if_cscope.o:	if_cscope.c $(INCL) if_cscope.h
 $(OUTDIR)/if_ole.o:	if_ole.cpp $(INCL)
 	$(CC) -c $(CFLAGS) if_ole.cpp -o $(OUTDIR)/if_ole.o
 
-$(OUTDIR)/if_python.o : if_python.c $(INCL)
+$(OUTDIR)/if_python.o : if_python.c if_py_both.h $(INCL)
 	$(CC) -c $(CFLAGS) -I$(PYTHON)/include $< -o $@
 
-$(OUTDIR)/if_python3.o : if_python3.c $(INCL)
+$(OUTDIR)/if_python3.o : if_python3.c if_py_both.h $(INCL)
 	$(CC) -c $(CFLAGS) -I$(PYTHON3)/include $< -o $@
 
 if_perl.c: if_perl.xs typemap
@@ -671,6 +672,9 @@ endif
 
 $(OUTDIR)/netbeans.o:	netbeans.c $(INCL) $(NBDEBUG_DEP)
 	$(CC) -c $(CFLAGS) netbeans.c -o $(OUTDIR)/netbeans.o
+
+$(OUTDIR)/regexp.o:		regexp.c regexp_nfa.c $(INCL)
+	$(CC) -c $(CFLAGS) regexp.c -o $(OUTDIR)/regexp.o
 
 $(OUTDIR)/if_mzsch.o:	if_mzsch.c $(INCL) if_mzsch.h $(MZ_EXTRA_DEP)
 	$(CC) -c $(CFLAGS) if_mzsch.c -o $(OUTDIR)/if_mzsch.o

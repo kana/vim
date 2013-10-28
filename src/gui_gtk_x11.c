@@ -1447,6 +1447,11 @@ gui_mch_init_check(void)
 	using_gnome = 1;
 #endif
 
+    /* This defaults to argv[0], but we want it to match the name of the
+     * shipped gvim.desktop so that Vim's windows can be associated with this
+     * file. */
+    g_set_prgname("gvim");
+
     /* Don't use gtk_init() or gnome_init(), it exits on failure. */
     if (!gtk_init_check(&gui_argc, &gui_argv))
     {
@@ -3693,6 +3698,7 @@ gui_mch_open(void)
 		p_window = h - 1;
 	    Rows = h;
 	}
+	limit_screen_size();
 
 	pixel_width = (guint)(gui_get_base_width() + Columns * gui.char_width);
 	pixel_height = (guint)(gui_get_base_height() + Rows * gui.char_height);

@@ -1514,8 +1514,10 @@ u_write_undo(name, forceit, buf, hash)
 	write_ok = TRUE;
 #ifdef U_DEBUG
     if (headers_written != buf->b_u_numhead)
-	EMSG3("Written %ld headers, but numhead is %ld",
-					   headers_written, buf->b_u_numhead);
+    {
+	EMSGN("Written %ld headers, ...", headers_written);
+	EMSGN("... but numhead is %ld", buf->b_u_numhead);
+    }
 #endif
 
 write_error:
@@ -1602,10 +1604,11 @@ u_read_undo(name, hash, orig_name)
 
 #ifdef UNIX
 	/* For safety we only read an undo file if the owner is equal to the
-	 * owner of the text file. */
+	 * owner of the text file or equal to the current user. */
 	if (mch_stat((char *)orig_name, &st_orig) >= 0
 		&& mch_stat((char *)file_name, &st_undo) >= 0
-		&& st_orig.st_uid != st_undo.st_uid)
+		&& st_orig.st_uid != st_undo.st_uid
+		&& st_undo.st_uid != getuid())
 	{
 	    if (p_verbose > 0)
 	    {
