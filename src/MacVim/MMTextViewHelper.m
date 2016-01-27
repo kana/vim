@@ -172,6 +172,22 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
         // with Ctrl-6 or Ctrl-^ when IM is active.
         [self doKeyDown:@"\x1e"];
         string = nil;
+    } else if ((flags & NSShiftKeyMask) && [string isEqualToString:@" "]) {
+        // HACK!  To recognize S-Space as is on Yosemite with Kotoeri.
+    } else if ((!imState) &&
+               (flags & NSControlKeyMask) &&
+               [unmod length] == 1 &&
+               ([unmod characterAtIndex:0] == 'o' ||
+                [unmod characterAtIndex:0] == 'u')) {
+        // HACK!  To recognize C-o and C-u as is on Yosemite with Kotoeri.
+        // TODO: C-o is unexpectedly handled by MacVim.  Why?
+        //                IME
+        //            off     on
+        //          C-u C-o C-u C-o
+        //  None     x   x   o   o
+        //  imState  x   x   o   o
+        // !imState  o   o   o  ??? (im-insert)
+        //  true     o   o   o  ??? (im-insert
     } else {
         // HACK!  interpretKeyEvents: may call insertText: or
         // doCommandBySelector:, or it may swallow the key (most likely the
