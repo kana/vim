@@ -1,0 +1,2 @@
+rm -fr /Applications/MacVim.app
+cp -a src/MacVim/build/Release/MacVim.app /Applications/
