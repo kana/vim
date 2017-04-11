@@ -163,15 +163,6 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
 @end
 
 
-@interface MMChannel : NSObject {
-    CFSocketRef         socket;
-    CFRunLoopSourceRef  runLoopSource;
-}
-
-- (id)initWithIndex:(int)idx fileDescriptor:(int)fd;
-@end
-
-
 @interface MMBackend (Private)
 - (void)clearDrawData;
 - (void)didChangeWholeLine;
@@ -207,6 +198,9 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
 #ifdef FEAT_BEVAL
 - (void)bevalCallback:(id)sender;
 #endif
+#ifdef MESSAGE_QUEUE
+- (void)checkForProcessEvents:(NSTimer *)timer;
+#endif
 @end
 
 
@@ -241,7 +235,6 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
     connectionNameDict = [[NSMutableDictionary alloc] init];
     clientProxyDict = [[NSMutableDictionary alloc] init];
     serverReplyDict = [[NSMutableDictionary alloc] init];
-    channelDict = [[NSMutableDictionary alloc] init];
 
     NSBundle *mainBundle = [NSBundle mainBundle];
     NSString *path = [mainBundle pathForResource:@"Colors" ofType:@"plist"];
@@ -273,7 +266,6 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
     gui_mch_free_font(oldWideFont);  oldWideFont = NOFONT;
     [blinkTimer release];  blinkTimer = nil;
     [alternateServerName release];  alternateServerName = nil;
-    [channelDict release];  channelDict = nil;
     [serverReplyDict release];  serverReplyDict = nil;
     [clientProxyDict release];  clientProxyDict = nil;
     [connectionNameDict release];  connectionNameDict = nil;
@@ -690,13 +682,26 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
 
     // Only start the run loop if the input queue is empty, otherwise process
     // the input first so that the input on queue isn't delayed.
-    if ([inputQueue count]) {
+    if ([inputQueue count] || input_available()) {
         inputReceived = YES;
     } else {
         // Wait for the specified amount of time, unless 'milliseconds' is
         // negative in which case we wait "forever" (1e6 seconds translates to
         // approximately 11 days).
         CFTimeInterval dt = (milliseconds >= 0 ? .001*milliseconds : 1e6);
+        NSTimer *timer = nil;
+
+        // Set interval timer which checks for the events of job and channel
+        // when there is any pending job or channel.
+        if (dt > 0.1 && (has_any_channel() || has_pending_job())) {
+            timer = [NSTimer scheduledTimerWithTimeInterval:0.1
+                                                     target:self
+                                                   selector:@selector(checkForProcessEvents:)
+                                                   userInfo:nil
+                                                    repeats:YES];
+            [[NSRunLoop currentRunLoop] addTimer:timer
+                                         forMode:NSDefaultRunLoopMode];
+        }
 
         while (CFRunLoopRunInMode(kCFRunLoopDefaultMode, dt, true)
                 == kCFRunLoopRunHandledSource) {
@@ -706,6 +711,11 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
             dt = 0.0;
             inputReceived = YES;
         }
+
+        if (input_available())
+            inputReceived = YES;
+
+        [timer invalidate];
     }
 
     // The above calls may have placed messages on the input queue so process
@@ -1085,6 +1095,13 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
     [self queueMessage:AdjustLinespaceMsgID data:data];
 }
 
+- (void)adjustColumnspace:(int)columnspace
+{
+    NSMutableData *data = [NSMutableData data];
+    [data appendBytes:&columnspace length:sizeof(int)];
+    [self queueMessage:AdjustColumnspaceMsgID data:data];
+}
+
 - (void)activate
 {
     [self queueMessage:ActivateMsgID data:nil];
@@ -1190,6 +1207,13 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
 - (void)setLigatures:(BOOL)ligatures
 {
     int msgid = ligatures ? EnableLigaturesMsgID : DisableLigaturesMsgID;
+
+    [self queueMessage:msgid data:nil];
+}
+
+- (void)setThinStrokes:(BOOL)thinStrokes
+{
+    int msgid = thinStrokes ? EnableThinStrokesMsgID : DisableThinStrokesMsgID;
 
     [self queueMessage:msgid data:nil];
 }
@@ -1682,23 +1706,6 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
 
     gui_update_cursor(TRUE, FALSE);
     [self flushQueue:YES];
-}
-
-- (void)addChannel:(int)idx fileDescriptor:(int)fd
-{
-    if (fd == -1)
-        return;
-
-    NSNumber *key = [NSNumber numberWithInt:idx];
-    MMChannel *channel =
-        [[[MMChannel alloc] initWithIndex:idx fileDescriptor:fd] autorelease];
-    [channelDict setObject:channel forKey:key];
-}
-
-- (void)removeChannel:(int)idx
-{
-    NSNumber *key = [NSNumber numberWithInt:idx];
-    [channelDict removeObjectForKey:key];
 }
 
 #ifdef FEAT_BEVAL
@@ -3025,6 +3032,24 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
 }
 #endif
 
+#ifdef MESSAGE_QUEUE
+- (void)checkForProcessEvents:(NSTimer *)timer
+{
+# ifdef FEAT_TIMERS
+    did_add_timer = FALSE;
+# endif
+
+    parse_queued_messages();
+
+    if (input_available()
+# ifdef FEAT_TIMERS
+            || did_add_timer
+# endif
+            )
+        CFRunLoopStop(CFRunLoopGetCurrent());
+}
+#endif
+
 @end // MMBackend (Private)
 
 
@@ -3194,13 +3219,13 @@ static int eventModifierFlagsToVimModMask(int modifierFlags)
 {
     int modMask = 0;
 
-    if (modifierFlags & NSShiftKeyMask)
+    if (modifierFlags & NSEventModifierFlagShift)
         modMask |= MOD_MASK_SHIFT;
-    if (modifierFlags & NSControlKeyMask)
+    if (modifierFlags & NSEventModifierFlagControl)
         modMask |= MOD_MASK_CTRL;
-    if (modifierFlags & NSAlternateKeyMask)
+    if (modifierFlags & NSEventModifierFlagOption)
         modMask |= MOD_MASK_ALT;
-    if (modifierFlags & NSCommandKeyMask)
+    if (modifierFlags & NSEventModifierFlagCommand)
         modMask |= MOD_MASK_CMD;
 
     return modMask;
@@ -3210,11 +3235,11 @@ static int eventModifierFlagsToVimMouseModMask(int modifierFlags)
 {
     int modMask = 0;
 
-    if (modifierFlags & NSShiftKeyMask)
+    if (modifierFlags & NSEventModifierFlagShift)
         modMask |= MOUSE_SHIFT;
-    if (modifierFlags & NSControlKeyMask)
+    if (modifierFlags & NSEventModifierFlagControl)
         modMask |= MOUSE_CTRL;
-    if (modifierFlags & NSAlternateKeyMask)
+    if (modifierFlags & NSEventModifierFlagOption)
         modMask |= MOUSE_ALT;
 
     return modMask;
@@ -3412,51 +3437,3 @@ static id evalExprCocoa(NSString * expr, NSString ** errstr)
 }
 
 @end // NSString (VimStrings)
-
-
-
-@implementation MMChannel
-
-- (void)dealloc
-{
-    CFRunLoopSourceInvalidate(runLoopSource);
-    CFRelease(runLoopSource);
-    CFRelease(socket);
-    [super dealloc];
-}
-
-static void socketReadCallback(CFSocketRef s,
-                               CFSocketCallBackType callbackType,
-                               CFDataRef address,
-                               const void *data,
-                               void *info)
-{
-#ifdef FEAT_CHANNEL
-    int idx = (int)(intptr_t)info;
-    channel_read(idx);
-#endif
-}
-
-- (id)initWithIndex:(int)idx fileDescriptor:(int)fd
-{
-    self = [super init];
-    if (!self) return nil;
-
-    // Tell CFRunLoop that we are interested in channel socket input.
-    CFSocketContext ctx = {0, (void *)(intptr_t)idx, NULL, NULL, NULL};
-    socket = CFSocketCreateWithNative(kCFAllocatorDefault,
-                                      fd,
-                                      kCFSocketReadCallBack,
-                                      &socketReadCallback,
-                                      &ctx);
-    runLoopSource = CFSocketCreateRunLoopSource(NULL,
-                                                socket,
-                                                0);
-    CFRunLoopAddSource(CFRunLoopGetCurrent(),
-                       runLoopSource,
-                       kCFRunLoopCommonModes);
-
-    return self;
-}
-
-@end

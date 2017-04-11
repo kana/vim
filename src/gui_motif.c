@@ -1,4 +1,4 @@
-/* vi:set ts=8 sts=4 sw=4:
+/* vi:set ts=8 sts=4 sw=4 noet:
  *
  * VIM - Vi IMproved		by Bram Moolenaar
  *				GUI/Motif support by Robert Webb
@@ -7,6 +7,8 @@
  * Do ":help credits" in Vim to see a list of people who contributed.
  * See README.txt for an overview of the Vim source code.
  */
+
+#include "vim.h"
 
 #include <Xm/Form.h>
 #include <Xm/RowColumn.h>
@@ -32,8 +34,6 @@
 #include <X11/Xatom.h>
 #include <X11/StringDefs.h>
 #include <X11/Intrinsic.h>
-
-#include "vim.h"
 
 #ifdef HAVE_X11_XPM_H
 # include <X11/xpm.h>

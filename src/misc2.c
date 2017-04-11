@@ -1,4 +1,4 @@
-/* vi:set ts=8 sts=4 sw=4:
+/* vi:set ts=8 sts=4 sw=4 noet:
  *
  * VIM - Vi IMproved	by Bram Moolenaar
  *
@@ -169,7 +169,7 @@ coladvance2(
 
 	if (finetune
 		&& curwin->w_p_wrap
-# ifdef FEAT_VERTSPLIT
+# ifdef FEAT_WINDOWS
 		&& curwin->w_width != 0
 # endif
 		&& wcol >= (colnr_T)width)
@@ -196,7 +196,7 @@ coladvance2(
 	    /* Count a tab for what it's worth (if list mode not on) */
 #ifdef FEAT_LINEBREAK
 	    csize = win_lbr_chartabsize(curwin, line, ptr, col, &head);
-	    mb_ptr_adv(ptr);
+	    MB_PTR_ADV(ptr);
 #else
 	    csize = lbr_chartabsize_adv(line, &ptr, col);
 #endif
@@ -403,7 +403,7 @@ incl(pos_T *lp)
     int
 dec_cursor(void)
 {
- return dec(&curwin->w_cursor);
+    return dec(&curwin->w_cursor);
 }
 
     int
@@ -502,6 +502,28 @@ get_cursor_rel_lnum(
 	retval = lnum - cursor;
 
     return retval;
+}
+
+/*
+ * Make sure "pos.lnum" and "pos.col" are valid in "buf".
+ * This allows for the col to be on the NUL byte.
+ */
+    void
+check_pos(buf_T *buf, pos_T *pos)
+{
+    char_u *line;
+    colnr_T len;
+
+    if (pos->lnum > buf->b_ml.ml_line_count)
+	pos->lnum = buf->b_ml.ml_line_count;
+
+    if (pos->col > 0)
+    {
+	line = ml_get_buf(buf, pos->lnum, FALSE);
+	len = (colnr_T)STRLEN(line);
+	if (pos->col > len)
+	    pos->col = len;
+    }
 }
 
 /*
@@ -805,12 +827,7 @@ alloc_does_fail(long_u size)
  * Some memory is reserved for error messages and for being able to
  * call mf_release_all(), which needs some memory for mf_trans_add().
  */
-#if defined(MSDOS) && !defined(DJGPP)
-# define SMALL_MEM
-# define KEEP_ROOM 8192L
-#else
-# define KEEP_ROOM (2 * 8192L)
-#endif
+#define KEEP_ROOM (2 * 8192L)
 #define KEEP_ROOM_KB (KEEP_ROOM / 1024L)
 
 /*
@@ -856,7 +873,7 @@ alloc_clear(unsigned size)
     char_u *
 alloc_check(unsigned size)
 {
-#if !defined(UNIX) && !defined(__EMX__)
+#if !defined(UNIX)
     if (sizeof(int) == 2 && size > 0x7fff)
     {
 	/* Don't hide this message */
@@ -892,7 +909,7 @@ lalloc(long_u size, int message)
     char_u	*p;		    /* pointer to new storage space */
     static int	releasing = FALSE;  /* don't do mf_release_all() recursive */
     int		try_again;
-#if defined(HAVE_AVAIL_MEM) && !defined(SMALL_MEM)
+#if defined(HAVE_AVAIL_MEM)
     static long_u allocated = 0;    /* allocated since last avail check */
 #endif
 
@@ -901,18 +918,12 @@ lalloc(long_u size, int message)
     {
 	/* Don't hide this message */
 	emsg_silent = 0;
-	EMSGN(_("E341: Internal error: lalloc(%ld, )"), size);
+	IEMSGN(_("E341: Internal error: lalloc(%ld, )"), size);
 	return NULL;
     }
 
 #ifdef MEM_PROFILE
     mem_pre_alloc_l(&size);
-#endif
-
-#if defined(MSDOS) && !defined(DJGPP)
-    if (size >= 0xfff0)		/* in MSDOS we can't deal with >64K blocks */
-	p = NULL;
-    else
 #endif
 
     /*
@@ -934,14 +945,13 @@ lalloc(long_u size, int message)
 	    /* 1. No check for available memory: Just return. */
 	    goto theend;
 #else
-# ifndef SMALL_MEM
 	    /* 2. Slow check for available memory: call mch_avail_mem() after
 	     *    allocating (KEEP_ROOM / 2) amount of memory. */
 	    allocated += size;
 	    if (allocated < KEEP_ROOM / 2)
 		goto theend;
 	    allocated = 0;
-# endif
+
 	    /* 3. check for available memory: call mch_avail_mem() */
 	    if (mch_avail_mem(TRUE) < KEEP_ROOM_KB && !releasing)
 	    {
@@ -960,7 +970,7 @@ lalloc(long_u size, int message)
 	    break;
 	releasing = TRUE;
 
-	clear_sb_text();	      /* free any scrollback text */
+	clear_sb_text(TRUE);	      /* free any scrollback text */
 	try_again = mf_release_all(); /* release as many blocks as possible */
 
 	releasing = FALSE;
@@ -1048,13 +1058,12 @@ static void free_findfile(void);
 free_all_mem(void)
 {
     buf_T	*buf, *nextbuf;
-    static int	entered = FALSE;
 
     /* When we cause a crash here it is caught and Vim tries to exit cleanly.
      * Don't try freeing everything again. */
-    if (entered)
+    if (entered_free_all_mem)
 	return;
-    entered = TRUE;
+    entered_free_all_mem = TRUE;
 
 # ifdef FEAT_AUTOCMD
     /* Don't want to trigger autocommands from here on. */
@@ -1066,7 +1075,7 @@ free_all_mem(void)
     p_ea = FALSE;
     if (first_tabpage->tp_next != NULL)
 	do_cmdline_cmd((char_u *)"tabonly!");
-    if (firstwin != lastwin)
+    if (!ONE_WINDOW)
 	do_cmdline_cmd((char_u *)"only!");
 # endif
 
@@ -1139,7 +1148,7 @@ free_all_mem(void)
 # ifdef FEAT_DIFF
     diff_clear(curtab);
 # endif
-    clear_sb_text();	      /* free any scrollback text */
+    clear_sb_text(TRUE);	      /* free any scrollback text */
 
     /* Free some global vars. */
     vim_free(username);
@@ -1186,9 +1195,12 @@ free_all_mem(void)
 #endif
     for (buf = firstbuf; buf != NULL; )
     {
+	bufref_T    bufref;
+
+	set_bufref(&bufref, buf);
 	nextbuf = buf->b_next;
 	close_buffer(NULL, buf, DOBUF_WIPE, FALSE);
-	if (buf_valid(buf))
+	if (bufref_valid(&bufref))
 	    buf = nextbuf;	/* didn't work, try next one */
 	else
 	    buf = firstbuf;
@@ -1227,8 +1239,19 @@ free_all_mem(void)
 	if (delete_first_msg() == FAIL)
 	    break;
 
+# ifdef FEAT_JOB_CHANNEL
+    channel_free_all();
+# endif
+#ifdef FEAT_TIMERS
+    timer_free_all();
+#endif
 # ifdef FEAT_EVAL
+    /* must be after channel_free_all() with unrefs partials */
     eval_clear();
+# endif
+# ifdef FEAT_JOB_CHANNEL
+    /* must be after eval_clear() with unrefs jobs */
+    job_free_all();
 # endif
 
     free_termoptions();
@@ -1395,9 +1418,9 @@ vim_strsave_shellescape(char_u *string, int do_special, int do_newline)
 
     /* First count the number of extra bytes required. */
     length = (unsigned)STRLEN(string) + 3;  /* two quotes and a trailing NUL */
-    for (p = string; *p != NUL; mb_ptr_adv(p))
+    for (p = string; *p != NUL; MB_PTR_ADV(p))
     {
-# if defined(WIN32) || defined(WIN16) || defined(DOS)
+# ifdef WIN32
 	if (!p_ssl)
 	{
 	    if (*p == '"')
@@ -1428,7 +1451,7 @@ vim_strsave_shellescape(char_u *string, int do_special, int do_newline)
 	d = escaped_string;
 
 	/* add opening quote */
-# if defined(WIN32) || defined(WIN16) || defined(DOS)
+# ifdef WIN32
 	if (!p_ssl)
 	    *d++ = '"';
 	else
@@ -1437,7 +1460,7 @@ vim_strsave_shellescape(char_u *string, int do_special, int do_newline)
 
 	for (p = string; *p != NUL; )
 	{
-# if defined(WIN32) || defined(WIN16) || defined(DOS)
+# ifdef WIN32
 	    if (!p_ssl)
 	    {
 		if (*p == '"')
@@ -1480,7 +1503,7 @@ vim_strsave_shellescape(char_u *string, int do_special, int do_newline)
 	}
 
 	/* add terminating quote and finish with a NUL */
-# if defined(WIN32) || defined(WIN16) || defined(DOS)
+# ifdef WIN32
 	if (!p_ssl)
 	    *d++ = '"';
 	else
@@ -1579,7 +1602,10 @@ strup_save(char_u *orig)
 		{
 		    s = alloc((unsigned)STRLEN(res) + 1 + newl - l);
 		    if (s == NULL)
-			break;
+		    {
+			vim_free(res);
+			return NULL;
+		    }
 		    mch_memmove(s, res, p - res);
 		    STRCPY(s + (p - res) + newl, p + l);
 		    p = s + (p - res);
@@ -1602,6 +1628,69 @@ strup_save(char_u *orig)
 
     return res;
 }
+
+/*
+ * Make string "s" all lower-case and return it in allocated memory.
+ * Handles multi-byte characters as well as possible.
+ * Returns NULL when out of memory.
+ */
+    char_u *
+strlow_save(char_u *orig)
+{
+    char_u	*p;
+    char_u	*res;
+
+    res = p = vim_strsave(orig);
+
+    if (res != NULL)
+	while (*p != NUL)
+	{
+# ifdef FEAT_MBYTE
+	    int		l;
+
+	    if (enc_utf8)
+	    {
+		int	c, lc;
+		int	newl;
+		char_u	*s;
+
+		c = utf_ptr2char(p);
+		lc = utf_tolower(c);
+
+		/* Reallocate string when byte count changes.  This is rare,
+		 * thus it's OK to do another malloc()/free(). */
+		l = utf_ptr2len(p);
+		newl = utf_char2len(lc);
+		if (newl != l)
+		{
+		    s = alloc((unsigned)STRLEN(res) + 1 + newl - l);
+		    if (s == NULL)
+		    {
+			vim_free(res);
+			return NULL;
+		    }
+		    mch_memmove(s, res, p - res);
+		    STRCPY(s + (p - res) + newl, p + l);
+		    p = s + (p - res);
+		    vim_free(res);
+		    res = s;
+		}
+
+		utf_char2bytes(lc, p);
+		p += newl;
+	    }
+	    else if (has_mbyte && (l = (*mb_ptr2len)(p)) > 1)
+		p += l;		/* skip multi-byte character */
+	    else
+# endif
+	    {
+		*p = TOLOWER_LOC(*p); /* note that tolower() can be a macro */
+		p++;
+	    }
+	}
+
+    return res;
+}
 #endif
 
 /*
@@ -1613,7 +1702,7 @@ del_trailing_spaces(char_u *ptr)
     char_u	*q;
 
     q = ptr + STRLEN(ptr);
-    while (--q > ptr && vim_iswhite(q[0]) && q[-1] != '\\' && q[-1] != Ctrl_V)
+    while (--q > ptr && VIM_ISWHITE(q[0]) && q[-1] != '\\' && q[-1] != Ctrl_V)
 	*q = NUL;
 }
 
@@ -1630,7 +1719,7 @@ vim_strncpy(char_u *to, char_u *from, size_t len)
 
 /*
  * Like strcat(), but make sure the result fits in "tosize" bytes and is
- * always NUL terminated.
+ * always NUL terminated. "from" and "to" may overlap.
  */
     void
 vim_strcat(char_u *to, char_u *from, size_t tosize)
@@ -1644,7 +1733,7 @@ vim_strcat(char_u *to, char_u *from, size_t tosize)
 	to[tosize - 1] = NUL;
     }
     else
-	STRCPY(to + tolen, from);
+	mch_memmove(to + tolen, from, fromlen + 1);
 }
 
 /*
@@ -1717,54 +1806,6 @@ vim_memset(void *ptr, int c, size_t size)
 }
 #endif
 
-#ifdef VIM_MEMCMP
-/*
- * Return zero when "b1" and "b2" are the same for "len" bytes.
- * Return non-zero otherwise.
- */
-    int
-vim_memcmp(void *b1, void *b2, size_t len)
-{
-    char_u  *p1 = (char_u *)b1, *p2 = (char_u *)b2;
-
-    for ( ; len > 0; --len)
-    {
-	if (*p1 != *p2)
-	    return 1;
-	++p1;
-	++p2;
-    }
-    return 0;
-}
-#endif
-
-#ifdef VIM_MEMMOVE
-/*
- * Version of memmove() that handles overlapping source and destination.
- * For systems that don't have a function that is guaranteed to do that (SYSV).
- */
-    void
-mch_memmove(void *src_arg, *dst_arg, size_t len)
-{
-    /*
-     * A void doesn't have a size, we use char pointers.
-     */
-    char *dst = dst_arg, *src = src_arg;
-
-					/* overlap, copy backwards */
-    if (dst > src && dst < src + len)
-    {
-	src += len;
-	dst += len;
-	while (len-- > 0)
-	    *--dst = *--src;
-    }
-    else				/* copy forwards */
-	while (len-- > 0)
-	    *dst++ = *src++;
-}
-#endif
-
 #if (!defined(HAVE_STRCASECMP) && !defined(HAVE_STRICMP)) || defined(PROTO)
 /*
  * Compare two strings, ignoring case, using current locale.
@@ -1833,7 +1874,7 @@ vim_strchr(char_u *string, int c)
     {
 	while (*p != NUL)
 	{
-	    int l = (*mb_ptr2len)(p);
+	    int l = utfc_ptr2len(p);
 
 	    /* Avoid matching an illegal byte here. */
 	    if (utf_ptr2char(p) == c && l > 1)
@@ -1909,7 +1950,7 @@ vim_strrchr(char_u *string, int c)
     {
 	if (*p == c)
 	    retval = p;
-	mb_ptr_adv(p);
+	MB_PTR_ADV(p);
     }
     return retval;
 }
@@ -1930,7 +1971,7 @@ vim_strpbrk(char_u *s, char_u *charset)
     {
 	if (vim_strchr(charset, *s) != NULL)
 	    return s;
-	mb_ptr_adv(s);
+	MB_PTR_ADV(s);
     }
     return NULL;
 }
@@ -2058,7 +2099,7 @@ ga_concat_strings(garray_T *gap, char *sep)
     return s;
 }
 
-#if defined(FEAT_VIMINFO) || defined(PROTO)
+#if defined(FEAT_VIMINFO) || defined(FEAT_EVAL) || defined(PROTO)
 /*
  * Make a copy of string "p" and add it to "gap".
  * When out of memory nothing changes.
@@ -2088,7 +2129,7 @@ ga_concat(garray_T *gap, char_u *s)
 {
     int    len;
 
-    if (s == NULL)
+    if (s == NULL || *s == NUL)
 	return;
     len = (int)STRLEN(s);
     if (ga_grow(gap, len) == OK)
@@ -2159,6 +2200,7 @@ static struct modmasktable
     /* 'A' must be the last one */
     {MOD_MASK_ALT,		MOD_MASK_ALT,		(char_u)'A'},
     {0, 0, NUL}
+    /* NOTE: when adding an entry, update MAX_KEY_NAME_LEN! */
 };
 
 /*
@@ -2291,6 +2333,8 @@ static struct key_name_entry
     {K_XDOWN,		(char_u *)"xDown"},
     {K_XLEFT,		(char_u *)"xLeft"},
     {K_XRIGHT,		(char_u *)"xRight"},
+    {K_PS,		(char_u *)"PasteStart"},
+    {K_PE,		(char_u *)"PasteEnd"},
 
     {K_F1,		(char_u *)"F1"},
     {K_F2,		(char_u *)"F2"},
@@ -2432,6 +2476,7 @@ static struct key_name_entry
     {K_SWIPEDOWN,	(char_u *)"SwipeDown"},
 #endif
     {0,			NULL}
+    /* NOTE: When adding a long name update MAX_KEY_NAME_LEN. */
 };
 
 #define KEY_NAMES_TABLE_LEN (sizeof(key_names_table) / sizeof(struct key_name_entry))
@@ -2660,8 +2705,13 @@ get_special_key_name(int c, int modifiers)
     }
     else		/* use name of special key */
     {
-	STRCPY(string + idx, key_names_table[table_idx].name);
-	idx = (int)STRLEN(string);
+	size_t len = STRLEN(key_names_table[table_idx].name);
+
+	if (len + idx + 2 <= MAX_KEY_NAME_LEN)
+	{
+	    STRCPY(string + idx, key_names_table[table_idx].name);
+	    idx += (int)len;
+	}
     }
     string[idx++] = '>';
     string[idx] = NUL;
@@ -2678,13 +2728,14 @@ get_special_key_name(int c, int modifiers)
 trans_special(
     char_u	**srcp,
     char_u	*dst,
-    int		keycode) /* prefer key code, e.g. K_DEL instead of DEL */
+    int		keycode, /* prefer key code, e.g. K_DEL instead of DEL */
+    int		in_string) /* TRUE when inside a double quoted string */
 {
     int		modifiers = 0;
     int		key;
     int		dlen = 0;
 
-    key = find_special_key(srcp, &modifiers, keycode, FALSE);
+    key = find_special_key(srcp, &modifiers, keycode, FALSE, in_string);
     if (key == 0)
 	return 0;
 
@@ -2724,7 +2775,8 @@ find_special_key(
     char_u	**srcp,
     int		*modp,
     int		keycode,     /* prefer key code, e.g. K_DEL instead of DEL */
-    int		keep_x_key)  /* don't translate xHome to Home key */
+    int		keep_x_key,  /* don't translate xHome to Home key */
+    int		in_string)   /* TRUE in string, double quote is escaped */
 {
     char_u	*last_dash;
     char_u	*end_of_name;
@@ -2733,7 +2785,7 @@ find_special_key(
     int		modifiers;
     int		bit;
     int		key;
-    unsigned long n;
+    uvarnumber_T	n;
     int		l;
 
     src = *srcp;
@@ -2755,8 +2807,14 @@ find_special_key(
 		else
 #endif
 		    l = 1;
-		if (bp[l + 1] == '>')
-		    bp += l;	/* anything accepted, like <C-?> */
+		/* Anything accepted, like <C-?>.
+		 * <C-"> or <M-"> are not special in strings as " is
+		 * the string delimiter. With a backslash it works: <M-\"> */
+		if (!(in_string && bp[1] == '"') && bp[2] == '>')
+		    bp += l;
+		else if (in_string && bp[1] == '\\' && bp[2] == '"'
+							       && bp[3] == '>')
+		    bp += 2;
 	    }
 	}
 	if (bp[0] == 't' && bp[1] == '_' && bp[2] && bp[3])
@@ -2800,20 +2858,22 @@ find_special_key(
 	    }
 	    else
 	    {
-		/*
-		 * Modifier with single letter, or special key name.
-		 */
+		int off = 1;
+
+		/* Modifier with single letter, or special key name.  */
+		if (in_string && last_dash[1] == '\\' && last_dash[2] == '"')
+		    off = 2;
 #ifdef FEAT_MBYTE
 		if (has_mbyte)
-		    l = mb_ptr2len(last_dash + 1);
+		    l = mb_ptr2len(last_dash + off);
 		else
 #endif
 		    l = 1;
-		if (modifiers != 0 && last_dash[l + 1] == '>')
-		    key = PTR2CHAR(last_dash + 1);
+		if (modifiers != 0 && last_dash[l + off] == '>')
+		    key = PTR2CHAR(last_dash + off);
 		else
 		{
-		    key = get_special_key_code(last_dash + 1);
+		    key = get_special_key_code(last_dash + off);
 		    if (!keep_x_key)
 			key = handle_x_keys(key);
 		}
@@ -3310,8 +3370,8 @@ vim_chdirfile(char_u *fname)
  * Used for systems where stat() ignores a trailing slash on a file name.
  * The Vim code assumes a trailing slash is only ignored for a directory.
  */
-    int
-illegal_slash(char *name)
+    static int
+illegal_slash(const char *name)
 {
     if (name[0] == NUL)
 	return FALSE;	    /* no file name is not illegal */
@@ -3320,6 +3380,17 @@ illegal_slash(char *name)
     if (mch_isdir((char_u *)name))
 	return FALSE;	    /* trailing slash for a directory */
     return TRUE;
+}
+
+/*
+ * Special implementation of mch_stat() for Solaris.
+ */
+    int
+vim_stat(const char *name, stat_T *stp)
+{
+    /* On Solaris stat() accepts "file/" as if it was "file".  Return -1 if
+     * the name ends in "/" and it's not a directory. */
+    return illegal_slash(name) ? -1 : stat(name, stp);
 }
 #endif
 
@@ -3418,11 +3489,12 @@ parse_shape_opt(int what)
 	while (*modep != NUL)
 	{
 	    colonp = vim_strchr(modep, ':');
-	    if (colonp == NULL)
+	    commap = vim_strchr(modep, ',');
+
+	    if (colonp == NULL || (commap != NULL && commap < colonp))
 		return (char_u *)N_("E545: Missing colon");
 	    if (colonp == modep)
 		return (char_u *)N_("E546: Illegal mode");
-	    commap = vim_strchr(modep, ',');
 
 	    /*
 	     * Repeat for all mode's before the colon.
@@ -3647,7 +3719,7 @@ get_shape_idx(int mouse)
     }
     if (mouse && drag_status_line)
 	return SHAPE_IDX_SDRAG;
-# ifdef FEAT_VERTSPLIT
+# ifdef FEAT_WINDOWS
     if (mouse && drag_sep_line)
 	return SHAPE_IDX_VDRAG;
 # endif
@@ -4571,13 +4643,23 @@ vim_findfile(void *search_ctx_arg)
 		if (!vim_isAbsName(stackp->ffs_fix_path)
 						&& search_ctx->ffsc_start_dir)
 		{
-		    STRCPY(file_path, search_ctx->ffsc_start_dir);
-		    add_pathsep(file_path);
+		    if (STRLEN(search_ctx->ffsc_start_dir) + 1 < MAXPATHL)
+		    {
+			STRCPY(file_path, search_ctx->ffsc_start_dir);
+			add_pathsep(file_path);
+		    }
+		    else
+			goto fail;
 		}
 
 		/* append the fix part of the search path */
-		STRCAT(file_path, stackp->ffs_fix_path);
-		add_pathsep(file_path);
+		if (STRLEN(file_path) + STRLEN(stackp->ffs_fix_path) + 1 < MAXPATHL)
+		{
+		    STRCAT(file_path, stackp->ffs_fix_path);
+		    add_pathsep(file_path);
+		}
+		else
+		    goto fail;
 
 #ifdef FEAT_PATH_EXTRA
 		rest_of_wildcards = stackp->ffs_wc_path;
@@ -4594,7 +4676,10 @@ vim_findfile(void *search_ctx_arg)
 			if (*p > 0)
 			{
 			    (*p)--;
-			    file_path[len++] = '*';
+			    if (len + 1 < MAXPATHL)
+				file_path[len++] = '*';
+			    else
+				goto fail;
 			}
 
 			if (*p == 0)
@@ -4622,7 +4707,10 @@ vim_findfile(void *search_ctx_arg)
 		     */
 		    while (*rest_of_wildcards
 			    && !vim_ispathsep(*rest_of_wildcards))
-			file_path[len++] = *rest_of_wildcards++;
+			if (len + 1 < MAXPATHL)
+			    file_path[len++] = *rest_of_wildcards++;
+			else
+			    goto fail;
 
 		    file_path[len] = NUL;
 		    if (vim_ispathsep(*rest_of_wildcards))
@@ -4683,9 +4771,15 @@ vim_findfile(void *search_ctx_arg)
 
 			/* prepare the filename to be checked for existence
 			 * below */
-			STRCPY(file_path, stackp->ffs_filearray[i]);
-			add_pathsep(file_path);
-			STRCAT(file_path, search_ctx->ffsc_file_to_search);
+			if (STRLEN(stackp->ffs_filearray[i]) + 1
+				+ STRLEN(search_ctx->ffsc_file_to_search) < MAXPATHL)
+			{
+			    STRCPY(file_path, stackp->ffs_filearray[i]);
+			    add_pathsep(file_path);
+			    STRCAT(file_path, search_ctx->ffsc_file_to_search);
+			}
+			else
+			    goto fail;
 
 			/*
 			 * Try without extra suffix and then with suffixes
@@ -4858,9 +4952,15 @@ vim_findfile(void *search_ctx_arg)
 	    if (*search_ctx->ffsc_start_dir == 0)
 		break;
 
-	    STRCPY(file_path, search_ctx->ffsc_start_dir);
-	    add_pathsep(file_path);
-	    STRCAT(file_path, search_ctx->ffsc_fix_path);
+	    if (STRLEN(search_ctx->ffsc_start_dir) + 1
+		    + STRLEN(search_ctx->ffsc_fix_path) < MAXPATHL)
+	    {
+		STRCPY(file_path, search_ctx->ffsc_start_dir);
+		add_pathsep(file_path);
+		STRCAT(file_path, search_ctx->ffsc_fix_path);
+	    }
+	    else
+		goto fail;
 
 	    /* create a new stack entry */
 	    sptr = ff_create_stack_element(file_path,
@@ -4874,6 +4974,7 @@ vim_findfile(void *search_ctx_arg)
     }
 #endif
 
+fail:
     vim_free(file_path);
     return NULL;
 }
@@ -5059,7 +5160,7 @@ ff_check_visited(
 {
     ff_visited_T	*vp;
 #ifdef UNIX
-    struct stat		st;
+    stat_T		st;
     int			url = FALSE;
 #endif
 
@@ -5166,7 +5267,7 @@ ff_create_stack_element(
     new->ffs_filearray_cur  = 0;
     new->ffs_stage	   = 0;
     new->ffs_level	   = level;
-    new->ffs_star_star_empty = star_star_empty;;
+    new->ffs_star_star_empty = star_star_empty;
 
     /* the following saves NULL pointer checks in vim_findfile */
     if (fix_part == NULL)
@@ -5456,7 +5557,7 @@ find_file_in_path_option(
     if (vim_isAbsName(ff_file_to_find)
 	    /* "..", "../path", "." and "./path": don't use the path_option */
 	    || rel_to_curdir
-#if defined(MSWIN) || defined(MSDOS)
+#if defined(MSWIN)
 	    /* handle "\tmp" as absolute path */
 	    || vim_ispathsep(ff_file_to_find[0])
 	    /* handle "c:name" as absolute path */
@@ -5510,18 +5611,10 @@ find_file_in_path_option(
 		buf = suffixes;
 		for (;;)
 		{
-		    if (
-#ifdef DJGPP
-			    /* "C:" by itself will fail for mch_getperm(),
-			     * assume it's always valid. */
-			    (find_what != FINDFILE_FILE && NameBuff[0] != NUL
-				  && NameBuff[1] == ':'
-				  && NameBuff[2] == NUL) ||
-#endif
-			    (mch_getperm(NameBuff) >= 0
+		    if (mch_getperm(NameBuff) >= 0
 			     && (find_what == FINDFILE_BOTH
 				 || ((find_what == FINDFILE_DIR)
-						    == mch_isdir(NameBuff)))))
+						    == mch_isdir(NameBuff))))
 		    {
 			file_name = vim_strsave(NameBuff);
 			goto theend;
@@ -6020,32 +6113,6 @@ filewritable(char_u *fname)
 }
 #endif
 
-/*
- * Print an error message with one or two "%s" and one or two string arguments.
- * This is not in message.c to avoid a warning for prototypes.
- */
-    int
-emsg3(char_u *s, char_u *a1, char_u *a2)
-{
-    if (emsg_not_now())
-	return TRUE;		/* no error messages at the moment */
-    vim_snprintf((char *)IObuff, IOSIZE, (char *)s, a1, a2);
-    return emsg(IObuff);
-}
-
-/*
- * Print an error message with one "%ld" and one long int argument.
- * This is not in message.c to avoid a warning for prototypes.
- */
-    int
-emsgn(char_u *s, long n)
-{
-    if (emsg_not_now())
-	return TRUE;		/* no error messages at the moment */
-    vim_snprintf((char *)IObuff, IOSIZE, (char *)s, n);
-    return emsg(IObuff);
-}
-
 #if defined(FEAT_SPELL) || defined(FEAT_PERSISTENT_UNDO) || defined(PROTO)
 /*
  * Read 2 bytes from "fd" and turn them into an int, MSB first.
@@ -6092,12 +6159,12 @@ get4c(FILE *fd)
 }
 
 /*
- * Read 8 bytes from "fd" and turn them into a time_t, MSB first.
+ * Read 8 bytes from "fd" and turn them into a time_T, MSB first.
  */
-    time_t
+    time_T
 get8ctime(FILE *fd)
 {
-    time_t	n = 0;
+    time_T	n = 0;
     int		i;
 
     for (i = 0; i < 8; ++i)
@@ -6159,11 +6226,11 @@ put_bytes(FILE *fd, long_u nr, int len)
 #endif
 
 /*
- * Write time_t to file "fd" in 8 bytes.
+ * Write time_T to file "fd" in 8 bytes.
  * Returns FAIL when the write failed.
  */
     int
-put_time(FILE *fd, time_t the_time)
+put_time(FILE *fd, time_T the_time)
 {
     char_u	buf[8];
 
@@ -6172,26 +6239,26 @@ put_time(FILE *fd, time_t the_time)
 }
 
 /*
- * Write time_t to "buf[8]".
+ * Write time_T to "buf[8]".
  */
     void
-time_to_bytes(time_t the_time, char_u *buf)
+time_to_bytes(time_T the_time, char_u *buf)
 {
     int		c;
     int		i;
     int		bi = 0;
-    time_t	wtime = the_time;
+    time_T	wtime = the_time;
 
-    /* time_t can be up to 8 bytes in size, more than long_u, thus we
+    /* time_T can be up to 8 bytes in size, more than long_u, thus we
      * can't use put_bytes() here.
      * Another problem is that ">>" may do an arithmetic shift that keeps the
      * sign.  This happens for large values of wtime.  A cast to long_u may
-     * truncate if time_t is 8 bytes.  So only use a cast when it is 4 bytes,
+     * truncate if time_T is 8 bytes.  So only use a cast when it is 4 bytes,
      * it's safe to assume that long_u is 4 bytes or more and when using 8
      * bytes the top bit won't be set. */
     for (i = 7; i >= 0; --i)
     {
-	if (i + 1 > (int)sizeof(time_t))
+	if (i + 1 > (int)sizeof(time_T))
 	    /* ">>" doesn't work well when shifting more bits than avail */
 	    buf[bi++] = 0;
 	else
@@ -6236,17 +6303,26 @@ has_non_ascii(char_u *s)
 #if defined(MESSAGE_QUEUE) || defined(PROTO)
 /*
  * Process messages that have been queued for netbeans or clientserver.
+ * Also check if any jobs have ended.
  * These functions can call arbitrary vimscript and should only be called when
  * it is safe to do so.
  */
     void
 parse_queued_messages(void)
 {
+    /* For Win32 mch_breakcheck() does not check for input, do it here. */
+# if defined(WIN32) && defined(FEAT_JOB_CHANNEL)
+    channel_handle_events();
+# endif
+
 # ifdef FEAT_NETBEANS_INTG
     /* Process the queued netbeans messages. */
     netbeans_parse_messages();
 # endif
-# ifdef FEAT_CHANNEL
+# ifdef FEAT_JOB_CHANNEL
+    /* Write any buffer lines still to be written. */
+    channel_write_any_lines();
+
     /* Process the messages queued on channels. */
     channel_parse_messages();
 # endif
@@ -6254,5 +6330,39 @@ parse_queued_messages(void)
     /* Process the queued clientserver messages. */
     server_parse_messages();
 # endif
+# ifdef FEAT_JOB_CHANNEL
+    /* Check if any jobs have ended. */
+    job_check_ended();
+# endif
 }
+#endif
+
+#ifndef PROTO  /* proto is defined in vim.h */
+# ifdef ELAPSED_TIMEVAL
+/*
+ * Return time in msec since "start_tv".
+ */
+    long
+elapsed(struct timeval *start_tv)
+{
+    struct timeval  now_tv;
+
+    gettimeofday(&now_tv, NULL);
+    return (now_tv.tv_sec - start_tv->tv_sec) * 1000L
+	 + (now_tv.tv_usec - start_tv->tv_usec) / 1000L;
+}
+# endif
+
+# ifdef ELAPSED_TICKCOUNT
+/*
+ * Return time in msec since "start_tick".
+ */
+    long
+elapsed(DWORD start_tick)
+{
+    DWORD	now = GetTickCount();
+
+    return (long)now - (long)start_tick;
+}
+# endif
 #endif

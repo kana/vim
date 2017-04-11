@@ -1,4 +1,4 @@
-/* vi:set ts=8 sts=4 sw=4:
+/* vi:set ts=8 sts=4 sw=4 noet:
  *
  * VIM - Vi IMproved	by Bram Moolenaar
  *
@@ -116,7 +116,9 @@ static void u_freeentry(u_entry_T *, long);
 static void corruption_error(char *mesg, char_u *file_name);
 static void u_free_uhp(u_header_T *uhp);
 static int undo_write(bufinfo_T *bi, char_u *ptr, size_t len);
+# ifdef FEAT_CRYPT
 static int undo_flush(bufinfo_T *bi);
+# endif
 static int fwrite_crypt(bufinfo_T *bi, char_u *ptr, size_t len);
 static int undo_write_bytes(bufinfo_T *bi, long_u nr, int len);
 static void put_header_ptr(bufinfo_T *bi, u_header_T *uhp);
@@ -532,7 +534,7 @@ u_savecommon(
 
 	uhp->uh_seq = ++curbuf->b_u_seq_last;
 	curbuf->b_u_seq_cur = uhp->uh_seq;
-	uhp->uh_time = time(NULL);
+	uhp->uh_time = vim_time();
 	uhp->uh_save_nr = 0;
 	curbuf->b_u_time_cur = uhp->uh_time + 1;
 
@@ -639,9 +641,9 @@ u_savecommon(
 	u_getbot();
     }
 
-#if !defined(UNIX) && !defined(DJGPP) && !defined(WIN32) && !defined(__EMX__)
+#if !defined(UNIX) && !defined(WIN32)
 	/*
-	 * With Amiga and MSDOS 16 bit we can't handle big undo's, because
+	 * With Amiga we can't handle big undo's, because
 	 * then u_alloc_line would have to allocate a block larger than 32K
 	 */
     if (size >= 8000)
@@ -776,7 +778,7 @@ u_get_undo_file_name(char_u *buf_ffname, int reading)
     char_u	*undo_file_name = NULL;
     int		dir_len;
     char_u	*p;
-    struct stat st;
+    stat_T	st;
     char_u	*ffname = buf_ffname;
 #ifdef HAVE_READLINK
     char_u	fname_buf[MAXPATHL];
@@ -831,7 +833,7 @@ u_get_undo_file_name(char_u *buf_ffname, int reading)
 		    munged_name = vim_strsave(ffname);
 		    if (munged_name == NULL)
 			return NULL;
-		    for (p = munged_name; *p != NUL; mb_ptr_adv(p))
+		    for (p = munged_name; *p != NUL; MB_PTR_ADV(p))
 			if (vim_ispathsep(*p))
 			    *p = '%';
 		}
@@ -1074,7 +1076,7 @@ undo_read(bufinfo_T *bi, char_u *buffer, size_t size)
 	    if (bi->bi_used >= bi->bi_avail)
 	    {
 		n = fread(bi->bi_buffer, 1, (size_t)CRYPT_BUF_SIZE, bi->bi_fp);
-		if (n <= 0)
+		if (n == 0)
 		{
 		    /* Error may be checked for only later.  Fill with zeros,
 		     * so that the reader won't use garbage. */
@@ -1383,7 +1385,7 @@ unserialize_uep(bufinfo_T *bi, int *error, char_u *file_name)
 {
     int		i;
     u_entry_T	*uep;
-    char_u	**array;
+    char_u	**array = NULL;
     char_u	*line;
     int		line_len;
 
@@ -1400,7 +1402,8 @@ unserialize_uep(bufinfo_T *bi, int *error, char_u *file_name)
     uep->ue_size = undo_read_4c(bi);
     if (uep->ue_size > 0)
     {
-	array = (char_u **)U_ALLOC_LINE(sizeof(char_u *) * uep->ue_size);
+	if (uep->ue_size < LONG_MAX / (int)sizeof(char_u *))
+	    array = (char_u **)U_ALLOC_LINE(sizeof(char_u *) * uep->ue_size);
 	if (array == NULL)
 	{
 	    *error = TRUE;
@@ -1408,8 +1411,6 @@ unserialize_uep(bufinfo_T *bi, int *error, char_u *file_name)
 	}
 	vim_memset(array, 0, sizeof(char_u *) * uep->ue_size);
     }
-    else
-	array = NULL;
     uep->ue_array = array;
 
     for (i = 0; i < uep->ue_size; ++i)
@@ -1520,8 +1521,8 @@ u_write_undo(
     int		write_ok = FALSE;
 #ifdef UNIX
     int		st_old_valid = FALSE;
-    struct stat	st_old;
-    struct stat	st_new;
+    stat_T	st_old;
+    stat_T	st_new;
 #endif
     bufinfo_T	bi;
 
@@ -1785,7 +1786,7 @@ u_read_undo(char_u *name, char_u *hash, char_u *orig_name)
     linenr_T	line_lnum;
     colnr_T	line_colnr;
     linenr_T	line_count;
-    int		num_head = 0;
+    long	num_head = 0;
     long	old_header_seq, new_header_seq, cur_header_seq;
     long	seq_last, seq_cur;
     long	last_save_nr = 0;
@@ -1802,8 +1803,8 @@ u_read_undo(char_u *name, char_u *hash, char_u *orig_name)
     int		*uhp_table_used;
 #endif
 #ifdef UNIX
-    struct stat	st_orig;
-    struct stat	st_undo;
+    stat_T	st_orig;
+    stat_T	st_undo;
 #endif
     bufinfo_T	bi;
 
@@ -1972,7 +1973,8 @@ u_read_undo(char_u *name, char_u *hash, char_u *orig_name)
      * When there are no headers uhp_table is NULL. */
     if (num_head > 0)
     {
-	uhp_table = (u_header_T **)U_ALLOC_LINE(
+	if (num_head < LONG_MAX / (long)sizeof(u_header_T *))
+	    uhp_table = (u_header_T **)U_ALLOC_LINE(
 					     num_head * sizeof(u_header_T *));
 	if (uhp_table == NULL)
 	    goto error;
@@ -2284,15 +2286,20 @@ undo_time(
      * Init "closest" to a value we can't reach. */
     if (absolute)
     {
-	target = step;
+	if (step == 0)
+	{
+	    /* target 0 does not exist, got to 1 and above it. */
+	    target = 1;
+	    above = TRUE;
+	}
+	else
+	    target = step;
 	closest = -1;
     }
     else
     {
-	/* When doing computations with time_t subtract starttime, because
-	 * time_t converted to a long may result in a wrong number. */
 	if (dosec)
-	    target = (long)(curbuf->b_u_time_cur - starttime) + step;
+	    target = (long)(curbuf->b_u_time_cur) + step;
 	else if (dofile)
 	{
 	    if (step < 0)
@@ -2341,7 +2348,7 @@ undo_time(
 	else
 	{
 	    if (dosec)
-		closest = (long)(time(NULL) - starttime + 1);
+		closest = (long)(vim_time() + 1);
 	    else if (dofile)
 		closest = curbuf->b_u_save_nr_last + 2;
 	    else
@@ -2379,7 +2386,7 @@ undo_time(
 	{
 	    uhp->uh_walk = mark;
 	    if (dosec)
-		val = (long)(uhp->uh_time - starttime);
+		val = (long)(uhp->uh_time);
 	    else if (dofile)
 		val = uhp->uh_save_nr;
 	    else
@@ -2573,7 +2580,7 @@ undo_time(
 	    if (uhp == NULL || uhp->uh_walk != mark)
 	    {
 		/* Need to redo more but can't find it... */
-		EMSG2(_(e_intern2), "undo_time()");
+		internal_error("undo_time()");
 		break;
 	    }
 	}
@@ -2645,7 +2652,7 @@ u_undoredo(int undo)
 #ifdef FEAT_AUTOCMD
 	    unblock_autocmds();
 #endif
-	    EMSG(_("E438: u_undo: line numbers wrong"));
+	    IEMSG(_("E438: u_undo: line numbers wrong"));
 	    changed();		/* don't want UNCHANGED now */
 	    return;
 	}
@@ -2777,7 +2784,7 @@ u_undoredo(int undo)
 
     curhead->uh_entry = newlist;
     curhead->uh_flags = new_flags;
-    if ((old_flags & UH_EMPTYBUF) && bufempty())
+    if ((old_flags & UH_EMPTYBUF) && BUFEMPTY())
 	curbuf->b_ml.ml_flags |= ML_EMPTY;
     if (old_flags & UH_CHANGED)
 	changed();
@@ -3072,7 +3079,7 @@ ex_undolist(exarg_T *eap UNUSED)
 
 	msg_start();
 	msg_puts_attr((char_u *)_("number changes  when               saved"),
-							      hl_attr(HLF_T));
+							      HL_ATTR(HLF_T));
 	for (i = 0; i < ga.ga_len && !got_int; ++i)
 	{
 	    msg_putchar('\n');
@@ -3095,10 +3102,10 @@ u_add_time(char_u *buf, size_t buflen, time_t tt)
 #ifdef HAVE_STRFTIME
     struct tm	*curtime;
 
-    if (time(NULL) - tt >= 100)
+    if (vim_time() - tt >= 100)
     {
 	curtime = localtime(&tt);
-	if (time(NULL) - tt < (60L * 60L * 12L))
+	if (vim_time() - tt < (60L * 60L * 12L))
 	    /* within 12 hours */
 	    (void)strftime((char *)buf, buflen, "%H:%M:%S", curtime);
 	else
@@ -3108,7 +3115,7 @@ u_add_time(char_u *buf, size_t buflen, time_t tt)
     else
 #endif
 	vim_snprintf((char *)buf, buflen, _("%ld seconds ago"),
-						     (long)(time(NULL) - tt));
+						      (long)(vim_time() - tt));
 }
 
 /*
@@ -3129,11 +3136,8 @@ ex_undojoin(exarg_T *eap UNUSED)
     if (get_undolevel() < 0)
 	return;		    /* no entries, nothing to do */
     else
-    {
-	/* Go back to the last entry */
-	curbuf->b_u_curhead = curbuf->b_u_newhead;
-	curbuf->b_u_synced = FALSE;  /* no entries, nothing to do */
-    }
+	/* Append next change to the last entry */
+	curbuf->b_u_synced = FALSE;
 }
 
 /*
@@ -3171,14 +3175,14 @@ u_find_first_changed(void)
 	if (STRCMP(ml_get_buf(curbuf, lnum, FALSE),
 						uep->ue_array[lnum - 1]) != 0)
 	{
-	    clearpos(&(uhp->uh_cursor));
+	    CLEAR_POS(&(uhp->uh_cursor));
 	    uhp->uh_cursor.lnum = lnum;
 	    return;
 	}
     if (curbuf->b_ml.ml_line_count != uep->ue_size)
     {
 	/* lines added or deleted at the end, put the cursor there */
-	clearpos(&(uhp->uh_cursor));
+	CLEAR_POS(&(uhp->uh_cursor));
 	uhp->uh_cursor.lnum = lnum;
     }
 }
@@ -3225,7 +3229,7 @@ u_get_headentry(void)
 {
     if (curbuf->b_u_newhead == NULL || curbuf->b_u_newhead->uh_entry == NULL)
     {
-	EMSG(_("E439: undo list corrupt"));
+	IEMSG(_("E439: undo list corrupt"));
 	return NULL;
     }
     return curbuf->b_u_newhead->uh_entry;
@@ -3257,7 +3261,7 @@ u_getbot(void)
 	uep->ue_bot = uep->ue_top + uep->ue_size + 1 + extra;
 	if (uep->ue_bot < 1 || uep->ue_bot > curbuf->b_ml.ml_line_count)
 	{
-	    EMSG(_("E440: undo line missing"));
+	    IEMSG(_("E440: undo line missing"));
 	    uep->ue_bot = uep->ue_top + 1;  /* assume all lines deleted, will
 					     * get all the old lines back
 					     * without deleting the current

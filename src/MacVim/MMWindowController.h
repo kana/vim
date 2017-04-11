@@ -40,9 +40,11 @@
     int                 userCols;
     NSPoint             userTopLeft;
     NSPoint             defaultTopLeft;
+    NSSize              desiredWindowSize;
     NSToolbar           *toolbar;
     BOOL                resizingDueToMove;
     int                 blurRadius;
+    NSMutableArray      *afterWindowPresentedQueue;
 }
 
 - (id)initWithVimController:(MMVimController *)controller;
@@ -76,6 +78,7 @@
 - (void)showToolbar:(BOOL)on size:(int)size mode:(int)mode;
 - (void)setMouseShape:(int)shape;
 - (void)adjustLinespace:(int)linespace;
+- (void)adjustColumnspace:(int)columnspace;
 - (void)liveResizeWillStart;
 - (void)liveResizeDidEnd;
 
@@ -89,6 +92,7 @@
 - (void)setBufferModified:(BOOL)mod;
 - (void)setTopLeft:(NSPoint)pt;
 - (BOOL)getDefaultTopLeft:(NSPoint*)pt;
+- (void)runAfterWindowPresentedUsingBlock:(void (^)(void))block;
 
 - (IBAction)addNewTab:(id)sender;
 - (IBAction)toggleToolbar:(id)sender;

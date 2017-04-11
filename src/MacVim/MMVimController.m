@@ -554,15 +554,9 @@ static BOOL isUnsafeMessage(int msgid);
 {
     if (OpenWindowMsgID == msgid) {
         [windowController openWindow];
-
-        // HACK: Delay actually presenting the window onscreen until after
-        // processing the queue since it contains drawing commands that need to
-        // be issued before presentation; otherwise the window may flash white
-        // just as it opens.
-        if (!isPreloading)
-            [windowController performSelector:@selector(presentWindow:)
-                                   withObject:nil
-                                   afterDelay:0];
+        if (!isPreloading) {
+            [windowController presentWindow:nil];
+        }
     } else if (BatchDrawMsgID == msgid) {
         [[[windowController vimView] textView] performBatchDrawWithData:data];
     } else if (SelectTabMsgID == msgid) {
@@ -762,6 +756,11 @@ static BOOL isUnsafeMessage(int msgid);
         int linespace = *((int*)bytes);
 
         [windowController adjustLinespace:linespace];
+    } else if (AdjustColumnspaceMsgID == msgid) {
+        const void *bytes = [data bytes];
+        int columnspace = *((int*)bytes);
+
+        [windowController adjustColumnspace:columnspace];
     } else if (ActivateMsgID == msgid) {
         [NSApp activateIgnoringOtherApps:YES];
         [[windowController window] makeKeyAndOrderFront:self];
@@ -806,6 +805,10 @@ static BOOL isUnsafeMessage(int msgid);
         [[[windowController vimView] textView] setLigatures:YES];
     } else if (DisableLigaturesMsgID == msgid) {
         [[[windowController vimView] textView] setLigatures:NO];
+    } else if (EnableThinStrokesMsgID == msgid) {
+        [[[windowController vimView] textView] setThinStrokes:YES];
+    } else if (DisableThinStrokesMsgID == msgid) {
+        [[[windowController vimView] textView] setThinStrokes:NO];
     } else if (SetVimStateMsgID == msgid) {
         NSDictionary *dict = [NSDictionary dictionaryWithData:data];
         if (dict) {
@@ -839,9 +842,11 @@ static BOOL isUnsafeMessage(int msgid);
         if (dict)
             [self handleBrowseForFile:dict];
     } else if (ShowDialogMsgID == msgid) {
-        NSDictionary *dict = [NSDictionary dictionaryWithData:data];
-        if (dict)
-            [self handleShowDialog:dict];
+        [windowController runAfterWindowPresentedUsingBlock:^{
+            NSDictionary *dict = [NSDictionary dictionaryWithData:data];
+            if (dict)
+                [self handleShowDialog:dict];
+        }];
     } else if (DeleteSignMsgID == msgid) {
         NSDictionary *dict = [NSDictionary dictionaryWithData:data];
         if (dict)
@@ -1322,7 +1327,7 @@ static BOOL isUnsafeMessage(int msgid);
         pt = [[windowController window] mouseLocationOutsideOfEventStream];
     }
 
-    NSEvent *event = [NSEvent mouseEventWithType:NSRightMouseDown
+    NSEvent *event = [NSEvent mouseEventWithType:NSEventTypeRightMouseDown
                            location:pt
                       modifierFlags:0
                           timestamp:0

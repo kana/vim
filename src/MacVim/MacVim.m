@@ -64,6 +64,7 @@ char *MessageStrings[] =
     "MouseMovedMsgID",
     "SetMouseShapeMsgID",
     "AdjustLinespaceMsgID",
+    "AdjustColumnspaceMsgID",
     "ActivateMsgID",
     "SetServerNameMsgID",
     "EnterFullScreenMsgID",
@@ -102,6 +103,8 @@ char *MessageStrings[] =
     "SetBlurRadiusMsgID",
     "EnableLigaturesMsgID",
     "DisableLigaturesMsgID",
+    "EnableThinStrokesMsgID",
+    "DisableThinStrokesMsgID",
     "END OF MESSAGE IDs"     // NOTE: Must be last!
 };
 
@@ -122,7 +125,7 @@ NSString *MMRendererKey	       = @"MMRenderer";
 // Vim find pasteboard type (string contains Vim regex patterns)
 NSString *VimFindPboardType = @"VimFindPboardType";
 
-int ASLogLevel = ASL_LEVEL_NOTICE;
+int ASLogLevel = MM_ASL_LEVEL_DEFAULT;
 
 
 
@@ -376,12 +379,27 @@ ASLInit()
     if (logLevelObj) {
         int logLevel = [logLevelObj intValue];
         if (logLevel < 0) logLevel = 0;
+#if defined(MM_USE_ASL)
         if (logLevel > ASL_LEVEL_DEBUG) logLevel = ASL_LEVEL_DEBUG;
-
-        ASLogLevel = logLevel;
         asl_set_filter(NULL, ASL_FILTER_MASK_UPTO(logLevel));
+#else
+        switch (logLevel) {
+        case 0: case 1: case 2:
+            logLevel = OS_LOG_TYPE_FAULT; break;
+        case 3:
+            logLevel = OS_LOG_TYPE_ERROR; break;
+        case 4: case 5:
+            logLevel = OS_LOG_TYPE_DEFAULT; break;
+        case 6:
+            logLevel = OS_LOG_TYPE_INFO; break;
+        default:
+            logLevel = OS_LOG_TYPE_DEBUG; break;
+        }
+#endif
+        ASLogLevel = logLevel;
     }
 
+#if defined(MM_USE_ASL)
     // Allow for changing whether a copy of each log should be sent to stderr
     // (this defaults to NO if this key is missing in the user defaults
     // database).  The above filter mask is applied to logs going to stderr,
@@ -389,4 +407,5 @@ ASLInit()
     BOOL logToStdErr = [ud boolForKey:MMLogToStdErrKey];
     if (logToStdErr)
         asl_add_log_file(NULL, 2);  // The file descriptor for stderr is 2
+#endif
 }

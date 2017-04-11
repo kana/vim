@@ -1,4 +1,4 @@
-/* vi:set ts=8 sts=4 sw=4:
+/* vi:set ts=8 sts=4 sw=4 noet:
  *
  * VIM - Vi IMproved	by Bram Moolenaar
  *
@@ -203,11 +203,9 @@ update_topline(void)
     int		save_so = p_so;
 #endif
 
-    if (!screen_valid(TRUE))
-	return;
-
-    /* If the window height is zero just use the cursor line. */
-    if (curwin->w_height == 0)
+    /* If there is no valid screen and when the window height is zero just use
+     * the cursor line. */
+    if (!screen_valid(TRUE) || curwin->w_height == 0)
     {
 	curwin->w_topline = curwin->w_cursor.lnum;
 	curwin->w_botline = curwin->w_topline;
@@ -236,7 +234,7 @@ update_topline(void)
     /*
      * If the buffer is empty, always set topline to 1.
      */
-    if (bufempty())		/* special case - file is empty */
+    if (BUFEMPTY())		/* special case - file is empty */
     {
 	if (curwin->w_topline != 1)
 	    redraw_later(NOT_VALID);
@@ -919,12 +917,7 @@ win_col_off(win_T *wp)
 	    + wp->w_p_fdc
 #endif
 #ifdef FEAT_SIGNS
-	    + (
-# ifdef FEAT_NETBEANS_INTG
-		/* show glyph gutter in netbeans */
-		wp->w_buffer->b_has_sign_column ||
-# endif
-		wp->w_buffer->b_signlist != NULL ? 2 : 0)
+	    + (signcolumn_on(wp) ? 2 : 0)
 #endif
 	   );
 }
@@ -1019,7 +1012,7 @@ curs_columns(
 	curwin->w_wrow = curwin->w_height - 1;
     }
     else if (curwin->w_p_wrap
-#ifdef FEAT_VERTSPLIT
+#ifdef FEAT_WINDOWS
 	    && curwin->w_width != 0
 #endif
 	    )
@@ -1125,7 +1118,7 @@ curs_columns(
 	    && curwin->w_height != 0
 	    && curwin->w_cursor.lnum == curwin->w_topline
 	    && width > 0
-#ifdef FEAT_VERTSPLIT
+#ifdef FEAT_WINDOWS
 	    && curwin->w_width != 0
 #endif
 	    )
@@ -1288,7 +1281,7 @@ scrolldown(
      */
     wrow = curwin->w_wrow;
     if (curwin->w_p_wrap
-#ifdef FEAT_VERTSPLIT
+#ifdef FEAT_WINDOWS
 		&& curwin->w_width != 0
 #endif
 	    )
@@ -1497,7 +1490,7 @@ scrolldown_clamp(void)
     end_row += plines(curwin->w_topline - 1);
 #endif
     if (curwin->w_p_wrap
-#ifdef FEAT_VERTSPLIT
+#ifdef FEAT_WINDOWS
 		&& curwin->w_width != 0
 #endif
 	    )
@@ -1561,7 +1554,7 @@ scrollup_clamp(void)
     start_row = curwin->w_wrow - plines(curwin->w_topline);
 #endif
     if (curwin->w_p_wrap
-#ifdef FEAT_VERTSPLIT
+#ifdef FEAT_WINDOWS
 		&& curwin->w_width != 0
 #endif
 	    )
@@ -2345,7 +2338,7 @@ onepage(int dir, long count)
 #endif
 	if (dir == FORWARD)
 	{
-	    if (firstwin == lastwin && p_window > 0 && p_window < Rows - 1)
+	    if (ONE_WINDOW && p_window > 0 && p_window < Rows - 1)
 	    {
 		/* Vi compatible scrolling */
 		if (p_window <= 2)
@@ -2395,7 +2388,7 @@ onepage(int dir, long count)
 		continue;
 	    }
 #endif
-	    if (firstwin == lastwin && p_window > 0 && p_window < Rows - 1)
+	    if (ONE_WINDOW && p_window > 0 && p_window < Rows - 1)
 	    {
 		/* Vi compatible scrolling (sort of) */
 		if (p_window <= 2)
@@ -2513,6 +2506,7 @@ onepage(int dir, long count)
     foldAdjustCursor();
 #endif
     cursor_correct();
+    check_cursor_col();
     if (retval == OK)
 	beginline(BL_SOL | BL_FIX);
     curwin->w_valid &= ~(VALID_WCOL|VALID_WROW|VALID_VIRTCOL);
@@ -2625,6 +2619,7 @@ halfpage(int flag, linenr_T Prenum)
     n = (curwin->w_p_scr <= curwin->w_height) ?
 				    curwin->w_p_scr : curwin->w_height;
 
+    update_topline();
     validate_botline();
     room = curwin->w_empty_rows;
 #ifdef FEAT_DIFF
@@ -2849,7 +2844,7 @@ do_check_cursorbind(void)
      * loop through the cursorbound windows
      */
     VIsual_select = VIsual_active = 0;
-    for (curwin = firstwin; curwin; curwin = curwin->w_next)
+    FOR_ALL_WINDOWS(curwin)
     {
 	curbuf = curwin->w_buffer;
 	/* skip original window  and windows with 'noscrollbind' */
@@ -2857,11 +2852,8 @@ do_check_cursorbind(void)
 	{
 # ifdef FEAT_DIFF
 	    if (curwin->w_p_diff)
-		curwin->w_cursor.lnum
-			= diff_get_corresponding_line(old_curbuf,
-						      line,
-						      curbuf,
-						      curwin->w_cursor.lnum);
+		curwin->w_cursor.lnum =
+				 diff_get_corresponding_line(old_curbuf, line);
 	    else
 # endif
 		curwin->w_cursor.lnum = line;
@@ -2877,6 +2869,10 @@ do_check_cursorbind(void)
 	    restart_edit_save = restart_edit;
 	    restart_edit = TRUE;
 	    check_cursor();
+# ifdef FEAT_SYN_HL
+	    if (curwin->w_p_cul || curwin->w_p_cuc)
+		validate_cursor();
+# endif
 	    restart_edit = restart_edit_save;
 # ifdef FEAT_MBYTE
 	    /* Correct cursor for multi-byte character. */

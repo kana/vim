@@ -25,6 +25,7 @@ char_u *get_user_cmd_nargs(expand_T *xp, int idx);
 char_u *get_user_cmd_complete(expand_T *xp, int idx);
 int parse_addr_type_arg(char_u *value, int vallen, long *argt, int *addr_type_arg);
 int parse_compl_arg(char_u *value, int vallen, int *complp, long *argt, char_u **compl_arg);
+int cmdcomplete_str_to_type(char_u *complete_str);
 void not_exiting(void);
 void tabpage_close(int forceit);
 void tabpage_close_other(tabpage_T *tp, int forceit);
@@ -60,4 +61,5 @@ int put_eol(FILE *fd);
 int put_line(FILE *fd, char *s);
 void dialog_msg(char_u *buff, char *format, char_u *fname);
 char_u *get_behave_arg(expand_T *xp, int idx);
+char_u *get_messages_arg(expand_T *xp, int idx);
 /* vim: set ft=c : */

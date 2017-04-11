@@ -21,6 +21,7 @@
     int                 insertionPointFraction;
     BOOL                antialias;
     BOOL                ligatures;
+    BOOL                thinStrokes;
     NSRect              *invertRects;
     int                 numInvertRects;
 
@@ -34,6 +35,7 @@
 - (void)setMouseShape:(int)shape;
 - (void)setAntialias:(BOOL)antialias;
 - (void)setLigatures:(BOOL)ligatures;
+- (void)setThinStrokes:(BOOL)thinStrokes;
 - (void)setImControl:(BOOL)enable;
 - (void)activateIm:(BOOL)enable;
 - (void)checkImState;
@@ -47,6 +49,7 @@
 - (void)setWideFont:(NSFont *)newFont;
 - (NSSize)cellSize;
 - (void)setLinespace:(float)newLinespace;
+- (void)setColumnspace:(float)newColumnspace;
 - (int)maxRows;
 - (int)maxColumns;
 - (void)getMaxRows:(int*)rows columns:(int*)cols;
@@ -70,4 +73,5 @@
 // NOT IMPLEMENTED (only in Core Text renderer)
 - (void)deleteSign:(NSString *)signName;
 - (void)setToolTipAtMousePoint:(NSString *)string;
+- (void)setCGLayerEnabled:(BOOL)enabled;
 @end

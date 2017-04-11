@@ -1,4 +1,4 @@
-*quickref.txt*  For Vim version 7.4.  Last change: 2015 Nov 10
+*quickref.txt*  For Vim version 8.0.  Last change: 2016 Dec 16
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -645,6 +645,7 @@ Short explanation of each option:		*option-list*
 'cmdwinheight'	  'cwh'     height of the command-line window
 'colorcolumn'	  'cc'	    columns to highlight
 'columns'	  'co'	    number of columns in the display
+'columnspace'	  'csp'     number of pixel columns to use between characters
 'comments'	  'com'     patterns that can start a comment line
 'commentstring'   'cms'     template for comments; used for fold marker
 'compatible'	  'cp'	    behave Vi-compatible as much as possible
@@ -680,6 +681,7 @@ Short explanation of each option:		*option-list*
 'display'	  'dy'	    list of flags for how to display text
 'eadirection'	  'ead'     in which direction 'equalalways' works
 'edcompatible'	  'ed'	    toggle flags of ":substitute" command
+'emoji'		  'emo'	    emoji characters are considered full width
 'encoding'	  'enc'     encoding used internally
 'endofline'	  'eol'     write <EOL> for last line in file
 'equalalways'	  'ea'	    windows are automatically made the same size
@@ -769,7 +771,7 @@ Short explanation of each option:		*option-list*
 'keywordprg'	  'kp'	    program to use for the "K" command
 'langmap'	  'lmap'    alphabetic characters for other language mode
 'langmenu'	  'lm'	    language to be used for the menus
-'langnoremap'	  'lnr'	    do not apply 'langmap' to mapped characters
+'langremap'	  'lrm'	    do apply 'langmap' to mapped characters
 'laststatus'	  'ls'	    tells when last window has status lines
 'lazyredraw'	  'lz'	    don't redraw while executing macros
 'linebreak'	  'lbr'     wrap long lines at a blank
@@ -784,8 +786,10 @@ Short explanation of each option:		*option-list*
 'macatsui'		    Mac GUI: use ATSUI text drawing
 'macligatures'		    display ligatures (MacVim GUI only)
 'macmeta'	  'mmta'    use option as meta key (MacVim GUI only)
+'macthinstrokes'	    render the text lighter by using thin strokes (MacVim GUI only)
 'magic'			    changes special characters in search patterns
 'makeef'	  'mef'     name of the errorfile for ":make"
+'makeencoding'	  'menc'    encoding of external make/grep commands
 'makeprg'	  'mp'	    program to use for the ":make" command
 'matchpairs'	  'mps'     pairs of characters that "%" can match
 'matchtime'	  'mat'     tenths of a second to show matching paren
@@ -815,7 +819,8 @@ Short explanation of each option:		*option-list*
 'omnifunc'	  'ofu'     function for filetype-specific completion
 'opendevice'	  'odev'    allow reading/writing devices on MS-Windows
 'operatorfunc'	  'opfunc'  function to be called for |g@| operator
-'osfiletype' 	  'oft'     no longer supported
+'osfiletype'	  'oft'     no longer supported
+'packpath'	  'pp'      list of directories used for packages
 'paragraphs'	  'para'    nroff macros that separate paragraphs
 'paste'			    allow pasting text
 'pastetoggle'	  'pt'	    key code that causes 'paste' to toggle
@@ -834,9 +839,13 @@ Short explanation of each option:		*option-list*
 'printmbcharset'  'pmbcs'   CJK character set to be used for :hardcopy
 'printmbfont'	  'pmbfn'   font names to be used for CJK output of :hardcopy
 'printoptions'	  'popt'    controls the format of :hardcopy output
+'prompt'	  'prompt'  enable prompt in Ex mode
 'pumheight'	  'ph'	    maximum height of the popup menu
 'pythondll'		    name of the Python 2 dynamic library
+'pythonhome'		    name of the Python 2 home directory
 'pythonthreedll'	    name of the Python 3 dynamic library
+'pythonthreehome'	    name of the Python 3 home directory
+'pyxversion'	  'pyx'	    Python version used for pyx* commands
 'quoteescape'	  'qe'	    escape characters used in a string
 'readonly'	  'ro'	    disallow writing the buffer
 'redrawtime'	  'rdt'     timeout for 'hlsearch' and |:match| highlighting
@@ -885,6 +894,7 @@ Short explanation of each option:		*option-list*
 'showtabline'	  'stal'    tells when the tab pages line is displayed
 'sidescroll'	  'ss'	    minimum number of columns to scroll horizontal
 'sidescrolloff'   'siso'    min. nr. of columns to left and right of cursor
+'signcolumn'	  'scl'	    when to display the sign column
 'smartcase'	  'scs'     no ignore case when pattern has uppercase
 'smartindent'	  'si'	    smart autoindenting for C programs
 'smarttab'	  'sta'     use 'shiftwidth' when inserting <Tab>
@@ -918,6 +928,7 @@ Short explanation of each option:		*option-list*
 'term'			    name of the terminal
 'termbidi'	  'tbidi'   terminal takes care of bi-directionality
 'termencoding'	  'tenc'    character encoding used by the terminal
+'termguicolors'	  'tgc'     use GUI colors for the terminal
 'terse'			    shorten some messages
 'textauto'	  'ta'	    obsolete, use 'fileformats'
 'textmode'	  'tx'	    obsolete, use 'fileformat'
@@ -1068,6 +1079,8 @@ Short explanation of each option:		*option-list*
 |c_<Up>|	<Up>/<Down>	   recall older/newer command-line that starts
 				      with current command
 |c_<S-Up>|	<S-Up>/<S-Down>	   recall older/newer command-line from history
+|c_CTRL-G|	CTRL-G		   next match when 'incsearch' is active
+|c_CTRL-T|	CTRL-T		   previous match when 'incsearch' is active
 |:history|	:his[tory]	   show older command-lines
 
 Context-sensitive completion on the command-line:

@@ -1,4 +1,4 @@
-/* vi:set ts=8 sts=4 sw=4:
+/* vi:set ts=8 sts=4 sw=4 noet:
  *
  * VIM - Vi IMproved	by Bram Moolenaar
  *
@@ -369,12 +369,29 @@ ui_new_shellsize(void)
     void
 ui_breakcheck(void)
 {
+    ui_breakcheck_force(FALSE);
+}
+
+/*
+ * When "force" is true also check when the terminal is not in raw mode.
+ * This is useful to read input on channels.
+ */
+    void
+ui_breakcheck_force(int force)
+{
+    int save_us = updating_screen;
+
+    /* We do not want gui_resize_shell() to redraw the screen here. */
+    ++updating_screen;
+
 #ifdef FEAT_GUI
     if (gui.in_use)
 	gui_mch_update();
     else
 #endif
-	mch_breakcheck();
+	mch_breakcheck(force);
+
+    updating_screen = save_us;
 }
 
 /*****************************************************************************
@@ -390,8 +407,6 @@ ui_breakcheck(void)
  */
 
 #if defined(FEAT_CLIPBOARD) || defined(PROTO)
-
-static void clip_copy_selection(VimClipboard *clip);
 
 /*
  * Selection stuff using Visual mode, for cutting and pasting text to other
@@ -441,7 +456,7 @@ clip_update_selection(VimClipboard *clip)
     /* If visual mode is only due to a redo command ("."), then ignore it */
     if (!redo_VIsual_busy && VIsual_active && (State & NORMAL))
     {
-	if (lt(VIsual, curwin->w_cursor))
+	if (LT_POS(VIsual, curwin->w_cursor))
 	{
 	    start = VIsual;
 	    end = curwin->w_cursor;
@@ -455,8 +470,8 @@ clip_update_selection(VimClipboard *clip)
 	    start = curwin->w_cursor;
 	    end = VIsual;
 	}
-	if (!equalpos(clip->start, start)
-		|| !equalpos(clip->end, end)
+	if (!EQUAL_POS(clip->start, start)
+		|| !EQUAL_POS(clip->end, end)
 		|| clip->vmode != VIsual_mode)
 	{
 	    clip_clear_selection(clip);
@@ -495,7 +510,7 @@ clip_own_selection(VimClipboard *cbd)
 					    || get_real_state() == SELECTMODE)
 		    && (cbd == &clip_star ? clip_isautosel_star()
 						      : clip_isautosel_plus())
-		    && hl_attr(HLF_V) != hl_attr(HLF_VNC))
+		    && HL_ATTR(HLF_V) != HL_ATTR(HLF_VNC))
 		redraw_curbuf_later(INVERTED_ALL);
 	}
     }
@@ -533,7 +548,7 @@ clip_lose_selection(VimClipboard *cbd)
 					    || get_real_state() == SELECTMODE)
 		&& (cbd == &clip_star ?
 				clip_isautosel_star() : clip_isautosel_plus())
-		&& hl_attr(HLF_V) != hl_attr(HLF_VNC))
+		&& HL_ATTR(HLF_V) != HL_ATTR(HLF_VNC))
 	{
 	    update_curbuf(INVERTED_ALL);
 	    setcursor();
@@ -568,7 +583,8 @@ clip_copy_selection(VimClipboard *clip)
  * considerably.
  */
 static int global_change_count = 0; /* if set, inside a start_global_changes */
-static int clipboard_needs_update; /* clipboard needs to be updated */
+static int clipboard_needs_update = FALSE; /* clipboard needs to be updated */
+static int clip_did_set_selection = TRUE;
 
 /*
  * Save clip_unnamed and reset it.
@@ -586,6 +602,16 @@ start_global_changes(void)
 	clip_unnamed = FALSE;
 	clip_did_set_selection = FALSE;
     }
+}
+
+/*
+ * Return TRUE if setting the clipboard was postponed, it already contains the
+ * right text.
+ */
+    int
+is_clipboard_needs_update()
+{
+    return clipboard_needs_update;
 }
 
 /*
@@ -618,6 +644,7 @@ end_global_changes(void)
 	    }
 	}
     }
+    clipboard_needs_update = FALSE;
 }
 
 /*
@@ -727,7 +754,7 @@ clip_compare_pos(
     if (row1 < row2) return(-1);
     if (col1 > col2) return(1);
     if (col1 < col2) return(-1);
-		     return(0);
+    return(0);
 }
 
 /*
@@ -1551,7 +1578,7 @@ clip_gen_owner_exists(VimClipboard *cbd UNUSED)
  * descriptions which would otherwise overflow.  The buffer is considered full
  * when only this extra space (or part of it) remains.
  */
-#if defined(FEAT_SUN_WORKSHOP) || defined(FEAT_CHANNEL) \
+#if defined(FEAT_SUN_WORKSHOP) || defined(FEAT_JOB_CHANNEL) \
 	|| defined(FEAT_CLIENTSERVER)
    /*
     * Sun WorkShop and NetBeans stuff debugger commands into the input buffer.
@@ -1647,7 +1674,7 @@ set_input_buf(char_u *p)
 #if defined(FEAT_GUI) \
 	|| defined(FEAT_MOUSE_GPM) || defined(FEAT_SYSMOUSE) \
 	|| defined(FEAT_XCLIPBOARD) || defined(VMS) \
-	|| defined(FEAT_SNIFF) || defined(FEAT_CLIENTSERVER) \
+	|| defined(FEAT_CLIENTSERVER) \
 	|| defined(PROTO)
 /*
  * Add the given bytes to the input buffer
@@ -1706,16 +1733,24 @@ add_to_input_buf_csi(char_u *str, int len)
 push_raw_key(char_u *s, int len)
 {
     char_u *tmpbuf;
+    char_u *inp = s;
 
+    /* use the conversion result if possible */
     tmpbuf = hangul_string_convert(s, &len);
     if (tmpbuf != NULL)
-	s = tmpbuf;
+	inp = tmpbuf;
 
-    while (len--)
-	inbuf[inbufcount++] = *s++;
-
-    if (tmpbuf != NULL)
-	vim_free(tmpbuf);
+    for (; len--; inp++)
+    {
+	inbuf[inbufcount++] = *inp;
+	if (*inp == CSI)
+	{
+	    /* Turn CSI into K_CSI. */
+	    inbuf[inbufcount++] = KS_EXTRA;
+	    inbuf[inbufcount++] = (int)KE_CSI;
+	}
+    }
+    vim_free(tmpbuf);
 }
 #endif
 
@@ -1792,17 +1827,7 @@ fill_input_buf(int exit_on_error UNUSED)
     inbufcount = 0;
 # else
 
-#  ifdef FEAT_SNIFF
-    if (sniff_request_waiting)
-    {
-	add_to_input_buf((char_u *)"\233sniff",6); /* results in K_SNIFF */
-	sniff_request_waiting = 0;
-	want_sniff_request = 0;
-	return;
-    }
-#  endif
-
-# ifdef FEAT_MBYTE
+#  ifdef FEAT_MBYTE
     if (rest != NULL)
     {
 	/* Use remainder of previous call, starts with an invalid character
@@ -1826,7 +1851,7 @@ fill_input_buf(int exit_on_error UNUSED)
     }
     else
 	unconverted = 0;
-#endif
+#  endif
 
     len = 0;	/* to avoid gcc warning */
     for (try = 0; try < 100; ++try)
@@ -2605,7 +2630,7 @@ jump_to_mouse(
     int		which_button)	/* MOUSE_LEFT, MOUSE_RIGHT, MOUSE_MIDDLE */
 {
     static int	on_status_line = 0;	/* #lines below bottom of window */
-#ifdef FEAT_VERTSPLIT
+#ifdef FEAT_WINDOWS
     static int	on_sep_line = 0;	/* on separator right of window */
 #endif
     static int	prev_row = -1;
@@ -2645,7 +2670,7 @@ retnomove:
 	 * line, stop Visual mode */
 	if (on_status_line)
 	    return IN_STATUS_LINE;
-#ifdef FEAT_VERTSPLIT
+#ifdef FEAT_WINDOWS
 	if (on_sep_line)
 	    return IN_SEP_LINE;
 #endif
@@ -2703,7 +2728,7 @@ retnomove:
 	}
 	else
 	    on_status_line = 0;
-#ifdef FEAT_VERTSPLIT
+#ifdef FEAT_WINDOWS
 	if (col >= wp->w_width)		/* In separator line */
 	{
 	    on_sep_line = col - wp->w_width + 1;
@@ -2728,7 +2753,7 @@ retnomove:
 	if (VIsual_active
 		&& (wp->w_buffer != curwin->w_buffer
 		    || (!on_status_line
-#ifdef FEAT_VERTSPLIT
+#ifdef FEAT_WINDOWS
 			&& !on_sep_line
 #endif
 #ifdef FEAT_FOLDING
@@ -2752,9 +2777,7 @@ retnomove:
 	{
 	    /* A click outside the command-line window: Use modeless
 	     * selection if possible.  Allow dragging the status lines. */
-# ifdef FEAT_VERTSPLIT
 	    on_sep_line = 0;
-# endif
 # ifdef FEAT_CLIPBOARD
 	    if (on_status_line)
 		return IN_STATUS_LINE;
@@ -2786,7 +2809,7 @@ retnomove:
 	    else
 		return IN_STATUS_LINE | CURSOR_MOVED;
 	}
-#ifdef FEAT_VERTSPLIT
+#ifdef FEAT_WINDOWS
 	if (on_sep_line)			/* In (or below) status line */
 	{
 	    /* Don't use start_arrow() if we're in the same window */
@@ -2820,7 +2843,7 @@ retnomove:
 #endif
 	return IN_STATUS_LINE;			/* Cursor didn't move */
     }
-#ifdef FEAT_VERTSPLIT
+#ifdef FEAT_WINDOWS
     else if (on_sep_line && which_button == MOUSE_LEFT)
     {
 	if (dragwin != NULL)
@@ -2850,7 +2873,7 @@ retnomove:
 #endif
 
 	row -= W_WINROW(curwin);
-#ifdef FEAT_VERTSPLIT
+#ifdef FEAT_WINDOWS
 	col -= W_WINCOL(curwin);
 #endif
 
@@ -3111,7 +3134,6 @@ mouse_find_win(int *rowp, int *colp UNUSED)
     {
 	if (fp->fr_layout == FR_LEAF)
 	    break;
-#ifdef FEAT_VERTSPLIT
 	if (fp->fr_layout == FR_ROW)
 	{
 	    for (fp = fp->fr_child; fp->fr_next != NULL; fp = fp->fr_next)
@@ -3121,7 +3143,6 @@ mouse_find_win(int *rowp, int *colp UNUSED)
 		*colp -= fp->fr_width;
 	    }
 	}
-#endif
 	else    /* fr_layout == FR_COL */
 	{
 	    for (fp = fp->fr_child; fp->fr_next != NULL; fp = fp->fr_next)
@@ -3164,7 +3185,7 @@ get_fpos_of_mouse(pos_T *mpos)
      */
     if (row >= wp->w_height)	/* In (or below) status line */
 	return IN_STATUS_LINE;
-#ifdef FEAT_VERTSPLIT
+#ifdef FEAT_WINDOWS
     if (col >= wp->w_width)	/* In vertical separator line */
 	return IN_SEP_LINE;
 #endif
@@ -3202,7 +3223,7 @@ vcol2col(win_T *wp, linenr_T lnum, int vcol)
     while (count < vcol && *ptr != NUL)
     {
 	count += win_lbr_chartabsize(wp, line, ptr, count, NULL);
-	mb_ptr_adv(ptr);
+	MB_PTR_ADV(ptr);
     }
     return (int)(ptr - line);
 }

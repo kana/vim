@@ -1,4 +1,4 @@
-/* vi:set ts=8 sts=4 sw=4: */
+/* vi:set ts=8 sts=4 sw=4 noet: */
 /*
  * The following software is (C) 1984 Peter da Silva, the Mad Australian, in
  * the public domain. It may be re-distributed for any purpose with the
@@ -140,7 +140,7 @@ tgetent(
 }
 
     static int
-getent(char *tbuf, *term, FILE *termcap, int buflen)
+getent(char *tbuf, char *term, FILE *termcap, int buflen)
 {
     char    *tptr;
     int	    tlen = strlen(term);

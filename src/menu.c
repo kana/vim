@@ -1,4 +1,4 @@
-/* vi:set ts=8 sts=4 sw=4:
+/* vi:set ts=8 sts=4 sw=4 noet:
  *
  * VIM - Vi IMproved		by Bram Moolenaar
  *				GUI/Motif support by Robert Webb
@@ -102,7 +102,7 @@ ex_menu(
     int		i;
 #if defined(FEAT_GUI) && !(defined(FEAT_GUI_GTK) || defined(FEAT_GUI_MACVIM))
     int		old_menu_height;
-# if defined(FEAT_TOOLBAR) && !defined(FEAT_GUI_W32) && !defined(FEAT_GUI_W16)
+# if defined(FEAT_TOOLBAR) && !defined(FEAT_GUI_W32)
     int		old_toolbar_height;
 # endif
 #endif
@@ -152,7 +152,7 @@ ex_menu(
 	{
 	    if (*arg == '\\')
 		STRMOVE(arg, arg + 1);
-	    mb_ptr_adv(arg);
+	    MB_PTR_ADV(arg);
 	}
 	if (*arg != NUL)
 	{
@@ -167,9 +167,9 @@ ex_menu(
     for (p = arg; *p; ++p)
 	if (!VIM_ISDIGIT(*p) && *p != '.')
 	    break;
-    if (vim_iswhite(*p))
+    if (VIM_ISWHITE(*p))
     {
-	for (i = 0; i < MENUDEPTH && !vim_iswhite(*arg); ++i)
+	for (i = 0; i < MENUDEPTH && !VIM_ISWHITE(*arg); ++i)
 	{
 	    pri_tab[i] = getdigits(&arg);
 	    if (pri_tab[i] == 0)
@@ -193,12 +193,12 @@ ex_menu(
     /*
      * Check for "disable" or "enable" argument.
      */
-    if (STRNCMP(arg, "enable", 6) == 0 && vim_iswhite(arg[6]))
+    if (STRNCMP(arg, "enable", 6) == 0 && VIM_ISWHITE(arg[6]))
     {
 	enable = TRUE;
 	arg = skipwhite(arg + 6);
     }
-    else if (STRNCMP(arg, "disable", 7) == 0 && vim_iswhite(arg[7]))
+    else if (STRNCMP(arg, "disable", 7) == 0 && VIM_ISWHITE(arg[7]))
     {
 	enable = FALSE;
 	arg = skipwhite(arg + 7);
@@ -275,7 +275,7 @@ ex_menu(
 #if defined(FEAT_GUI) && !(defined(FEAT_GUI_GTK) || defined(FEAT_GUI_PHOTON) \
         || defined(FEAT_GUI_MACVIM))
     old_menu_height = gui.menu_height;
-# if defined(FEAT_TOOLBAR) && !defined(FEAT_GUI_W32) && !defined(FEAT_GUI_W16)
+# if defined(FEAT_TOOLBAR) && !defined(FEAT_GUI_W32)
     old_toolbar_height = gui.toolbar_height;
 # endif
 #endif
@@ -396,7 +396,7 @@ ex_menu(
     /* If the menubar height changed, resize the window */
     if (gui.in_use
 	    && (gui.menu_height != old_menu_height
-# if defined(FEAT_TOOLBAR) && !defined(FEAT_GUI_W32) && !defined(FEAT_GUI_W16)
+# if defined(FEAT_TOOLBAR) && !defined(FEAT_GUI_W32)
 		|| gui.toolbar_height != old_toolbar_height
 # endif
 	    ))
@@ -662,7 +662,7 @@ add_menu_path(
 
 		    STRCPY(tearpath, menu_path);
 		    idx = (int)(next_name - path_name - 1);
-		    for (s = tearpath; *s && s < tearpath + idx; mb_ptr_adv(s))
+		    for (s = tearpath; *s && s < tearpath + idx; MB_PTR_ADV(s))
 		    {
 			if ((*s == '\\' || *s == Ctrl_V) && s[1])
 			{
@@ -1138,7 +1138,7 @@ show_menus_recursive(vimmenu_T *menu, int modes, int depth)
 	    MSG_PUTS(" ");
 	}
 				/* Same highlighting as for directories!? */
-	msg_outtrans_attr(menu->name, hl_attr(HLF_D));
+	msg_outtrans_attr(menu->name, HL_ATTR(HLF_D));
     }
 
     if (menu != NULL && menu->children == NULL)
@@ -1168,7 +1168,7 @@ show_menus_recursive(vimmenu_T *menu, int modes, int depth)
 		    msg_putchar(' ');
 		MSG_PUTS(" ");
 		if (*menu->strings[bit] == NUL)
-		    msg_puts_attr((char_u *)"<Nop>", hl_attr(HLF_8));
+		    msg_puts_attr((char_u *)"<Nop>", HL_ATTR(HLF_8));
 		else
 		    msg_outtrans_special(menu->strings[bit], FALSE);
 	    }
@@ -1225,24 +1225,24 @@ set_context_in_menu_cmd(
 	if (!VIM_ISDIGIT(*p) && *p != '.')
 	    break;
 
-    if (!vim_iswhite(*p))
+    if (!VIM_ISWHITE(*p))
     {
 	if (STRNCMP(arg, "enable", 6) == 0
-		&& (arg[6] == NUL ||  vim_iswhite(arg[6])))
+		&& (arg[6] == NUL ||  VIM_ISWHITE(arg[6])))
 	    p = arg + 6;
 	else if (STRNCMP(arg, "disable", 7) == 0
-		&& (arg[7] == NUL || vim_iswhite(arg[7])))
+		&& (arg[7] == NUL || VIM_ISWHITE(arg[7])))
 	    p = arg + 7;
 	else
 	    p = arg;
     }
 
-    while (*p != NUL && vim_iswhite(*p))
+    while (*p != NUL && VIM_ISWHITE(*p))
 	++p;
 
     arg = after_dot = p;
 
-    for (; *p && !vim_iswhite(*p); ++p)
+    for (; *p && !VIM_ISWHITE(*p); ++p)
     {
 	if ((*p == '\\' || *p == Ctrl_V) && p[1] != NUL)
 	    p++;
@@ -1253,7 +1253,7 @@ set_context_in_menu_cmd(
     /* ":tearoff" and ":popup" only use menus, not entries */
     expand_menus = !((*cmd == 't' && cmd[1] == 'e') || *cmd == 'p');
     expand_emenu = (*cmd == 'e');
-    if (expand_menus && vim_iswhite(*p))
+    if (expand_menus && VIM_ISWHITE(*p))
 	return NULL;	/* TODO: check for next command? */
     if (*p == NUL)		/* Complete the menu name */
     {
@@ -1478,7 +1478,7 @@ menu_name_skip(char_u *name)
 {
     char_u  *p;
 
-    for (p = name; *p && *p != '.'; mb_ptr_adv(p))
+    for (p = name; *p && *p != '.'; MB_PTR_ADV(p))
     {
 	if (*p == '\\' || *p == Ctrl_V)
 	{
@@ -1824,7 +1824,7 @@ check_menu_pointer(vimmenu_T *root, vimmenu_T *menu_to_check)
  * defined.  This is done once here.  add_menu_path() may have already been
  * called to define these menus, and may be called again.  This function calls
  * itself recursively.	Should be called at the top level with:
- * gui_create_initial_menus(root_menu, NULL);
+ * gui_create_initial_menus(root_menu);
  */
     void
 gui_create_initial_menus(vimmenu_T *menu)
@@ -1976,7 +1976,12 @@ gui_show_popupmenu(void)
 
     /* Only show a popup when it is defined and has entries */
     if (menu != NULL && menu->children != NULL)
+    {
+	/* Update the menus now, in case the MenuPopup autocommand did
+	 * anything. */
+	gui_update_menus(0);
 	gui_mch_show_popupmenu(menu);
+    }
 }
 #endif /* FEAT_GUI */
 
@@ -2451,7 +2456,7 @@ ex_menutranslate(exarg_T *eap UNUSED)
     static char_u *
 menu_skip_part(char_u *p)
 {
-    while (*p != NUL && *p != '.' && !vim_iswhite(*p))
+    while (*p != NUL && *p != '.' && !VIM_ISWHITE(*p))
     {
 	if ((*p == '\\' || *p == Ctrl_V) && p[1] != NUL)
 	    ++p;
@@ -2474,7 +2479,7 @@ menutrans_lookup(char_u *name, int len)
     char_u		*dname;
 
     for (i = 0; i < menutrans_ga.ga_len; ++i)
-	if (STRNCMP(name, tp[i].from, len) == 0 && tp[i].from[len] == NUL)
+	if (STRNICMP(name, tp[i].from, len) == 0 && tp[i].from[len] == NUL)
 	    return tp[i].to;
 
     /* Now try again while ignoring '&' characters. */
@@ -2485,7 +2490,7 @@ menutrans_lookup(char_u *name, int len)
     if (dname != NULL)
     {
 	for (i = 0; i < menutrans_ga.ga_len; ++i)
-	    if (STRCMP(dname, tp[i].from_noamp) == 0)
+	    if (STRICMP(dname, tp[i].from_noamp) == 0)
 	    {
 		vim_free(dname);
 		return tp[i].to;
@@ -2504,7 +2509,7 @@ menu_unescape_name(char_u *name)
 {
     char_u  *p;
 
-    for (p = name; *p && *p != '.'; mb_ptr_adv(p))
+    for (p = name; *p && *p != '.'; MB_PTR_ADV(p))
 	if (*p == '\\')
 	    STRMOVE(p, p + 1);
 }
@@ -2519,7 +2524,7 @@ menu_translate_tab_and_shift(char_u *arg_start)
 {
     char_u	*arg = arg_start;
 
-    while (*arg && !vim_iswhite(*arg))
+    while (*arg && !VIM_ISWHITE(*arg))
     {
 	if ((*arg == '\\' || *arg == Ctrl_V) && arg[1] != NUL)
 	    arg++;
@@ -2653,7 +2658,7 @@ ex_macmenu(eap)
 	/*
 	 * Isolate the key ("action", "alt", or "key").
 	 */
-	while (*linep && !vim_iswhite(*linep) && *linep != '=')
+	while (*linep && !VIM_ISWHITE(*linep) && *linep != '=')
 	    ++linep;
 	vim_free(key);
 	key = vim_strnsave_up(key_start, (int)(linep - key_start));

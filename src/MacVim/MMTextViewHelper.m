@@ -158,13 +158,13 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
     // ASCII chars in the range after space (0x20) and before backspace (0x7f).
     // Note that this implies that 'mmta' (if enabled) breaks input methods
     // when the Alt key is held.
-    if ((flags & NSAlternateKeyMask) && [mmta boolValue] && [unmod length] == 1
-            && [unmod characterAtIndex:0] > 0x20
-            && [unmod characterAtIndex:0] < 0x7f) {
+    if ((flags & NSEventModifierFlagOption)
+            && [mmta boolValue] && [unmod length] == 1
+            && [unmod characterAtIndex:0] > 0x20) {
         ASLogDebug(@"MACMETA key, don't interpret it");
         string = unmod;
-    } else if (imState && (flags & NSControlKeyMask)
-            && !(flags & (NSAlternateKeyMask|NSCommandKeyMask))
+    } else if (imState && (flags & NSEventModifierFlagControl)
+            && !(flags & (NSEventModifierFlagOption|NSEventModifierFlagCommand))
             && [unmod length] == 1
             && ([unmod characterAtIndex:0] == '6' ||
                 [unmod characterAtIndex:0] == '^')) {
@@ -197,14 +197,15 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
         [textView interpretKeyEvents:[NSArray arrayWithObject:event]];
         if (interpretKeyEventsSwallowedKey)
             string = nil;
-        else if (flags & NSCommandKeyMask) {
+        else if (flags & NSEventModifierFlagCommand) {
             // HACK! When Command is held we have to more or less guess whether
             // we should use characters or charactersIgnoringModifiers.  The
             // following heuristic seems to work but it may have to change.
             // Note that the Shift and Alt flags may also need to be cleared
             // (see doKeyDown:keyCode:modifiers: in MMBackend).
-            if ((flags & NSShiftKeyMask && !(flags & NSAlternateKeyMask))
-                    || flags & NSControlKeyMask)
+            if ((flags & NSEventModifierFlagShift
+                    && !(flags & NSEventModifierFlagOption))
+                    || flags & NSEventModifierFlagControl)
                 string = unmod;
         }
     }
@@ -295,6 +296,38 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
 
 - (void)scrollWheel:(NSEvent *)event
 {
+    float dx = 0;
+    float dy = 0;
+
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
+    if ([event hasPreciseScrollingDeltas]) {
+        NSSize cellSize = [textView cellSize];
+        float thresholdX = cellSize.width;
+        float thresholdY = cellSize.height;
+        scrollingDeltaX += [event scrollingDeltaX];
+        if (fabs(scrollingDeltaX) > thresholdX) {
+            dx = roundf(scrollingDeltaX / thresholdX);
+            scrollingDeltaX -= thresholdX * dx;
+        }
+        scrollingDeltaY += [event scrollingDeltaY];
+        if (fabs(scrollingDeltaY) > thresholdY) {
+            dy = roundf(scrollingDeltaY / thresholdY);
+            scrollingDeltaY -= thresholdY * dy;
+        }
+    } else {
+        scrollingDeltaX = 0;
+        scrollingDeltaY = 0;
+        dx = [event scrollingDeltaX];
+        dy = [event scrollingDeltaY];
+    }
+#else
+    dx = [event deltaX];
+    dy = [event deltaY];
+#endif
+
+    if (dx == 0 && dy == 0)
+        return;
+
     if ([self hasMarkedText]) {
         // We must clear the marked text since the cursor may move if the
         // marked text moves outside the view as a result of scrolling.
@@ -302,11 +335,6 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
         [self unmarkText];
         [[NSTextInputContext currentInputContext] discardMarkedText];
     }
-
-    float dx = [event deltaX];
-    float dy = [event deltaY];
-    if (dx == 0 && dy == 0)
-        return;
 
     int row, col;
     NSPoint pt = [textView convertPoint:[event locationInWindow] fromView:nil];
@@ -356,12 +384,12 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
     // If desired, intepret Ctrl-Click as a right mouse click.
     BOOL translateCtrlClick = [[NSUserDefaults standardUserDefaults]
             boolForKey:MMTranslateCtrlClickKey];
-    flags = flags & NSDeviceIndependentModifierFlagsMask;
+    flags = flags & NSEventModifierFlagDeviceIndependentFlagsMask;
     if (translateCtrlClick && button == 0 &&
-            (flags == NSControlKeyMask ||
-             flags == (NSControlKeyMask|NSAlphaShiftKeyMask))) {
+            (flags == NSEventModifierFlagControl || flags ==
+                 (NSEventModifierFlagControl|NSEventModifierFlagCapsLock))) {
         button = 1;
-        flags &= ~NSControlKeyMask;
+        flags &= ~NSEventModifierFlagControl;
     }
 
     [data appendBytes:&row length:sizeof(int)];
@@ -870,7 +898,7 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
 
     // The low 16 bits are not used for modifier flags by NSEvent.  Use
     // these bits for custom flags.
-    flags &= NSDeviceIndependentModifierFlagsMask;
+    flags &= NSEventModifierFlagDeviceIndependentFlagsMask;
     if ([currentEvent isARepeat])
         flags |= 1;
 
@@ -903,8 +931,8 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
         // HACK! Keys on the numeric key pad are treated as special keys by Vim
         // so we need to pass on key code and modifier flags in this situation.
         unsigned mods = [currentEvent modifierFlags];
-        if (mods & NSNumericPadKeyMask) {
-            flags = mods & NSDeviceIndependentModifierFlagsMask;
+        if (mods & NSEventModifierFlagNumericPad) {
+            flags = mods & NSEventModifierFlagDeviceIndependentFlagsMask;
             keyCode = [currentEvent keyCode];
         }
 

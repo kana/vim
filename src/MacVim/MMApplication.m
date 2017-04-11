@@ -13,6 +13,7 @@
  * Some default NSApplication key input behavior is overridden here.
  */
 
+#import "MacVim.h"
 #import "MMApplication.h"
 
 @implementation MMApplication
@@ -27,14 +28,15 @@
     // help mode' (the keyDown: event itself never reaches the text view).  By
     // clearing the 'help key flag' this event will be treated like a normal
     // key event.
-    if ((NSKeyDown == type || NSKeyUp == type) && (flags & NSHelpKeyMask)) {
-        flags &= ~NSHelpKeyMask;
+    if ((NSEventTypeKeyDown == type || NSEventTypeKeyUp == type) &&
+            (flags & NSEventModifierFlagHelp)) {
+        flags &= ~NSEventModifierFlagHelp;
         event = [NSEvent keyEventWithType:[event type]
                                  location:[event locationInWindow]
                             modifierFlags:flags
                                 timestamp:[event timestamp]
                              windowNumber:[event windowNumber]
-                                  context:[event context]
+                                  context:nil // [event context] is always nil
                                characters:[event characters]
               charactersIgnoringModifiers:[event charactersIgnoringModifiers]
                                 isARepeat:[event isARepeat]

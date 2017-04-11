@@ -1,4 +1,4 @@
-/* vi:set ts=8 sts=4 sw=4:
+/* vi:set ts=8 sts=4 sw=4 noet:
  *
  * VIM - Vi IMproved		by Bram Moolenaar
  * VMS port			by Henk Elbers
@@ -726,7 +726,8 @@ struct typeahead_st {
 RealWaitForChar(
     int		fd UNUSED, /* always read from iochan */
     long	msec,
-    int		*check_for_gpm UNUSED)
+    int		*check_for_gpm UNUSED,
+    int		*interrupted)
 {
     int status;
     struct _generic_64 time_curr;

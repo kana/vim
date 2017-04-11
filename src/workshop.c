@@ -1,4 +1,4 @@
-/* vi:set ts=8 sts=4 sw=4:
+/* vi:set ts=8 sts=4 sw=4 noet:
  *
  * VIM - Vi IMproved	by Bram Moolenaar
  *			Visual Workshop integration by Gordon Prieur
@@ -71,7 +71,7 @@ static Boolean	 workshopHotKeysEnabled = False;
 
 /*
  * The following enum is from <gp_dbx/gp_dbx_common.h>. We can't include it
- * here because its C++.
+ * here because it's C++.
  */
 enum
 {
@@ -1087,7 +1087,7 @@ workshop_get_positions(
     *curCol = curwin->w_cursor.col;
 
     if (curbuf->b_visual.vi_mode == 'v' &&
-	    equalpos(curwin->w_cursor, curbuf->b_visual.vi_end))
+	    EQUAL_POS(curwin->w_cursor, curbuf->b_visual.vi_end))
     {
 	*selStartLine = curbuf->b_visual.vi_start.lnum;
 	*selStartCol = curbuf->b_visual.vi_start.col;
@@ -1319,7 +1319,7 @@ get_window(
 {
     win_T	*wp = NULL;	/* window filename is in */
 
-    for (wp = firstwin; wp != NULL; wp = W_NEXT(wp))
+    FOR_ALL_WINDOWS(wp)
 	if (buf == wp->w_buffer)
 	    break;
     return wp;
@@ -1752,7 +1752,7 @@ setDollarVim(
  *			directory. This is a Sun Visual WorkShop requirement!
  *
  * Note:		We override a user's $VIM because it won't have the
- *			WorkShop specific files. S/he may not like this but its
+ *			WorkShop specific files. S/he may not like this but it's
  *			better than getting the wrong files (especially as the
  *			user is likely to have $VIM set to 5.4 or later).
  */

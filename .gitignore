@@ -5,6 +5,7 @@ src/xxd/xxd
 src/auto/if_perl.c
 src/auto/gui_gtk_gresources.c
 src/auto/gui_gtk_gresources.h
+src/objects/.dirstamp
 src/tags
 
 # We do need src/auto/configure.
@@ -77,7 +78,11 @@ src/testdir/test.log
 src/testdir/dostmp/*
 src/testdir/messages
 src/testdir/viminfo
+src/testdir/opt_test.vim
 src/memfile_test
+src/json_test
+src/message_test
+src/kword_test
 
 # From MacVim
 .*.swp

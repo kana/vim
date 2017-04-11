@@ -125,18 +125,25 @@ enum {
     [tabBarControl setDelegate:self];
     [tabBarControl setHidden:YES];
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_10
-    CGFloat screenWidth = [[NSScreen mainScreen] frame].size.width;
-    [tabBarControl setStyleNamed:@"Yosemite"];
-    [tabBarControl setCellMinWidth:120];
-    [tabBarControl setCellMaxWidth:screenWidth];
-    [tabBarControl setCellOptimumWidth:screenWidth];
-#else
-    [tabBarControl setCellMinWidth:[ud integerForKey:MMTabMinWidthKey]];
-    [tabBarControl setCellMaxWidth:[ud integerForKey:MMTabMaxWidthKey]];
-    [tabBarControl setCellOptimumWidth:
+    if (shouldUseYosemiteTabBarStyle()) {
+        CGFloat screenWidth = [[NSScreen mainScreen] frame].size.width;
+        int tabMaxWidth = [ud integerForKey:MMTabMaxWidthKey];
+        if (tabMaxWidth == 0)
+            tabMaxWidth = screenWidth;
+        int tabOptimumWidth = [ud integerForKey:MMTabOptimumWidthKey];
+        if (tabOptimumWidth == 0)
+            tabOptimumWidth = screenWidth;
+
+        [tabBarControl setStyleNamed:@"Yosemite"];
+        [tabBarControl setCellMinWidth:[ud integerForKey:MMTabMinWidthKey]];
+        [tabBarControl setCellMaxWidth:tabMaxWidth];
+        [tabBarControl setCellOptimumWidth:tabOptimumWidth];
+    } else {
+        [tabBarControl setCellMinWidth:[ud integerForKey:MMTabMinWidthKey]];
+        [tabBarControl setCellMaxWidth:[ud integerForKey:MMTabMaxWidthKey]];
+        [tabBarControl setCellOptimumWidth:
                                      [ud integerForKey:MMTabOptimumWidthKey]];
-#endif
+    }
 
     [tabBarControl setShowAddTabButton:[ud boolForKey:MMShowAddTabButtonKey]];
     [[tabBarControl addTabButton] setTarget:self];
@@ -190,11 +197,11 @@ enum {
     // weird behind the window resize throbber, so emulate the look of an
     // NSScrollView in the bottom right corner.
     if (![[self window] showsResizeIndicator]  // XXX: make this a flag
-            || !([[self window] styleMask] & NSTexturedBackgroundWindowMask))
+            || !([[self window] styleMask] & NSWindowStyleMaskTexturedBackground))
         return;
 
 #if (MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7)
-    int sw = [NSScroller scrollerWidthForControlSize:NSRegularControlSize scrollerStyle:NSScrollerStyleLegacy];
+    int sw = [NSScroller scrollerWidthForControlSize:NSControlSizeRegular scrollerStyle:NSScrollerStyleLegacy];
 #else
     int sw = [NSScroller scrollerWidth];
 #endif
@@ -697,7 +704,7 @@ enum {
 
         NSRect rect;
 #if (MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7)
-        CGFloat scrollerWidth = [NSScroller scrollerWidthForControlSize:NSRegularControlSize scrollerStyle:NSScrollerStyleLegacy];
+        CGFloat scrollerWidth = [NSScroller scrollerWidthForControlSize:NSControlSizeRegular scrollerStyle:NSScrollerStyleLegacy];
 #else
         CGFloat scrollerWidth = [NSScroller scrollerWidth];
 #endif
@@ -811,7 +818,7 @@ enum {
 {
     NSSize size = textViewSize;
 #if (MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7)
-    CGFloat scrollerWidth = [NSScroller scrollerWidthForControlSize:NSRegularControlSize scrollerStyle:NSScrollerStyleLegacy];
+    CGFloat scrollerWidth = [NSScroller scrollerWidthForControlSize:NSControlSizeRegular scrollerStyle:NSScrollerStyleLegacy];
 #else
     CGFloat scrollerWidth = [NSScroller scrollerWidth];
 #endif
@@ -833,7 +840,7 @@ enum {
 {
     NSRect rect = { {0, 0}, {contentSize.width, contentSize.height} };
 #if (MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7)
-    CGFloat scrollerWidth = [NSScroller scrollerWidthForControlSize:NSRegularControlSize scrollerStyle:NSScrollerStyleLegacy];
+    CGFloat scrollerWidth = [NSScroller scrollerWidthForControlSize:NSControlSizeRegular scrollerStyle:NSScrollerStyleLegacy];
 #else
     CGFloat scrollerWidth = [NSScroller scrollerWidth];
 #endif
@@ -902,7 +909,7 @@ enum {
                    "%dx%d (%s)", cols, rows, constrained[1], constrained[0],
                    MessageStrings[msgid]);
 
-        [vimController sendMessage:msgid data:data];
+        [vimController sendMessageNow:msgid data:data timeout:1];
 
         // We only want to set the window title if this resize came from
         // a live-resize, not (for example) setting 'columns' or 'lines'.

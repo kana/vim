@@ -312,6 +312,11 @@
     ligatures = state;
 }
 
+- (void)setThinStrokes:(BOOL)state
+{
+    thinStrokes = state;
+}
+
 - (void)setImControl:(BOOL)enable
 {
     [helper setImControl:enable];
@@ -355,6 +360,11 @@
 - (void)setLinespace:(float)newLinespace
 {
     return [(MMTextStorage*)[self textStorage] setLinespace:newLinespace];
+}
+
+- (void)setColumnspace:(float)newColumnspace
+{
+    return [(MMTextStorage*)[self textStorage] setColumnspace:newColumnspace];
 }
 
 - (int)maxRows
@@ -508,6 +518,11 @@
 }
 
 - (void)setToolTipAtMousePoint:(NSString *)string
+{
+    // ONLY in Core Text!
+}
+
+- (void)setCGLayerEnabled:(BOOL)enabled
 {
     // ONLY in Core Text!
 }

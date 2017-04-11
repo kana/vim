@@ -252,6 +252,7 @@ gui_mch_init(void)
     // Ensure 'linespace' option is passed along to MacVim in case it was set
     // in [g]vimrc.
     gui_mch_adjust_charheight();
+    gui_mch_adjust_charwidth();
 
     if (!MMNoMRU && GARGCOUNT > 0) {
         // Add files passed on command line to MRU.
@@ -406,9 +407,8 @@ gui_mch_wait_for_chars(int wtime)
     // called, so force a flush of the command queue here.
     [[MMBackend sharedInstance] flushQueue:YES];
 
-#if defined(FEAT_NETBEANS_INTG)
-    /* Process any queued netbeans messages. */
-    netbeans_parse_messages();
+#ifdef MESSAGE_QUEUE
+    parse_queued_messages();
 #endif
 
     return [[MMBackend sharedInstance] waitForInput:wtime];
@@ -1198,6 +1198,20 @@ gui_mch_draw_part_cursor(int w, int h, guicolor_T color)
 }
 
 
+    int
+gui_mch_is_blinking(void)
+{
+    return FALSE;
+}
+
+
+    int
+gui_mch_is_blink_off(void)
+{
+    return FALSE;
+}
+
+
 /*
  * Cursor blink functions.
  *
@@ -1392,6 +1406,17 @@ gui_mch_adjust_charheight(void)
 }
 
 
+/*
+ * Adjust gui.char_width (after 'columnspace' was changed).
+ */
+    int
+gui_mch_adjust_charwidth(void)
+{
+    [[MMBackend sharedInstance] adjustColumnspace:p_columnspace];
+    return OK;
+}
+
+
     void
 gui_mch_beep(void)
 {
@@ -1494,9 +1519,9 @@ gui_mch_dialog(
     // Ensure no data is on the output queue before presenting the dialog.
     gui_macvim_force_flush();
 
-    int style = NSInformationalAlertStyle;
-    if (VIM_WARNING == type) style = NSWarningAlertStyle;
-    else if (VIM_ERROR == type) style = NSCriticalAlertStyle;
+    int style = NSAlertStyleInformational;
+    if (VIM_WARNING == type) style = NSAlertStyleWarning;
+    else if (VIM_ERROR == type) style = NSAlertStyleCritical;
 
     NSMutableDictionary *attr = [NSMutableDictionary
                         dictionaryWithObject:[NSNumber numberWithInt:style]
@@ -1563,6 +1588,9 @@ gui_mch_flash(int msec)
     guicolor_T
 gui_mch_get_color(char_u *name)
 {
+    if (![MMBackend sharedInstance])
+	return INVALCOLOR;
+
 #ifdef FEAT_MBYTE
     name = CONVERT_TO_UTF8(name);
 #endif
@@ -1581,7 +1609,7 @@ gui_mch_get_color(char_u *name)
 /*
  * Return the RGB value of a pixel as long.
  */
-    long_u
+    guicolor_T
 gui_mch_get_rgb(guicolor_T pixel)
 {
     // This is only implemented so that vim can guess the correct value for
@@ -1802,6 +1830,11 @@ gui_macvim_set_ligatures(int ligatures)
 {
     [[MMBackend sharedInstance] setLigatures:ligatures];
 }
+    void
+gui_macvim_set_thinstrokes(int thinStrokes)
+{
+    [[MMBackend sharedInstance] setThinStrokes:thinStrokes];
+}
 
     void
 gui_macvim_wait_for_startup()
@@ -1876,7 +1909,7 @@ serverRegisterName(char_u *name)
  */
     int
 serverSendToVim(char_u *name, char_u *cmd, char_u **result,
-        int *port, int asExpr, int silent)
+        int *port, int asExpr, int timeout, int silent)
 {
 #ifdef FEAT_MBYTE
     name = CONVERT_TO_UTF8(name);
@@ -2226,13 +2259,13 @@ static int vimModMaskToEventModifierFlags(int mods)
     int flags = 0;
 
     if (mods & MOD_MASK_SHIFT)
-        flags |= NSShiftKeyMask;
+        flags |= NSEventModifierFlagShift;
     if (mods & MOD_MASK_CTRL)
-        flags |= NSControlKeyMask;
+        flags |= NSEventModifierFlagControl;
     if (mods & MOD_MASK_ALT)
-        flags |= NSAlternateKeyMask;
+        flags |= NSEventModifierFlagOption;
     if (mods & MOD_MASK_CMD)
-        flags |= NSCommandKeyMask;
+        flags |= NSEventModifierFlagCommand;
 
     return flags;
 }
@@ -2241,16 +2274,27 @@ static int vimModMaskToEventModifierFlags(int mods)
 
 // -- Channel Support ------------------------------------------------------
 
-    void
-gui_macvim_add_channel(int idx, int fd)
+    void *
+gui_macvim_add_channel(channel_T *channel, ch_part_T part)
 {
-    [[MMBackend sharedInstance] addChannel:idx fileDescriptor:fd];
+    dispatch_source_t s =
+        dispatch_source_create(DISPATCH_SOURCE_TYPE_READ,
+                               channel->ch_part[part].ch_fd,
+                               0,
+                               dispatch_get_main_queue());
+    dispatch_source_set_event_handler(s, ^{
+        channel_read(channel, part, "gui_macvim_add_channel");
+    });
+    dispatch_resume(s);
+    return s;
 }
 
     void
-gui_macvim_remove_channel(int idx)
+gui_macvim_remove_channel(void *cookie)
 {
-    [[MMBackend sharedInstance] removeChannel:idx];
+    dispatch_source_t s = (dispatch_source_t)cookie;
+    dispatch_source_cancel(s);
+    dispatch_release(s);
 }
 
 

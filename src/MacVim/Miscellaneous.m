@@ -47,6 +47,8 @@ NSString *MMUseInlineImKey              = @"MMUseInlineIm";
 NSString *MMSuppressTerminationAlertKey = @"MMSuppressTerminationAlert";
 NSString *MMNativeFullScreenKey         = @"MMNativeFullScreen";
 NSString *MMUseMouseTimeKey             = @"MMUseMouseTime";
+NSString *MMFullScreenFadeTimeKey       = @"MMFullScreenFadeTime";
+NSString *MMUseCGLayerAlwaysKey         = @"MMUseCGLayerAlways";
 
 
 
@@ -259,7 +261,7 @@ showHiddenFilesView()
     [button setAction:@selector(hiddenFilesButtonToggled:)];
 
     // Use the regular control size (checkbox is a bit smaller without this)
-    NSControlSize buttonSize = NSRegularControlSize;
+    NSControlSize buttonSize = NSControlSizeRegular;
     float fontSize = [NSFont systemFontSizeForControlSize:buttonSize];
     NSCell *theCell = [button cell];
     NSFont *theFont = [NSFont fontWithName:[[theCell font] fontName]
@@ -294,4 +296,13 @@ normalizeFilenames(NSArray *filenames)
     }
 
     return outnames;
+}
+
+
+
+
+    BOOL
+shouldUseYosemiteTabBarStyle()
+{ 
+    return floor(NSAppKitVersionNumber) >= NSAppKitVersionNumber10_10;
 }

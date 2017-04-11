@@ -181,41 +181,59 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     CFPreferencesSetAppValue(CFSTR("NSRepeatCountBinding"),
                              CFSTR(""),
                              kCFPreferencesCurrentApplication);
-    
+
+    int tabMinWidthKey;
+    int tabMaxWidthKey;
+    int tabOptimumWidthKey;
+    if (shouldUseYosemiteTabBarStyle()) {
+        tabMinWidthKey = 120;
+        tabMaxWidthKey = 0;
+        tabOptimumWidthKey = 0;
+    } else {
+        tabMinWidthKey = 64;
+        tabMaxWidthKey = 6*64;
+        tabOptimumWidthKey = 132;
+    }
+
     NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSNumber numberWithBool:NO],   MMNoWindowKey,
-        [NSNumber numberWithInt:64],    MMTabMinWidthKey,
-        [NSNumber numberWithInt:6*64],  MMTabMaxWidthKey,
-        [NSNumber numberWithInt:132],   MMTabOptimumWidthKey,
-        [NSNumber numberWithBool:YES],  MMShowAddTabButtonKey,
-        [NSNumber numberWithInt:2],     MMTextInsetLeftKey,
-        [NSNumber numberWithInt:1],     MMTextInsetRightKey,
-        [NSNumber numberWithInt:1],     MMTextInsetTopKey,
-        [NSNumber numberWithInt:1],     MMTextInsetBottomKey,
-        @"MMTypesetter",                MMTypesetterKey,
-        [NSNumber numberWithFloat:1],   MMCellWidthMultiplierKey,
-        [NSNumber numberWithFloat:-1],  MMBaselineOffsetKey,
-        [NSNumber numberWithBool:YES],  MMTranslateCtrlClickKey,
-        [NSNumber numberWithInt:0],     MMOpenInCurrentWindowKey,
-        [NSNumber numberWithBool:NO],   MMNoFontSubstitutionKey,
-        [NSNumber numberWithBool:YES],  MMLoginShellKey,
+        [NSNumber numberWithBool:NO],     MMNoWindowKey,
+        [NSNumber numberWithInt:tabMinWidthKey],
+                                          MMTabMinWidthKey,
+        [NSNumber numberWithInt:tabMaxWidthKey],
+                                          MMTabMaxWidthKey,
+        [NSNumber numberWithInt:tabOptimumWidthKey],
+                                          MMTabOptimumWidthKey,
+        [NSNumber numberWithBool:YES],    MMShowAddTabButtonKey,
+        [NSNumber numberWithInt:2],       MMTextInsetLeftKey,
+        [NSNumber numberWithInt:1],       MMTextInsetRightKey,
+        [NSNumber numberWithInt:1],       MMTextInsetTopKey,
+        [NSNumber numberWithInt:1],       MMTextInsetBottomKey,
+        @"MMTypesetter",                  MMTypesetterKey,
+        [NSNumber numberWithFloat:1],     MMCellWidthMultiplierKey,
+        [NSNumber numberWithFloat:-1],    MMBaselineOffsetKey,
+        [NSNumber numberWithBool:YES],    MMTranslateCtrlClickKey,
+        [NSNumber numberWithInt:0],       MMOpenInCurrentWindowKey,
+        [NSNumber numberWithBool:NO],     MMNoFontSubstitutionKey,
+        [NSNumber numberWithBool:YES],    MMLoginShellKey,
         [NSNumber numberWithInt:MMRendererCoreText],
-                                        MMRendererKey,
+                                          MMRendererKey,
         [NSNumber numberWithInt:MMUntitledWindowAlways],
-                                        MMUntitledWindowKey,
-        [NSNumber numberWithBool:NO],   MMZoomBothKey,
-        @"",                            MMLoginShellCommandKey,
-        @"",                            MMLoginShellArgumentKey,
-        [NSNumber numberWithBool:YES],  MMDialogsTrackPwdKey,
-        [NSNumber numberWithInt:3],     MMOpenLayoutKey,
-        [NSNumber numberWithBool:NO],   MMVerticalSplitKey,
-        [NSNumber numberWithInt:0],     MMPreloadCacheSizeKey,
-        [NSNumber numberWithInt:0],     MMLastWindowClosedBehaviorKey,
+                                          MMUntitledWindowKey,
+        [NSNumber numberWithBool:NO],     MMZoomBothKey,
+        @"",                              MMLoginShellCommandKey,
+        @"",                              MMLoginShellArgumentKey,
+        [NSNumber numberWithBool:YES],    MMDialogsTrackPwdKey,
+        [NSNumber numberWithInt:3],       MMOpenLayoutKey,
+        [NSNumber numberWithBool:NO],     MMVerticalSplitKey,
+        [NSNumber numberWithInt:0],       MMPreloadCacheSizeKey,
+        [NSNumber numberWithInt:0],       MMLastWindowClosedBehaviorKey,
 #ifdef INCLUDE_OLD_IM_CODE
-        [NSNumber numberWithBool:YES],  MMUseInlineImKey,
+        [NSNumber numberWithBool:YES],    MMUseInlineImKey,
 #endif // INCLUDE_OLD_IM_CODE
-        [NSNumber numberWithBool:NO],   MMSuppressTerminationAlertKey,
-        [NSNumber numberWithBool:YES],  MMNativeFullScreenKey,
+        [NSNumber numberWithBool:NO],     MMSuppressTerminationAlertKey,
+        [NSNumber numberWithBool:YES],    MMNativeFullScreenKey,
+        [NSNumber numberWithDouble:0.25], MMFullScreenFadeTimeKey,
+        [NSNumber numberWithBool:NO],     MMUseCGLayerAlwaysKey,
         nil];
 
     [[NSUserDefaults standardUserDefaults] registerDefaults:dict];
@@ -501,7 +519,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
     if (modifiedBuffers) {
         NSAlert *alert = [[NSAlert alloc] init];
-        [alert setAlertStyle:NSWarningAlertStyle];
+        [alert setAlertStyle:NSAlertStyleWarning];
         [alert addButtonWithTitle:NSLocalizedString(@"Quit",
                 @"Dialog button")];
         [alert addButtonWithTitle:NSLocalizedString(@"Cancel",
@@ -531,7 +549,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
 
         if (numWindows > 1 || numTabs > 1) {
             NSAlert *alert = [[NSAlert alloc] init];
-            [alert setAlertStyle:NSWarningAlertStyle];
+            [alert setAlertStyle:NSAlertStyleWarning];
             [alert addButtonWithTitle:NSLocalizedString(@"Quit",
                     @"Dialog button")];
             [alert addButtonWithTitle:NSLocalizedString(@"Cancel",
@@ -1178,6 +1196,27 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     [NSApp makeWindowsPerform:@selector(performZoom:) inOrder:YES];
 }
 
+- (IBAction)stayInFront:(id)sender
+{
+    ASLogDebug(@"Stay in Front");
+    NSWindow *keyWindow = [NSApp keyWindow];
+    [keyWindow setLevel:NSFloatingWindowLevel];
+}
+
+- (IBAction)stayInBack:(id)sender
+{
+    ASLogDebug(@"Stay in Back");
+    NSWindow *keyWindow = [NSApp keyWindow];
+    [keyWindow setLevel:kCGDesktopIconWindowLevel +1];
+}
+
+- (IBAction)stayLevelNormal:(id)sender
+{
+    ASLogDebug(@"Stay level normal");
+    NSWindow *keyWindow = [NSApp keyWindow];
+    [keyWindow setLevel:NSNormalWindowLevel];
+}
+
 - (IBAction)coreTextButtonClicked:(id)sender
 {
     ASLogDebug(@"Toggle CoreText renderer");
@@ -1565,7 +1604,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
         }
 
         [alert setInformativeText:text];
-        [alert setAlertStyle:NSWarningAlertStyle];
+        [alert setAlertStyle:NSAlertStyleWarning];
 
         [alert runModal];
         [alert release];
@@ -1734,7 +1773,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
             @"Unknown URL Scheme dialog, text"),
             [url host]]];
 
-        [alert setAlertStyle:NSWarningAlertStyle];
+        [alert setAlertStyle:NSAlertStyleWarning];
         [alert runModal];
         [alert release];
     }
@@ -1852,7 +1891,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     // background, the runloop won't bother flushing the autorelease pool.
     // Triggering an NSEvent works around this.
     // http://www.mikeash.com/pyblog/more-fun-with-autorelease.html
-    NSEvent* event = [NSEvent otherEventWithType:NSApplicationDefined
+    NSEvent* event = [NSEvent otherEventWithType:NSEventTypeApplicationDefined
                                         location:NSZeroPoint
                                    modifierFlags:0
                                        timestamp:0

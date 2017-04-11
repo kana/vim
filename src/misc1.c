@@ -1,4 +1,4 @@
-/* vi:set ts=8 sts=4 sw=4:
+/* vi:set ts=8 sts=4 sw=4 noet:
  *
  * VIM - Vi IMproved	by Bram Moolenaar
  *
@@ -139,7 +139,7 @@ set_indent(
 	    ind_done = 0;
 
 	    /* count as many characters as we can use */
-	    while (todo > 0 && vim_iswhite(*p))
+	    while (todo > 0 && VIM_ISWHITE(*p))
 	    {
 		if (*p == TAB)
 		{
@@ -202,7 +202,7 @@ set_indent(
     }
 
     /* Return if the indent is OK already. */
-    if (!doit && !vim_iswhite(*p) && !(flags & SIN_INSERT))
+    if (!doit && !VIM_ISWHITE(*p) && !(flags & SIN_INSERT))
 	return FALSE;
 
     /* Allocate memory for the new line. */
@@ -234,7 +234,7 @@ set_indent(
 
 	/* Skip over any additional white space (useful when newindent is less
 	 * than old) */
-	while (vim_iswhite(*p))
+	while (VIM_ISWHITE(*p))
 	    ++p;
 
     }
@@ -258,7 +258,7 @@ set_indent(
 	    p = oldline;
 	    ind_done = 0;
 
-	    while (todo > 0 && vim_iswhite(*p))
+	    while (todo > 0 && VIM_ISWHITE(*p))
 	    {
 		if (*p == TAB)
 		{
@@ -357,7 +357,7 @@ copy_indent(int size, char_u *src)
 	s = src;
 
 	/* Count/copy the usable portion of the source line */
-	while (todo > 0 && vim_iswhite(*s))
+	while (todo > 0 && VIM_ISWHITE(*s))
 	{
 	    if (*s == TAB)
 	    {
@@ -492,7 +492,7 @@ get_breakindent_win(
     static int	    prev_indent = 0;  /* cached indent value */
     static long	    prev_ts     = 0L; /* cached tabstop value */
     static char_u   *prev_line = NULL; /* cached pointer to line */
-    static int	    prev_tick = 0;   /* changedtick of cached value */
+    static varnumber_T prev_tick = 0;   /* changedtick of cached value */
     int		    bri = 0;
     /* window width minus window margin space, i.e. what rests for text */
     const int	    eff_wwidth = W_WIDTH(wp)
@@ -502,11 +502,11 @@ get_breakindent_win(
 
     /* used cached indent, unless pointer or 'tabstop' changed */
     if (prev_line != line || prev_ts != wp->w_buffer->b_p_ts
-				  || prev_tick != wp->w_buffer->b_changedtick)
+				  || prev_tick != CHANGEDTICK(wp->w_buffer))
     {
 	prev_line = line;
 	prev_ts = wp->w_buffer->b_p_ts;
-	prev_tick = wp->w_buffer->b_changedtick;
+	prev_tick = CHANGEDTICK(wp->w_buffer);
 	prev_indent = get_indent_str(line,
 				     (int)wp->w_buffer->b_p_ts, wp->w_p_list);
     }
@@ -820,7 +820,7 @@ open_line(
 		{
 		    /* Find last non-blank in line */
 		    p = ptr + STRLEN(ptr) - 1;
-		    while (p > ptr && vim_iswhite(*p))
+		    while (p > ptr && VIM_ISWHITE(*p))
 			--p;
 		    last_char = *p;
 
@@ -831,7 +831,7 @@ open_line(
 		    {
 			if (p > ptr)
 			    --p;
-			while (p > ptr && vim_iswhite(*p))
+			while (p > ptr && VIM_ISWHITE(*p))
 			    --p;
 		    }
 		    /*
@@ -1020,7 +1020,7 @@ open_line(
 		     * comment leader, then put a space after the middle
 		     * comment leader on the next line.
 		     */
-		    if (!vim_iswhite(saved_line[lead_len - 1])
+		    if (!VIM_ISWHITE(saved_line[lead_len - 1])
 			    && ((p_extra != NULL
 				    && (int)curwin->w_cursor.col == lead_len)
 				|| (p_extra == NULL
@@ -1124,7 +1124,7 @@ open_line(
 		    {
 			/* find last non-white in the leader to line up with */
 			for (p = leader + lead_len - 1; p > leader
-						      && vim_iswhite(*p); --p)
+						      && VIM_ISWHITE(*p); --p)
 			    ;
 			++p;
 
@@ -1140,7 +1140,7 @@ open_line(
 
 			    while (old_size < repl_size && p > leader)
 			    {
-				mb_ptr_back(leader, p);
+				MB_PTR_BACK(leader, p);
 				old_size += ptr2cells(p);
 			    }
 			    l = lead_repl_len - (int)(endp - p);
@@ -1180,7 +1180,7 @@ open_line(
 			    }
 			    else
 #endif
-			    if (!vim_iswhite(*p))
+			    if (!VIM_ISWHITE(*p))
 				*p = ' ';
 			}
 		    }
@@ -1197,7 +1197,7 @@ open_line(
 			    int	    i;
 			    int	    l;
 
-			    for (i = 0; p[i] != NUL && i < lead_len; i += l)
+			    for (i = 0; i < lead_len && p[i] != NUL; i += l)
 			    {
 				l = (*mb_ptr2len)(p + i);
 				if (vim_strnsize(p, i + l) > repl_size)
@@ -1217,7 +1217,7 @@ open_line(
 			 * leader by spaces.  Keep Tabs, the indent must
 			 * remain the same. */
 			for (p += lead_repl_len; p < leader + lead_len; ++p)
-			    if (!vim_iswhite(*p))
+			    if (!VIM_ISWHITE(*p))
 			    {
 				/* Don't put a space before a TAB. */
 				if (p + 1 < leader + lead_len && p[1] == TAB)
@@ -1282,7 +1282,7 @@ open_line(
 
 		    /* If the leader ends in white space, don't add an
 		     * extra space */
-		    if (lead_len > 0 && vim_iswhite(leader[lead_len - 1]))
+		    if (lead_len > 0 && VIM_ISWHITE(leader[lead_len - 1]))
 			extra_space = FALSE;
 		    leader[lead_len] = NUL;
 		}
@@ -1305,7 +1305,7 @@ open_line(
 #endif
 					   )
 		{
-		    while (lead_len && vim_iswhite(*leader))
+		    while (lead_len && VIM_ISWHITE(*leader))
 		    {
 			--lead_len;
 			--newcol;
@@ -1425,8 +1425,15 @@ open_line(
 								      == FAIL)
 	    goto theend;
 	/* Postpone calling changed_lines(), because it would mess up folding
-	 * with markers. */
-	mark_adjust(curwin->w_cursor.lnum + 1, (linenr_T)MAXLNUM, 1L, 0L);
+	 * with markers.
+	 * Skip mark_adjust when adding a line after the last one, there can't
+	 * be marks there. But still needed in diff mode. */
+	if (curwin->w_cursor.lnum + 1 < curbuf->b_ml.ml_line_count
+#ifdef FEAT_DIFF
+		|| curwin->w_p_diff
+#endif
+	    )
+	    mark_adjust(curwin->w_cursor.lnum + 1, (linenr_T)MAXLNUM, 1L, 0L);
 	did_append = TRUE;
     }
 #ifdef FEAT_VREPLACE
@@ -1673,7 +1680,7 @@ get_leader_len(
     char_u	*saved_flags = NULL;
 
     result = i = 0;
-    while (vim_iswhite(line[i]))    /* leading white space is ignored */
+    while (VIM_ISWHITE(line[i]))    /* leading white space is ignored */
 	++i;
 
     /*
@@ -1718,11 +1725,11 @@ get_leader_len(
 	     * When string starts with white space, must have some white space
 	     * (but the amount does not need to match, there might be a mix of
 	     * TABs and spaces). */
-	    if (vim_iswhite(string[0]))
+	    if (VIM_ISWHITE(string[0]))
 	    {
-		if (i == 0 || !vim_iswhite(line[i - 1]))
+		if (i == 0 || !VIM_ISWHITE(line[i - 1]))
 		    continue;  /* missing white space */
-		while (vim_iswhite(string[0]))
+		while (VIM_ISWHITE(string[0]))
 		    ++string;
 	    }
 	    for (j = 0; string[j] != NUL && string[j] == line[i + j]; ++j)
@@ -1733,7 +1740,7 @@ get_leader_len(
 	    /* When 'b' flag used, there must be white space or an
 	     * end-of-line after the string in the line. */
 	    if (vim_strchr(part_buf, COM_BLANK) != NULL
-			   && !vim_iswhite(line[i + j]) && line[i + j] != NUL)
+			   && !VIM_ISWHITE(line[i + j]) && line[i + j] != NUL)
 		continue;
 
 	    /* We have found a match, stop searching unless this is a middle
@@ -1778,7 +1785,7 @@ get_leader_len(
 	result = i;
 
 	/* Include any trailing white space. */
-	while (vim_iswhite(line[i]))
+	while (VIM_ISWHITE(line[i]))
 	    ++i;
 
 	if (include_space)
@@ -1846,11 +1853,11 @@ get_last_leader_offset(char_u *line, char_u **flags)
 	     * (but the amount does not need to match, there might be a mix of
 	     * TABs and spaces).
 	     */
-	    if (vim_iswhite(string[0]))
+	    if (VIM_ISWHITE(string[0]))
 	    {
-		if (i == 0 || !vim_iswhite(line[i - 1]))
+		if (i == 0 || !VIM_ISWHITE(line[i - 1]))
 		    continue;
-		while (vim_iswhite(string[0]))
+		while (VIM_ISWHITE(string[0]))
 		    ++string;
 	    }
 	    for (j = 0; string[j] != NUL && string[j] == line[i + j]; ++j)
@@ -1863,7 +1870,7 @@ get_last_leader_offset(char_u *line, char_u **flags)
 	     * end-of-line after the string in the line.
 	     */
 	    if (vim_strchr(part_buf, COM_BLANK) != NULL
-		    && !vim_iswhite(line[i + j]) && line[i + j] != NUL)
+		    && !VIM_ISWHITE(line[i + j]) && line[i + j] != NUL)
 	    {
 		continue;
 	    }
@@ -1900,7 +1907,7 @@ get_last_leader_offset(char_u *line, char_u **flags)
 	     * the comment leader correctly.
 	     */
 
-	    while (vim_iswhite(*com_leader))
+	    while (VIM_ISWHITE(*com_leader))
 		++com_leader;
 	    len1 = (int)STRLEN(com_leader);
 
@@ -1913,7 +1920,7 @@ get_last_leader_offset(char_u *line, char_u **flags)
 		    continue;
 		string = vim_strchr(part_buf2, ':');
 		++string;
-		while (vim_iswhite(*string))
+		while (VIM_ISWHITE(*string))
 		    ++string;
 		len2 = (int)STRLEN(string);
 		if (len2 == 0)
@@ -1976,7 +1983,7 @@ plines_win_nofill(
     if (!wp->w_p_wrap)
 	return 1;
 
-#ifdef FEAT_VERTSPLIT
+#ifdef FEAT_WINDOWS
     if (wp->w_width == 0)
 	return 1;
 #endif
@@ -2052,7 +2059,7 @@ plines_win_col(win_T *wp, linenr_T lnum, long column)
     if (!wp->w_p_wrap)
 	return lines + 1;
 
-#ifdef FEAT_VERTSPLIT
+#ifdef FEAT_WINDOWS
     if (wp->w_width == 0)
 	return lines + 1;
 #endif
@@ -2063,7 +2070,7 @@ plines_win_col(win_T *wp, linenr_T lnum, long column)
     while (*s != NUL && --column >= 0)
     {
 	col += win_lbr_chartabsize(wp, line, s, (colnr_T)col, NULL);
-	mb_ptr_adv(s);
+	MB_PTR_ADV(s);
     }
 
     /*
@@ -2174,16 +2181,19 @@ ins_bytes_len(char_u *p, int len)
     void
 ins_char(int c)
 {
-#if defined(FEAT_MBYTE) || defined(PROTO)
     char_u	buf[MB_MAXBYTES + 1];
-    int		n;
+    int		n = 1;
 
+#ifdef FEAT_MBYTE
     n = (*mb_char2bytes)(c, buf);
 
     /* When "c" is 0x100, 0x200, etc. we don't want to insert a NUL byte.
      * Happens for CTRL-Vu9900. */
     if (buf[0] == 0)
 	buf[0] = '\n';
+#else
+    buf[0] = c;
+#endif
 
     ins_char_bytes(buf, n);
 }
@@ -2192,7 +2202,6 @@ ins_char(int c)
 ins_char_bytes(char_u *buf, int charlen)
 {
     int		c = buf[0];
-#endif
     int		newlen;		/* nr of bytes inserted */
     int		oldlen;		/* nr of bytes deleted (0 when not replacing) */
     char_u	*p;
@@ -2215,11 +2224,7 @@ ins_char_bytes(char_u *buf, int charlen)
 
     /* The lengths default to the values for when not replacing. */
     oldlen = 0;
-#ifdef FEAT_MBYTE
     newlen = charlen;
-#else
-    newlen = 1;
-#endif
 
     if (State & REPLACE_FLAG)
     {
@@ -2689,7 +2694,7 @@ inindent(int extra)
     char_u	*ptr;
     colnr_T	col;
 
-    for (col = 0, ptr = ml_get_curline(); vim_iswhite(*ptr); ++col)
+    for (col = 0, ptr = ml_get_curline(); VIM_ISWHITE(*ptr); ++col)
 	++ptr;
     if (col >= curwin->w_cursor.col + extra)
 	return TRUE;
@@ -2767,7 +2772,7 @@ changed(void)
 	}
 	changed_int();
     }
-    ++curbuf->b_changedtick;
+    ++CHANGEDTICK(curbuf);
 }
 
 /*
@@ -2811,7 +2816,7 @@ changed_bytes(linenr_T lnum, colnr_T col)
 	win_T	    *wp;
 	linenr_T    wlnum;
 
-	for (wp = firstwin; wp != NULL; wp = wp->w_next)
+	FOR_ALL_WINDOWS(wp)
 	    if (wp->w_p_diff && wp != curwin)
 	    {
 		redraw_win_later(wp, VALID);
@@ -2861,7 +2866,14 @@ appended_lines(linenr_T lnum, long count)
     void
 appended_lines_mark(linenr_T lnum, long count)
 {
-    mark_adjust(lnum + 1, (linenr_T)MAXLNUM, count, 0L);
+    /* Skip mark_adjust when adding a line after the last one, there can't
+     * be marks there. But it's still needed in diff mode. */
+    if (lnum + count < curbuf->b_ml.ml_line_count
+#ifdef FEAT_DIFF
+	    || curwin->w_p_diff
+#endif
+	)
+	mark_adjust(lnum + 1, (linenr_T)MAXLNUM, count, 0L);
     changed_lines(lnum + 1, 0, lnum + 1, count);
 }
 
@@ -2918,7 +2930,7 @@ changed_lines(
 	win_T	    *wp;
 	linenr_T    wlnum;
 
-	for (wp = firstwin; wp != NULL; wp = wp->w_next)
+	FOR_ALL_WINDOWS(wp)
 	    if (wp->w_p_diff && wp != curwin)
 	    {
 		redraw_win_later(wp, VALID);
@@ -3191,7 +3203,7 @@ unchanged(
 	need_maketitle = TRUE;	    /* set window title later */
 #endif
     }
-    ++buf->b_changedtick;
+    ++CHANGEDTICK(buf);
 #ifdef FEAT_NETBEANS_INTG
     netbeans_unmodified(buf);
 #endif
@@ -3207,7 +3219,7 @@ check_status(buf_T *buf)
 {
     win_T	*wp;
 
-    for (wp = firstwin; wp != NULL; wp = wp->w_next)
+    FOR_ALL_WINDOWS(wp)
 	if (wp->w_buffer == buf && wp->w_status_height)
 	{
 	    wp->w_redr_status = TRUE;
@@ -3253,14 +3265,18 @@ change_warning(
 	msg_start();
 	if (msg_row == Rows - 1)
 	    msg_col = col;
-	msg_source(hl_attr(HLF_W));
-	MSG_PUTS_ATTR(_(w_readonly), hl_attr(HLF_W) | MSG_HIST);
+	msg_source(HL_ATTR(HLF_W));
+	MSG_PUTS_ATTR(_(w_readonly), HL_ATTR(HLF_W) | MSG_HIST);
 #ifdef FEAT_EVAL
 	set_vim_var_string(VV_WARNINGMSG, (char_u *)_(w_readonly), -1);
 #endif
 	msg_clr_eos();
 	(void)msg_end();
-	if (msg_silent == 0 && !silent_mode)
+	if (msg_silent == 0 && !silent_mode
+#ifdef FEAT_EVAL
+		&& time_for_testing != 1
+#endif
+		)
 	{
 	    out_flush();
 	    ui_delay(1000L, TRUE); /* give the user time to think about it */
@@ -3303,7 +3319,7 @@ ask_yesno(char_u *str, int direct)
     while (r != 'y' && r != 'n')
     {
 	/* same highlighting as for wait_return */
-	smsg_attr(hl_attr(HLF_R), (char_u *)"%s (y/n)?", str);
+	smsg_attr(HL_ATTR(HLF_R), (char_u *)"%s (y/n)?", str);
 	if (direct)
 	    r = get_keystroke();
 	else
@@ -3410,7 +3426,7 @@ get_keystroke(void)
 	if (n > 0)
 	{
 	    /* Replace zero and CSI by a special key code. */
-	    n = fix_input_buffer(buf + len, n, FALSE);
+	    n = fix_input_buffer(buf + len, n);
 	    len += n;
 	    waited = 0;
 	}
@@ -3682,36 +3698,17 @@ vim_beep(
 		    && !(gui.in_use && gui.starting)
 #endif
 		    )
-	    {
 		out_str(T_VB);
-	    }
 	    else
-	    {
-#ifdef MSDOS
-		/*
-		 * The number of beeps outputted is reduced to avoid having to
-		 * wait for all the beeps to finish. This is only a problem on
-		 * systems where the beeps don't overlap.
-		 */
-		if (beep_count == 0 || beep_count == 10)
-		{
-		    out_char(BELL);
-		    beep_count = 1;
-		}
-		else
-		    ++beep_count;
-#else
 		out_char(BELL);
-#endif
-	    }
 	}
 
 	/* When 'verbose' is set and we are sourcing a script or executing a
 	 * function give the user a hint where the beep comes from. */
 	if (vim_strchr(p_debug, 'e') != NULL)
 	{
-	    msg_source(hl_attr(HLF_W));
-	    msg_attr((char_u *)_("Beep!"), hl_attr(HLF_W));
+	    msg_source(HL_ATTR(HLF_W));
+	    msg_attr((char_u *)_("Beep!"), HL_ATTR(HLF_W));
 	}
     }
 }
@@ -3785,7 +3782,7 @@ init_homedir(void)
 	homedrive = mch_getenv((char_u *)"HOMEDRIVE");
 	homepath = mch_getenv((char_u *)"HOMEPATH");
 	if (homepath == NULL || *homepath == NUL)
-	    homepath = "\\";
+	    homepath = (char_u *)"\\";
 	if (homedrive != NULL
 			   && STRLEN(homedrive) + STRLEN(homepath) < MAXPATHL)
 	{
@@ -3817,13 +3814,13 @@ init_homedir(void)
 # endif
 #endif
 
-#if defined(MSDOS) || defined(MSWIN)
+#if defined(MSWIN)
     /*
      * Default home dir is C:/
      * Best assumption we can make in such a situation.
      */
     if (var == NULL)
-	var = "C:/";
+	var = (char_u *)"C:/";
 #endif
     if (var != NULL)
     {
@@ -3953,7 +3950,7 @@ expand_env_esc(
 		    && at_start
 #endif
 	   )
-#if defined(MSDOS) || defined(MSWIN)
+#if defined(MSWIN)
 		|| *src == '%'
 #endif
 		|| (*src == '~' && at_start))
@@ -3982,7 +3979,7 @@ expand_env_esc(
 #endif
 		{
 		    while (c-- > 0 && *tail != NUL && ((vim_isIDc(*tail))
-#if defined(MSDOS) || defined(MSWIN)
+#if defined(MSWIN)
 			    || (*src == '%' && *tail != '%')
 #endif
 			    ))
@@ -3991,7 +3988,7 @@ expand_env_esc(
 		    }
 		}
 
-#if defined(MSDOS) || defined(MSWIN) || defined(UNIX)
+#if defined(MSWIN) || defined(UNIX)
 # ifdef UNIX
 		if (src[1] == '{' && *tail != '}')
 # else
@@ -4009,7 +4006,7 @@ expand_env_esc(
 #endif
 		    *var = NUL;
 		    var = vim_getenv(dst, &mustfree);
-#if defined(MSDOS) || defined(MSWIN) || defined(UNIX)
+#if defined(MSWIN) || defined(UNIX)
 		}
 #endif
 	    }
@@ -4045,15 +4042,12 @@ expand_env_esc(
 		 */
 #  if defined(HAVE_GETPWNAM) && defined(HAVE_PWD_H)
 		{
-		    struct passwd *pw;
-
 		    /* Note: memory allocated by getpwnam() is never freed.
 		     * Calling endpwent() apparently doesn't help. */
-		    pw = getpwnam((char *)dst + 1);
-		    if (pw != NULL)
-			var = (char_u *)pw->pw_dir;
-		    else
-			var = NULL;
+		    struct passwd *pw = (*dst == NUL)
+					? NULL : getpwnam((char *)dst + 1);
+
+		    var = (pw == NULL) ? NULL : (char_u *)pw->pw_dir;
 		}
 		if (var == NULL)
 #  endif
@@ -4075,7 +4069,7 @@ expand_env_esc(
 		{
 		    char_u	test[MAXPATHL], paths[MAXPATHL];
 		    char_u	*path, *next_path, *ptr;
-		    struct stat	st;
+		    stat_T	st;
 
 		    STRCPY(paths, USER_HOME);
 		    next_path = paths;
@@ -4200,7 +4194,7 @@ vim_getenv(char_u *name, int *mustfree)
     char_u	*pend;
     int		vimruntime;
 
-#if defined(MSDOS) || defined(MSWIN)
+#if defined(MSWIN)
     /* use "C:/" when $HOME is not set */
     if (STRCMP(name, "HOME") == 0)
 	return homedir;
@@ -4771,7 +4765,7 @@ fullpathcmp(
     char_u	    exp1[MAXPATHL];
     char_u	    full1[MAXPATHL];
     char_u	    full2[MAXPATHL];
-    struct stat	    st1, st2;
+    stat_T	    st1, st2;
     int		    r1, r2;
 
     expand_env(s1, exp1, MAXPATHL);
@@ -4849,7 +4843,7 @@ gettail(char_u *fname)
     {
 	if (vim_ispathsep_nocolon(*p2))
 	    p1 = p2 + 1;
-	mb_ptr_adv(p2);
+	MB_PTR_ADV(p2);
     }
     return p1;
 }
@@ -4887,7 +4881,7 @@ gettail_dir(char_u *fname)
 		dir_end = next_dir_end;
 	    look_for_sep = TRUE;
 	}
-	mb_ptr_adv(p);
+	MB_PTR_ADV(p);
     }
     return dir_end;
 }
@@ -4922,7 +4916,7 @@ gettail_sep(char_u *fname)
 getnextcomp(char_u *fname)
 {
     while (*fname && !vim_ispathsep(*fname))
-	mb_ptr_adv(fname);
+	MB_PTR_ADV(fname);
     if (*fname)
 	++fname;
     return fname;
@@ -4938,7 +4932,7 @@ get_past_head(char_u *path)
 {
     char_u  *retval;
 
-#if defined(MSDOS) || defined(MSWIN)
+#if defined(MSWIN)
     /* may skip "c:" */
     if (isalpha(path[0]) && path[1] == ':')
 	retval = path + 2;
@@ -5284,7 +5278,8 @@ ind_find_start_CORS(void)	    /* XXX */
 
     /* If comment_pos is before rs_pos the raw string is inside the comment.
      * If rs_pos is before comment_pos the comment is inside the raw string. */
-    if (comment_pos == NULL || (rs_pos != NULL && lt(*rs_pos, *comment_pos)))
+    if (comment_pos == NULL || (rs_pos != NULL
+					     && LT_POS(*rs_pos, *comment_pos)))
 	return rs_pos;
     return comment_pos;
 }
@@ -5441,7 +5436,6 @@ static int	skip_label(linenr_T, char_u **pp);
 static int	cin_first_id_amount(void);
 static int	cin_get_equal_amount(linenr_T lnum);
 static int	cin_ispreproc(char_u *);
-static int	cin_ispreproc_cont(char_u **pp, linenr_T *lnump);
 static int	cin_iscomment(char_u *);
 static int	cin_islinecomment(char_u *);
 static int	cin_isterminated(char_u *, int, int);
@@ -5781,6 +5775,7 @@ cin_is_cpp_namespace(char_u *s)
 {
     char_u	*p;
     int		has_name = FALSE;
+    int		has_name_start = FALSE;
 
     s = cin_skipcomment(s);
     if (STRNCMP(s, "namespace", 9) == 0 && (s[9] == NUL || !vim_iswordc(s[9])))
@@ -5788,7 +5783,7 @@ cin_is_cpp_namespace(char_u *s)
 	p = cin_skipcomment(skipwhite(s + 9));
 	while (*p != NUL)
 	{
-	    if (vim_iswhite(*p))
+	    if (VIM_ISWHITE(*p))
 	    {
 		has_name = TRUE; /* found end of a name */
 		p = cin_skipcomment(skipwhite(p));
@@ -5799,9 +5794,17 @@ cin_is_cpp_namespace(char_u *s)
 	    }
 	    else if (vim_iswordc(*p))
 	    {
+		has_name_start = TRUE;
 		if (has_name)
 		    return FALSE; /* word character after skipping past name */
 		++p;
+	    }
+	    else if (p[0] == ':' && p[1] == ':' && vim_iswordc(p[2]))
+	    {
+		if (!has_name_start || has_name)
+		    return FALSE;
+		/* C++ 17 nested namespace */
+		p += 3;
 	    }
 	    else
 	    {
@@ -5809,6 +5812,54 @@ cin_is_cpp_namespace(char_u *s)
 	    }
 	}
 	return TRUE;
+    }
+    return FALSE;
+}
+
+/*
+ * Recognize a `extern "C"` or `extern "C++"` linkage specifications.
+ */
+    static int
+cin_is_cpp_extern_c(char_u *s)
+{
+    char_u	*p;
+    int		has_string_literal = FALSE;
+
+    s = cin_skipcomment(s);
+    if (STRNCMP(s, "extern", 6) == 0 && (s[6] == NUL || !vim_iswordc(s[6])))
+    {
+	p = cin_skipcomment(skipwhite(s + 6));
+	while (*p != NUL)
+	{
+	    if (VIM_ISWHITE(*p))
+	    {
+		p = cin_skipcomment(skipwhite(p));
+	    }
+	    else if (*p == '{')
+	    {
+		break;
+	    }
+	    else if (p[0] == '"' && p[1] == 'C' && p[2] == '"')
+	    {
+		if (has_string_literal)
+		    return FALSE;
+		has_string_literal = TRUE;
+		p += 3;
+	    }
+	    else if (p[0] == '"' && p[1] == 'C' && p[2] == '+' && p[3] == '+'
+		    && p[4] == '"')
+	    {
+		if (has_string_literal)
+		    return FALSE;
+		has_string_literal = TRUE;
+		p += 5;
+	    }
+	    else
+	    {
+		return FALSE;
+	    }
+	}
+	return has_string_literal ? TRUE : FALSE;
     }
     return FALSE;
 }
@@ -5931,15 +5982,15 @@ cin_first_id_amount(void)
 	    || (len == 6 && STRNCMP(p, "signed", 6) == 0))
     {
 	s = skipwhite(p + len);
-	if ((STRNCMP(s, "int", 3) == 0 && vim_iswhite(s[3]))
-		|| (STRNCMP(s, "long", 4) == 0 && vim_iswhite(s[4]))
-		|| (STRNCMP(s, "short", 5) == 0 && vim_iswhite(s[5]))
-		|| (STRNCMP(s, "char", 4) == 0 && vim_iswhite(s[4])))
+	if ((STRNCMP(s, "int", 3) == 0 && VIM_ISWHITE(s[3]))
+		|| (STRNCMP(s, "long", 4) == 0 && VIM_ISWHITE(s[4]))
+		|| (STRNCMP(s, "short", 5) == 0 && VIM_ISWHITE(s[5]))
+		|| (STRNCMP(s, "char", 4) == 0 && VIM_ISWHITE(s[4])))
 	    p = s;
     }
     for (len = 0; vim_isIDc(p[len]); ++len)
 	;
-    if (len == 0 || !vim_iswhite(p[len]) || cin_nocode(p))
+    if (len == 0 || !VIM_ISWHITE(p[len]) || cin_nocode(p))
 	return 0;
 
     p = skipwhite(p + len);
@@ -6012,13 +6063,18 @@ cin_ispreproc(char_u *s)
  * Return TRUE if line "*pp" at "*lnump" is a preprocessor statement or a
  * continuation line of a preprocessor statement.  Decrease "*lnump" to the
  * start and return the line in "*pp".
+ * Put the amount of indent in "*amount".
  */
     static int
-cin_ispreproc_cont(char_u **pp, linenr_T *lnump)
+cin_ispreproc_cont(char_u **pp, linenr_T *lnump, int *amount)
 {
     char_u	*line = *pp;
     linenr_T	lnum = *lnump;
     int		retval = FALSE;
+    int		candidate_amount = *amount;
+
+    if (*line != NUL && line[STRLEN(line) - 1] == '\\')
+	candidate_amount = get_indent_lnum(lnum);
 
     for (;;)
     {
@@ -6037,6 +6093,8 @@ cin_ispreproc_cont(char_u **pp, linenr_T *lnump)
 
     if (lnum != *lnump)
 	*pp = ml_get(*lnump);
+    if (retval)
+	*amount = candidate_amount;
     return retval;
 }
 
@@ -6116,7 +6174,7 @@ cin_isterminated(
  * When a line ends in a comma we continue looking in the next line.
  * "sp" points to a string with the line.  When looking at other lines it must
  * be restored to the line.  When it's NULL fetch lines here.
- * "lnum" is where we start looking.
+ * "first_lnum" is where we start looking.
  * "min_lnum" is the line before which we will not be looking.
  */
     static int
@@ -6127,6 +6185,7 @@ cin_isfuncdecl(
 {
     char_u	*s;
     linenr_T	lnum = first_lnum;
+    linenr_T	save_lnum = curwin->w_cursor.lnum;
     int		retval = FALSE;
     pos_T	*trypos;
     int		just_started = TRUE;
@@ -6136,15 +6195,20 @@ cin_isfuncdecl(
     else
 	s = *sp;
 
+    curwin->w_cursor.lnum = lnum;
     if (find_last_paren(s, '(', ')')
 	&& (trypos = find_match_paren(curbuf->b_ind_maxparen)) != NULL)
     {
 	lnum = trypos->lnum;
 	if (lnum < min_lnum)
+	{
+	    curwin->w_cursor.lnum = save_lnum;
 	    return FALSE;
+	}
 
 	s = ml_get(lnum);
     }
+    curwin->w_cursor.lnum = save_lnum;
 
     /* Ignore line starting with #. */
     if (cin_ispreproc(s))
@@ -6298,7 +6362,7 @@ cin_is_if_for_while_before_offset(char_u *line, int *poffset)
 
     if (offset-- < 2)
 	return 0;
-    while (offset > 2 && vim_iswhite(line[offset]))
+    while (offset > 2 && VIM_ISWHITE(line[offset]))
 	--offset;
 
     offset -= 1;
@@ -6643,6 +6707,7 @@ cin_skip2pos(pos_T *trypos)
 {
     char_u	*line;
     char_u	*p;
+    char_u	*new_p;
 
     p = line = ml_get(trypos->lnum);
     while (*p && (colnr_T)(p - line) < trypos->col)
@@ -6651,8 +6716,11 @@ cin_skip2pos(pos_T *trypos)
 	    p = cin_skipcomment(p);
 	else
 	{
-	    p = skip_string(p);
-	    ++p;
+	    new_p = skip_string(p);
+	    if (new_p == p)
+		++p;
+	    else
+		p = new_p;
 	}
     }
     return (int)(p - line);
@@ -6700,7 +6768,7 @@ find_start_brace(void)	    /* XXX */
     static pos_T *
 find_match_paren(int ind_maxparen)	/* XXX */
 {
- return find_match_char('(', ind_maxparen);
+    return find_match_char('(', ind_maxparen);
 }
 
     static pos_T *
@@ -6965,6 +7033,12 @@ parse_cino(buf_T *buf)
      * while(). */
     buf->b_ind_if_for_while = 0;
 
+    /* indentation for # comments */
+    buf->b_ind_hash_comment = 0;
+
+    /* Handle C++ extern "C" or "C++" */
+    buf->b_ind_cpp_extern_c = 0;
+
     for (p = buf->b_p_cino; *p; )
     {
 	l = p++;
@@ -7039,6 +7113,7 @@ parse_cino(buf_T *buf)
 	    case '#': buf->b_ind_hash_comment = n; break;
 	    case 'N': buf->b_ind_cpp_namespace = n; break;
 	    case 'k': buf->b_ind_if_for_while = n; break;
+	    case 'E': buf->b_ind_cpp_extern_c = n; break;
 	}
 	if (*p == ',')
 	    ++p;
@@ -7149,7 +7224,8 @@ get_c_indent(void)
 	comment_pos = &tryposCopy;
     }
     trypos = find_start_rawstring(curbuf->b_ind_maxcomment);
-    if (trypos != NULL && (comment_pos == NULL || lt(*trypos, *comment_pos)))
+    if (trypos != NULL && (comment_pos == NULL
+					     || LT_POS(*trypos, *comment_pos)))
     {
 	amount = -1;
 	goto laterend;
@@ -7394,7 +7470,7 @@ get_c_indent(void)
 		l = skipwhite(ml_get(lnum));
 		if (cin_nocode(l))		/* skip comment lines */
 		    continue;
-		if (cin_ispreproc_cont(&l, &lnum))
+		if (cin_ispreproc_cont(&l, &lnum, &amount))
 		    continue;			/* ignore #define, #if, etc. */
 		curwin->w_cursor.lnum = lnum;
 
@@ -7532,7 +7608,7 @@ get_c_indent(void)
 		    else
 		    {
 			col = our_paren_pos.col + 1;
-			while (vim_iswhite(l[col]))
+			while (VIM_ISWHITE(l[col]))
 			    col++;
 			if (l[col] != NUL)	/* In case of trailing space */
 			    our_paren_pos.col = col;
@@ -7752,6 +7828,8 @@ get_c_indent(void)
 		    l = skipwhite(ml_get_curline());
 		    if (cin_is_cpp_namespace(l))
 			amount += curbuf->b_ind_cpp_namespace;
+		    else if (cin_is_cpp_extern_c(l))
+			amount += curbuf->b_ind_cpp_extern_c;
 		}
 		else
 		{
@@ -7807,10 +7885,10 @@ get_c_indent(void)
 		 */
 		if (curwin->w_cursor.lnum <= ourscope)
 		{
-		    /* we reached end of scope:
-		     * if looking for a enum or structure initialization
+		    /* We reached end of scope:
+		     * If looking for a enum or structure initialization
 		     * go further back:
-		     * if it is an initializer (enum xxx or xxx =), then
+		     * If it is an initializer (enum xxx or xxx =), then
 		     * don't add ind_continuation, otherwise it is a variable
 		     * declaration:
 		     * int x,
@@ -7849,7 +7927,8 @@ get_c_indent(void)
 			/*
 			 * Skip preprocessor directives and blank lines.
 			 */
-			if (cin_ispreproc_cont(&l, &curwin->w_cursor.lnum))
+			if (cin_ispreproc_cont(&l, &curwin->w_cursor.lnum,
+								    &amount))
 			    continue;
 
 			if (cin_nocode(l))
@@ -7966,13 +8045,20 @@ get_c_indent(void)
 			    }
 
 			    /* Skip preprocessor directives and blank lines. */
-			    if (cin_ispreproc_cont(&l, &curwin->w_cursor.lnum))
+			    if (cin_ispreproc_cont(&l, &curwin->w_cursor.lnum,
+								    &amount))
 				continue;
 
 			    /* Finally the actual check for "namespace". */
 			    if (cin_is_cpp_namespace(l))
 			    {
 				amount += curbuf->b_ind_cpp_namespace
+							    - added_to_amount;
+				break;
+			    }
+			    else if (cin_is_cpp_extern_c(l))
+			    {
+				amount += curbuf->b_ind_cpp_extern_c
 							    - added_to_amount;
 				break;
 			    }
@@ -8142,7 +8228,7 @@ get_c_indent(void)
 		 * unlocked it)
 		 */
 		l = ml_get_curline();
-		if (cin_ispreproc_cont(&l, &curwin->w_cursor.lnum)
+		if (cin_ispreproc_cont(&l, &curwin->w_cursor.lnum, &amount)
 							     || cin_nocode(l))
 		    continue;
 
@@ -8863,7 +8949,7 @@ term_again:
 	/*
 	 * Skip preprocessor directives and blank lines.
 	 */
-	if (cin_ispreproc_cont(&l, &curwin->w_cursor.lnum))
+	if (cin_ispreproc_cont(&l, &curwin->w_cursor.lnum, &amount))
 	    continue;
 
 	if (cin_nocode(l))
@@ -8964,7 +9050,7 @@ term_again:
 	    {
 		look = ml_get(--curwin->w_cursor.lnum);
 		if (!(cin_nocode(look) || cin_ispreproc_cont(
-				      &look, &curwin->w_cursor.lnum)))
+				      &look, &curwin->w_cursor.lnum, &amount)))
 		    break;
 	    }
 	    if (curwin->w_cursor.lnum > 0
@@ -9188,7 +9274,7 @@ get_expr_indent(void)
     if (use_sandbox)
 	++sandbox;
     ++textlock;
-    indent = eval_to_number(curbuf->b_p_inde);
+    indent = (int)eval_to_number(curbuf->b_p_inde);
     if (use_sandbox)
 	--sandbox;
     --textlock;
@@ -9274,7 +9360,7 @@ get_lisp_indent(void)
     {
 	paren = *pos;
 	pos = findmatch(NULL, '[');
-	if (pos == NULL || ltp(pos, &paren))
+	if (pos == NULL || LT_POSP(pos, &paren))
 	    pos = &paren;
     }
     if (pos != NULL)
@@ -9369,7 +9455,7 @@ get_lisp_indent(void)
 		    amount++;
 		    firsttry = amount;
 
-		    while (vim_iswhite(*that))
+		    while (VIM_ISWHITE(*that))
 		    {
 			amount += lbr_chartabsize(line, that, (colnr_T)amount);
 			++that;
@@ -9392,7 +9478,7 @@ get_lisp_indent(void)
 				    && (*that < '0' || *that > '9')))
 			{
 			    while (*that
-				    && (!vim_iswhite(*that)
+				    && (!VIM_ISWHITE(*that)
 					|| quotecount
 					|| parencount)
 				    && (!((*that == '(' || *that == '[')
@@ -9415,7 +9501,7 @@ get_lisp_indent(void)
 						line, &that, (colnr_T)amount);
 			    }
 			}
-			while (vim_iswhite(*that))
+			while (VIM_ISWHITE(*that))
 			{
 			    amount += lbr_chartabsize(
 						 line, that, (colnr_T)amount);
@@ -9463,10 +9549,7 @@ prepare_to_exit(void)
 	 * screen (if there are two screens).
 	 */
 	settmode(TMODE_COOK);
-#ifdef WIN3264
-	if (can_end_termcap_mode(FALSE) == TRUE)
-#endif
-	    stoptermcap();
+	stoptermcap();
 	out_flush();
     }
 }
@@ -9494,7 +9577,7 @@ preserve_exit(void)
 
     ml_close_notmod();		    /* close all not-modified buffers */
 
-    for (buf = firstbuf; buf != NULL; buf = buf->b_next)
+    FOR_ALL_BUFFERS(buf)
     {
 	if (buf->b_ml.ml_mfp != NULL && buf->b_ml.ml_mfp->mf_fname != NULL)
 	{
@@ -9519,7 +9602,7 @@ preserve_exit(void)
     int
 vim_fexists(char_u *fname)
 {
-    struct stat st;
+    stat_T st;
 
     if (mch_stat((char *)fname, &st))
 	return FALSE;
@@ -9649,7 +9732,7 @@ expand_wildcards(
 # endif
 	    if (match_file_list(p_wig, (*files)[i], ffname))
 	    {
-		/* remove this matching files from the list */
+		/* remove this matching file from the list */
 		vim_free((*files)[i]);
 		for (j = i; j + 1 < *num_files; ++j)
 		    (*files)[j] = (*files)[j + 1];
@@ -9740,13 +9823,13 @@ static int vim_backtick(char_u *p);
 static int expand_backtick(garray_T *gap, char_u *pat, int flags);
 # endif
 
-# if defined(MSDOS) || defined(FEAT_GUI_W16) || defined(WIN3264)
+# if defined(WIN3264)
 /*
  * File name expansion code for MS-DOS, Win16 and Win32.  It's here because
  * it's shared between these systems.
  */
-# if defined(DJGPP) || defined(PROTO)
-#  define _cdecl	    /* DJGPP doesn't have this */
+# if defined(PROTO)
+#  define _cdecl
 # else
 #  ifdef __BORLANDC__
 #   define _cdecl _RTLENTRYF
@@ -9761,24 +9844,6 @@ pstrcmp(const void *a, const void *b)
 {
     return (pathcmp(*(char **)a, *(char **)b, -1));
 }
-
-# ifndef WIN3264
-    static void
-namelowcpy(
-    char_u *d,
-    char_u *s)
-{
-#  ifdef DJGPP
-    if (USE_LONG_FNAME)	    /* don't lower case on Windows 95/NT systems */
-	while (*s)
-	    *d++ = *s++;
-    else
-#  endif
-	while (*s)
-	    *d++ = TOLOWER_LOC(*s++);
-    *d = NUL;
-}
-# endif
 
 /*
  * Recursively expand one path component into all matching files and/or
@@ -9808,16 +9873,12 @@ dos_expandpath(
     int		len;
     int		starstar = FALSE;
     static int	stardepth = 0;	    /* depth for "**" expansion */
-#ifdef WIN3264
     WIN32_FIND_DATA	fb;
     HANDLE		hFind = (HANDLE)0;
 # ifdef FEAT_MBYTE
     WIN32_FIND_DATAW    wfb;
     WCHAR		*wn = NULL;	/* UCS-2 name, NULL when not used. */
 # endif
-#else
-    struct ffblk	fb;
-#endif
     char_u		*matchname;
     int			ok;
 
@@ -9858,7 +9919,7 @@ dos_expandpath(
 	else if (path_end >= path + wildoff
 			 && vim_strchr((char_u *)"*?[~", *path_end) != NULL)
 	    e = p;
-#ifdef FEAT_MBYTE
+# ifdef FEAT_MBYTE
 	if (has_mbyte)
 	{
 	    len = (*mb_ptr2len)(path_end);
@@ -9867,7 +9928,7 @@ dos_expandpath(
 	    path_end += len;
 	}
 	else
-#endif
+# endif
 	    *p++ = *path_end++;
     }
     e = p;
@@ -9928,7 +9989,6 @@ dos_expandpath(
 
     /* Scan all files in the directory with "dir/ *.*" */
     STRCPY(s, "*.*");
-#ifdef WIN3264
 # ifdef FEAT_MBYTE
     if (enc_codepage >= 0 && (int)GetACP() != enc_codepage)
     {
@@ -9950,26 +10010,17 @@ dos_expandpath(
 
     if (wn == NULL)
 # endif
-	hFind = FindFirstFile(buf, &fb);
+	hFind = FindFirstFile((LPCSTR)buf, &fb);
     ok = (hFind != INVALID_HANDLE_VALUE);
-#else
-    /* If we are expanding wildcards we try both files and directories */
-    ok = (findfirst((char *)buf, &fb,
-		(*path_end != NUL || (flags & EW_DIR)) ? FA_DIREC : 0) == 0);
-#endif
 
     while (ok)
     {
-#ifdef WIN3264
 # ifdef FEAT_MBYTE
 	if (wn != NULL)
 	    p = utf16_to_enc(wfb.cFileName, NULL);   /* p is allocated here */
 	else
 # endif
 	    p = (char_u *)fb.cFileName;
-#else
-	p = (char_u *)fb.ff_name;
-#endif
 	/* Ignore entries starting with a dot, unless when asked for.  Accept
 	 * all entries found with "matchname". */
 	if ((p[0] != '.' || starts_with_dot
@@ -9981,11 +10032,7 @@ dos_expandpath(
 		  || ((flags & EW_NOTWILD)
 		     && fnamencmp(path + (s - buf), p, e - s) == 0)))
 	{
-#ifdef WIN3264
 	    STRCPY(s, p);
-#else
-	    namelowcpy(s, p);
-#endif
 	    len = (int)STRLEN(buf);
 
 	    if (starstar && stardepth < 100)
@@ -10017,7 +10064,6 @@ dos_expandpath(
 	    }
 	}
 
-#ifdef WIN3264
 # ifdef FEAT_MBYTE
 	if (wn != NULL)
 	{
@@ -10027,16 +10073,12 @@ dos_expandpath(
 	else
 # endif
 	    ok = FindNextFile(hFind, &fb);
-#else
-	ok = (findnext(&fb) == 0);
-#endif
 
 	/* If no more matches and no match was used, try expanding the name
 	 * itself.  Finds the long name of a short filename. */
 	if (!ok && matchname != NULL && gap->ga_len == start_len)
 	{
 	    STRCPY(s, matchname);
-#ifdef WIN3264
 	    FindClose(hFind);
 # ifdef FEAT_MBYTE
 	    if (wn != NULL)
@@ -10048,23 +10090,17 @@ dos_expandpath(
 	    }
 	    if (wn == NULL)
 # endif
-		hFind = FindFirstFile(buf, &fb);
+		hFind = FindFirstFile((LPCSTR)buf, &fb);
 	    ok = (hFind != INVALID_HANDLE_VALUE);
-#else
-	    ok = (findfirst((char *)buf, &fb,
-		 (*path_end != NUL || (flags & EW_DIR)) ? FA_DIREC : 0) == 0);
-#endif
 	    vim_free(matchname);
 	    matchname = NULL;
 	}
     }
 
-#ifdef WIN3264
     FindClose(hFind);
 # ifdef FEAT_MBYTE
     vim_free(wn);
 # endif
-#endif
     vim_free(buf);
     vim_regfree(regmatch.regprog);
     vim_free(matchname);
@@ -10084,7 +10120,7 @@ mch_expandpath(
 {
     return dos_expandpath(gap, path, 0, flags, FALSE);
 }
-# endif /* MSDOS || FEAT_GUI_W16 || WIN3264 */
+# endif /* WIN3264 */
 
 #if (defined(UNIX) && !defined(VMS)) || defined(USE_UNIXFILENAME) \
 	|| defined(PROTO)
@@ -10283,7 +10319,7 @@ unix_expandpath(
 		}
 		else
 		{
-		    struct stat sb;
+		    stat_T  sb;
 
 		    /* no more wildcards, check if there is a match */
 		    /* remove backslashes for the remaining components only */
@@ -10348,7 +10384,7 @@ find_previous_pathsep(char_u *path, char_u **psep)
     {
 	if (vim_ispathsep(**psep))
 	    return OK;
-	mb_ptr_back(path, *psep);
+	MB_PTR_BACK(path, *psep);
     }
 
     return FAIL;
@@ -10450,7 +10486,7 @@ expand_path_option(char_u *curdir, garray_T *gap)
 	if (ga_grow(gap, 1) == FAIL)
 	    break;
 
-# if defined(MSWIN) || defined(MSDOS)
+# if defined(MSWIN)
 	/* Avoid the path ending in a backslash, it fails when a comma is
 	 * appended. */
 	len = (int)STRLEN(buf);
@@ -10488,7 +10524,7 @@ get_path_cutoff(char_u *fname, garray_T *gap)
 	int j = 0;
 
 	while ((fname[j] == path_part[i][j]
-# if defined(MSWIN) || defined(MSDOS)
+# if defined(MSWIN)
 		|| (vim_ispathsep(fname[j]) && vim_ispathsep(path_part[i][j]))
 #endif
 			     ) && fname[j] != NUL && path_part[i][j] != NUL)
@@ -10503,7 +10539,7 @@ get_path_cutoff(char_u *fname, garray_T *gap)
     /* skip to the file or directory name */
     if (cutoff != NULL)
 	while (vim_ispathsep(*cutoff))
-	    mb_ptr_adv(cutoff);
+	    MB_PTR_ADV(cutoff);
 
     return cutoff;
 }
@@ -10580,18 +10616,34 @@ uniquefy_paths(garray_T *gap, char_u *pattern)
 	/* Shorten the filename while maintaining its uniqueness */
 	path_cutoff = get_path_cutoff(path, &path_ga);
 
-	/* we start at the end of the path */
-	pathsep_p = path + len - 1;
+	/* Don't assume all files can be reached without path when search
+	 * pattern starts with star star slash, so only remove path_cutoff
+	 * when possible. */
+	if (pattern[0] == '*' && pattern[1] == '*'
+		&& vim_ispathsep_nocolon(pattern[2])
+		&& path_cutoff != NULL
+		&& vim_regexec(&regmatch, path_cutoff, (colnr_T)0)
+		&& is_unique(path_cutoff, gap, i))
+	{
+	    sort_again = TRUE;
+	    mch_memmove(path, path_cutoff, STRLEN(path_cutoff) + 1);
+	}
+	else
+	{
+	    /* Here all files can be reached without path, so get shortest
+	     * unique path.  We start at the end of the path. */
+	    pathsep_p = path + len - 1;
 
-	while (find_previous_pathsep(path, &pathsep_p))
-	    if (vim_regexec(&regmatch, pathsep_p + 1, (colnr_T)0)
-		    && is_unique(pathsep_p + 1, gap, i)
-		    && path_cutoff != NULL && pathsep_p + 1 >= path_cutoff)
-	    {
-		sort_again = TRUE;
-		mch_memmove(path, pathsep_p + 1, STRLEN(pathsep_p));
-		break;
-	    }
+	    while (find_previous_pathsep(path, &pathsep_p))
+		if (vim_regexec(&regmatch, pathsep_p + 1, (colnr_T)0)
+			&& is_unique(pathsep_p + 1, gap, i)
+			&& path_cutoff != NULL && pathsep_p + 1 >= path_cutoff)
+		{
+		    sort_again = TRUE;
+		    mch_memmove(path, pathsep_p + 1, STRLEN(pathsep_p));
+		    break;
+		}
+	}
 
 	if (mch_isFullName(path))
 	{
@@ -10609,7 +10661,7 @@ uniquefy_paths(garray_T *gap, char_u *pattern)
 	     */
 	    short_name = shorten_fname(path, curdir);
 	    if (short_name != NULL && short_name > path + 1
-#if defined(MSWIN) || defined(MSDOS)
+#if defined(MSWIN)
 		    /* On windows,
 		     *	    shorten_fname("c:\a\a.txt", "c:\a\b")
 		     * returns "\a\a.txt", which is not really the short
@@ -10744,12 +10796,12 @@ static int has_env_var(char_u *p);
     static int
 has_env_var(char_u *p)
 {
-    for ( ; *p; mb_ptr_adv(p))
+    for ( ; *p; MB_PTR_ADV(p))
     {
 	if (*p == '\\' && p[1] != NUL)
 	    ++p;
 	else if (vim_strchr((char_u *)
-#if defined(MSDOS) || defined(MSWIN)
+#if defined(MSWIN)
 				    "$%"
 #else
 				    "$"
@@ -10764,14 +10816,15 @@ has_env_var(char_u *p)
 static int has_special_wildchar(char_u *p);
 
 /*
- * Return TRUE if "p" contains a special wildcard character.
- * Allowing for escaping.
+ * Return TRUE if "p" contains a special wildcard character, one that Vim
+ * cannot expand, requires using a shell.
  */
     static int
 has_special_wildchar(char_u *p)
 {
-    for ( ; *p; mb_ptr_adv(p))
+    for ( ; *p; MB_PTR_ADV(p))
     {
+	/* Allow for escaping. */
 	if (*p == '\\' && p[1] != NUL)
 	    ++p;
 	else if (vim_strchr((char_u *)SPECIAL_WILDCHAR, *p) != NULL)
@@ -10930,7 +10983,7 @@ gen_expand_wildcards(
 	     * "vim c:/" work. */
 	    if (flags & EW_NOTFOUND)
 		addfile(&ga, t, flags | EW_DIR | EW_FILE);
-	    else if (mch_getperm(t) >= 0)
+	    else
 		addfile(&ga, t, flags);
 	    vim_free(t);
 	}
@@ -11038,7 +11091,7 @@ addfile(
 {
     char_u	*p;
     int		isdir;
-    struct stat sb;
+    stat_T	sb;
 
     /* if the file/dir/link doesn't exist, may not add it */
     if (!(flags & EW_NOTFOUND) && ((flags & EW_ALLLINKS)
@@ -11201,17 +11254,9 @@ FreeWild(int count, char_u **files)
 {
     if (count <= 0 || files == NULL)
 	return;
-#if defined(__EMX__) && defined(__ALWAYS_HAS_TRAILING_NULL_POINTER) /* XXX */
-    /*
-     * Is this still OK for when other functions than expand_wildcards() have
-     * been used???
-     */
-    _fnexplodefree((char **)files);
-#else
     while (count--)
 	vim_free(files[count]);
     vim_free(files);
-#endif
 }
 
 /*
@@ -11254,7 +11299,7 @@ get_isolated_shell_name(void)
 
 	/* Find the last path separator before the space. */
 	p1 = p_sh;
-	for (p2 = p_sh; p2 < p; mb_ptr_adv(p2))
+	for (p2 = p_sh; p2 < p; MB_PTR_ADV(p2))
 	    if (vim_ispathsep(*p2))
 		p1 = p2 + 1;
 	p = vim_strnsave(p1, (int)(p - p1));

@@ -67,7 +67,7 @@ enum {
     // (another way would be to make the existing window large enough that the
     // title bar is off screen. but that doesn't work with multiple screens).
     self = [super initWithContentRect:[screen frame]
-                            styleMask:NSBorderlessWindowMask
+                            styleMask:NSWindowStyleMaskBorderless
                               backing:NSBackingStoreBuffered
                                 defer:YES
                                // since we're passing [screen frame] above,
@@ -104,7 +104,15 @@ enum {
 
     // NOTE: Vim needs to process mouse moved events, so enable them here.
     [self setAcceptsMouseMovedEvents:YES];
+  
+    fadeTime = [[NSUserDefaults standardUserDefaults] doubleForKey:MMFullScreenFadeTimeKey];
 
+    // Each fade goes in and then out, so the fade hardware must be reserved accordingly and the
+    // actual fade time can't exceed half the allowable reservation time... plus some slack to
+    // prevent visual artifacts caused by defaulting on the fade hardware lease.
+    fadeTime = MIN(fadeTime, 0.5 * (kCGMaxDisplayReservationInterval - 1));
+    fadeReservationTime = 2.0 * fadeTime + 1;
+    
     return self;
 }
 
@@ -137,8 +145,8 @@ enum {
     // fade to black
     Boolean didBlend = NO;
     CGDisplayFadeReservationToken token;
-    if (CGAcquireDisplayFadeReservation(.5, &token) == kCGErrorSuccess) {
-        CGDisplayFade(token, .25, kCGDisplayBlendNormal,
+    if (CGAcquireDisplayFadeReservation(fadeReservationTime, &token) == kCGErrorSuccess) {
+        CGDisplayFade(token, fadeTime, kCGDisplayBlendNormal,
             kCGDisplayBlendSolidColor, .0, .0, .0, true);
         didBlend = YES;
     }
@@ -156,18 +164,16 @@ enum {
 
     oldTabBarStyle = [[view tabBarControl] styleName];
 
-    NSString *style;
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_10
-    style = @"Yosemite";
-#else
-    style = @"Unified";
-#endif
+    NSString *style =
+        shouldUseYosemiteTabBarStyle() ? @"Yosemite" : @"Unified";
     [[view tabBarControl] setStyleNamed:style];
 
     // add text view
     oldPosition = [view frame].origin;
 
     [view removeFromSuperviewWithoutNeedingDisplay];
+    if (floor(NSAppKitVersionNumber) >= NSAppKitVersionNumber10_12)
+        [[view textView] setCGLayerEnabled:YES];
     [[self contentView] addSubview:view];
     [self setInitialFirstResponder:[view textView]];
     
@@ -212,9 +218,11 @@ enum {
 
     // fade back in
     if (didBlend) {
-        CGDisplayFade(token, .25, kCGDisplayBlendSolidColor,
-            kCGDisplayBlendNormal, .0, .0, .0, false);
-        CGReleaseDisplayFadeReservation(token);
+        [NSAnimationContext currentContext].completionHandler = ^{
+            CGDisplayFade(token, fadeTime, kCGDisplayBlendSolidColor,
+                          kCGDisplayBlendNormal, .0, .0, .0, false);
+            CGReleaseDisplayFadeReservation(token);
+        };
     }
 
     state = InFullScreen;
@@ -225,8 +233,8 @@ enum {
     // fade to black
     Boolean didBlend = NO;
     CGDisplayFadeReservationToken token;
-    if (CGAcquireDisplayFadeReservation(.5, &token) == kCGErrorSuccess) {
-        CGDisplayFade(token, .25, kCGDisplayBlendNormal,
+    if (CGAcquireDisplayFadeReservation(fadeReservationTime, &token) == kCGErrorSuccess) {
+        CGDisplayFade(token, fadeTime, kCGDisplayBlendNormal,
             kCGDisplayBlendSolidColor, .0, .0, .0, true);
         didBlend = YES;
     }
@@ -280,6 +288,9 @@ enum {
     [view setFrameOrigin:oldPosition];
     [self close];
 
+    if (floor(NSAppKitVersionNumber) >= NSAppKitVersionNumber10_12)
+        [[view textView] setCGLayerEnabled:NO];
+
     // Set the text view to initial first responder, otherwise the 'plus'
     // button on the tabline steals the first responder status.
     [target setInitialFirstResponder:[view textView]];
@@ -320,7 +331,7 @@ enum {
 
     // fade back in  
     if (didBlend) {
-        CGDisplayFade(token, .25, kCGDisplayBlendSolidColor,
+        CGDisplayFade(token, fadeTime, kCGDisplayBlendSolidColor,
             kCGDisplayBlendNormal, .0, .0, .0, false);
         CGReleaseDisplayFadeReservation(token);
     }
