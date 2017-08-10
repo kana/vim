@@ -632,6 +632,8 @@ extern int (*dyn_libintl_putenv)(const char *envstring);
  * flags for update_screen()
  * The higher the value, the higher the priority
  */
+#define VALID_NO_UPDATE		 5  /* no new changes, keep the command line if
+				       possible */
 #define VALID			10  /* buffer not changed, or changes marked
 				       with b_mod_* */
 #define INVERTED		20  /* redisplay inverted part that changed */
@@ -808,7 +810,8 @@ extern int (*dyn_libintl_putenv)(const char *envstring);
 #define EXPAND_USER_ADDR_TYPE	44
 #define EXPAND_PACKADD		45
 #define EXPAND_MESSAGES		46
-#define EXPAND_MACACTION	46
+#define EXPAND_MAPCLEAR		47
+#define EXPAND_MACACTION	48
 
 /* Values for exmode_active (0 is no exmode) */
 #define EXMODE_NORMAL		1
@@ -958,6 +961,14 @@ extern int (*dyn_libintl_putenv)(const char *envstring);
 #define GETF_SETMARK	0x01	/* set pcmark before jumping */
 #define GETF_ALT	0x02	/* jumping to alternate file (not buf num) */
 #define GETF_SWITCH	0x04	/* respect 'switchbuf' settings when jumping */
+
+/* Return values of getfile() */
+#define GETFILE_ERROR	    1	/* normal error */
+#define GETFILE_NOT_WRITTEN 2	/* "not written" error */
+#define GETFILE_SAME_FILE   0	/* success, same file */
+#define GETFILE_OPEN_OTHER -1	/* success, opened another file */
+#define GETFILE_UNUSED	    8
+#define GETFILE_SUCCESS(x)  ((x) <= 0)
 
 /* Values for buflist_new() flags */
 #define BLN_CURBUF	1	/* may re-use curbuf for new buffer */
@@ -1423,9 +1434,11 @@ typedef enum
     , HLF_TP	    /* tabpage line */
     , HLF_TPS	    /* tabpage line selected */
     , HLF_TPF	    /* tabpage line filler */
-    , HLF_CUC	    /* 'cursurcolumn' */
-    , HLF_CUL	    /* 'cursurline' */
+    , HLF_CUC	    /* 'cursorcolumn' */
+    , HLF_CUL	    /* 'cursorline' */
     , HLF_MC	    /* 'colorcolumn' */
+    , HLF_QFL	    /* quickfix window line currently selected */
+    , HLF_ST	    /* status lines of terminal windows */
     , HLF_COUNT	    /* MUST be the last one */
 } hlf_T;
 
@@ -1435,7 +1448,7 @@ typedef enum
 		  'n', 'N', 'r', 's', 'S', 'c', 't', 'v', 'V', 'w', 'W', \
 		  'f', 'F', 'A', 'C', 'D', 'T', '-', '>', \
 		  'B', 'P', 'R', 'L', \
-		  '+', '=', 'x', 'X', '*', '#', '_', '!', '.', 'o'}
+		  '+', '=', 'x', 'X', '*', '#', '_', '!', '.', 'o', 'q', '$'}
 
 /*
  * Boolean constants
@@ -2132,6 +2145,11 @@ typedef enum {
 # define number_width(x) 7
 #endif
 
+/* This must come after including proto.h */
+#if !(defined(FEAT_MBYTE) && defined(WIN3264))
+# define mch_open(n, m, p)	open((n), (m), (p))
+# define mch_fopen(n, p)	fopen((n), (p))
+#endif
 
 #include "globals.h"	    /* global variables and messages */
 

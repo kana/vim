@@ -635,7 +635,13 @@ func Test_count()
   call assert_equal(0, count(d, 'c', 1))
 
   call assert_fails('call count(d, "a", 0, 1)', 'E474:')
-  call assert_fails('call count("a", "a")', 'E712:')
+
+  call assert_equal(0, count("foo", "bar"))
+  call assert_equal(1, count("foo", "oo"))
+  call assert_equal(2, count("foo", "o"))
+  call assert_equal(0, count("foo", "O"))
+  call assert_equal(2, count("foo", "O", 1))
+  call assert_equal(2, count("fooooo", "oo"))
 endfunc
 
 func Test_changenr()
@@ -783,4 +789,29 @@ func Test_redo_in_nested_functions()
   nunmap g.
   delfunc Operator
   delfunc Apply
+endfunc
+
+func Test_shellescape()
+  let save_shell = &shell
+  set shell=bash
+  call assert_equal("'text'", shellescape('text'))
+  call assert_equal("'te\"xt'", shellescape('te"xt'))
+  call assert_equal("'te'\\''xt'", shellescape("te'xt"))
+
+  call assert_equal("'te%xt'", shellescape("te%xt"))
+  call assert_equal("'te\\%xt'", shellescape("te%xt", 1))
+  call assert_equal("'te#xt'", shellescape("te#xt"))
+  call assert_equal("'te\\#xt'", shellescape("te#xt", 1))
+  call assert_equal("'te!xt'", shellescape("te!xt"))
+  call assert_equal("'te\\!xt'", shellescape("te!xt", 1))
+
+  call assert_equal("'te\nxt'", shellescape("te\nxt"))
+  call assert_equal("'te\\\nxt'", shellescape("te\nxt", 1))
+  set shell=tcsh
+  call assert_equal("'te\\!xt'", shellescape("te!xt"))
+  call assert_equal("'te\\\\!xt'", shellescape("te!xt", 1))
+  call assert_equal("'te\\\nxt'", shellescape("te\nxt"))
+  call assert_equal("'te\\\\\nxt'", shellescape("te\nxt", 1))
+
+  let &shell = save_shell
 endfunc

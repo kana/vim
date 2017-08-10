@@ -367,6 +367,9 @@ static reg_extmatch_T *next_match_extmatch = NULL;
 static win_T	*syn_win;		/* current window for highlighting */
 static buf_T	*syn_buf;		/* current buffer for highlighting */
 static synblock_T *syn_block;		/* current buffer for highlighting */
+#ifdef FEAT_RELTIME
+static proftime_T *syn_tm;
+#endif
 static linenr_T current_lnum = 0;	/* lnum of current state */
 static colnr_T	current_col = 0;	/* column of current state */
 static int	current_state_stored = 0; /* TRUE if stored current state
@@ -494,7 +497,7 @@ static void syn_incl_toplevel(int id, int *flagsp);
  * window.
  */
     void
-syntax_start(win_T *wp, linenr_T lnum)
+syntax_start(win_T *wp, linenr_T lnum, proftime_T *syntax_tm UNUSED)
 {
     synstate_T	*p;
     synstate_T	*last_valid = NULL;
@@ -524,6 +527,9 @@ syntax_start(win_T *wp, linenr_T lnum)
     }
     changedtick = CHANGEDTICK(syn_buf);
     syn_win = wp;
+#ifdef FEAT_RELTIME
+    syn_tm = syntax_tm;
+#endif
 
     /*
      * Allocate syntax stack when needed.
@@ -1055,6 +1061,9 @@ syn_start_line(void)
 
     next_match_idx = -1;
     ++current_line_id;
+#ifdef FEAT_CONCEAL
+    next_seqnr = 1;
+#endif
 }
 
 /*
@@ -1851,6 +1860,7 @@ get_syntax_attr(
 #endif
 #ifdef FEAT_CONCEAL
 	current_flags = 0;
+	current_seqnr = 0;
 #endif
 	return 0;
     }
@@ -2340,6 +2350,7 @@ syn_current_attr(
 #endif
 #ifdef FEAT_CONCEAL
     current_flags = 0;
+    current_seqnr = 0;
 #endif
     if (cur_si != NULL)
     {
@@ -3295,6 +3306,9 @@ syn_regexec(
     syn_time_T  *st UNUSED)
 {
     int r;
+#ifdef FEAT_RELTIME
+    int timed_out = FALSE;
+#endif
 #ifdef FEAT_PROFILE
     proftime_T	pt;
 
@@ -3303,7 +3317,13 @@ syn_regexec(
 #endif
 
     rmp->rmm_maxcol = syn_buf->b_p_smc;
-    r = vim_regexec_multi(rmp, syn_win, syn_buf, lnum, col, NULL);
+    r = vim_regexec_multi(rmp, syn_win, syn_buf, lnum, col,
+#ifdef FEAT_RELTIME
+	    syn_tm, &timed_out
+#else
+	    NULL, NULL
+#endif
+	    );
 
 #ifdef FEAT_PROFILE
     if (syn_time_on)
@@ -3316,6 +3336,10 @@ syn_regexec(
 	if (r > 0)
 	    ++st->match;
     }
+#endif
+#ifdef FEAT_RELTIME
+    if (timed_out)
+	syn_win->w_s->b_syn_slow = TRUE;
 #endif
 
     if (r > 0)
@@ -3436,9 +3460,9 @@ syn_cmd_conceal(exarg_T *eap UNUSED, int syncing UNUSED)
     if (*arg == NUL)
     {
 	if (curwin->w_s->b_syn_conceal)
-	    MSG(_("syn conceal on"));
+	    MSG(_("syntax conceal on"));
 	else
-	    MSG(_("syn conceal off"));
+	    MSG(_("syntax conceal off"));
     }
     else if (STRNICMP(arg, "on", 2) == 0 && next - arg == 2)
 	curwin->w_s->b_syn_conceal = TRUE;
@@ -3575,6 +3599,9 @@ syntax_clear(synblock_T *block)
     int i;
 
     block->b_syn_error = FALSE;	    /* clear previous error */
+#ifdef FEAT_RELTIME
+    block->b_syn_slow = FALSE;	    /* clear previous timeout */
+#endif
     block->b_syn_ic = FALSE;	    /* Use case, by default */
     block->b_syn_spell = SYNSPL_DEFAULT; /* default spell checking */
     block->b_syn_containedin = FALSE;
@@ -6542,7 +6569,7 @@ syn_get_id(
     if (wp->w_buffer != syn_buf
 	    || lnum != current_lnum
 	    || col < current_col)
-	syntax_start(wp, lnum);
+	syntax_start(wp, lnum, NULL);
     else if (wp->w_buffer == syn_buf
 	    && lnum == current_lnum
 	    && col > current_col)
@@ -6611,9 +6638,14 @@ syn_get_foldlevel(win_T *wp, long lnum)
     int		i;
 
     /* Return quickly when there are no fold items at all. */
-    if (wp->w_s->b_syn_folditems != 0)
+    if (wp->w_s->b_syn_folditems != 0
+	    && !wp->w_s->b_syn_error
+# ifdef SYN_TIME_LIMIT
+	    && !wp->w_s->b_syn_slow
+# endif
+	    )
     {
-	syntax_start(wp, lnum);
+	syntax_start(wp, lnum, NULL);
 
 	for (i = 0; i < current_state.ga_len; ++i)
 	    if (CUR_STATE(i).si_flags & HL_FOLD)
@@ -6855,6 +6887,10 @@ static char *(highlight_init_both[]) =
 	     "StatusLine term=reverse,bold cterm=reverse,bold gui=reverse,bold"),
 	CENT("StatusLineNC term=reverse cterm=reverse",
 	     "StatusLineNC term=reverse cterm=reverse gui=reverse"),
+#ifdef FEAT_TERMINAL
+	CENT("StatusLineTerm term=reverse cterm=reverse ctermFg=DarkGreen",
+	     "StatusLineTerm term=reverse cterm=reverse ctermFg=DarkGreen gui=reverse guifg=DarkGreen"),
+#endif
 	"default link EndOfBuffer NonText",
 #ifdef FEAT_WINDOWS
 	CENT("VertSplit term=reverse cterm=reverse",
@@ -6882,6 +6918,7 @@ static char *(highlight_init_both[]) =
 	"Cursor guibg=fg guifg=bg",
 	"lCursor guibg=fg guifg=bg", /* should be different, but what? */
 #endif
+	"default link QuickFixLine Search",
 	NULL
     };
 
@@ -7186,6 +7223,115 @@ load_colors(char_u *name)
     recursive = FALSE;
 
     return retval;
+}
+
+static char *(color_names[28]) = {
+	    "Black", "DarkBlue", "DarkGreen", "DarkCyan",
+	    "DarkRed", "DarkMagenta", "Brown", "DarkYellow",
+	    "Gray", "Grey", "LightGray", "LightGrey",
+	    "DarkGray", "DarkGrey",
+	    "Blue", "LightBlue", "Green", "LightGreen",
+	    "Cyan", "LightCyan", "Red", "LightRed", "Magenta",
+	    "LightMagenta", "Yellow", "LightYellow", "White", "NONE"};
+	    /* indices:
+	     * 0, 1, 2, 3,
+	     * 4, 5, 6, 7,
+	     * 8, 9, 10, 11,
+	     * 12, 13,
+	     * 14, 15, 16, 17,
+	     * 18, 19, 20, 21, 22,
+	     * 23, 24, 25, 26, 27 */
+static int color_numbers_16[28] = {0, 1, 2, 3,
+				 4, 5, 6, 6,
+				 7, 7, 7, 7,
+				 8, 8,
+				 9, 9, 10, 10,
+				 11, 11, 12, 12, 13,
+				 13, 14, 14, 15, -1};
+/* for xterm with 88 colors... */
+static int color_numbers_88[28] = {0, 4, 2, 6,
+				 1, 5, 32, 72,
+				 84, 84, 7, 7,
+				 82, 82,
+				 12, 43, 10, 61,
+				 14, 63, 9, 74, 13,
+				 75, 11, 78, 15, -1};
+/* for xterm with 256 colors... */
+static int color_numbers_256[28] = {0, 4, 2, 6,
+				 1, 5, 130, 130,
+				 248, 248, 7, 7,
+				 242, 242,
+				 12, 81, 10, 121,
+				 14, 159, 9, 224, 13,
+				 225, 11, 229, 15, -1};
+/* for terminals with less than 16 colors... */
+static int color_numbers_8[28] = {0, 4, 2, 6,
+				 1, 5, 3, 3,
+				 7, 7, 7, 7,
+				 0+8, 0+8,
+				 4+8, 4+8, 2+8, 2+8,
+				 6+8, 6+8, 1+8, 1+8, 5+8,
+				 5+8, 3+8, 3+8, 7+8, -1};
+
+/*
+ * Lookup the "cterm" value to be used for color with index "idx" in
+ * color_names[].
+ * "boldp" will be set to TRUE or FALSE for a foreground color when using 8
+ * colors, otherwise it will be unchanged.
+ */
+    int
+lookup_color(int idx, int foreground, int *boldp)
+{
+    int		color = color_numbers_16[idx];
+    char_u	*p;
+
+    /* Use the _16 table to check if it's a valid color name. */
+    if (color < 0)
+	return -1;
+
+    if (t_colors == 8)
+    {
+	/* t_Co is 8: use the 8 colors table */
+#if defined(__QNXNTO__)
+	color = color_numbers_8_qansi[idx];
+#else
+	color = color_numbers_8[idx];
+#endif
+	if (foreground)
+	{
+	    /* set/reset bold attribute to get light foreground
+	     * colors (on some terminals, e.g. "linux") */
+	    if (color & 8)
+		*boldp = TRUE;
+	    else
+		*boldp = FALSE;
+	}
+	color &= 7;	/* truncate to 8 colors */
+    }
+    else if (t_colors == 16 || t_colors == 88
+					   || t_colors >= 256)
+    {
+	/*
+	 * Guess: if the termcap entry ends in 'm', it is
+	 * probably an xterm-like terminal.  Use the changed
+	 * order for colors.
+	 */
+	if (*T_CAF != NUL)
+	    p = T_CAF;
+	else
+	    p = T_CSF;
+	if (*p != NUL && (t_colors > 256
+			      || *(p + STRLEN(p) - 1) == 'm'))
+	{
+	    if (t_colors == 88)
+		color = color_numbers_88[idx];
+	    else if (t_colors >= 256)
+		color = color_numbers_256[idx];
+	    else
+		color = color_numbers_8[idx];
+	}
+    }
+    return color;
 }
 
 /*
@@ -7691,45 +7837,8 @@ do_highlight(
 	    }
 	    else
 	    {
-		static char *(color_names[28]) = {
-			    "Black", "DarkBlue", "DarkGreen", "DarkCyan",
-			    "DarkRed", "DarkMagenta", "Brown", "DarkYellow",
-			    "Gray", "Grey",
-			    "LightGray", "LightGrey", "DarkGray", "DarkGrey",
-			    "Blue", "LightBlue", "Green", "LightGreen",
-			    "Cyan", "LightCyan", "Red", "LightRed", "Magenta",
-			    "LightMagenta", "Yellow", "LightYellow", "White", "NONE"};
-		static int color_numbers_16[28] = {0, 1, 2, 3,
-						 4, 5, 6, 6,
-						 7, 7,
-						 7, 7, 8, 8,
-						 9, 9, 10, 10,
-						 11, 11, 12, 12, 13,
-						 13, 14, 14, 15, -1};
-		/* for xterm with 88 colors... */
-		static int color_numbers_88[28] = {0, 4, 2, 6,
-						 1, 5, 32, 72,
-						 84, 84,
-						 7, 7, 82, 82,
-						 12, 43, 10, 61,
-						 14, 63, 9, 74, 13,
-						 75, 11, 78, 15, -1};
-		/* for xterm with 256 colors... */
-		static int color_numbers_256[28] = {0, 4, 2, 6,
-						 1, 5, 130, 130,
-						 248, 248,
-						 7, 7, 242, 242,
-						 12, 81, 10, 121,
-						 14, 159, 9, 224, 13,
-						 225, 11, 229, 15, -1};
-		/* for terminals with less than 16 colors... */
-		static int color_numbers_8[28] = {0, 4, 2, 6,
-						 1, 5, 3, 3,
-						 7, 7,
-						 7, 7, 0+8, 0+8,
-						 4+8, 4+8, 2+8, 2+8,
-						 6+8, 6+8, 1+8, 1+8, 5+8,
-						 5+8, 3+8, 3+8, 7+8, -1};
+		int bold = MAYBE;
+
 #if defined(__QNXNTO__)
 		static int *color_numbers_8_qansi = color_numbers_8;
 		/* On qnx, the 8 & 16 color arrays are the same */
@@ -7750,57 +7859,19 @@ do_highlight(
 		    break;
 		}
 
-		/* Use the _16 table to check if it's a valid color name. */
-		color = color_numbers_16[i];
-		if (color >= 0)
+		color = lookup_color(i, key[5] == 'F', &bold);
+
+		/* set/reset bold attribute to get light foreground
+		 * colors (on some terminals, e.g. "linux") */
+		if (bold == TRUE)
 		{
-		    if (t_colors == 8)
-		    {
-			/* t_Co is 8: use the 8 colors table */
-#if defined(__QNXNTO__)
-			color = color_numbers_8_qansi[i];
-#else
-			color = color_numbers_8[i];
-#endif
-			if (key[5] == 'F')
-			{
-			    /* set/reset bold attribute to get light foreground
-			     * colors (on some terminals, e.g. "linux") */
-			    if (color & 8)
-			    {
-				HL_TABLE()[idx].sg_cterm |= HL_BOLD;
-				HL_TABLE()[idx].sg_cterm_bold = TRUE;
-			    }
-			    else
-				HL_TABLE()[idx].sg_cterm &= ~HL_BOLD;
-			}
-			color &= 7;	/* truncate to 8 colors */
-		    }
-		    else if (t_colors == 16 || t_colors == 88
-							   || t_colors >= 256)
-		    {
-			/*
-			 * Guess: if the termcap entry ends in 'm', it is
-			 * probably an xterm-like terminal.  Use the changed
-			 * order for colors.
-			 */
-			if (*T_CAF != NUL)
-			    p = T_CAF;
-			else
-			    p = T_CSF;
-			if (*p != NUL && (t_colors > 256
-					      || *(p + STRLEN(p) - 1) == 'm'))
-			{
-			    if (t_colors == 88)
-				color = color_numbers_88[i];
-			    else if (t_colors >= 256)
-				color = color_numbers_256[i];
-			    else
-				color = color_numbers_8[i];
-			}
-		    }
+		    HL_TABLE()[idx].sg_cterm |= HL_BOLD;
+		    HL_TABLE()[idx].sg_cterm_bold = TRUE;
 		}
+		else if (bold == FALSE)
+		    HL_TABLE()[idx].sg_cterm &= ~HL_BOLD;
 	    }
+
 	    /* Add one to the argument, to avoid zero.  Zero is used for
 	     * "NONE", then "color" is -1. */
 	    if (key[5] == 'F')
@@ -7835,18 +7906,25 @@ do_highlight(
 			must_redraw = CLEAR;
 			if (color >= 0)
 			{
+			    int dark = -1;
+
 			    if (termcap_active)
 				term_bg_color(color);
 			    if (t_colors < 16)
-				i = (color == 0 || color == 4);
-			    else
-				i = (color < 7 || color == 8);
+				dark = (color == 0 || color == 4);
+			    /* Limit the heuristic to the standard 16 colors */
+			    else if (color < 16)
+				dark = (color < 7 || color == 8);
 			    /* Set the 'background' option if the value is
 			     * wrong. */
-			    if (i != (*p_bg == 'd'))
+			    if (dark != -1
+				    && dark != (*p_bg == 'd')
+				    && !option_was_set((char_u *)"bg"))
+			    {
 				set_option_value((char_u *)"bg", 0L,
-					i ?  (char_u *)"dark"
-					  : (char_u *)"light", 0);
+				       (char_u *)(dark ? "dark" : "light"), 0);
+				reset_option_was_set((char_u *)"bg");
+			    }
 			}
 		    }
 		}
@@ -7869,7 +7947,7 @@ do_highlight(
 		    HL_TABLE()[idx].sg_gui_fg = i;
 # endif
 		    vim_free(HL_TABLE()[idx].sg_gui_fg_name);
-		    if (STRCMP(arg, "NONE"))
+		    if (STRCMP(arg, "NONE") != 0)
 			HL_TABLE()[idx].sg_gui_fg_name = vim_strsave(arg);
 		    else
 			HL_TABLE()[idx].sg_gui_fg_name = NULL;
@@ -8740,6 +8818,58 @@ get_attr_entry(garray_T *table, attrentry_T *aep)
     ++table->ga_len;
     return (table->ga_len - 1 + ATTR_OFF);
 }
+
+/*
+ * Get an attribute index for a cterm entry.
+ * Uses an existing entry when possible or adds one when needed.
+ */
+    int
+get_cterm_attr_idx(int attr, int fg, int bg)
+{
+    attrentry_T		at_en;
+
+    vim_memset(&at_en, 0, sizeof(attrentry_T));
+    at_en.ae_attr = attr;
+    at_en.ae_u.cterm.fg_color = fg;
+    at_en.ae_u.cterm.bg_color = bg;
+    return get_attr_entry(&cterm_attr_table, &at_en);
+}
+
+#if defined(FEAT_TERMGUICOLORS) || defined(PROTO)
+/*
+ * Get an attribute index for a 'termguicolors' entry.
+ * Uses an existing entry when possible or adds one when needed.
+ */
+    int
+get_tgc_attr_idx(int attr, guicolor_T fg, guicolor_T bg)
+{
+    attrentry_T		at_en;
+
+    vim_memset(&at_en, 0, sizeof(attrentry_T));
+    at_en.ae_attr = attr;
+    at_en.ae_u.cterm.fg_rgb = fg;
+    at_en.ae_u.cterm.bg_rgb = bg;
+    return get_attr_entry(&cterm_attr_table, &at_en);
+}
+#endif
+
+#if defined(FEAT_GUI) || defined(PROTO)
+/*
+ * Get an attribute index for a cterm entry.
+ * Uses an existing entry when possible or adds one when needed.
+ */
+    int
+get_gui_attr_idx(int attr, guicolor_T fg, guicolor_T bg)
+{
+    attrentry_T		at_en;
+
+    vim_memset(&at_en, 0, sizeof(attrentry_T));
+    at_en.ae_attr = attr;
+    at_en.ae_u.gui.fg_color = fg;
+    at_en.ae_u.gui.bg_color = bg;
+    return get_attr_entry(&gui_attr_table, &at_en);
+}
+#endif
 
 /*
  * Clear all highlight tables.

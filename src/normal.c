@@ -4363,7 +4363,7 @@ find_decl(
     {
 	valid = FALSE;
 	t = searchit(curwin, curbuf, &curwin->w_cursor, FORWARD,
-			    pat, 1L, searchflags, RE_LAST, (linenr_T)0, NULL);
+		       pat, 1L, searchflags, RE_LAST, (linenr_T)0, NULL, NULL);
 	if (curwin->w_cursor.lnum >= old_pos.lnum)
 	    t = FAIL;	/* match after start is failure too */
 
@@ -4376,7 +4376,12 @@ find_decl(
 	    if ((pos = findmatchlimit(NULL, '}', FM_FORWARD,
 		     (int)(old_pos.lnum - curwin->w_cursor.lnum + 1))) != NULL
 		    && pos->lnum < old_pos.lnum)
+	    {
+		/* There can't be a useful match before the end of this block.
+		 * Skip to the end. */
+		curwin->w_cursor = *pos;
 		continue;
+	    }
 	}
 
 	if (t == FAIL)
@@ -4650,6 +4655,11 @@ nv_mousescroll(cmdarg_T *cap)
 
     if (cap->arg == MSCR_UP || cap->arg == MSCR_DOWN)
     {
+# ifdef FEAT_TERMINAL
+	if (term_use_loop())
+	    send_keys_to_term(curbuf->b_term, cap->cmdchar, TRUE);
+	else
+# endif
 	if (mod_mask & (MOD_MASK_SHIFT | MOD_MASK_CTRL))
 	{
 	    (void)onepage(cap->arg ? FORWARD : BACKWARD, 1L);
@@ -5506,6 +5516,14 @@ nv_clear(cmdarg_T *cap)
 #ifdef FEAT_SYN_HL
 	/* Clear all syntax states to force resyncing. */
 	syn_stack_free_all(curwin->w_s);
+# ifdef FEAT_RELTIME
+	{
+	    win_T *wp;
+
+	    FOR_ALL_WINDOWS(wp)
+		wp->w_s->b_syn_slow = FALSE;
+	}
+# endif
 #endif
 	redraw_later(CLEAR);
     }
@@ -6276,12 +6294,12 @@ nv_gotofile(cmdarg_T *cap)
     if (ptr != NULL)
     {
 	/* do autowrite if necessary */
-	if (curbufIsChanged() && curbuf->b_nwindows <= 1 && !P_HID(curbuf))
+	if (curbufIsChanged() && curbuf->b_nwindows <= 1 && !buf_hide(curbuf))
 	    (void)autowrite(curbuf, FALSE);
 	setpcmark();
-	(void)do_ecmd(0, ptr, NULL, NULL, ECMD_LAST,
-				       P_HID(curbuf) ? ECMD_HIDE : 0, curwin);
-	if (cap->nchar == 'F' && lnum >= 0)
+	if (do_ecmd(0, ptr, NULL, NULL, ECMD_LAST,
+				buf_hide(curbuf) ? ECMD_HIDE : 0, curwin) == OK
+		&& cap->nchar == 'F' && lnum >= 0)
 	{
 	    curwin->w_cursor.lnum = lnum;
 	    check_cursor_lnum();
@@ -6409,7 +6427,7 @@ normal_search(
     curwin->w_set_curswant = TRUE;
 
     i = do_search(cap->oap, dir, pat, cap->count1,
-			   opt | SEARCH_OPT | SEARCH_ECHO | SEARCH_MSG, NULL);
+		      opt | SEARCH_OPT | SEARCH_ECHO | SEARCH_MSG, NULL, NULL);
     if (i == 0)
 	clearop(cap->oap);
     else
@@ -7867,7 +7885,10 @@ n_start_visual_mode(int c)
 nv_window(cmdarg_T *cap)
 {
 #ifdef FEAT_WINDOWS
-    if (!checkclearop(cap->oap))
+    if (cap->nchar == ':')
+	/* "CTRL-W :" is the same as typing ":"; useful in a terminal window */
+	nv_colon(cap);
+    else if (!checkclearop(cap->oap))
 	do_window(cap->nchar, cap->count0, NUL); /* everything is in window.c */
 #else
     (void)checkclearop(cap->oap);
@@ -8345,6 +8366,7 @@ nv_g_cmd(cmdarg_T *cap)
 	break;
 #endif
 
+    /* "g<": show scrollback text */
     case '<':
 	show_sb_text();
 	break;
@@ -9014,7 +9036,7 @@ nv_esc(cmdarg_T *cap)
 #endif
 		&& !VIsual_active
 		&& no_reason)
-	    MSG(_("Type  :quit<Enter>  to exit Vim"));
+	    MSG(_("Type  :qa!  and press <Enter> to abandon all changes and exit Vim"));
 
 	/* Don't reset "restart_edit" when 'insertmode' is set, it won't be
 	 * set again below when halfway a mapping. */
@@ -9072,6 +9094,14 @@ nv_edit(cmdarg_T *cap)
 	clearopbeep(cap->oap);
 #endif
     }
+#ifdef FEAT_TERMINAL
+    else if (term_in_normal_mode())
+    {
+	clearop(cap->oap);
+	term_enter_job_mode();
+	return;
+    }
+#endif
     else if (!curbuf->b_p_ma && !p_im)
     {
 	/* Only give this error when 'insertmode' is off. */

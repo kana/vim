@@ -602,7 +602,8 @@ searchit(
     int		options,
     int		pat_use,	/* which pattern to use when "pat" is empty */
     linenr_T	stop_lnum,	/* stop after this line number when != 0 */
-    proftime_T	*tm UNUSED)	/* timeout limit or NULL */
+    proftime_T	*tm UNUSED,	/* timeout limit or NULL */
+    int		*timed_out UNUSED)  /* set when timed out or NULL */
 {
     int		found;
     linenr_T	lnum;		/* no init to shut up Apollo cc */
@@ -724,13 +725,17 @@ searchit(
 		nmatched = vim_regexec_multi(&regmatch, win, buf,
 					     lnum, col,
 #ifdef FEAT_RELTIME
-					     tm
+					     tm, timed_out
 #else
-					     NULL
+					     NULL, NULL
 #endif
 						      );
 		/* Abort searching on an error (e.g., out of stack). */
-		if (called_emsg)
+		if (called_emsg
+#ifdef FEAT_RELTIME
+			|| (timed_out != NULL && *timed_out)
+#endif
+			)
 		    break;
 		if (nmatched > 0)
 		{
@@ -819,9 +824,9 @@ searchit(
 					      win, buf, lnum + matchpos.lnum,
 					      matchcol,
 #ifdef FEAT_RELTIME
-					      tm
+					      tm, timed_out
 #else
-					      NULL
+					      NULL, NULL
 #endif
 					      )) == 0)
 			    {
@@ -931,9 +936,9 @@ searchit(
 					      win, buf, lnum + matchpos.lnum,
 					      matchcol,
 #ifdef FEAT_RELTIME
-					      tm
+					      tm, timed_out
 #else
-					      NULL
+					      NULL, NULL
 #endif
 					    )) == 0)
 				break;
@@ -1028,10 +1033,13 @@ searchit(
 	     * twice.
 	     */
 	    if (!p_ws || stop_lnum != 0 || got_int || called_emsg
-#ifdef FEAT_SEARCH_EXTRA
-					       || break_loop
+#ifdef FEAT_RELTIME
+				|| (timed_out != NULL && *timed_out)
 #endif
-					       || found || loop)
+#ifdef FEAT_SEARCH_EXTRA
+				|| break_loop
+#endif
+				|| found || loop)
 		break;
 
 	    /*
@@ -1050,6 +1058,9 @@ searchit(
 					  ? top_bot_msg : bot_top_msg), TRUE);
 	}
 	if (got_int || called_emsg
+#ifdef FEAT_RELTIME
+		|| (timed_out != NULL && *timed_out)
+#endif
 #ifdef FEAT_SEARCH_EXTRA
 		|| break_loop
 #endif
@@ -1156,7 +1167,8 @@ do_search(
     char_u	    *pat,
     long	    count,
     int		    options,
-    proftime_T	    *tm)	/* timeout limit or NULL */
+    proftime_T	    *tm,	/* timeout limit or NULL */
+    int		    *timed_out) /* flag set on timeout or NULL */
 {
     pos_T	    pos;	/* position of the last match */
     char_u	    *searchstr;
@@ -1442,7 +1454,7 @@ do_search(
 		       (SEARCH_KEEP + SEARCH_PEEK + SEARCH_HIS
 			+ SEARCH_MSG + SEARCH_START
 			+ ((pat != NULL && *pat == ';') ? 0 : SEARCH_NOOF))),
-		RE_LAST, (linenr_T)0, tm);
+		RE_LAST, (linenr_T)0, tm, timed_out);
 
 	if (dircp != NULL)
 	    *dircp = dirc;	/* restore second '/' or '?' for normal_cmd() */
@@ -1533,9 +1545,9 @@ end_do_search:
  * search_for_exact_line(buf, pos, dir, pat)
  *
  * Search for a line starting with the given pattern (ignoring leading
- * white-space), starting from pos and going in direction dir.	pos will
+ * white-space), starting from pos and going in direction "dir". "pos" will
  * contain the position of the match found.    Blank lines match only if
- * ADDING is set.  if p_ic is set then the pattern must be in lowercase.
+ * ADDING is set.  If p_ic is set then the pattern must be in lowercase.
  * Return OK for success, or FAIL if no line found.
  */
     int
@@ -4373,7 +4385,7 @@ current_quote(
     int		selected_quote = FALSE;	/* Has quote inside selection */
     int		i;
 
-    /* Correct cursor when 'selection' is exclusive */
+    /* Correct cursor when 'selection' is "exclusive". */
     if (VIsual_active)
     {
 	/* this only works within one line */
@@ -4381,8 +4393,19 @@ current_quote(
 	    return FALSE;
 
 	vis_bef_curs = LT_POS(VIsual, curwin->w_cursor);
-	if (*p_sel == 'e' && vis_bef_curs)
+	if (*p_sel == 'e')
+	{
+	    if (!vis_bef_curs)
+	    {
+		/* VIsual needs to be start of Visual selection. */
+		pos_T t = curwin->w_cursor;
+
+		curwin->w_cursor = VIsual;
+		VIsual = t;
+		vis_bef_curs = TRUE;
+	    }
 	    dec_cursor();
+	}
 	vis_empty = EQUAL_POS(VIsual, curwin->w_cursor);
     }
 
@@ -4597,7 +4620,7 @@ current_quote(
 
 #endif /* FEAT_TEXTOBJ */
 
-static int is_one_char(char_u *pattern, int move);
+static int is_one_char(char_u *pattern, int move, pos_T *cur);
 
 /*
  * Find next search match under cursor, cursor at end.
@@ -4645,7 +4668,7 @@ current_search(
 	orig_pos = pos = curwin->w_cursor;
 
     /* Is the pattern is zero-width? */
-    one_char = is_one_char(spats[last_idx].pat, TRUE);
+    one_char = is_one_char(spats[last_idx].pat, TRUE, &curwin->w_cursor);
     if (one_char == -1)
     {
 	p_ws = old_p_ws;
@@ -4670,7 +4693,7 @@ current_search(
 
 	result = searchit(curwin, curbuf, &pos, (dir ? FORWARD : BACKWARD),
 		spats[last_idx].pat, (long) (i ? count : 1),
-		SEARCH_KEEP | flags, RE_SEARCH, 0, NULL);
+		SEARCH_KEEP | flags, RE_SEARCH, 0, NULL, NULL);
 
 	/* First search may fail, but then start searching from the
 	 * beginning of the file (cursor might be on the search match)
@@ -4708,13 +4731,17 @@ current_search(
 
     /* Check again from the current cursor position,
      * since the next match might actually by only one char wide */
-    one_char = is_one_char(spats[last_idx].pat, FALSE);
+    one_char = is_one_char(spats[last_idx].pat, FALSE, &pos);
+    if (one_char < 0)
+	/* search failed, abort */
+	return FAIL;
 
     /* move to match, except for zero-width matches, in which case, we are
      * already on the next match */
     if (!one_char)
 	result = searchit(curwin, curbuf, &pos, (forward ? FORWARD : BACKWARD),
-	    spats[last_idx].pat, 0L, flags | SEARCH_KEEP, RE_SEARCH, 0, NULL);
+		    spats[last_idx].pat, 0L, flags | SEARCH_KEEP, RE_SEARCH, 0,
+								   NULL, NULL);
 
     if (!VIsual_active)
 	VIsual = start_pos;
@@ -4759,12 +4786,12 @@ current_search(
 
 /*
  * Check if the pattern is one character long or zero-width.
- * If move is TRUE, check from the beginning of the buffer, else from the
- * current cursor position.
+ * If move is TRUE, check from the beginning of the buffer, else from position
+ * "cur".
  * Returns TRUE, FALSE or -1 for failure.
  */
     static int
-is_one_char(char_u *pattern, int move)
+is_one_char(char_u *pattern, int move, pos_T *cur)
 {
     regmmatch_T	regmatch;
     int		nmatched = 0;
@@ -4789,13 +4816,13 @@ is_one_char(char_u *pattern, int move)
     }
     else
     {
-	pos = curwin->w_cursor;
+	pos = *cur;
 	/* accept a match at the cursor position */
 	flag = SEARCH_START;
     }
 
     if (searchit(curwin, curbuf, &pos, FORWARD, pattern, 1,
-			      SEARCH_KEEP + flag, RE_SEARCH, 0, NULL) != FAIL)
+			 SEARCH_KEEP + flag, RE_SEARCH, 0, NULL, NULL) != FAIL)
     {
 	/* Zero-width pattern should match somewhere, then we can check if
 	 * start and end are in the same position. */
@@ -4804,7 +4831,7 @@ is_one_char(char_u *pattern, int move)
 	{
 	    regmatch.startpos[0].col++;
 	    nmatched = vim_regexec_multi(&regmatch, curwin, curbuf,
-					    pos.lnum, regmatch.startpos[0].col, NULL);
+			       pos.lnum, regmatch.startpos[0].col, NULL, NULL);
 	    if (!nmatched)
 		break;
 	} while (regmatch.startpos[0].col < pos.col);
@@ -5406,19 +5433,22 @@ search_line:
 #if defined(FEAT_WINDOWS) && defined(FEAT_QUICKFIX)
 			if (g_do_tagpreview != 0)
 			{
-			    if (getfile(0, curwin_save->w_buffer->b_fname,
-						 NULL, TRUE, lnum, FALSE) > 0)
+			    if (!GETFILE_SUCCESS(getfile(
+					   curwin_save->w_buffer->b_fnum, NULL,
+						     NULL, TRUE, lnum, FALSE)))
 				break;	/* failed to jump to file */
 			}
 			else
 #endif
 			    setpcmark();
 			curwin->w_cursor.lnum = lnum;
+			check_cursor();
 		    }
 		    else
 		    {
-			if (getfile(0, files[depth].name, NULL, TRUE,
-						files[depth].lnum, FALSE) > 0)
+			if (!GETFILE_SUCCESS(getfile(
+					0, files[depth].name, NULL, TRUE,
+						    files[depth].lnum, FALSE)))
 			    break;	/* failed to jump to file */
 			/* autocommands may have changed the lnum, we don't
 			 * want that here */

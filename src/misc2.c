@@ -2438,6 +2438,7 @@ static struct key_name_entry
 #endif
 #ifdef FEAT_MOUSE_SGR
     {K_SGR_MOUSE,	(char_u *)"SgrMouse"},
+    {K_SGR_MOUSERELEASE, (char_u *)"SgrMouseRelelase"},
 #endif
     {K_LEFTMOUSE,	(char_u *)"LeftMouse"},
     {K_LEFTMOUSE_NM,	(char_u *)"LeftMouseNM"},
@@ -6055,6 +6056,9 @@ moreenv(void)
 }
 
 # ifdef USE_VIMPTY_GETENV
+/*
+ * Used for mch_getenv() for Mac.
+ */
     char_u *
 vimpty_getenv(const char_u *string)
 {

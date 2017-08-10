@@ -207,7 +207,7 @@
 #SunOS 4.1.x			     +X11 -GUI		5.1b (J) Bram Moolenaar
 #SunOS 4.1.3_U1 (sun4c) gcc	     +X11 +GUI Athena	5.0w (J) Darren Hiebert
 #SUPER-UX 6.2 (NEC SX-4) cc	     +X11R6 Motif,Athena4.6b (P) Lennart Schultz
-#Tandem/NSK                                                  (c) Matthew Woehlke
+#Tandem/NSK						     (c) Matthew Woehlke
 #Unisys 6035	      cc	     +X11 Motif		5.3  (8) Glauber Ribeiro
 #ESIX V4.2	      cc	     +X11		6.0  (a) Reinhard Wobst
 #Mac OS X 10.[23]     gcc	     Carbon		6.2  (x) Bram Moolenaar
@@ -403,6 +403,7 @@ CClink = $(CC)
 # First one is for static linking, second one for dynamic loading.
 # Use --with-luajit if you want to use LuaJIT instead of Lua.
 # Set PATH environment variable to find lua or luajit executable.
+# This requires at least "normal" features, "tiny" and "small" don't work.
 #CONF_OPT_LUA = --enable-luainterp
 #CONF_OPT_LUA = --enable-luainterp=dynamic
 #CONF_OPT_LUA = --enable-luainterp --with-luajit
@@ -429,16 +430,15 @@ CClink = $(CC)
 # the next line.
 # When you get an error for a missing "perl.exp" file, try creating an empty
 # one: "touch perl.exp".
-# This requires at least "small" features, "tiny" doesn't work.
+# This requires at least "normal" features, "tiny" and "small" don't work.
 #CONF_OPT_PERL = --enable-perlinterp
 #CONF_OPT_PERL = --enable-perlinterp=dynamic
 
 # PYTHON
-# Uncomment this when you want to include the Python interface.
-# Requires small features or better, fails with tiny features.
+# Uncomment lines here when you want to include the Python interface.
+# This requires at least "normal" features, "tiny" and "small" don't work.
 # NOTE: This may cause threading to be enabled, which has side effects (such
 # as using different libraries and debugging becomes more difficult).
-# NOTE: Using this together with Perl may cause a crash in initialization.
 # For Python3 support make a symbolic link in /usr/local/bin:
 #	ln -s python3 python3.1
 # If both python2.x and python3.x are enabled then the linking will be via
@@ -454,6 +454,7 @@ CClink = $(CC)
 # Uncomment this when you want to include the Ruby interface.
 # First one for static linking, second one for loading when used.
 # Note: you need the development package (e.g., ruby1.9.1-dev on Ubuntu).
+# This requires at least "normal" features, "tiny" and "small" don't work.
 #CONF_OPT_RUBY = --enable-rubyinterp
 #CONF_OPT_RUBY = --enable-rubyinterp=dynamic
 #CONF_OPT_RUBY = --enable-rubyinterp --with-ruby-command=ruby1.9.1
@@ -480,6 +481,11 @@ CClink = $(CC)
 # CHANNEL - inter process communication. Same conditions as NetBeans.
 # Uncomment this when you do not want inter process communication.
 #CONF_OPT_CHANNEL = --disable-channel
+
+# TERMINAL - Terminal emulator support, :terminal command.  Requires the
+# channel feature.
+# Uncomment this when you want terminal emulator support.
+#CONF_OPT_TERMINAL = --enable-terminal
 
 # MULTIBYTE - To edit multi-byte characters.
 # Uncomment this when you want to edit a multibyte language.
@@ -597,6 +603,9 @@ CClink = $(CC)
 
 # Use this with GCC to check for mistakes, unused arguments, etc.
 #CFLAGS = -g -Wall -Wextra -Wshadow -Wmissing-prototypes -Wunreachable-code -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=1
+# Add -Wpedantic to find // comments and other C99 constructs.
+# Better disable Perl and Python to avoid a lot of warnings.
+#CFLAGS = -g -Wall -Wextra -Wshadow -Wmissing-prototypes -Wpedantic -Wunreachable-code -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=1
 #CFLAGS = -g -O2 -Wall -Wextra -Wmissing-prototypes -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=1 -DU_DEBUG
 #PYTHON_CFLAGS_EXTRA = -Wno-missing-field-initializers
 #MZSCHEME_CFLAGS_EXTRA = -Wno-unreachable-code -Wno-unused-parameter
@@ -617,7 +626,7 @@ AUTOCONF = autoconf
 #PURIFY = purify
 
 # VALGRIND - remove the # to use valgrind for memory leaks and access errors.
-#            Used for the unittest targets.
+#	     Used for the unittest targets.
 # VALGRIND = valgrind --tool=memcheck --leak-check=yes --num-callers=25 --log-file=valgrind.$@
 
 # NBDEBUG - debugging the netbeans interface.
@@ -649,15 +658,15 @@ LINT_OPTIONS = -beprxzF
 # coverage information. (provided by Yegappan Lakshmanan)
 # 1. make clean, run configure and build Vim as usual.
 # 2. Generate the baseline code coverage information:
-#        $ lcov -c -i -b . -d objects -o objects/coverage_base.info
+#	$ lcov -c -i -b . -d objects -o objects/coverage_base.info
 # 3. Run "make test" to run the unit tests.  The code coverage information will
 #    be generated in the src/objects directory.
 # 4. Generate the code coverage information from the tests:
-#        $ lcov -c -b . -d objects/ -o objects/coverage_test.info
+#	$ lcov -c -b . -d objects/ -o objects/coverage_test.info
 # 5. Combine the baseline and test code coverage data:
-#        $ lcov -a objects/coverage_base.info -a objects/coverage_test.info -o objects/coverage_total.info
+#	$ lcov -a objects/coverage_base.info -a objects/coverage_test.info -o objects/coverage_total.info
 # 6. Process the test coverage data and generate a report in html:
-#        $ genhtml objects/coverage_total.info -o objects
+#	$ genhtml objects/coverage_total.info -o objects
 # 7. Open the objects/index.html file in a web browser to view the coverage
 #    information.
 #
@@ -1240,10 +1249,10 @@ LINKIT = @echo >/dev/null
 NONE_INSTALL = install_normal
 
 ### GTK GUI
-GTK_SRC		= gui.c gui_gtk.c gui_gtk_x11.c pty.c gui_gtk_f.c \
+GTK_SRC		= gui.c gui_gtk.c gui_gtk_x11.c gui_gtk_f.c \
 			gui_beval.c $(GRESOURCE_SRC)
 GTK_OBJ		= objects/gui.o objects/gui_gtk.o objects/gui_gtk_x11.o \
-			objects/pty.o objects/gui_gtk_f.o \
+			objects/gui_gtk_f.o \
 			objects/gui_beval.o $(GRESOURCE_OBJ)
 GTK_DEFS	= -DFEAT_GUI_GTK $(NARROW_PROTO)
 GTK_IPATH	= $(GUI_INC_LOC)
@@ -1257,10 +1266,10 @@ GTK_TESTTARGET  = gui
 GTK_BUNDLE	=
 
 ### Motif GUI
-MOTIF_SRC	= gui.c gui_motif.c gui_x11.c pty.c gui_beval.c \
+MOTIF_SRC	= gui.c gui_motif.c gui_x11.c gui_beval.c \
 			gui_xmdlg.c gui_xmebw.c
 MOTIF_OBJ	= objects/gui.o objects/gui_motif.o objects/gui_x11.o \
-			objects/pty.o objects/gui_beval.o \
+			objects/gui_beval.o \
 			objects/gui_xmdlg.o objects/gui_xmebw.o
 MOTIF_DEFS	= -DFEAT_GUI_MOTIF $(NARROW_PROTO)
 MOTIF_IPATH	= $(GUI_INC_LOC)
@@ -1280,16 +1289,16 @@ XAW_LIB = -lXaw
 
 ### When using Xaw3d, uncomment/comment the following lines to also get the
 ### scrollbars from Xaw3d.
-#ATHENA_SRC	= gui.c gui_athena.c gui_x11.c pty.c gui_beval.c gui_at_fs.c
+#ATHENA_SRC	= gui.c gui_athena.c gui_x11.c gui_beval.c gui_at_fs.c
 #ATHENA_OBJ	= objects/gui.o objects/gui_athena.o objects/gui_x11.o \
-#			objects/pty.o objects/gui_beval.o objects/gui_at_fs.o
+#			objects/gui_beval.o objects/gui_at_fs.o
 #ATHENA_DEFS	= -DFEAT_GUI_ATHENA $(NARROW_PROTO) \
 #		    -Dvim_scrollbarWidgetClass=scrollbarWidgetClass \
 #		    -Dvim_XawScrollbarSetThumb=XawScrollbarSetThumb
-ATHENA_SRC	= gui.c gui_athena.c gui_x11.c pty.c gui_beval.c \
+ATHENA_SRC	= gui.c gui_athena.c gui_x11.c gui_beval.c \
 			gui_at_sb.c gui_at_fs.c
 ATHENA_OBJ	= objects/gui.o objects/gui_athena.o objects/gui_x11.o \
-			objects/pty.o objects/gui_beval.o \
+			objects/gui_beval.o \
 			objects/gui_at_sb.o objects/gui_at_fs.o
 ATHENA_DEFS	= -DFEAT_GUI_ATHENA $(NARROW_PROTO)
 
@@ -1306,9 +1315,9 @@ ATHENA_BUNDLE	=
 ### neXtaw GUI
 NEXTAW_LIB = -lneXtaw
 
-NEXTAW_SRC	= gui.c gui_athena.c gui_x11.c pty.c gui_beval.c gui_at_fs.c
+NEXTAW_SRC	= gui.c gui_athena.c gui_x11.c gui_beval.c gui_at_fs.c
 NEXTAW_OBJ	= objects/gui.o objects/gui_athena.o objects/gui_x11.o \
-			objects/pty.o objects/gui_beval.o objects/gui_at_fs.o
+			objects/gui_beval.o objects/gui_at_fs.o
 NEXTAW_DEFS	= -DFEAT_GUI_ATHENA -DFEAT_GUI_NEXTAW $(NARROW_PROTO)
 
 NEXTAW_IPATH	= $(GUI_INC_LOC)
@@ -1333,8 +1342,8 @@ NEXTAW_BUNDLE	=
 #EXTRA_LIBS = /usr/openwin/lib/libXmu.sa -lm
 
 # PHOTON GUI
-PHOTONGUI_SRC	= gui.c gui_photon.c pty.c
-PHOTONGUI_OBJ	= objects/gui.o objects/gui_photon.o objects/pty.o
+PHOTONGUI_SRC	= gui.c gui_photon.c
+PHOTONGUI_OBJ	= objects/gui.o objects/gui_photon.o
 PHOTONGUI_DEFS	= -DFEAT_GUI_PHOTON
 PHOTONGUI_IPATH	=
 PHOTONGUI_LIBS_DIR =
@@ -1348,7 +1357,7 @@ PHOTONGUI_BUNDLE =
 
 # CARBON GUI
 CARBONGUI_SRC	= gui.c gui_mac.c
-CARBONGUI_OBJ	= objects/gui.o objects/gui_mac.o objects/pty.o
+CARBONGUI_OBJ	= objects/gui.o objects/gui_mac.o
 CARBONGUI_DEFS	= -DFEAT_GUI_MAC -fno-common -fpascal-strings \
 		  -Wall -Wno-unknown-pragmas \
 		  -mdynamic-no-pic -pipe
@@ -1367,7 +1376,7 @@ CARBONGUI_TESTARG = VIMPROG=../$(APPDIR)/Contents/MacOS/$(VIMTARGET)
 # MACVIM GUI
 MACVIMGUI_SRC	= gui.c gui_beval.c MacVim/gui_macvim.m MacVim/MMBackend.m \
 		  MacVim/MacVim.m
-MACVIMGUI_OBJ	= objects/gui.o objects/gui_beval.o objects/pty.o \
+MACVIMGUI_OBJ	= objects/gui.o objects/gui_beval.o \
 		  objects/gui_macvim.o objects/MMBackend.o objects/MacVim.o
 MACVIMGUI_DEFS	= -DFEAT_GUI_MACVIM -Wall -Wno-unknown-pragmas -pipe
 MACVIMGUI_IPATH	=
@@ -1382,10 +1391,17 @@ MACVIMGUI_BUNDLE = macvim
 MACVIMGUI_TESTARG = VIMPROG=../$(RELEASEDIR)/MacVim.app/Contents/MacOS/$(VIMTARGET)
 
 # All GUI files
-ALL_GUI_SRC  = gui.c gui_gtk.c gui_gtk_f.c gui_motif.c gui_xmdlg.c gui_xmebw.c gui_athena.c gui_gtk_x11.c gui_x11.c gui_at_sb.c gui_at_fs.c pty.c
+ALL_GUI_SRC  = gui.c gui_gtk.c gui_gtk_f.c gui_motif.c gui_xmdlg.c gui_xmebw.c gui_athena.c gui_gtk_x11.c gui_x11.c gui_at_sb.c gui_at_fs.c
 ALL_GUI_PRO  = gui.pro gui_gtk.pro gui_motif.pro gui_xmdlg.pro gui_athena.pro gui_gtk_x11.pro gui_x11.pro gui_w32.pro gui_photon.pro
 
 # }}}
+
+TERM_DEPS = \
+	libvterm/include/vterm.h \
+	libvterm/include/vterm_keycodes.h \
+	libvterm/src/rect.h \
+	libvterm/src/utf8.h \
+	libvterm/src/vterm_internal.h
 
 ### Command to create dependencies based on #include "..."
 ### prototype headers are ignored due to -DPROTO, system
@@ -1423,6 +1439,11 @@ PROTO_FLAGS = -d -E"$(CPP)" $(NO_ATTR)
 ################################################
 
 SHELL = /bin/sh
+
+# We would normally use "mkdir -p" but it doesn't work properly everywhere.
+# Using AC_PROG_MKDIR_P in configure.ac has a problem with the "auto"
+# directory.  Always use the install-sh script, it's slower but reliable.
+MKDIR_P = $(SHELL) install-sh -c -d
 
 .SUFFIXES:
 .SUFFIXES: .c .o .pro
@@ -1561,6 +1582,7 @@ BASIC_SRC = \
 	os_unix.c \
 	auto/pathdef.c \
 	popupmnu.c \
+	pty.c \
 	quickfix.c \
 	regexp.c \
 	screen.c \
@@ -1571,6 +1593,7 @@ BASIC_SRC = \
 	syntax.c \
 	tag.c \
 	term.c \
+	terminal.c \
 	ui.c \
 	undo.c \
 	userfunc.c \
@@ -1580,6 +1603,7 @@ BASIC_SRC = \
 
 SRC =	$(BASIC_SRC) \
 	$(GUI_SRC) \
+	$(TERM_SRC) \
 	$(HANGULIN_SRC) \
 	$(LUA_SRC) \
 	$(MZSCHEME_SRC) \
@@ -1621,7 +1645,7 @@ ALL_SRC = $(BASIC_SRC) $(ALL_GUI_SRC) $(UNITTEST_SRC) $(EXTRA_SRC)
 LINT_SRC = $(BASIC_SRC) $(GUI_SRC) $(HANGULIN_SRC) \
 	   $(PYTHON_SRC) $(PYTHON3_SRC) $(TCL_SRC) \
 	   $(WORKSHOP_SRC) $(WSDEBUG_SRC) \
-	   $(NETBEANS_SRC) $(CHANNEL_SRC)
+	   $(NETBEANS_SRC) $(CHANNEL_SRC) $(TERM_SRC)
 #LINT_SRC = $(SRC)
 #LINT_SRC = $(ALL_SRC)
 #LINT_SRC = $(BASIC_SRC)
@@ -1666,6 +1690,7 @@ OBJ_COMMON = \
 	objects/os_unix.o \
 	objects/pathdef.o \
 	objects/popupmnu.o \
+	objects/pty.o \
 	objects/quickfix.o \
 	objects/regexp.o \
 	objects/screen.o \
@@ -1676,12 +1701,14 @@ OBJ_COMMON = \
 	objects/syntax.o \
 	objects/tag.o \
 	objects/term.o \
+	objects/terminal.o \
 	objects/ui.o \
 	objects/undo.o \
 	objects/userfunc.o \
 	objects/version.o \
 	objects/window.o \
 	$(GUI_OBJ) \
+	$(TERM_OBJ) \
 	$(LUA_OBJ) \
 	$(MZSCHEME_OBJ) \
 	$(PERL_OBJ) \
@@ -1806,6 +1833,7 @@ PRO_AUTO = \
 	syntax.pro \
 	tag.pro \
 	term.pro \
+	terminal.pro \
 	termlib.pro \
 	ui.pro \
 	undo.pro \
@@ -1859,7 +1887,7 @@ config auto/config.mk: auto/configure config.mk.in config.h.in
 		$(CONF_OPT_OUTPUT) $(CONF_OPT_GPM) $(CONF_OPT_WORKSHOP) \
 		$(CONF_OPT_FEAT) $(CONF_TERM_LIB) \
 		$(CONF_OPT_COMPBY) $(CONF_OPT_ACL) $(CONF_OPT_NETBEANS) \
-		$(CONF_OPT_CHANNEL) \
+		$(CONF_OPT_CHANNEL) $(CONF_OPT_TERMINAL) \
 		$(CONF_ARGS) $(CONF_OPT_MZSCHEME) $(CONF_OPT_PLTHOME) \
 		$(CONF_OPT_LUA) $(CONF_OPT_LUA_PREFIX) \
 		$(CONF_OPT_SYSMOUSE); \
@@ -1901,20 +1929,12 @@ autoconf:
 	-rm -rf autom4te.cache
 	-rm -f auto/config.status auto/config.cache
 
-# Run Perl to generate the Ex command lookup table.  This only needs to be run
-# when a command name has been added or changed.
-# NOTE: Only works when perl and vim executables are available
+# Run vim script to generate the Ex command lookup table.
+# This only needs to be run when a command name has been added or changed.
+# If this fails because you don't have Vim yet, first build and install Vim
+# without changes.
 cmdidxs: ex_cmds.h
-	if test X`perl -e "print 123"` = "X123"; then \
-	   vim ex_docmd.c -c '/Beginning.*create_cmdidxs/,/End.*create_cmdidxs/! perl create_cmdidxs.pl' -c wq; \
-	else \
-	   echo Cannot run Perl; \
-	fi
-
-# Re-execute this Makefile to include the new auto/config.mk produced by
-# configure Only used when typing "make" with a fresh auto/config.mk.
-myself:
-	$(MAKE) -f Makefile all
+	vim -u NONE -i NONE -X -S create_cmdidxs.vim
 
 
 # The normal command to compile a .c file to its .o file.
@@ -2087,29 +2107,26 @@ run_message_test: $(MESSAGE_TEST_TARGET)
 
 # Run individual OLD style test, assuming that Vim was already compiled.
 test1 \
-	test_autocmd_option \
 	test_autoformat_join \
 	test_changelist \
 	test_close_count \
-	test_comparators \
 	test_erasebackword \
 	test_eval \
 	test_fixeol \
-	test_getcwd \
 	test_insertcount \
 	test_listchars \
 	test_search_mbyte \
 	test_wordcount \
 	test3 test4 test5 test6 test7 test8 test9 \
 	test11 test12 test14 test15 test17 test18 test19 \
-	test20 test21 test22 test23 test24 test25 test26 test27 test28 test29 \
+	test20 test21 test22 test25 test27 test28 test29 \
 	test30 test31 test32 test33 test34 test36 test37 test38 test39 \
 	test40 test41 test42 test43 test44 test45 test48 test49 \
-	test50 test51 test52 test53 test54 test55 test56 test57 test58 test59 \
-	test60 test64 test65 test66 test67 test68 test69 \
-	test70 test72 test73 test74 test75 test77 test78 test79 \
-	test80 test82 test83 test84 test85 test86 test87 test88 \
-	test90 test91 test94 test95 test97 test98 test99 \
+	test50 test51 test52 test53 test54 test55 test56 test57 test59 \
+	test60 test64 test66 test68 test69 \
+	test70 test72 test73 test74 test77 test78 test79 \
+	test80 test83 test84 test85 test86 test87 test88 \
+	test91 test94 test95 test98 test99 \
 	test100 test101 test103 test104 test107 test108:
 	cd testdir; rm -f $@.out; $(MAKE) -f Makefile $@.out VIMPROG=../$(VIMTARGET) $(GUI_TESTARG) SCRIPTSOURCE=../$(SCRIPTSOURCE)
 
@@ -2133,17 +2150,22 @@ test_arglist \
 	test_clientserver \
 	test_cmdline \
 	test_command_count \
+	test_comparators \
 	test_crypt \
 	test_cscope \
 	test_cursor_func \
+	test_curswant \
 	test_delete \
 	test_diffmode \
 	test_digraph \
 	test_display \
 	test_edit \
+	test_escaped_glob \
 	test_ex_undo \
 	test_ex_z \
+	test_exec_while_if \
 	test_execute_func \
+	test_exists_autocmd \
 	test_expand \
 	test_expand_dllpath \
 	test_expr \
@@ -2151,7 +2173,9 @@ test_arglist \
 	test_farsi \
 	test_feedkeys \
 	test_file_perm \
+	test_file_size \
 	test_fileformat \
+	test_filetype \
 	test_filter_cmd \
 	test_filter_map \
 	test_findfile \
@@ -2161,6 +2185,8 @@ test_arglist \
 	test_fold \
 	test_functions \
 	test_ga \
+	test_getcwd \
+	test_getvar \
 	test_gf \
 	test_glob2regpat \
 	test_global \
@@ -2172,6 +2198,7 @@ test_arglist \
 	test_help \
 	test_help_tagjump \
 	test_hide \
+	test_highlight \
 	test_history \
 	test_hlsearch \
 	test_increment \
@@ -2183,12 +2210,15 @@ test_arglist \
 	test_lambda \
 	test_langmap \
 	test_largefile \
+	test_let \
+	test_lineending \
 	test_lispwords \
 	test_listlbr \
 	test_listlbr_utf8 \
 	test_lua \
 	test_makeencoding \
 	test_man \
+	test_maparg \
 	test_mapping \
 	test_marks \
 	test_match \
@@ -2207,7 +2237,9 @@ test_arglist \
 	test_partial \
 	test_paste \
 	test_perl \
+	test_plus_arg_edit \
 	test_popup \
+	test_preview \
 	test_profile \
 	test_put \
 	test_python2 \
@@ -2217,14 +2249,18 @@ test_arglist \
 	test_quickfix \
 	test_quotestar \
 	test_recover \
+	test_regex_char_classes \
 	test_regexp_latin \
 	test_regexp_utf8 \
+	test_registers \
 	test_reltime \
 	test_retab \
 	test_ruby \
+	test_scrollbind \
 	test_search \
 	test_searchpos \
 	test_set \
+	test_sha256 \
 	test_signs \
 	test_smartindent \
 	test_sort \
@@ -2244,6 +2280,7 @@ test_arglist \
 	test_tagjump \
 	test_taglist \
 	test_tcl \
+	test_terminal \
 	test_textobjects \
 	test_timers \
 	test_true_false \
@@ -2251,6 +2288,7 @@ test_arglist \
 	test_unlet \
 	test_usercommands \
 	test_utf8 \
+	test_utf8_comparisons \
 	test_viminfo \
 	test_vimscript \
 	test_visual \
@@ -2583,7 +2621,7 @@ DESKTOPPATH = $(DESTDIR)$(DATADIR)/applications
 KDEPATH = $(HOME)/.kde/share/icons
 install-icons:
 	if test -n "$(DESTDIR)"; then \
-		$(SHELL) ./mkinstalldirs $(ICON48PATH) $(ICON32PATH) \
+		$(MKDIR_P) $(ICON48PATH) $(ICON32PATH) \
 		$(ICON16PATH) $(DESKTOPPATH); \
 	fi
 
@@ -2624,7 +2662,7 @@ $(DESTDIR)$(exec_prefix) $(DEST_BIN) \
 		$(DEST_LANG) $(DEST_KMAP) $(DEST_COMP) $(DEST_MACRO) \
 		$(DEST_PACK) $(DEST_TOOLS) $(DEST_TUTOR) $(DEST_SPELL) \
 		$(DEST_AUTO) $(DEST_AUTO)/xml $(DEST_PLUG):
-	-$(SHELL) ./mkinstalldirs $@
+	$(MKDIR_P) $@
 	-chmod $(DIRMOD) $@
 
 # create links from various names to vim.  This is only done when the links
@@ -2787,7 +2825,8 @@ uninstall_runtime:
 # Clean up all the files that have been produced, except configure's.
 # We support common typing mistakes for Juergen! :-)
 clean celan: testclean macvimclean
-	-rm -f *.o objects/* core $(VIMTARGET).core $(VIMTARGET) vim xxd/*.o
+	-rm -f *.o core $(VIMTARGET).core $(VIMTARGET) vim xxd/*.o
+	-rm -rf objects
 	-rm -f $(TOOLS) auto/osdef.h auto/pathdef.c auto/if_perl.c auto/gui_gtk_gresources.c auto/gui_gtk_gresources.h
 	-rm -f conftest* *~ auto/link.sed
 	-rm -f testdir/opt_test.vim
@@ -2804,25 +2843,25 @@ clean celan: testclean macvimclean
 SHADOWDIR = shadow
 
 shadow:	runtime pixmaps
-	mkdir $(SHADOWDIR)
-	cd $(SHADOWDIR); ln -s ../*.[chm] ../*.in ../*.sh ../*.xs ../*.xbm ../gui_gtk_res.xml ../toolcheck ../proto ../vimtutor ../gvimtutor ../mkinstalldirs .
+	$(MKDIR_P) $(SHADOWDIR)
+	cd $(SHADOWDIR); ln -s ../*.[chm] ../*.in ../*.sh ../*.xs ../*.xbm ../gui_gtk_res.xml ../toolcheck ../proto ../libvterm ../vimtutor ../gvimtutor ../install-sh .
 	mkdir $(SHADOWDIR)/auto
 	cd $(SHADOWDIR)/auto; ln -s ../../auto/configure .
-	mkdir $(SHADOWDIR)/po
+	$(MKDIR_P) $(SHADOWDIR)/po
 	cd $(SHADOWDIR)/po; ln -s ../../po/*.po ../../po/*.mak ../../po/*.vim ../../po/Makefile .
 	cd $(SHADOWDIR); rm -f auto/link.sed
 	cp Makefile configure $(SHADOWDIR)
 	rm -f $(SHADOWDIR)/auto/config.mk $(SHADOWDIR)/config.mk.dist
 	cp config.mk.dist $(SHADOWDIR)/auto/config.mk
 	cp config.mk.dist $(SHADOWDIR)
-	mkdir $(SHADOWDIR)/xxd
+	$(MKDIR_P) $(SHADOWDIR)/xxd
 	cd $(SHADOWDIR)/xxd; ln -s ../../xxd/*.[ch] ../../xxd/Make* .
 	if test -d $(RSRC_DIR); then \
 		cd $(SHADOWDIR); \
 		ln -s ../infplist.xml .; \
 		ln -s ../$(RSRC_DIR) ../os_mac.rsr.hqx ../dehqx.py .; \
 	fi
-	mkdir $(SHADOWDIR)/testdir
+	$(MKDIR_P) $(SHADOWDIR)/testdir
 	cd $(SHADOWDIR)/testdir; ln -s ../../testdir/Makefile \
 				 ../../testdir/Make_all.mak \
 				 ../../testdir/README.txt \
@@ -2959,7 +2998,7 @@ auto/gui_gtk_gresources.h: gui_gtk_res.xml $(GUI_GTK_RES_INPUTS)
 objects: objects/.dirstamp
 
 objects/.dirstamp:
-	mkdir -p objects
+	$(MKDIR_P) objects
 	touch objects/.dirstamp
 
 # All object files depend on the objects directory, so that parallel make
@@ -3216,11 +3255,11 @@ objects/winclip.o: winclip.c
 objects/pathdef.o: auto/pathdef.c
 	$(CCC) -o $@ auto/pathdef.c
 
-objects/pty.o: pty.c
-	$(CCC) -o $@ pty.c
-
 objects/popupmnu.o: popupmnu.c
 	$(CCC) -o $@ popupmnu.c
+
+objects/pty.o: pty.c
+	$(CCC) -o $@ pty.c
 
 objects/quickfix.o: quickfix.c
 	$(CCC) -o $@ quickfix.c
@@ -3252,6 +3291,9 @@ objects/tag.o: tag.c
 objects/term.o: term.c
 	$(CCC) -o $@ term.c
 
+objects/terminal.o: terminal.c $(TERM_DEPS)
+	$(CCC) -o $@ terminal.c
+
 objects/ui.o: ui.c
 	$(CCC) -o $@ ui.c
 
@@ -3279,6 +3321,34 @@ objects/channel.o: channel.c
 Makefile:
 	@echo The name of the makefile MUST be "Makefile" (with capital M)!!!!
 
+CCCTERM = $(CCC) -Ilibvterm/include -DINLINE="" -DVSNPRINTF=vim_vsnprintf
+objects/term_encoding.o: libvterm/src/encoding.c $(TERM_DEPS)
+	$(CCCTERM) -o $@ libvterm/src/encoding.c
+
+objects/term_keyboard.o: libvterm/src/keyboard.c $(TERM_DEPS)
+	$(CCCTERM) -o $@ libvterm/src/keyboard.c
+
+objects/term_mouse.o: libvterm/src/mouse.c $(TERM_DEPS)
+	$(CCCTERM) -o $@ libvterm/src/mouse.c
+
+objects/term_parser.o: libvterm/src/parser.c $(TERM_DEPS)
+	$(CCCTERM) -o $@ libvterm/src/parser.c
+
+objects/term_pen.o: libvterm/src/pen.c $(TERM_DEPS)
+	$(CCCTERM) -o $@ libvterm/src/pen.c
+
+objects/term_screen.o: libvterm/src/screen.c $(TERM_DEPS)
+	$(CCCTERM) -o $@ libvterm/src/screen.c
+
+objects/term_state.o: libvterm/src/state.c $(TERM_DEPS)
+	$(CCCTERM) -o $@ libvterm/src/state.c
+
+objects/term_unicode.o: libvterm/src/unicode.c $(TERM_DEPS)
+	$(CCCTERM) -o $@ libvterm/src/unicode.c
+
+objects/term_vterm.o: libvterm/src/vterm.c $(TERM_DEPS)
+	$(CCCTERM) -o $@ libvterm/src/vterm.c
+
 ###############################################################################
 ### MacOS X installation
 ###
@@ -3299,8 +3369,7 @@ install_macosx: gui_bundle
 # Generate the help tags file now, it won't work with "make installruntime".
 	-@srcdir=`pwd`; cd $(HELPSOURCE); $(MAKE) VIMEXE=$$srcdir/$(VIMTARGET) vimtags
 # Install the runtime files.  Recursive!
-	-mkdir -p $(DESTDIR)$(prefix)/$(RESDIR)/vim/runtime
-#	-mkdir $(DESTDIR)$(prefix)/$(APPDIR)/bin
+	$(MKDIR_P) $(DESTDIR)$(prefix)/$(RESDIR)/vim/runtime
 	srcdir=`pwd`; $(MAKE) -f Makefile installruntime \
 		VIMEXE=$$srcdir/$(VIMTARGET) \
 		prefix=$(DESTDIR)$(prefix)/$(RESDIR)$(VIMDIR) \
@@ -3318,16 +3387,16 @@ gui_bundle: $(RESDIR) bundle-dir bundle-executable bundle-info bundle-resource \
 	bundle-language
 
 $(RESDIR):
-	mkdir -p $@
+	$(MKDIR_P) $@
 
 bundle-dir: $(APPDIR)/Contents $(VIMTARGET)
 # Make a link to the runtime directory, so that we can try out the executable
 # without installing it.
-	mkdir -p $(RESDIR)/vim
+	$(MKDIR_P) $(RESDIR)/vim
 	-ln -s `pwd`/../runtime $(RESDIR)/vim
 
 bundle-executable: $(VIMTARGET)
-	mkdir -p $(APPDIR)/Contents/MacOS
+	$(MKDIR_P) $(APPDIR)/Contents/MacOS
 	cp $(VIMTARGET) $(APPDIR)/Contents/MacOS/$(VIMTARGET)
 
 bundle-info:  bundle-dir
@@ -3358,8 +3427,8 @@ bundle-rsrc: os_mac.rsr.hqx
 bundle-language: bundle-dir
 
 $(APPDIR)/Contents:
-	-$(SHELL) ./mkinstalldirs $(APPDIR)/Contents/MacOS
-	-$(SHELL) ./mkinstalldirs $(RESDIR)/English.lproj
+	$(MKDIR_P) $(APPDIR)/Contents/MacOS
+	$(MKDIR_P) $(RESDIR)/English.lproj
 
 
 ##############################################################################
@@ -3455,7 +3524,7 @@ objects/ex_cmds2.o: ex_cmds2.c vim.h auto/config.h feature.h os_unix.h \
 objects/ex_docmd.o: ex_docmd.c vim.h auto/config.h feature.h os_unix.h \
  auto/osdef.h ascii.h keymap.h term.h macros.h option.h structs.h \
  regexp.h gui.h gui_beval.h proto/gui_beval.pro alloc.h ex_cmds.h spell.h \
- proto.h globals.h farsi.h arabic.h
+ proto.h globals.h farsi.h arabic.h ex_cmdidxs.h
 objects/ex_eval.o: ex_eval.c vim.h auto/config.h feature.h os_unix.h auto/osdef.h \
  ascii.h keymap.h term.h macros.h option.h structs.h regexp.h gui.h \
  gui_beval.h proto/gui_beval.pro alloc.h ex_cmds.h spell.h proto.h \
@@ -3559,7 +3628,7 @@ objects/option.o: option.c vim.h auto/config.h feature.h os_unix.h auto/osdef.h 
 objects/os_unix.o: os_unix.c vim.h auto/config.h feature.h os_unix.h auto/osdef.h \
  ascii.h keymap.h term.h macros.h option.h structs.h regexp.h gui.h \
  gui_beval.h proto/gui_beval.pro alloc.h ex_cmds.h spell.h proto.h \
- globals.h farsi.h arabic.h if_mzsch.h os_unixx.h
+ globals.h farsi.h arabic.h os_unixx.h
 objects/pathdef.o: auto/pathdef.c vim.h auto/config.h feature.h os_unix.h \
  auto/osdef.h ascii.h keymap.h term.h macros.h option.h structs.h \
  regexp.h gui.h gui_beval.h proto/gui_beval.pro alloc.h ex_cmds.h spell.h \
@@ -3608,6 +3677,10 @@ objects/term.o: term.c vim.h auto/config.h feature.h os_unix.h auto/osdef.h \
  ascii.h keymap.h term.h macros.h option.h structs.h regexp.h gui.h \
  gui_beval.h proto/gui_beval.pro alloc.h ex_cmds.h spell.h proto.h \
  globals.h farsi.h arabic.h
+objects/terminal.o: terminal.c vim.h auto/config.h feature.h os_unix.h \
+ auto/osdef.h ascii.h keymap.h term.h macros.h option.h structs.h \
+ regexp.h gui.h gui_beval.h proto/gui_beval.pro alloc.h ex_cmds.h spell.h \
+ proto.h globals.h farsi.h arabic.h
 objects/ui.o: ui.c vim.h auto/config.h feature.h os_unix.h auto/osdef.h ascii.h \
  keymap.h term.h macros.h option.h structs.h regexp.h gui.h gui_beval.h \
  proto/gui_beval.pro alloc.h ex_cmds.h spell.h proto.h globals.h farsi.h \
@@ -3717,7 +3790,7 @@ objects/json_test.o: json_test.c main.c vim.h auto/config.h feature.h os_unix.h 
 objects/kword_test.o: kword_test.c main.c vim.h auto/config.h feature.h os_unix.h \
  auto/osdef.h ascii.h keymap.h term.h macros.h option.h structs.h \
  regexp.h gui.h gui_beval.h proto/gui_beval.pro alloc.h ex_cmds.h spell.h \
- proto.h globals.h farsi.h arabic.h charset.c mbyte.c
+ proto.h globals.h farsi.h arabic.h charset.c
 objects/memfile_test.o: memfile_test.c main.c vim.h auto/config.h feature.h \
  os_unix.h auto/osdef.h ascii.h keymap.h term.h macros.h option.h \
  structs.h regexp.h gui.h gui_beval.h proto/gui_beval.pro alloc.h \
@@ -3737,7 +3810,7 @@ objects/if_lua.o: if_lua.c vim.h auto/config.h feature.h os_unix.h auto/osdef.h 
 objects/if_mzsch.o: if_mzsch.c vim.h auto/config.h feature.h os_unix.h \
  auto/osdef.h ascii.h keymap.h term.h macros.h option.h structs.h \
  regexp.h gui.h gui_beval.h proto/gui_beval.pro alloc.h ex_cmds.h spell.h \
- proto.h globals.h farsi.h arabic.h if_mzsch.h mzscheme_base.c
+ proto.h globals.h farsi.h arabic.h if_mzsch.h
 objects/if_perl.o: auto/if_perl.c vim.h auto/config.h feature.h os_unix.h \
  auto/osdef.h ascii.h keymap.h term.h macros.h option.h structs.h \
  regexp.h gui.h gui_beval.h proto/gui_beval.pro alloc.h ex_cmds.h spell.h \

@@ -4263,43 +4263,6 @@ py_fix_cursor(linenr_T lo, linenr_T hi, linenr_T extra)
 }
 
 /*
- * Find a window that contains "buf" and switch to it.
- * If there is no such window, use the current window and change "curbuf".
- * Caller must initialize save_curbuf to NULL.
- * restore_win_for_buf() MUST be called later!
- */
-    static void
-switch_to_win_for_buf(
-    buf_T	*buf,
-    win_T	**save_curwinp,
-    tabpage_T	**save_curtabp,
-    bufref_T	*save_curbuf)
-{
-    win_T	*wp;
-    tabpage_T	*tp;
-
-    if (find_win_for_buf(buf, &wp, &tp) == FAIL)
-	switch_buffer(save_curbuf, buf);
-    else if (switch_win(save_curwinp, save_curtabp, wp, tp, TRUE) == FAIL)
-    {
-	restore_win(*save_curwinp, *save_curtabp, TRUE);
-	switch_buffer(save_curbuf, buf);
-    }
-}
-
-    static void
-restore_win_for_buf(
-    win_T	*save_curwin,
-    tabpage_T	*save_curtab,
-    bufref_T	*save_curbuf)
-{
-    if (save_curbuf->br_buf == NULL)
-	restore_win(save_curwin, save_curtab, TRUE);
-    else
-	restore_buffer(save_curbuf);
-}
-
-/*
  * Replace a line in the specified buffer. The line number is
  * in Vim format (1-based). The replacement line is given as
  * a Python string object. The object is checked for validity
@@ -4311,7 +4274,7 @@ restore_win_for_buf(
     static int
 SetBufferLine(buf_T *buf, PyInt n, PyObject *line, PyInt *len_change)
 {
-    bufref_T	save_curbuf = {NULL, 0};
+    bufref_T	save_curbuf = {NULL, 0, 0};
     win_T	*save_curwin = NULL;
     tabpage_T	*save_curtab = NULL;
 
@@ -4415,7 +4378,7 @@ SetBufferLineList(
 	PyObject *list,
 	PyInt *len_change)
 {
-    bufref_T	save_curbuf = {NULL, 0};
+    bufref_T	save_curbuf = {NULL, 0, 0};
     win_T	*save_curwin = NULL;
     tabpage_T	*save_curtab = NULL;
 
@@ -4616,7 +4579,7 @@ SetBufferLineList(
     static int
 InsertBufferLines(buf_T *buf, PyInt n, PyObject *lines, PyInt *len_change)
 {
-    bufref_T	save_curbuf = {NULL, 0};
+    bufref_T	save_curbuf = {NULL, 0, 0};
     win_T	*save_curwin = NULL;
     tabpage_T	*save_curtab = NULL;
 

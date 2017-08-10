@@ -11,12 +11,12 @@ AC_DEFINE(UNIX)
 AC_PROG_MAKE_SET
 
 dnl Checks for programs.
-AC_PROG_CC	dnl required by almost everything
-AC_PROG_CPP	dnl required by header file checks
-AC_PROGRAM_EGREP dnl required by AC_EGREP_CPP
-AC_PROG_FGREP	dnl finds working grep -F
-AC_ISC_POSIX	dnl required by AC_C_CROSS
-AC_PROG_AWK	dnl required for "make html" in ../doc
+AC_PROG_CC		dnl required by almost everything
+AC_PROG_CPP		dnl required by header file checks
+AC_PROGRAM_EGREP	dnl required by AC_EGREP_CPP
+AC_PROG_FGREP		dnl finds working grep -F
+AC_ISC_POSIX		dnl required by AC_C_CROSS
+AC_PROG_AWK		dnl required for "make html" in ../doc
 
 dnl Don't strip if we don't have it
 AC_CHECK_PROG(STRIP, strip, strip, :)
@@ -511,7 +511,7 @@ fi
 dnl Check for Lua feature.
 AC_MSG_CHECKING(--enable-luainterp argument)
 AC_ARG_ENABLE(luainterp,
-	[  --enable-luainterp[=OPTS]     Include Lua interpreter.  [default=no] [OPTS=no/yes/dynamic]], ,
+	[  --enable-luainterp[=OPTS]      Include Lua interpreter.  [default=no] [OPTS=no/yes/dynamic]], ,
 	[enable_luainterp="no"])
 AC_MSG_RESULT($enable_luainterp)
 
@@ -709,7 +709,7 @@ fi
 dnl Check for MzScheme feature.
 AC_MSG_CHECKING(--enable-mzschemeinterp argument)
 AC_ARG_ENABLE(mzschemeinterp,
-	[  --enable-mzschemeinterp   Include MzScheme interpreter.], ,
+	[  --enable-mzschemeinterp      Include MzScheme interpreter.], ,
 	[enable_mzschemeinterp="no"])
 AC_MSG_RESULT($enable_mzschemeinterp)
 
@@ -1372,7 +1372,7 @@ AC_SUBST(PYTHON_OBJ)
 
 AC_MSG_CHECKING(--enable-python3interp argument)
 AC_ARG_ENABLE(python3interp,
-	[  --enable-python3interp[=OPTS]   Include Python3 interpreter. [default=no] [OPTS=no/yes/dynamic]], ,
+	[  --enable-python3interp[=OPTS]  Include Python3 interpreter. [default=no] [OPTS=no/yes/dynamic]], ,
 	[enable_python3interp="no"])
 AC_MSG_RESULT($enable_python3interp)
 if test "$enable_python3interp" = "yes" -o "$enable_python3interp" = "dynamic"; then
@@ -2027,7 +2027,7 @@ fi
 
 AC_MSG_CHECKING(--disable-channel argument)
 AC_ARG_ENABLE(channel,
-	[  --disable-channel      Disable process communication support.],
+	[  --disable-channel       Disable process communication support.],
 	, [enable_channel="yes"])
 if test "$enable_channel" = "yes"; then
   if test "x$features" = "xtiny" -o "x$features" = "xsmall"; then
@@ -2090,6 +2090,28 @@ if test "$enable_channel" = "yes"; then
   AC_SUBST(CHANNEL_SRC)
   CHANNEL_OBJ="objects/channel.o"
   AC_SUBST(CHANNEL_OBJ)
+fi
+
+AC_MSG_CHECKING(--enable-terminal argument)
+AC_ARG_ENABLE(terminal,
+	[  --enable-terminal       Enable terminal emulation support.],
+	[enable_terminal="yes"], )
+if test "$enable_terminal" = "yes"; then
+  if test "x$features" = "xtiny" -o "x$features" = "xsmall"; then
+    AC_MSG_RESULT([cannot use terminal emulator with tiny or small features])
+    enable_terminal="no"
+  else
+    AC_MSG_RESULT(yes)
+  fi
+else
+  AC_MSG_RESULT(no)
+fi
+if test "$enable_terminal" = "yes"; then
+  AC_DEFINE(FEAT_TERMINAL)
+  TERM_SRC="libvterm/src/encoding.c libvterm/src/keyboard.c libvterm/src/mouse.c libvterm/src/parser.c libvterm/src/pen.c libvterm/src/screen.c libvterm/src/state.c libvterm/src/unicode.c libvterm/src/vterm.c"
+  AC_SUBST(TERM_SRC)
+  TERM_OBJ="objects/term_encoding.o objects/term_keyboard.o objects/term_mouse.o objects/term_parser.o objects/term_pen.o objects/term_screen.o objects/term_state.o objects/term_unicode.o objects/term_vterm.o"
+  AC_SUBST(TERM_OBJ)
 fi
 
 AC_MSG_CHECKING(--enable-multibyte argument)
@@ -2256,7 +2278,7 @@ test "x$with_x" = xno -a "x$MACOSX" != "xyes" -a "x$QNX" != "xyes" && enable_gui
 
 AC_MSG_CHECKING(--enable-gui argument)
 AC_ARG_ENABLE(gui,
- [  --enable-gui[=OPTS]     X11 GUI [default=auto] [OPTS=auto/no/gtk2/gnome2/gtk3/motif/athena/neXtaw/photon/carbon/macvim]], , enable_gui="auto")
+ [  --enable-gui[=OPTS]       X11 GUI. [default=auto] [OPTS=auto/no/gtk2/gnome2/gtk3/motif/athena/neXtaw/photon/carbon/macvim]], , enable_gui="auto")
 
 dnl Canonicalize the --enable-gui= argument so that it can be easily compared.
 dnl Do not use character classes for portability with old tools.
@@ -2691,10 +2713,6 @@ if test -z "$SKIP_GTK2"; then
     fi
   fi
   if test "x$GUITYPE" = "xGTK"; then
-    if test "$gtk_minor_version" = 1 -a "0$gtk_micro_version" -ge 1 \
-	|| test "0$gtk_minor_version" -ge 2; then
-      AC_DEFINE(HAVE_GTK_MULTIHEAD)
-    fi
     dnl
     dnl if GTK exists, then check for GNOME.
     dnl
@@ -2743,7 +2761,6 @@ if test -z "$SKIP_GTK3"; then
       SKIP_MOTIF=YES
       GUITYPE=GTK
       AC_SUBST(GTK_LIBNAME)
-      AC_DEFINE(HAVE_GTK_MULTIHEAD)
       AC_DEFINE(USE_GTK3)
     fi
   fi
@@ -2850,7 +2867,7 @@ dnl files, to avoid a mixup if several versions are present
 if test -z "$SKIP_MOTIF"; then
   AC_MSG_CHECKING(--with-motif-lib argument)
   AC_ARG_WITH(motif-lib,
-  [  --with-motif-lib=STRING   Library for Motif ],
+  [  --with-motif-lib=STRING Library for Motif ],
   [ MOTIF_LIBNAME="${withval}" ] )
 
   if test -n "$MOTIF_LIBNAME"; then
@@ -3440,10 +3457,9 @@ if test "x$vim_cv_terminfo" = "xyes" ; then
   AC_DEFINE(TERMINFO)
 fi
 
-if test "x$olibs" != "x$LIBS"; then
-  AC_CACHE_CHECK([what tgetent() returns for an unknown terminal], [vim_cv_tgent],
-    [
-      AC_RUN_IFELSE([AC_LANG_SOURCE([[
+AC_CACHE_CHECK([what tgetent() returns for an unknown terminal], [vim_cv_tgent],
+  [
+    AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include "confdefs.h"
 #ifdef HAVE_TERMCAP_H
 # include <termcap.h>
@@ -3454,18 +3470,17 @@ if test "x$olibs" != "x$LIBS"; then
 #endif
 main()
 {char s[10000]; int res = tgetent(s, "thisterminaldoesnotexist"); exit(res != 0); }
-      ]])],[
-	vim_cv_tgent=zero
-      ],[
-	vim_cv_tgent=non-zero
-      ],[
-	AC_MSG_ERROR(failed to compile test program.)
-      ])
+    ]])],[
+      vim_cv_tgent=zero
+    ],[
+      vim_cv_tgent=non-zero
+    ],[
+      AC_MSG_ERROR(failed to compile test program.)
     ])
-  
-  if test "x$vim_cv_tgent" = "xzero" ; then
-    AC_DEFINE(TGETENT_ZERO_ERR, 0)
-  fi
+  ])
+
+if test "x$vim_cv_tgent" = "xzero" ; then
+  AC_DEFINE(TGETENT_ZERO_ERR, 0)
 fi
 
 AC_MSG_CHECKING(whether termcap.h contains ospeed)
@@ -3944,7 +3959,7 @@ fi
 
 AC_MSG_CHECKING(--disable-sysmouse argument)
 AC_ARG_ENABLE(sysmouse,
-	[  --disable-sysmouse    Don't use sysmouse (mouse in *BSD console).], ,
+	[  --disable-sysmouse      Don't use sysmouse (mouse in *BSD console).], ,
 	[enable_sysmouse="yes"])
 
 if test "$enable_sysmouse" = "yes"; then

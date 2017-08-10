@@ -36,6 +36,7 @@ static int MMDefaultFontSize       = 11;
 static int MMMinFontSize           = 6;
 static int MMMaxFontSize           = 100;
 
+static BOOL MMShareFindPboard      = YES;
 
 static GuiFont gui_macvim_font_with_name(char_u *name);
 static int specialKeyToNSKey(int key);
@@ -197,6 +198,15 @@ gui_macvim_after_fork_init()
         // For now only the Core Text renderer knows how to render graphical
         // signs.
         use_graphical_sign = (val == MMRendererCoreText);
+    }
+
+    // Check to use the Find Pasteboard.
+    MMShareFindPboard = CFPreferencesGetAppBooleanValue((CFStringRef)MMShareFindPboardKey,
+                                                        kCFPreferencesCurrentApplication,
+                                                        &keyValid);
+    if (!keyValid) {
+        // Share text via the Find Pasteboard by default.
+        MMShareFindPboard = YES;
     }
 }
 
@@ -1621,6 +1631,13 @@ gui_mch_get_rgb(guicolor_T pixel)
 }
 
 
+    guicolor_T
+gui_mch_get_rgb_color(int r, int g, int b)
+{
+    return gui_get_rgb_color_cmn(r, g, b);
+}
+
+
 /*
  * Get the screen dimensions.
  * Allow 10 pixels for horizontal borders, 40 for vertical borders.
@@ -1816,7 +1833,8 @@ gui_macvim_add_to_find_pboard(char_u *pat)
     // The second entry will be used by other applications when taking entries
     // off the Find pasteboard, whereas MacVim will use the first if present.
     [pb setString:s forType:VimFindPboardType];
-    [pb setString:[s stringByRemovingFindPatterns] forType:NSStringPboardType];
+    if (MMShareFindPboard)
+        [pb setString:[s stringByRemovingFindPatterns] forType:NSStringPboardType];
 }
 
     void

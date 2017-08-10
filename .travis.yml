@@ -1,4 +1,5 @@
 language: c
+dist: trusty
 
 os:
   - osx
@@ -19,7 +20,7 @@ env:
     vi_cv_dll_name_python=/System/Library/Frameworks/Python.framework/Versions/2.7/Python
     vi_cv_dll_name_python3=/usr/local/Frameworks/Python.framework/Versions/3.6/Python
     VIMCMD=src/MacVim/build/Release/MacVim.app/Contents/MacOS/Vim
-    "CONFOPT='--with-features=huge --enable-multibyte --enable-netbeans --with-tlib=ncurses --enable-cscope --enable-perlinterp=dynamic --enable-pythoninterp=dynamic --enable-python3interp=dynamic --enable-rubyinterp=dynamic --enable-luainterp=dynamic --with-lua-prefix=/usr/local --enable-gui=macvim'"
+    "CONFOPT='--with-features=huge --enable-multibyte --enable-terminal --enable-netbeans --with-tlib=ncurses --enable-cscope --enable-perlinterp=dynamic --enable-pythoninterp=dynamic --enable-python3interp=dynamic --enable-rubyinterp=dynamic --enable-luainterp=dynamic --with-lua-prefix=/usr/local --enable-gui=macvim'"
 
 sudo: false
 
@@ -36,11 +37,6 @@ script:
   - grep -q -- "-DDYNAMIC_PYTHON_DLL=\\\\\"$vi_cv_dll_name_python\\\\\"" src/auto/config.mk
   - grep -q -- "-DDYNAMIC_PYTHON3_DLL=\\\\\"$vi_cv_dll_name_python3\\\\\"" src/auto/config.mk
   - make -j$NPROC
-  - BINPATH=src/MacVim/build/Release/MacVim.app/Contents/bin
-  - mkdir -p $BINPATH
-  - sed -e 's/^# VIM_APP_DIR=.*/if [ -L $0 ]; then VIM_APP_DIR=`dirname "$(readlink $0)"`\/..\/..\/..; else VIM_APP_DIR=`dirname "$0"`\/..\/..\/..; fi/' src/MacVim/mvim > $BINPATH/mvim
-  - chmod 755 $BINPATH/mvim
-  - (cd $BINPATH; for f in vim vimdiff view gvim gvimdiff gview mvimdiff mview; do ln -s mvim $f; done)
   - rm -f result; $VIMCMD -g -f -c "redir>result" -c "lua print(\"Test\")" -c "redir END" -c q; cat result; echo; grep -q -w Test result
   - rm -f result; $VIMCMD -g -f -c "redir>result" -c "perl VIM::Msg(\"Test\")" -c "redir END" -c q; cat result; echo; grep -q -w Test result
   - rm -f result; $VIMCMD -g -f -c "redir>result" -c "py import sys; print(\"Test\")" -c "redir END" -c q; cat result; echo; grep -q -w Test result

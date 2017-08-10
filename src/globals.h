@@ -97,6 +97,7 @@ EXTERN int	cmdline_row;
 EXTERN int	redraw_cmdline INIT(= FALSE);	/* cmdline must be redrawn */
 EXTERN int	clear_cmdline INIT(= FALSE);	/* cmdline must be cleared */
 EXTERN int	mode_displayed INIT(= FALSE);	/* mode is being displayed */
+EXTERN int	no_win_do_lines_ins INIT(= FALSE); /* don't insert lines */
 #if defined(FEAT_CRYPT) || defined(FEAT_EVAL)
 EXTERN int	cmdline_star INIT(= FALSE);	/* cmdline is crypted */
 #endif
@@ -325,6 +326,8 @@ EXTERN int	garbage_collect_at_exit INIT(= FALSE);
 EXTERN scid_T	current_SID INIT(= 0);
 #endif
 
+EXTERN int	did_source_packages INIT(= FALSE);
+
 /* Magic number used for hashitem "hi_key" value indicating a deleted item.
  * Only the address is used. */
 EXTERN char_u	hash_removed;
@@ -384,7 +387,7 @@ EXTERN int	keep_filetype INIT(= FALSE);	/* value for did_filetype when
 
 /* When deleting the current buffer, another one must be loaded.  If we know
  * which one is preferred, au_new_curbuf is set to it */
-EXTERN bufref_T	au_new_curbuf INIT(= {NULL COMMA 0});
+EXTERN bufref_T	au_new_curbuf INIT(= {NULL COMMA 0 COMMA 0});
 
 /* When deleting a buffer/window and autocmd_busy is TRUE, do not free the
  * buffer/window. but link it in the list starting with
@@ -1035,7 +1038,6 @@ EXTERN int	skip_redraw INIT(= FALSE);  /* skip redraw once */
 EXTERN int	do_redraw INIT(= FALSE);    /* extra redraw once */
 
 EXTERN int	need_highlight_changed INIT(= TRUE);
-EXTERN char_u	*use_viminfo INIT(= NULL);  /* name of viminfo file to use */
 
 #define NSCRIPT 15
 EXTERN FILE	*scriptin[NSCRIPT];	    /* streams to read script from */
@@ -1660,6 +1662,7 @@ EXTERN int  in_free_unref_items INIT(= FALSE);
 
 #ifdef FEAT_TIMERS
 EXTERN int  did_add_timer INIT(= FALSE);
+EXTERN int  timer_busy INIT(= 0);   /* when timer is inside vgetc() then > 0 */
 #endif
 
 #ifdef FEAT_EVAL
